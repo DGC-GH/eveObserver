@@ -43,9 +43,11 @@ class EVE_Observer {
         $char_meta_fields = array(
             '_eve_char_id', '_eve_char_name', '_eve_corporation_id', '_eve_alliance_id',
             '_eve_birthday', '_eve_gender', '_eve_race_id', '_eve_bloodline_id',
-            '_eve_ancestry_id', '_eve_security_status', '_eve_last_updated'
+            '_eve_ancestry_id', '_eve_security_status', '_eve_total_sp', '_eve_last_updated',
+            '_eve_wallet_balance', '_eve_location_id', '_eve_location_name', '_eve_assets_data',
+            '_eve_killmails_data', '_eve_clones_data', '_eve_implants_data', '_eve_standings_data'
         );
-        $numeric_char_fields = array('_eve_char_id', '_eve_corporation_id', '_eve_alliance_id', '_eve_race_id', '_eve_bloodline_id', '_eve_ancestry_id', '_eve_security_status');
+        $numeric_char_fields = array('_eve_char_id', '_eve_corporation_id', '_eve_alliance_id', '_eve_race_id', '_eve_bloodline_id', '_eve_ancestry_id', '_eve_security_status', '_eve_total_sp', '_eve_wallet_balance', '_eve_location_id');
         foreach ($char_meta_fields as $field) {
             register_meta('post', $field, array(
                 'show_in_rest' => true,
@@ -58,7 +60,8 @@ class EVE_Observer {
         // Blueprint meta fields
         $bp_meta_fields = array(
             '_eve_bp_item_id', '_eve_bp_type_id', '_eve_bp_location_id', '_eve_bp_quantity',
-            '_eve_bp_me', '_eve_bp_te', '_eve_bp_runs', '_eve_char_id', '_eve_last_updated'
+            '_eve_bp_me', '_eve_bp_te', '_eve_bp_runs', '_eve_char_id', '_eve_last_updated',
+            '_eve_bp_location_name'
         );
         $numeric_bp_fields = array('_eve_bp_item_id', '_eve_bp_type_id', '_eve_bp_location_id', '_eve_bp_quantity', '_eve_bp_me', '_eve_bp_te', '_eve_bp_runs', '_eve_char_id');
         foreach ($bp_meta_fields as $field) {
@@ -88,9 +91,11 @@ class EVE_Observer {
         // Corporation meta fields
         $corp_meta_fields = array(
             '_eve_corp_id', '_eve_corp_name', '_eve_corp_ticker', '_eve_corp_member_count',
-            '_eve_corp_ceo_id', '_eve_corp_alliance_id', '_eve_corp_tax_rate', '_eve_last_updated'
+            '_eve_corp_ceo_id', '_eve_corp_alliance_id', '_eve_corp_tax_rate', '_eve_last_updated',
+            '_eve_corp_wallet_balance', '_eve_corp_assets_data', '_eve_corp_blueprints_data',
+            '_eve_corp_industry_jobs_data', '_eve_corp_orders_data', '_eve_corp_structures_data'
         );
-        $numeric_corp_fields = array('_eve_corp_id', '_eve_corp_member_count', '_eve_corp_ceo_id', '_eve_corp_alliance_id', '_eve_corp_tax_rate');
+        $numeric_corp_fields = array('_eve_corp_id', '_eve_corp_member_count', '_eve_corp_ceo_id', '_eve_corp_alliance_id', '_eve_corp_tax_rate', '_eve_corp_wallet_balance');
         foreach ($corp_meta_fields as $field) {
             register_meta('post', $field, array(
                 'show_in_rest' => true,
@@ -388,6 +393,63 @@ class EVE_Observer {
                     'type' => 'number',
                     'show_in_rest' => true,
                 ),
+                array(
+                    'key' => 'field_wallet_balance',
+                    'label' => 'Wallet Balance',
+                    'name' => '_eve_wallet_balance',
+                    'type' => 'number',
+                    'step' => 0.01,
+                    'show_in_rest' => true,
+                ),
+                array(
+                    'key' => 'field_location_id',
+                    'label' => 'Current Location ID',
+                    'name' => '_eve_location_id',
+                    'type' => 'text',
+                    'show_in_rest' => true,
+                ),
+                array(
+                    'key' => 'field_location_name',
+                    'label' => 'Current Location Name',
+                    'name' => '_eve_location_name',
+                    'type' => 'text',
+                    'show_in_rest' => true,
+                ),
+                array(
+                    'key' => 'field_assets_data',
+                    'label' => 'Assets Data (JSON)',
+                    'name' => '_eve_assets_data',
+                    'type' => 'textarea',
+                    'show_in_rest' => true,
+                ),
+                array(
+                    'key' => 'field_killmails_data',
+                    'label' => 'Killmails Data (JSON)',
+                    'name' => '_eve_killmails_data',
+                    'type' => 'textarea',
+                    'show_in_rest' => true,
+                ),
+                array(
+                    'key' => 'field_clones_data',
+                    'label' => 'Clones Data (JSON)',
+                    'name' => '_eve_clones_data',
+                    'type' => 'textarea',
+                    'show_in_rest' => true,
+                ),
+                array(
+                    'key' => 'field_implants_data',
+                    'label' => 'Implants Data (JSON)',
+                    'name' => '_eve_implants_data',
+                    'type' => 'textarea',
+                    'show_in_rest' => true,
+                ),
+                array(
+                    'key' => 'field_standings_data',
+                    'label' => 'Standings Data (JSON)',
+                    'name' => '_eve_standings_data',
+                    'type' => 'textarea',
+                    'show_in_rest' => true,
+                ),
             ),
             'location' => array(
                 array(
@@ -423,6 +485,13 @@ class EVE_Observer {
                     'key' => 'field_bp_location_id',
                     'label' => 'Location ID',
                     'name' => '_eve_bp_location_id',
+                    'type' => 'text',
+                    'show_in_rest' => true,
+                ),
+                array(
+                    'key' => 'field_bp_location_name',
+                    'label' => 'Location Name',
+                    'name' => '_eve_bp_location_name',
                     'type' => 'text',
                     'show_in_rest' => true,
                 ),
@@ -564,6 +633,49 @@ class EVE_Observer {
                     'name' => '_eve_corp_tax_rate',
                     'type' => 'number',
                     'step' => 0.01,
+                    'show_in_rest' => true,
+                ),
+                array(
+                    'key' => 'field_corp_wallet_balance',
+                    'label' => 'Wallet Balance',
+                    'name' => '_eve_corp_wallet_balance',
+                    'type' => 'number',
+                    'step' => 0.01,
+                    'show_in_rest' => true,
+                ),
+                array(
+                    'key' => 'field_corp_assets_data',
+                    'label' => 'Assets Data (JSON)',
+                    'name' => '_eve_corp_assets_data',
+                    'type' => 'textarea',
+                    'show_in_rest' => true,
+                ),
+                array(
+                    'key' => 'field_corp_blueprints_data',
+                    'label' => 'Blueprints Data (JSON)',
+                    'name' => '_eve_corp_blueprints_data',
+                    'type' => 'textarea',
+                    'show_in_rest' => true,
+                ),
+                array(
+                    'key' => 'field_corp_industry_jobs_data',
+                    'label' => 'Industry Jobs Data (JSON)',
+                    'name' => '_eve_corp_industry_jobs_data',
+                    'type' => 'textarea',
+                    'show_in_rest' => true,
+                ),
+                array(
+                    'key' => 'field_corp_orders_data',
+                    'label' => 'Market Orders Data (JSON)',
+                    'name' => '_eve_corp_orders_data',
+                    'type' => 'textarea',
+                    'show_in_rest' => true,
+                ),
+                array(
+                    'key' => 'field_corp_structures_data',
+                    'label' => 'Structures Data (JSON)',
+                    'name' => '_eve_corp_structures_data',
+                    'type' => 'textarea',
                     'show_in_rest' => true,
                 ),
             ),

@@ -134,6 +134,30 @@ def update_character_in_wp(char_id, char_data):
     else:
         print(f"Failed to update character {char_data['name']}: {response.status_code} - {response.text}")
 
+def update_character_skills_in_wp(char_id, skills_data):
+    """Update character post with skills data."""
+    slug = f"character-{char_id}"
+    # Check if post exists by slug
+    response = requests.get(f"{WP_BASE_URL}/wp-json/wp/v2/eve_character?slug={slug}", auth=get_wp_auth())
+    existing_posts = response.json() if response.status_code == 200 else []
+    existing_post = existing_posts[0] if existing_posts else None
+
+    if existing_post:
+        post_id = existing_post['id']
+        # Update with skills data
+        post_data = {
+            'meta': {
+                '_eve_total_sp': skills_data.get('total_sp', 0),
+                '_eve_last_updated': datetime.now(timezone.utc).isoformat()
+            }
+        }
+        url = f"{WP_BASE_URL}/wp-json/wp/v2/eve_character/{post_id}"
+        response = requests.put(url, json=post_data, auth=get_wp_auth())
+        if response.status_code in [200, 201]:
+            print(f"Updated skills for character {char_id}")
+        else:
+            print(f"Failed to update skills for character {char_id}: {response.status_code} - {response.text}")
+
 def fetch_character_data(char_id, access_token):
     """Fetch basic character data from ESI."""
     endpoint = f"/characters/{char_id}/"
@@ -203,6 +227,7 @@ def update_blueprint_in_wp(item_id, blueprint_data, char_id, access_token):
             '_eve_bp_item_id': item_id,
             '_eve_bp_type_id': blueprint_data.get('type_id'),
             '_eve_bp_location_id': blueprint_data.get('location_id'),
+            '_eve_bp_location_name': location_name,
             '_eve_bp_quantity': blueprint_data.get('quantity', -1),
             '_eve_bp_me': blueprint_data.get('material_efficiency', 0),
             '_eve_bp_te': blueprint_data.get('time_efficiency', 0),
@@ -464,8 +489,8 @@ def main():
         print("No authorized characters found. Run 'python esi_oauth.py authorize' first.")
         return
 
-    processed_corps = set()
-
+    # Collect all corporations and their member characters
+    corp_members = {}
     for char_id, token_data in tokens.items():
         try:
             expired = datetime.now(timezone.utc) > datetime.fromisoformat(token_data.get('expires_at', '2000-01-01T00:00:00+00:00'))
@@ -483,32 +508,61 @@ def main():
         access_token = token_data['access_token']
         char_name = token_data['name']
 
-        print(f"Fetching data for {char_name}...")
-
-        # Fetch basic character data
+        # Fetch basic character data to get corporation
         char_data = fetch_character_data(char_id, access_token)
         if char_data:
             update_character_in_wp(char_id, char_data)
-
-            # Fetch corporation data if not already processed
             corp_id = char_data.get('corporation_id')
-            if corp_id and corp_id not in processed_corps:
-                corp_data = fetch_corporation_data(corp_id, access_token)
-                if corp_data:
-                    update_corporation_in_wp(corp_id, corp_data)
-                    processed_corps.add(corp_id)
+            if corp_id:
+                if corp_id not in corp_members:
+                    corp_members[corp_id] = []
+                corp_members[corp_id].append((char_id, access_token, char_name))
 
-                    # Fetch corporation contracts
-                    corp_contracts = fetch_corporation_contracts(corp_id, access_token)
-                    if corp_contracts:
-                        print(f"Corporation contracts for {corp_data.get('name', corp_id)}: {len(corp_contracts)} items")
-                        for contract in corp_contracts:
-                            update_contract_in_wp(contract['contract_id'], contract, for_corp=True, entity_id=corp_id)
+    # Process each corporation with any available member token
+    processed_corps = set()
+    for corp_id, members in corp_members.items():
+        if corp_id in processed_corps:
+            continue
+
+        # Try each member until we successfully fetch corp data
+        corp_data = None
+        successful_token = None
+        successful_char_name = None
+
+        for char_id, access_token, char_name in members:
+            print(f"Trying to fetch corporation data for corp {corp_id} using {char_name}'s token...")
+            corp_data = fetch_corporation_data(corp_id, access_token)
+            if corp_data:
+                successful_token = access_token
+                successful_char_name = char_name
+                print(f"Successfully fetched corporation data using {char_name}'s token")
+                break
+            else:
+                print(f"Failed to fetch corporation data using {char_name}'s token (likely no access)")
+
+        if corp_data:
+            update_corporation_in_wp(corp_id, corp_data)
+            processed_corps.add(corp_id)
+
+            # Fetch corporation contracts using the successful token
+            corp_contracts = fetch_corporation_contracts(corp_id, successful_token)
+            if corp_contracts:
+                print(f"Corporation contracts for {corp_data.get('name', corp_id)}: {len(corp_contracts)} items")
+                for contract in corp_contracts:
+                    update_contract_in_wp(contract['contract_id'], contract, for_corp=True, entity_id=corp_id)
+
+    # Now process individual character data (skills, blueprints, etc.)
+    for char_id, token_data in tokens.items():
+        access_token = token_data['access_token']
+        char_name = token_data['name']
+
+        print(f"Fetching additional data for {char_name}...")
 
         # Fetch skills
         skills = fetch_character_skills(char_id, access_token)
         if skills:
-            # Store skills in meta or ACF (for now, just print)
+            # Update character with skills data
+            update_character_skills_in_wp(char_id, skills)
             print(f"Skills for {char_name}: {skills['total_sp']} SP")
 
         # Fetch blueprints
@@ -570,29 +624,6 @@ def main():
             print(f"Character contracts for {char_name}: {len(char_contracts)} items")
             for contract in char_contracts:
                 update_contract_in_wp(contract['contract_id'], contract, for_corp=False, entity_id=char_id)
-
-        # Fetch corporation data if available
-        # corp_id = char_data.get('corporation_id') if char_data else None
-        # if corp_id:
-        #     print(f"Fetching corporation data for corp ID: {corp_id}")
-
-        #     # Fetch corp contracts
-        #     corp_contracts = fetch_corporation_contracts(corp_id, access_token)
-        #     if corp_contracts:
-        #         print(f"Corporation contracts: {len(corp_contracts)} items")
-
-        #     # Fetch corp assets
-        #     corp_assets = fetch_corporation_assets(corp_id, access_token)
-        #     if corp_assets:
-        #         print(f"Corporation assets: {len(corp_assets)} items")
-
-    # Fetch sample market data
-    print("Fetching sample market data...")
-    market_data = fetch_market_orders(10000002, 34)  # Tritanium in The Forge
-    if market_data:
-        print(f"Market orders for Tritanium: {len(market_data)} orders")
-
-    print("Data fetch complete.")
 
 if __name__ == '__main__':
     main()
