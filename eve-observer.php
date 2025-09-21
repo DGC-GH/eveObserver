@@ -35,6 +35,18 @@ class EVE_Observer {
         $this->register_custom_post_types();
     }
 
+    public function add_admin_menu() {
+        add_menu_page(
+            'EVE Observer Dashboard',
+            'EVE Observer',
+            'manage_options',
+            'eve-observer-dashboard',
+            array($this, 'display_dashboard'),
+            'dashicons-chart-line',
+            30
+        );
+    }
+
     public function enqueue_admin_scripts($hook) {
         if ($hook !== 'toplevel_page_eve-observer-dashboard') {
             return;
