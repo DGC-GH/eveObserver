@@ -31,6 +31,11 @@ ESI_BASE_URL = 'https://esi.evetech.net/latest'
 
 # Files
 TOKENS_FILE = 'esi_tokens.json'
+CACHE_DIR = 'cache'
+BLUEPRINT_CACHE_FILE = os.path.join(CACHE_DIR, 'blueprint_names.json')
+LOCATION_CACHE_FILE = os.path.join(CACHE_DIR, 'location_names.json')
+STRUCTURE_CACHE_FILE = os.path.join(CACHE_DIR, 'structure_names.json')
+FAILED_STRUCTURES_FILE = os.path.join(CACHE_DIR, 'failed_structures.json')
 
 def load_tokens():
     """Load stored tokens."""
@@ -38,6 +43,83 @@ def load_tokens():
         with open(TOKENS_FILE, 'r') as f:
             return json.load(f)
     return {}
+
+def ensure_cache_dir():
+    """Ensure cache directory exists."""
+    if not os.path.exists(CACHE_DIR):
+        os.makedirs(CACHE_DIR)
+
+def load_cache(cache_file):
+    """Load cache from file."""
+    ensure_cache_dir()
+    if os.path.exists(cache_file):
+        try:
+            with open(cache_file, 'r') as f:
+                return json.load(f)
+        except:
+            return {}
+    return {}
+
+def save_cache(cache_file, data):
+    """Save cache to file."""
+    ensure_cache_dir()
+    with open(cache_file, 'w') as f:
+        json.dump(data, f)
+
+def load_blueprint_cache():
+    """Load blueprint name cache."""
+    return load_cache(BLUEPRINT_CACHE_FILE)
+
+def save_blueprint_cache(cache):
+    """Save blueprint name cache."""
+    save_cache(BLUEPRINT_CACHE_FILE, cache)
+
+def load_location_cache():
+    """Load location name cache."""
+    return load_cache(LOCATION_CACHE_FILE)
+
+def save_location_cache(cache):
+    """Save location name cache."""
+    save_cache(LOCATION_CACHE_FILE, cache)
+
+def load_structure_cache():
+    """Load structure name cache."""
+    return load_cache(STRUCTURE_CACHE_FILE)
+
+def save_structure_cache(cache):
+    """Save structure name cache."""
+    save_cache(STRUCTURE_CACHE_FILE, cache)
+
+def load_failed_structures():
+    """Load failed structures cache."""
+    return load_cache(FAILED_STRUCTURES_FILE)
+
+def process_blueprints_parallel(blueprints, update_func, *args, **kwargs):
+    """Process blueprints in parallel while respecting rate limits."""
+    from concurrent.futures import ThreadPoolExecutor, as_completed
+    import time
+
+    max_workers = 3  # Limit concurrent requests to avoid rate limiting
+    results = []
+
+    with ThreadPoolExecutor(max_workers=max_workers) as executor:
+        # Submit all blueprint update tasks
+        future_to_bp = {
+            executor.submit(update_func, bp, *args, **kwargs): bp 
+            for bp in blueprints
+        }
+
+        for future in as_completed(future_to_bp):
+            bp = future_to_bp[future]
+            try:
+                result = future.result()
+                results.append(result)
+                # Small delay between requests to be rate limit friendly
+                time.sleep(0.1)
+            except Exception as exc:
+                print(f'Blueprint {bp.get("item_id", "unknown")} generated an exception: {exc}')
+
+    return results
 
 def send_email(subject, body):
     """Send an email alert."""
@@ -78,12 +160,12 @@ def fetch_public_esi(endpoint):
 
             if error_limit_reset:
                 wait_time = int(error_limit_reset) + 1  # Add 1 second buffer
-                print(f"Rate limited on public endpoint. Waiting {wait_time} seconds...")
+                print(f"[{datetime.now().strftime('%H:%M:%S')}] RATE LIMIT: Waiting {wait_time} seconds for public endpoint...")
                 time.sleep(wait_time)
                 continue
             else:
                 # Fallback: wait 60 seconds if no reset header
-                print("Rate limited on public endpoint. Waiting 60 seconds...")
+                print(f"[{datetime.now().strftime('%H:%M:%S')}] RATE LIMIT: Waiting 60 seconds for public endpoint (no reset header)...")
                 time.sleep(60)
                 continue
         elif response.status_code == 420:  # Error limited
@@ -92,11 +174,11 @@ def fetch_public_esi(endpoint):
 
             if error_limit_reset:
                 wait_time = int(error_limit_reset) + 1
-                print(f"Error limited on public endpoint. Waiting {wait_time} seconds...")
+                print(f"[{datetime.now().strftime('%H:%M:%S')}] ERROR LIMIT: Waiting {wait_time} seconds for public endpoint...")
                 time.sleep(wait_time)
                 continue
             else:
-                print("Error limited on public endpoint. Waiting 60 seconds...")
+                print(f"[{datetime.now().strftime('%H:%M:%S')}] ERROR LIMIT: Waiting 60 seconds for public endpoint...")
                 time.sleep(60)
                 continue
         else:
@@ -122,12 +204,12 @@ def fetch_esi(endpoint, char_id, access_token):
 
             if error_limit_reset:
                 wait_time = int(error_limit_reset) + 1  # Add 1 second buffer
-                print(f"Rate limited. Waiting {wait_time} seconds...")
+                print(f"[{datetime.now().strftime('%H:%M:%S')}] RATE LIMIT: Waiting {wait_time} seconds...")
                 time.sleep(wait_time)
                 continue
             else:
                 # Fallback: wait 60 seconds if no reset header
-                print("Rate limited. Waiting 60 seconds...")
+                print(f"[{datetime.now().strftime('%H:%M:%S')}] RATE LIMIT: Waiting 60 seconds (no reset header)...")
                 time.sleep(60)
                 continue
         elif response.status_code == 420:  # Error limited
@@ -136,11 +218,11 @@ def fetch_esi(endpoint, char_id, access_token):
 
             if error_limit_reset:
                 wait_time = int(error_limit_reset) + 1
-                print(f"Error limited. Waiting {wait_time} seconds...")
+                print(f"[{datetime.now().strftime('%H:%M:%S')}] ERROR LIMIT: Waiting {wait_time} seconds...")
                 time.sleep(wait_time)
                 continue
             else:
-                print("Error limited. Waiting 60 seconds...")
+                print(f"[{datetime.now().strftime('%H:%M:%S')}] ERROR LIMIT: Waiting 60 seconds...")
                 time.sleep(60)
                 continue
         else:
@@ -244,8 +326,17 @@ def fetch_character_planets(char_id, access_token):
     endpoint = f"/characters/{char_id}/planets/"
     return fetch_esi(endpoint, char_id, access_token)
 
-def update_blueprint_in_wp(item_id, blueprint_data, char_id, access_token):
+def update_blueprint_in_wp(item_id, blueprint_data, char_id, access_token, blueprint_cache=None, location_cache=None, structure_cache=None, failed_structures=None):
     """Update or create blueprint post in WordPress."""
+    if blueprint_cache is None:
+        blueprint_cache = load_blueprint_cache()
+    if location_cache is None:
+        location_cache = load_location_cache()
+    if structure_cache is None:
+        structure_cache = load_structure_cache()
+    if failed_structures is None:
+        failed_structures = load_failed_structures()
+
     slug = f"blueprint-{item_id}"
     # Check if post exists by slug
     response = requests.get(f"{WP_BASE_URL}/wp-json/wp/v2/eve_blueprint?slug={slug}", auth=get_wp_auth())
@@ -259,26 +350,53 @@ def update_blueprint_in_wp(item_id, blueprint_data, char_id, access_token):
     location_id = blueprint_data.get('location_id')
     quantity = blueprint_data.get('quantity', -1)
     
+    # Get blueprint name from cache or API
     if type_id:
-        type_data = fetch_public_esi(f"/universe/types/{type_id}")
-        if type_data:
-            type_name = type_data.get('name', f"Blueprint {item_id}").replace(" Blueprint", "").strip()
+        if str(type_id) in blueprint_cache:
+            type_name = blueprint_cache[str(type_id)]
         else:
-            type_name = f"Blueprint {item_id}".replace(" Blueprint", "").strip()
+            type_data = fetch_public_esi(f"/universe/types/{type_id}")
+            if type_data:
+                type_name = type_data.get('name', f"Blueprint {item_id}").replace(" Blueprint", "").strip()
+                blueprint_cache[str(type_id)] = type_name
+                save_blueprint_cache(blueprint_cache)
+            else:
+                type_name = f"Blueprint {item_id}".replace(" Blueprint", "").strip()
     else:
         type_name = f"Blueprint {item_id}".replace(" Blueprint", "").strip()
     
     # Determine BPO or BPC
     bp_type = "BPO" if quantity == -1 else "BPC"
     
-    # Get location name
+    # Get location name from cache or API
     if location_id:
-        if location_id >= 1000000000000:  # Structures (citadels, etc.) - try auth fetch
-            struct_data = fetch_esi(f"/universe/structures/{location_id}", char_id, access_token)
-            location_name = struct_data.get('name', f"Citadel {location_id}") if struct_data else f"Citadel {location_id}"
+        location_id_str = str(location_id)
+        if location_id_str in location_cache:
+            location_name = location_cache[location_id_str]
+        elif location_id >= 1000000000000:  # Structures (citadels, etc.)
+            if location_id_str in failed_structures:
+                location_name = f"Citadel {location_id}"
+            elif location_id_str in structure_cache:
+                location_name = structure_cache[location_id_str]
+            else:
+                # Try auth fetch
+                struct_data = fetch_esi(f"/universe/structures/{location_id}", char_id, access_token)
+                if struct_data:
+                    location_name = struct_data.get('name', f"Citadel {location_id}")
+                    structure_cache[location_id_str] = location_name
+                    save_structure_cache(structure_cache)
+                else:
+                    location_name = f"Citadel {location_id}"
+                    failed_structures[location_id_str] = True
+                    save_failed_structures(failed_structures)
         else:  # Stations - public
-            loc_data = fetch_public_esi(f"/universe/stations/{location_id}")
-            location_name = loc_data.get('name', f"Station {location_id}") if loc_data else f"Station {location_id}"
+            if location_id_str in location_cache:
+                location_name = location_cache[location_id_str]
+            else:
+                loc_data = fetch_public_esi(f"/universe/stations/{location_id}")
+                location_name = loc_data.get('name', f"Station {location_id}") if loc_data else f"Station {location_id}"
+                location_cache[location_id_str] = location_name
+                save_location_cache(location_cache)
     else:
         location_name = "Unknown Location"
     
@@ -304,6 +422,23 @@ def update_blueprint_in_wp(item_id, blueprint_data, char_id, access_token):
     }
 
     if existing_post:
+        # Check if data has changed before updating
+        existing_meta = existing_post.get('meta', {})
+        existing_title = existing_post.get('title', {}).get('rendered', '')
+        
+        # Compare key fields
+        needs_update = (
+            existing_title != title or
+            str(existing_meta.get('_eve_bp_location_name', '')) != str(location_name) or
+            str(existing_meta.get('_eve_bp_me', 0)) != str(me) or
+            str(existing_meta.get('_eve_bp_te', 0)) != str(te) or
+            str(existing_meta.get('_eve_bp_quantity', -1)) != str(quantity)
+        )
+        
+        if not needs_update:
+            print(f"Blueprint {item_id} unchanged, skipping update")
+            return
+        
         # Update existing
         post_id = existing_post['id']
         url = f"{WP_BASE_URL}/wp-json/wp/v2/eve_blueprint/{post_id}"
@@ -418,8 +553,17 @@ def extract_blueprints_from_contracts(contracts_data, owner_type, owner_id):
     
     return blueprints
 
-def update_blueprint_from_asset_in_wp(blueprint_data, access_token):
+def update_blueprint_from_asset_in_wp(blueprint_data, access_token, blueprint_cache=None, location_cache=None, structure_cache=None, failed_structures=None):
     """Update or create blueprint post from asset/industry/contract data."""
+    if blueprint_cache is None:
+        blueprint_cache = load_blueprint_cache()
+    if location_cache is None:
+        location_cache = load_location_cache()
+    if structure_cache is None:
+        structure_cache = load_structure_cache()
+    if failed_structures is None:
+        failed_structures = load_failed_structures()
+
     item_id = blueprint_data['item_id']
     owner_id = blueprint_data['owner_id']
     source = blueprint_data['source']
@@ -437,28 +581,54 @@ def update_blueprint_from_asset_in_wp(blueprint_data, access_token):
     location_id = blueprint_data.get('location_id')
     quantity = blueprint_data.get('quantity', -1)
     
+    # Get blueprint name from cache or API
     if type_id:
-        type_data = fetch_public_esi(f"/universe/types/{type_id}")
-        if type_data:
-            type_name = type_data.get('name', f"Blueprint {item_id}").replace(" Blueprint", "").strip()
+        if str(type_id) in blueprint_cache:
+            type_name = blueprint_cache[str(type_id)]
         else:
-            type_name = f"Blueprint {item_id}".replace(" Blueprint", "").strip()
+            type_data = fetch_public_esi(f"/universe/types/{type_id}")
+            if type_data:
+                type_name = type_data.get('name', f"Blueprint {item_id}").replace(" Blueprint", "").strip()
+                blueprint_cache[str(type_id)] = type_name
+                save_blueprint_cache(blueprint_cache)
+            else:
+                type_name = f"Blueprint {item_id}".replace(" Blueprint", "").strip()
     else:
         type_name = f"Blueprint {item_id}".replace(" Blueprint", "").strip()
     
     # Determine BPO or BPC
     bp_type = "BPO" if quantity == -1 else "BPC"
     
-    # Get location name
+    # Get location name from cache or API
     if location_id:
-        if location_id >= 1000000000000:  # Structures (citadels, etc.) - try auth fetch
-            # For corporation structures, we need a valid character ID for auth
-            # Use None for now - this will likely fail but won't crash
-            struct_data = fetch_esi(f"/universe/structures/{location_id}", None, access_token)
-            location_name = struct_data.get('name', f"Citadel {location_id}") if struct_data else f"Citadel {location_id}"
+        location_id_str = str(location_id)
+        if location_id_str in location_cache:
+            location_name = location_cache[location_id_str]
+        elif location_id >= 1000000000000:  # Structures (citadels, etc.)
+            if location_id_str in failed_structures:
+                location_name = f"Citadel {location_id}"
+            elif location_id_str in structure_cache:
+                location_name = structure_cache[location_id_str]
+            else:
+                # For corporation structures, we need a valid character ID for auth
+                # Use None for now - this will likely fail but won't crash
+                struct_data = fetch_esi(f"/universe/structures/{location_id}", None, access_token)
+                if struct_data:
+                    location_name = struct_data.get('name', f"Citadel {location_id}")
+                    structure_cache[location_id_str] = location_name
+                    save_structure_cache(structure_cache)
+                else:
+                    location_name = f"Citadel {location_id}"
+                    failed_structures[location_id_str] = True
+                    save_failed_structures(failed_structures)
         else:  # Stations - public
-            loc_data = fetch_public_esi(f"/universe/stations/{location_id}")
-            location_name = loc_data.get('name', f"Station {location_id}") if loc_data else f"Station {location_id}"
+            if location_id_str in location_cache:
+                location_name = location_cache[location_id_str]
+            else:
+                loc_data = fetch_public_esi(f"/universe/stations/{location_id}")
+                location_name = loc_data.get('name', f"Station {location_id}") if loc_data else f"Station {location_id}"
+                location_cache[location_id_str] = location_name
+                save_location_cache(location_cache)
     else:
         location_name = f"From {source.replace('_', ' ').title()}"
     
@@ -485,6 +655,24 @@ def update_blueprint_from_asset_in_wp(blueprint_data, access_token):
     }
 
     if existing_post:
+        # Check if data has changed before updating
+        existing_meta = existing_post.get('meta', {})
+        existing_title = existing_post.get('title', {}).get('rendered', '')
+        
+        # Compare key fields
+        needs_update = (
+            existing_title != title or
+            str(existing_meta.get('_eve_bp_location_name', '')) != str(location_name) or
+            str(existing_meta.get('_eve_bp_me', 0)) != str(me) or
+            str(existing_meta.get('_eve_bp_te', 0)) != str(te) or
+            str(existing_meta.get('_eve_bp_quantity', -1)) != str(quantity) or
+            str(existing_meta.get('_eve_bp_source', '')) != str(source)
+        )
+        
+        if not needs_update:
+            print(f"Blueprint from {source}: {item_id} unchanged, skipping update")
+            return
+        
         # Update existing
         post_id = existing_post['id']
         url = f"{WP_BASE_URL}/wp-json/wp/v2/eve_blueprint/{post_id}"
@@ -714,7 +902,7 @@ def cleanup_old_posts():
     """Clean up posts that don't match our criteria."""
     print("Starting cleanup of old posts...")
 
-    # Clean up contract posts (remove finished/deleted contracts)
+    # Clean up contract posts (delete finished/deleted contracts)
     response = requests.get(f"{WP_BASE_URL}/wp-json/wp/v2/eve_contract", auth=get_wp_auth(), params={'per_page': 100})
     if response.status_code == 200:
         contracts = response.json()
@@ -724,6 +912,11 @@ def cleanup_old_posts():
                 contract_id = contract.get('meta', {}).get('_eve_contract_id')
                 print(f"Deleting finished/deleted contract: {contract_id}")
                 delete_wp_post('eve_contract', contract['id'])
+            elif status == 'expired':
+                # List expired contracts for manual deletion
+                contract_id = contract.get('meta', {}).get('_eve_contract_id')
+                title = contract.get('title', {}).get('rendered', f'Contract {contract_id}')
+                print(f"EXPIRED CONTRACT TO DELETE MANUALLY: {title} (ID: {contract_id})")
 
     # Clean up blueprint posts (only keep those from No Mercy incorporated or characters)
     response = requests.get(f"{WP_BASE_URL}/wp-json/wp/v2/eve_blueprint", auth=get_wp_auth(), params={'per_page': 100})
@@ -821,6 +1014,12 @@ def fetch_market_orders(region_id, type_id):
 
 def main():
     """Main data fetching routine."""
+    # Load caches at the beginning
+    blueprint_cache = load_blueprint_cache()
+    location_cache = load_location_cache()
+    structure_cache = load_structure_cache()
+    failed_structures = load_failed_structures()
+
     # Clean up old posts first
     cleanup_old_posts()
 
@@ -898,8 +1097,17 @@ def main():
             corp_blueprints = fetch_corporation_blueprints(corp_id, successful_token)
             if corp_blueprints:
                 print(f"Corporation blueprints: {len(corp_blueprints)} items")
-                for bp in corp_blueprints:
-                    update_blueprint_in_wp(bp['item_id'], bp, successful_char_id, successful_token)
+                # Process blueprints in parallel
+                process_blueprints_parallel(
+                    corp_blueprints, 
+                    update_blueprint_in_wp, 
+                    successful_char_id, 
+                    successful_token,
+                    blueprint_cache,
+                    location_cache,
+                    structure_cache,
+                    failed_structures
+                )
             
             # From corporation assets
             corp_assets = fetch_corporation_assets(corp_id, successful_token)
@@ -907,8 +1115,16 @@ def main():
                 asset_blueprints = extract_blueprints_from_assets(corp_assets, 'corp', corp_id, successful_token)
                 if asset_blueprints:
                     print(f"Corporation asset blueprints: {len(asset_blueprints)} items")
-                    for bp in asset_blueprints:
-                        update_blueprint_from_asset_in_wp(bp, successful_token)
+                    # Process blueprints in parallel
+                    process_blueprints_parallel(
+                        asset_blueprints,
+                        update_blueprint_from_asset_in_wp,
+                        successful_token,
+                        blueprint_cache,
+                        location_cache,
+                        structure_cache,
+                        failed_structures
+                    )
             
             # From corporation industry jobs
             corp_industry_jobs = fetch_corporation_industry_jobs(corp_id, successful_token)
@@ -916,8 +1132,16 @@ def main():
                 job_blueprints = extract_blueprints_from_industry_jobs(corp_industry_jobs, 'corp', corp_id)
                 if job_blueprints:
                     print(f"Corporation industry job blueprints: {len(job_blueprints)} items")
-                    for bp in job_blueprints:
-                        update_blueprint_from_asset_in_wp(bp, successful_token)
+                    # Process blueprints in parallel
+                    process_blueprints_parallel(
+                        job_blueprints,
+                        update_blueprint_from_asset_in_wp,
+                        successful_token,
+                        blueprint_cache,
+                        location_cache,
+                        structure_cache,
+                        failed_structures
+                    )
             
             # From corporation contracts (blueprints already processed above)
             corp_contracts = fetch_corporation_contracts(corp_id, successful_token)
@@ -926,14 +1150,31 @@ def main():
                 contract_blueprints = extract_blueprints_from_contracts(corp_contracts, 'corp', corp_id)
                 if contract_blueprints:
                     print(f"Corporation contract blueprints: {len(contract_blueprints)} items")
-                    for bp in contract_blueprints:
-                        update_blueprint_from_asset_in_wp(bp, successful_token)
+                    # Process blueprints in parallel
+                    process_blueprints_parallel(
+                        contract_blueprints,
+                        update_blueprint_from_asset_in_wp,
+                        successful_token,
+                        blueprint_cache,
+                        location_cache,
+                        structure_cache,
+                        failed_structures
+                    )
                 
                 for contract in corp_contracts:
                     contract_status = contract.get('status', '')
                     if contract_status in ['finished', 'deleted']:
-                        print(f"Skipping finished/deleted corporation contract: {contract['contract_id']}")
+                        print(f"Deleting finished/deleted corporation contract: {contract['contract_id']}")
+                        # Find and delete the WordPress post
+                        slug = f"contract-{contract['contract_id']}"
+                        response = requests.get(f"{WP_BASE_URL}/wp-json/wp/v2/eve_contract?slug={slug}", auth=get_wp_auth())
+                        if response.status_code == 200:
+                            posts = response.json()
+                            if posts:
+                                delete_wp_post('eve_contract', posts[0]['id'])
                         continue
+                    elif contract_status == 'expired':
+                        print(f"EXPIRED CORPORATION CONTRACT TO DELETE MANUALLY: {contract['contract_id']}")
                     update_contract_in_wp(contract['contract_id'], contract, for_corp=True, entity_id=corp_id)
 
     # Now process individual character data (skills, blueprints, etc.)
@@ -957,8 +1198,17 @@ def main():
         blueprints = fetch_character_blueprints(char_id, access_token)
         if blueprints:
             print(f"Character blueprints: {len(blueprints)} items")
-            for bp in blueprints:
-                update_blueprint_in_wp(bp['item_id'], bp, char_id, access_token)
+            # Process blueprints in parallel
+            process_blueprints_parallel(
+                blueprints,
+                update_blueprint_in_wp,
+                char_id,
+                access_token,
+                blueprint_cache,
+                location_cache,
+                structure_cache,
+                failed_structures
+            )
         
         # From character assets
         char_assets = fetch_character_assets(char_id, access_token)
@@ -966,8 +1216,16 @@ def main():
             asset_blueprints = extract_blueprints_from_assets(char_assets, 'char', char_id, access_token)
             if asset_blueprints:
                 print(f"Character asset blueprints: {len(asset_blueprints)} items")
-                for bp in asset_blueprints:
-                    update_blueprint_from_asset_in_wp(bp, access_token)
+                # Process blueprints in parallel
+                process_blueprints_parallel(
+                    asset_blueprints,
+                    update_blueprint_from_asset_in_wp,
+                    access_token,
+                    blueprint_cache,
+                    location_cache,
+                    structure_cache,
+                    failed_structures
+                )
         
         # From character industry jobs (blueprints already processed above)
         jobs = fetch_character_industry_jobs(char_id, access_token)
@@ -976,8 +1234,16 @@ def main():
             job_blueprints = extract_blueprints_from_industry_jobs(jobs, 'char', char_id)
             if job_blueprints:
                 print(f"Character industry job blueprints: {len(job_blueprints)} items")
-                for bp in job_blueprints:
-                    update_blueprint_from_asset_in_wp(bp, access_token)
+                # Process blueprints in parallel
+                process_blueprints_parallel(
+                    job_blueprints,
+                    update_blueprint_from_asset_in_wp,
+                    access_token,
+                    blueprint_cache,
+                    location_cache,
+                    structure_cache,
+                    failed_structures
+                )
             
             # Check for job completions
             now = datetime.now(timezone.utc)
@@ -1028,14 +1294,31 @@ def main():
             contract_blueprints = extract_blueprints_from_contracts(char_contracts, 'char', char_id)
             if contract_blueprints:
                 print(f"Character contract blueprints: {len(contract_blueprints)} items")
-                for bp in contract_blueprints:
-                    update_blueprint_from_asset_in_wp(bp, access_token)
+                # Process blueprints in parallel
+                process_blueprints_parallel(
+                    contract_blueprints,
+                    update_blueprint_from_asset_in_wp,
+                    access_token,
+                    blueprint_cache,
+                    location_cache,
+                    structure_cache,
+                    failed_structures
+                )
             
             for contract in char_contracts:
                 contract_status = contract.get('status', '')
                 if contract_status in ['finished', 'deleted']:
-                    print(f"Skipping finished/deleted character contract: {contract['contract_id']}")
+                    print(f"Deleting finished/deleted character contract: {contract['contract_id']}")
+                    # Find and delete the WordPress post
+                    slug = f"contract-{contract['contract_id']}"
+                    response = requests.get(f"{WP_BASE_URL}/wp-json/wp/v2/eve_contract?slug={slug}", auth=get_wp_auth())
+                    if response.status_code == 200:
+                        posts = response.json()
+                        if posts:
+                            delete_wp_post('eve_contract', posts[0]['id'])
                     continue
+                elif contract_status == 'expired':
+                    print(f"EXPIRED CHARACTER CONTRACT TO DELETE MANUALLY: {contract['contract_id']}")
                 update_contract_in_wp(contract['contract_id'], contract, for_corp=False, entity_id=char_id)
 
 if __name__ == '__main__':
