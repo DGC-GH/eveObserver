@@ -7,8 +7,10 @@ Fetches data from EVE ESI API and stores in WordPress database via REST API.
 import os
 import json
 import requests
-from datetime import datetime
+from datetime import datetime, timedelta
 from dotenv import load_dotenv
+import smtplib
+from email.mime.text import MIMEText
 
 load_dotenv()
 
@@ -16,6 +18,14 @@ load_dotenv()
 WP_BASE_URL = os.getenv('WP_URL', 'https://your-wordpress-site.com')
 WP_USERNAME = os.getenv('WP_USERNAME')
 WP_APP_PASSWORD = os.getenv('WP_APP_PASSWORD')
+
+# Email configuration
+EMAIL_SMTP_SERVER = os.getenv('EMAIL_SMTP_SERVER')
+EMAIL_SMTP_PORT = int(os.getenv('EMAIL_SMTP_PORT', 587))
+EMAIL_USERNAME = os.getenv('EMAIL_USERNAME')
+EMAIL_PASSWORD = os.getenv('EMAIL_PASSWORD')
+EMAIL_FROM = os.getenv('EMAIL_FROM')
+EMAIL_TO = os.getenv('EMAIL_TO')
 
 ESI_BASE_URL = 'https://esi.evetech.net/latest'
 
@@ -29,9 +39,26 @@ def load_tokens():
             return json.load(f)
     return {}
 
-def get_wp_auth():
-    """Get WordPress authentication tuple."""
-    return (WP_USERNAME, WP_APP_PASSWORD)
+def send_email(subject, body):
+    """Send an email alert."""
+    if not all([EMAIL_SMTP_SERVER, EMAIL_USERNAME, EMAIL_PASSWORD, EMAIL_FROM, EMAIL_TO]):
+        print("Email configuration incomplete, skipping alert.")
+        return
+
+    msg = MIMEText(body)
+    msg['Subject'] = subject
+    msg['From'] = EMAIL_FROM
+    msg['To'] = EMAIL_TO
+
+    try:
+        server = smtplib.SMTP(EMAIL_SMTP_SERVER, EMAIL_SMTP_PORT)
+        server.starttls()
+        server.login(EMAIL_USERNAME, EMAIL_PASSWORD)
+        server.sendmail(EMAIL_FROM, EMAIL_TO, msg.as_string())
+        server.quit()
+        print(f"Alert email sent: {subject}")
+    except Exception as e:
+        print(f"Failed to send email: {e}")
 
 def fetch_esi(endpoint, char_id, access_token):
     """Fetch data from ESI API."""
@@ -114,10 +141,17 @@ def fetch_corporation_contracts(corp_id, access_token):
     endpoint = f"/corporations/{corp_id}/contracts/"
     return fetch_esi(endpoint, corp_id, access_token)
 
-def fetch_corporation_assets(corp_id, access_token):
-    """Fetch corporation assets."""
-    endpoint = f"/corporations/{corp_id}/assets/"
-    return fetch_esi(endpoint, corp_id, access_token)
+def fetch_market_orders(region_id, type_id):
+    """Fetch market orders for a type in a region."""
+    endpoint = f"/markets/{region_id}/orders/?type_id={type_id}"
+    # Note: market orders don't require auth, but rate limited
+    url = f"{ESI_BASE_URL}{endpoint}"
+    response = requests.get(url)
+    if response.status_code == 200:
+        return response.json()
+    else:
+        print(f"ESI API error for market orders: {response.status_code} - {response.text}")
+        return None
 
 def main():
     """Main data fetching routine."""
@@ -152,6 +186,21 @@ def main():
         jobs = fetch_character_industry_jobs(char_id, access_token)
         if jobs:
             print(f"Industry jobs for {char_name}: {len(jobs)} active")
+            # Check for job completions
+            now = datetime.utcnow()
+            upcoming_completions = []
+            for job in jobs:
+                if 'end_date' in job:
+                    end_date = datetime.fromisoformat(job['end_date'].replace('Z', '+00:00'))
+                    if now <= end_date <= now + timedelta(hours=24):
+                        upcoming_completions.append(job)
+
+            if upcoming_completions:
+                subject = f"EVE Alert: {len(upcoming_completions)} industry jobs ending soon for {char_name}"
+                body = f"The following jobs will complete within 24 hours:\n\n"
+                for job in upcoming_completions:
+                    body += f"- Job ID {job['job_id']}: {job.get('activity_id', 'Unknown')} ending {job['end_date']}\n"
+                send_email(subject, body)
 
         # Fetch planets
         planets = fetch_character_planets(char_id, access_token)
@@ -172,6 +221,12 @@ def main():
             corp_assets = fetch_corporation_assets(corp_id, access_token)
             if corp_assets:
                 print(f"Corporation assets: {len(corp_assets)} items")
+
+    # Fetch sample market data
+    print("Fetching sample market data...")
+    market_data = fetch_market_orders(10000002, 34)  # Tritanium in The Forge
+    if market_data:
+        print(f"Market orders for Tritanium: {len(market_data)} orders")
 
     print("Data fetch complete.")
 

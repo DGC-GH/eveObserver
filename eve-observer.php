@@ -25,6 +25,7 @@ class EVE_Observer {
         // Hook into WordPress
         add_action('init', array($this, 'init'));
         add_action('admin_menu', array($this, 'add_admin_menu'));
+        add_action('admin_enqueue_scripts', array($this, 'enqueue_admin_scripts'));
         register_activation_hook(__FILE__, array($this, 'activate'));
         register_deactivation_hook(__FILE__, array($this, 'deactivate'));
     }
@@ -34,16 +35,12 @@ class EVE_Observer {
         $this->register_custom_post_types();
     }
 
-    public function add_admin_menu() {
-        add_menu_page(
-            __('EVE Observer Dashboard', 'eve-observer'),
-            __('EVE Observer', 'eve-observer'),
-            'manage_options',
-            'eve-observer-dashboard',
-            array($this, 'display_dashboard'),
-            'dashicons-chart-area',
-            30
-        );
+    public function enqueue_admin_scripts($hook) {
+        if ($hook !== 'toplevel_page_eve-observer-dashboard') {
+            return;
+        }
+        wp_enqueue_script('chart-js', 'https://cdn.jsdelivr.net/npm/chart.js', array(), '4.4.0', true);
+        wp_enqueue_script('eve-observer-dashboard', plugin_dir_url(__FILE__) . 'js/dashboard.js', array('chart-js'), '1.0.0', true);
     }
 
     public function display_dashboard() {
@@ -54,6 +51,12 @@ class EVE_Observer {
         <div class="wrap">
             <h1><?php _e('EVE Observer Dashboard', 'eve-observer'); ?></h1>
             <p><?php _e('Welcome to the EVE Observer dashboard. Here you can view aggregated data from your EVE Online characters.', 'eve-observer'); ?></p>
+
+            <!-- Chart Container -->
+            <div style="width: 80%; margin: 20px auto;">
+                <canvas id="eveChart"></canvas>
+            </div>
+
             <!-- Placeholder for character data -->
             <h2><?php _e('Characters', 'eve-observer'); ?></h2>
             <p><?php _e('Character data will be displayed here once integrated with ESI API.', 'eve-observer'); ?></p>
@@ -105,6 +108,177 @@ class EVE_Observer {
             'public' => true,
             'supports' => array('title', 'editor', 'custom-fields'),
             'show_in_rest' => true,
+        ));
+
+        // Register ACF field groups if ACF is active
+        $this->register_acf_field_groups();
+    }
+
+    private function register_acf_field_groups() {
+        if (!function_exists('acf_add_local_field_group')) {
+            return;
+        }
+
+        // Character Fields
+        acf_add_local_field_group(array(
+            'key' => 'group_eve_character',
+            'title' => 'Character Information',
+            'fields' => array(
+                array(
+                    'key' => 'field_char_id',
+                    'label' => 'Character ID',
+                    'name' => '_eve_char_id',
+                    'type' => 'text',
+                ),
+                array(
+                    'key' => 'field_corp_id',
+                    'label' => 'Corporation ID',
+                    'name' => '_eve_corporation_id',
+                    'type' => 'text',
+                ),
+                array(
+                    'key' => 'field_alliance_id',
+                    'label' => 'Alliance ID',
+                    'name' => '_eve_alliance_id',
+                    'type' => 'text',
+                ),
+                array(
+                    'key' => 'field_birthday',
+                    'label' => 'Birthday',
+                    'name' => '_eve_birthday',
+                    'type' => 'date_time_picker',
+                ),
+                array(
+                    'key' => 'field_security_status',
+                    'label' => 'Security Status',
+                    'name' => '_eve_security_status',
+                    'type' => 'number',
+                    'step' => 0.01,
+                ),
+                array(
+                    'key' => 'field_total_sp',
+                    'label' => 'Total Skill Points',
+                    'name' => '_eve_total_sp',
+                    'type' => 'number',
+                ),
+            ),
+            'location' => array(
+                array(
+                    array(
+                        'param' => 'post_type',
+                        'operator' => '==',
+                        'value' => 'eve_character',
+                    ),
+                ),
+            ),
+        ));
+
+        // Blueprint Fields
+        acf_add_local_field_group(array(
+            'key' => 'group_eve_blueprint',
+            'title' => 'Blueprint Information',
+            'fields' => array(
+                array(
+                    'key' => 'field_bp_type_id',
+                    'label' => 'Type ID',
+                    'name' => '_eve_bp_type_id',
+                    'type' => 'text',
+                ),
+                array(
+                    'key' => 'field_bp_location_id',
+                    'label' => 'Location ID',
+                    'name' => '_eve_bp_location_id',
+                    'type' => 'text',
+                ),
+                array(
+                    'key' => 'field_bp_quantity',
+                    'label' => 'Quantity',
+                    'name' => '_eve_bp_quantity',
+                    'type' => 'number',
+                ),
+                array(
+                    'key' => 'field_bp_me',
+                    'label' => 'Material Efficiency',
+                    'name' => '_eve_bp_me',
+                    'type' => 'number',
+                ),
+                array(
+                    'key' => 'field_bp_te',
+                    'label' => 'Time Efficiency',
+                    'name' => '_eve_bp_te',
+                    'type' => 'number',
+                ),
+                array(
+                    'key' => 'field_bp_runs',
+                    'label' => 'Runs',
+                    'name' => '_eve_bp_runs',
+                    'type' => 'number',
+                ),
+            ),
+            'location' => array(
+                array(
+                    array(
+                        'param' => 'post_type',
+                        'operator' => '==',
+                        'value' => 'eve_blueprint',
+                    ),
+                ),
+            ),
+        ));
+
+        // Planet Fields
+        acf_add_local_field_group(array(
+            'key' => 'group_eve_planet',
+            'title' => 'Planet Information',
+            'fields' => array(
+                array(
+                    'key' => 'field_planet_type',
+                    'label' => 'Planet Type',
+                    'name' => '_eve_planet_type',
+                    'type' => 'text',
+                ),
+                array(
+                    'key' => 'field_planet_solar_system_id',
+                    'label' => 'Solar System ID',
+                    'name' => '_eve_planet_solar_system_id',
+                    'type' => 'text',
+                ),
+                array(
+                    'key' => 'field_planet_upgrade_level',
+                    'label' => 'Upgrade Level',
+                    'name' => '_eve_planet_upgrade_level',
+                    'type' => 'number',
+                ),
+                array(
+                    'key' => 'field_planet_pins',
+                    'label' => 'Extractors/Pins',
+                    'name' => '_eve_planet_pins',
+                    'type' => 'repeater',
+                    'sub_fields' => array(
+                        array(
+                            'key' => 'field_pin_type_id',
+                            'label' => 'Pin Type ID',
+                            'name' => 'pin_type_id',
+                            'type' => 'text',
+                        ),
+                        array(
+                            'key' => 'field_pin_expiry_time',
+                            'label' => 'Expiry Time',
+                            'name' => 'expiry_time',
+                            'type' => 'date_time_picker',
+                        ),
+                    ),
+                ),
+            ),
+            'location' => array(
+                array(
+                    array(
+                        'param' => 'post_type',
+                        'operator' => '==',
+                        'value' => 'eve_planet',
+                    ),
+                ),
+            ),
         ));
     }
 }
