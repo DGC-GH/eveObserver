@@ -452,7 +452,9 @@ def update_blueprint_from_asset_in_wp(blueprint_data, access_token):
     # Get location name
     if location_id:
         if location_id >= 1000000000000:  # Structures (citadels, etc.) - try auth fetch
-            struct_data = fetch_esi(f"/universe/structures/{location_id}", owner_id if source.startswith('char') else None, access_token)
+            # For corporation structures, we need a valid character ID for auth
+            # Use None for now - this will likely fail but won't crash
+            struct_data = fetch_esi(f"/universe/structures/{location_id}", None, access_token)
             location_name = struct_data.get('name', f"Citadel {location_id}") if struct_data else f"Citadel {location_id}"
         else:  # Stations - public
             loc_data = fetch_public_esi(f"/universe/stations/{location_id}")
@@ -664,11 +666,14 @@ def update_contract_in_wp(contract_id, contract_data, for_corp=False, entity_id=
             '_eve_contract_volume': contract_data.get('volume'),
             '_eve_contract_days_to_complete': contract_data.get('days_to_complete'),
             '_eve_contract_title': contract_data.get('title'),
-            '_eve_contract_for_corp': for_corp,
+            '_eve_contract_for_corp': str(for_corp).lower(),
             '_eve_contract_entity_id': entity_id,
             '_eve_last_updated': datetime.now(timezone.utc).isoformat()
         }
     }
+
+    # Remove null values from meta to avoid WordPress validation errors
+    post_data['meta'] = {k: v for k, v in post_data['meta'].items() if v is not None}
 
     # Add items data if available
     if 'items' in contract_data:
@@ -689,10 +694,64 @@ def update_contract_in_wp(contract_id, contract_data, for_corp=False, entity_id=
     else:
         print(f"Failed to update contract {contract_id}: {response.status_code} - {response.text}")
 
+def delete_wp_post(post_type, post_id):
+    """Delete a post from WordPress."""
+    url = f"{WP_BASE_URL}/wp-json/wp/v2/{post_type}/{post_id}"
+    response = requests.delete(url, auth=get_wp_auth())
+    if response.status_code in [200, 204]:
+        print(f"Deleted {post_type} post: {post_id}")
+        return True
+    else:
+        print(f"Failed to delete {post_type} post {post_id}: {response.status_code} - {response.text}")
+        return False
+
 def save_tokens(tokens):
     """Save tokens to file."""
     with open(TOKENS_FILE, 'w') as f:
         json.dump(tokens, f)
+
+def cleanup_old_posts():
+    """Clean up posts that don't match our criteria."""
+    print("Starting cleanup of old posts...")
+
+    # Clean up contract posts (remove finished/deleted contracts)
+    response = requests.get(f"{WP_BASE_URL}/wp-json/wp/v2/eve_contract", auth=get_wp_auth(), params={'per_page': 100})
+    if response.status_code == 200:
+        contracts = response.json()
+        for contract in contracts:
+            status = contract.get('meta', {}).get('_eve_contract_status')
+            if status in ['finished', 'deleted']:
+                contract_id = contract.get('meta', {}).get('_eve_contract_id')
+                print(f"Deleting finished/deleted contract: {contract_id}")
+                delete_wp_post('eve_contract', contract['id'])
+
+    # Clean up blueprint posts (only keep those from No Mercy incorporated or characters)
+    response = requests.get(f"{WP_BASE_URL}/wp-json/wp/v2/eve_blueprint", auth=get_wp_auth(), params={'per_page': 100})
+    if response.status_code == 200:
+        blueprints = response.json()
+        for bp in blueprints:
+            owner_id = bp.get('meta', {}).get('_eve_bp_owner_id')
+            source = bp.get('meta', {}).get('_eve_bp_source', '')
+            # If it's from a corporation, check if it's No Mercy incorporated
+            if owner_id and source.startswith('corp_'):
+                # We need to check if this corp_id belongs to No Mercy incorporated
+                # For now, we'll delete blueprints that aren't from our known corporation
+                # This is a simplified approach - in production you'd want to cross-reference
+                corp_response = requests.get(f"{WP_BASE_URL}/wp-json/wp/v2/eve_corporation?meta_key=_eve_corp_id&meta_value={owner_id}", auth=get_wp_auth())
+                if corp_response.status_code == 200:
+                    corp_posts = corp_response.json()
+                    if not corp_posts:  # Corporation not found in our records
+                        bp_id = bp.get('meta', {}).get('_eve_bp_item_id')
+                        print(f"Deleting blueprint from unknown corporation: {bp_id}")
+                        delete_wp_post('eve_blueprint', bp['id'])
+                    else:
+                        corp_name = corp_posts[0].get('title', {}).get('rendered', '')
+                        if corp_name != 'No Mercy incorporated':
+                            bp_id = bp.get('meta', {}).get('_eve_bp_item_id')
+                            print(f"Deleting blueprint from {corp_name}: {bp_id}")
+                            delete_wp_post('eve_blueprint', bp['id'])
+
+    print("Cleanup completed.")
 
 def refresh_token(refresh_token):
     """Refresh an access token."""
@@ -762,6 +821,9 @@ def fetch_market_orders(region_id, type_id):
 
 def main():
     """Main data fetching routine."""
+    # Clean up old posts first
+    cleanup_old_posts()
+
     tokens = load_tokens()
     if not tokens:
         print("No authorized characters found. Run 'python esi_oauth.py authorize' first.")
@@ -806,6 +868,7 @@ def main():
         corp_data = None
         successful_token = None
         successful_char_name = None
+        successful_char_id = None
 
         for char_id, access_token, char_name in members:
             print(f"Trying to fetch corporation data for corp {corp_id} using {char_name}'s token...")
@@ -813,12 +876,18 @@ def main():
             if corp_data:
                 successful_token = access_token
                 successful_char_name = char_name
+                successful_char_id = char_id
                 print(f"Successfully fetched corporation data using {char_name}'s token")
                 break
             else:
                 print(f"Failed to fetch corporation data using {char_name}'s token (likely no access)")
 
         if corp_data:
+            corp_name = corp_data.get('name', '')
+            if corp_name.lower() != 'no mercy incorporated':
+                print(f"Skipping corporation: {corp_name} (only processing No Mercy incorporated)")
+                continue
+
             update_corporation_in_wp(corp_id, corp_data)
             processed_corps.add(corp_id)
 
@@ -830,7 +899,7 @@ def main():
             if corp_blueprints:
                 print(f"Corporation blueprints: {len(corp_blueprints)} items")
                 for bp in corp_blueprints:
-                    update_blueprint_in_wp(bp['item_id'], bp, successful_char_name, successful_token)
+                    update_blueprint_in_wp(bp['item_id'], bp, successful_char_id, successful_token)
             
             # From corporation assets
             corp_assets = fetch_corporation_assets(corp_id, successful_token)
@@ -861,6 +930,10 @@ def main():
                         update_blueprint_from_asset_in_wp(bp, successful_token)
                 
                 for contract in corp_contracts:
+                    contract_status = contract.get('status', '')
+                    if contract_status in ['finished', 'deleted']:
+                        print(f"Skipping finished/deleted corporation contract: {contract['contract_id']}")
+                        continue
                     update_contract_in_wp(contract['contract_id'], contract, for_corp=True, entity_id=corp_id)
 
     # Now process individual character data (skills, blueprints, etc.)
@@ -959,6 +1032,10 @@ def main():
                     update_blueprint_from_asset_in_wp(bp, access_token)
             
             for contract in char_contracts:
+                contract_status = contract.get('status', '')
+                if contract_status in ['finished', 'deleted']:
+                    print(f"Skipping finished/deleted character contract: {contract['contract_id']}")
+                    continue
                 update_contract_in_wp(contract['contract_id'], contract, for_corp=False, entity_id=char_id)
 
 if __name__ == '__main__':
