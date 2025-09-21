@@ -55,6 +55,11 @@ CLIENT_ID = os.getenv('ESI_CLIENT_ID', 'your_client_id_here')
 CLIENT_SECRET = os.getenv('ESI_CLIENT_SECRET', 'your_client_secret_here')
 REDIRECT_URI = os.getenv('ESI_REDIRECT_URI', 'http://localhost:8080/callback')
 
+if CLIENT_ID == 'your_client_id_here' or CLIENT_SECRET == 'your_client_secret_here':
+    print("ERROR: ESI_CLIENT_ID and ESI_CLIENT_SECRET must be set in .env file")
+    print("Get them from https://developers.eveonline.com/")
+    sys.exit(1)
+
 # File to store tokens
 TOKENS_FILE = 'esi_tokens.json'
 

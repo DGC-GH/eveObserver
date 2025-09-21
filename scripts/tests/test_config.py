@@ -33,7 +33,7 @@ class TestConfig:
         """Test that default values are set correctly."""
         assert ESI_BASE_URL == 'https://esi.evetech.net/latest'
         assert ESI_TIMEOUT == 30
-        assert ESI_MAX_WORKERS == 3
+        assert ESI_MAX_WORKERS == 10
         assert WP_PER_PAGE == 100
         assert LOG_LEVEL == 'INFO'
         assert LOG_FILE == 'eve_observer.log'

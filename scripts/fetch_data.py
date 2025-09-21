@@ -17,6 +17,9 @@ from esi_oauth import save_tokens
 
 load_dotenv()
 
+# Create a requests session for connection reuse
+session = requests.Session()
+
 # Configure logging
 logging.basicConfig(
     level=getattr(logging, LOG_LEVEL),
@@ -146,7 +149,7 @@ def process_blueprints_parallel(blueprints, update_func, wp_post_id_cache, *args
                 logger.info(f"Processed blueprint {processed_count}/{total_blueprints}: {item_id}")
 
                 # Small delay between requests to be rate limit friendly
-                time.sleep(0.1)
+                time.sleep(0.05)
 
             except TimeoutError:
                 logger.error(f"Blueprint {item_id} timed out after 5 minutes - skipping")
@@ -191,7 +194,7 @@ def fetch_public_esi(endpoint, max_retries=ESI_MAX_RETRIES):
 
     for attempt in range(max_retries):
         try:
-            response = requests.get(url, timeout=ESI_TIMEOUT)
+            response = session.get(url, timeout=ESI_TIMEOUT)
 
             if response.status_code == 200:
                 return response.json()
@@ -270,7 +273,7 @@ def fetch_esi(endpoint, char_id, access_token, max_retries=ESI_MAX_RETRIES):
 
     for attempt in range(max_retries):
         try:
-            response = requests.get(url, headers=headers, timeout=ESI_TIMEOUT)
+            response = session.get(url, headers=headers, timeout=ESI_TIMEOUT)
 
             if response.status_code == 200:
                 return response.json()
@@ -1726,7 +1729,7 @@ def fetch_type_icon(type_id, size=512):
         icon_url = f"https://images.evetech.net/types/{type_id}/{variation}?size={size}"
         # Test if the URL exists by making a HEAD request
         try:
-            response = requests.head(icon_url, timeout=5)
+            response = session.head(icon_url, timeout=5)
             if response.status_code == 200:
                 return icon_url
         except:

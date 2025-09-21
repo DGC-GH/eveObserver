@@ -12,7 +12,7 @@ load_dotenv()
 ESI_BASE_URL = 'https://esi.evetech.net/latest'
 ESI_TIMEOUT = int(os.getenv('ESI_TIMEOUT', 30))
 ESI_MAX_RETRIES = int(os.getenv('ESI_MAX_RETRIES', 3))
-ESI_MAX_WORKERS = int(os.getenv('ESI_MAX_WORKERS', 3))
+ESI_MAX_WORKERS = int(os.getenv('ESI_MAX_WORKERS', 10))
 
 # WordPress Configuration
 WP_BASE_URL = os.getenv('WP_URL')
