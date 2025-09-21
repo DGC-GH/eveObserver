@@ -1165,6 +1165,19 @@ class EVE_Observer {
         $columns['outbid'] = 'outbid';
         return $columns;
     }
+
+    public function sort_outbid_column($query) {
+        if (!is_admin() || !$query->is_main_query()) {
+            return;
+        }
+        
+        if ($query->get('orderby') === 'outbid') {
+            $query->set('meta_key', '_eve_contract_outbid');
+            $query->set('orderby', 'meta_value');
+            // Sort 'true' before 'false' (outbid contracts first)
+            $query->set('meta_type', 'CHAR');
+        }
+    }
 }
 
 // Initialize the plugin
