@@ -69,9 +69,58 @@ class EVE_Observer {
                 <canvas id="eveChart"></canvas>
             </div>
 
-            <!-- Placeholder for character data -->
+            <!-- Characters -->
             <h2><?php _e('Characters', 'eve-observer'); ?></h2>
-            <p><?php _e('Character data will be displayed here once integrated with ESI API.', 'eve-observer'); ?></p>
+            <?php
+            $characters = get_posts(array('post_type' => 'eve_character', 'numberposts' => -1));
+            if ($characters) {
+                echo '<ul>';
+                foreach ($characters as $char) {
+                    $char_id = get_post_meta($char->ID, '_eve_char_id', true);
+                    $corp_id = get_post_meta($char->ID, '_eve_corporation_id', true);
+                    echo '<li>' . esc_html($char->post_title) . ' (ID: ' . esc_html($char_id) . ', Corp: ' . esc_html($corp_id) . ')</li>';
+                }
+                echo '</ul>';
+            } else {
+                echo '<p>No character data available.</p>';
+            }
+            ?>
+
+            <!-- Blueprints -->
+            <h2><?php _e('Blueprints', 'eve-observer'); ?></h2>
+            <?php
+            $blueprints = get_posts(array('post_type' => 'eve_blueprint', 'numberposts' => -1));
+            if ($blueprints) {
+                echo '<p>Total Blueprints: ' . count($blueprints) . '</p>';
+                echo '<ul>';
+                foreach ($blueprints as $bp) {
+                    $type_id = get_post_meta($bp->ID, '_eve_bp_type_id', true);
+                    $me = get_post_meta($bp->ID, '_eve_bp_me', true);
+                    $te = get_post_meta($bp->ID, '_eve_bp_te', true);
+                    echo '<li>Blueprint ' . esc_html($type_id) . ' (ME: ' . esc_html($me) . ', TE: ' . esc_html($te) . ')</li>';
+                }
+                echo '</ul>';
+            } else {
+                echo '<p>No blueprint data available.</p>';
+            }
+            ?>
+
+            <!-- Planets -->
+            <h2><?php _e('Planets', 'eve-observer'); ?></h2>
+            <?php
+            $planets = get_posts(array('post_type' => 'eve_planet', 'numberposts' => -1));
+            if ($planets) {
+                echo '<p>Total Planets: ' . count($planets) . '</p>';
+                echo '<ul>';
+                foreach ($planets as $planet) {
+                    $planet_type = get_post_meta($planet->ID, '_eve_planet_type', true);
+                    echo '<li>' . esc_html($planet->post_title) . ' (Type: ' . esc_html($planet_type) . ')</li>';
+                }
+                echo '</ul>';
+            } else {
+                echo '<p>No planet data available.</p>';
+            }
+            ?>
         </div>
         <?php
     }
@@ -98,6 +147,7 @@ class EVE_Observer {
             'public' => true,
             'supports' => array('title', 'editor', 'custom-fields'),
             'show_in_rest' => true,
+            'show_in_menu' => 'eve-observer-dashboard',
         ));
 
         // Blueprint CPT
@@ -109,6 +159,7 @@ class EVE_Observer {
             'public' => true,
             'supports' => array('title', 'editor', 'custom-fields'),
             'show_in_rest' => true,
+            'show_in_menu' => 'eve-observer-dashboard',
         ));
 
         // Planet CPT
@@ -120,6 +171,7 @@ class EVE_Observer {
             'public' => true,
             'supports' => array('title', 'editor', 'custom-fields'),
             'show_in_rest' => true,
+            'show_in_menu' => 'eve-observer-dashboard',
         ));
 
         // Register ACF field groups if ACF is active

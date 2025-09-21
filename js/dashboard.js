@@ -1,22 +1,56 @@
 // EVE Observer Dashboard JavaScript
 document.addEventListener('DOMContentLoaded', function() {
-    loadPIDashboard();
+    loadDashboardData();
 });
 
-function loadPIDashboard() {
-    fetch('/wp-json/wp/v2/eve_planet')
-        .then(response => response.json())
-        .then(planets => {
-            displayPIDashboard(planets);
-        })
-        .catch(error => {
-            console.error('Error loading planet data:', error);
-            document.getElementById('eveChart').innerHTML = '<p>Error loading PI data.</p>';
-        });
+function loadDashboardData() {
+    Promise.all([
+        fetch('/wp-json/wp/v2/eve_character').then(r => r.json()),
+        fetch('/wp-json/wp/v2/eve_blueprint').then(r => r.json()),
+        fetch('/wp-json/wp/v2/eve_planet').then(r => r.json())
+    ]).then(([characters, blueprints, planets]) => {
+        displayChart(characters.length, blueprints.length, planets.length);
+        loadPIDashboard(planets);
+    }).catch(error => {
+        console.error('Error loading data:', error);
+    });
 }
 
-function displayPIDashboard(planets) {
-    const container = document.getElementById('eveChart');
+function displayChart(charCount, bpCount, planetCount) {
+    const ctx = document.getElementById('eveChart').getContext('2d');
+    const eveChart = new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: ['Characters', 'Blueprints', 'Planets'],
+            datasets: [{
+                label: 'Count',
+                data: [charCount, bpCount, planetCount],
+                backgroundColor: [
+                    'rgba(255, 99, 132, 0.2)',
+                    'rgba(54, 162, 235, 0.2)',
+                    'rgba(255, 206, 86, 0.2)'
+                ],
+                borderColor: [
+                    'rgba(255, 99, 132, 1)',
+                    'rgba(54, 162, 235, 1)',
+                    'rgba(255, 206, 86, 1)'
+                ],
+                borderWidth: 1
+            }]
+        },
+        options: {
+            scales: {
+                y: {
+                    beginAtZero: true
+                }
+            }
+        }
+    });
+}
+
+function loadPIDashboard(planets) {
+    const container = document.createElement('div');
+    container.id = 'pi-dashboard';
     container.innerHTML = '<h3>Planet Interaction Dashboard</h3>';
 
     if (planets.length === 0) {
@@ -56,6 +90,8 @@ function displayPIDashboard(planets) {
 
         container.appendChild(planetDiv);
     });
+
+    document.querySelector('.wrap').appendChild(container);
 }
 
 function startTimer(expiryTime, elementId) {
