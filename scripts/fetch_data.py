@@ -1548,6 +1548,11 @@ def process_corporation_contracts(corp_id, access_token, corp_data):
     if corp_contracts:
         logger.info(f"Corporation contracts for {corp_data.get('name', corp_id)}: {len(corp_contracts)} items")
         for contract in corp_contracts:
+            # Skip private contracts (those assigned to specific entities)
+            if contract.get('assignee_id') is not None:
+                logger.info(f"Skipping private contract: {contract['contract_id']}")
+                continue
+            
             contract_status = contract.get('status', '')
             if contract_status in ['finished', 'deleted']:
                 # Skip finished/deleted contracts to improve performance
@@ -1876,9 +1881,14 @@ def cleanup_old_posts(allowed_corp_ids, allowed_issuer_ids):
             issuer_corp_id = meta.get('_eve_contract_issuer_corp_id')
             issuer_id = meta.get('_eve_contract_issuer_id')
             contract_id = meta.get('_eve_contract_id')
+            assignee_id = meta.get('_eve_contract_assignee_id')
             
             should_delete = False
-            if issuer_corp_id and int(issuer_corp_id) not in allowed_corp_ids and issuer_id and int(issuer_id) not in allowed_issuer_ids:
+            if assignee_id is not None:
+                # Delete private contracts
+                should_delete = True
+                logger.info(f"Deleting private contract: {contract_id}")
+            elif issuer_corp_id and int(issuer_corp_id) not in allowed_corp_ids and issuer_id and int(issuer_id) not in allowed_issuer_ids:
                 should_delete = True
                 logger.info(f"Deleting contract from unauthorized issuer: {contract_id}")
             elif status == 'expired':
