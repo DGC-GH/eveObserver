@@ -1119,16 +1119,15 @@ class EVE_Observer {
             
             // Build EVE chat link for clipboard copying
             $eve_chat_link = '';
-            if (!empty($contract_id) && !empty($start_location_id) && !empty($contract_title)) {
+            if (!empty($contract_id) && !empty($start_location_id)) {
                 $eve_chat_link = "contract:{$start_location_id}//{$contract_id}";
             }
             
             echo "<div style='display: flex; align-items: center; gap: 8px;'>";
             
-            // Make status always clickable for clipboard copy
-            $copy_text = !empty($eve_chat_link) ? $eve_chat_link : $contract_id;
-            if (!empty($copy_text)) {
-                echo "<span style='color: " . esc_attr($color) . "; font-weight: bold; cursor: pointer;' onclick='copyToClipboard(\"" . esc_js($copy_text) . "\")' title='Click to copy " . (!empty($eve_chat_link) ? "EVE chat link" : "contract ID") . "'>" . esc_html($icon . ' ' . $status_text) . "</span>";
+            // Make status clickable for clipboard copy if we have the data
+            if (!empty($eve_chat_link)) {
+                echo "<span style='color: " . esc_attr($color) . "; font-weight: bold; cursor: pointer;' onclick='copyToClipboard(\"" . esc_js($eve_chat_link) . "\")' title='Click to copy EVE chat link'>" . esc_html($icon . ' ' . $status_text) . "</span>";
             } else {
                 echo "<span style='color: " . esc_attr($color) . "; font-weight: bold;'>" . esc_html($icon . ' ' . $status_text) . "</span>";
             }
@@ -1136,11 +1135,6 @@ class EVE_Observer {
             if ($is_outbid && !empty($market_price) && is_numeric($market_price)) {
                 $formatted_price = number_format((float)$market_price, 2);
                 echo "<span style='color: #666; font-size: 12px; cursor: pointer;' onclick='copyToClipboard(\"" . esc_js($formatted_price) . "\")' title='Click to copy suggested price'>Suggested: " . esc_html($formatted_price) . " ISK</span>";
-            }
-            
-            // Replace ID link with copy to clipboard button
-            if (!empty($contract_id)) {
-                echo "<span style='color: #666; font-size: 12px; cursor: pointer;' onclick='copyToClipboard(\"" . esc_js($contract_id) . "\")' title='Click to copy contract ID'>📋 " . esc_html($contract_id) . "</span>";
             }
             
             echo "</div>";
