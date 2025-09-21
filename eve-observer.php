@@ -39,6 +39,49 @@ class EVE_Observer {
             'auth_callback' => '__return_true'
         ));
 
+        // Character meta fields
+        $char_meta_fields = array(
+            '_eve_char_id', '_eve_char_name', '_eve_corporation_id', '_eve_alliance_id',
+            '_eve_birthday', '_eve_gender', '_eve_race_id', '_eve_bloodline_id',
+            '_eve_ancestry_id', '_eve_security_status', '_eve_last_updated'
+        );
+        foreach ($char_meta_fields as $field) {
+            register_meta('post', $field, array(
+                'show_in_rest' => true,
+                'single' => true,
+                'type' => 'string',
+                'auth_callback' => '__return_true'
+            ));
+        }
+
+        // Blueprint meta fields
+        $bp_meta_fields = array(
+            '_eve_bp_item_id', '_eve_bp_type_id', '_eve_bp_location_id', '_eve_bp_quantity',
+            '_eve_bp_me', '_eve_bp_te', '_eve_bp_runs', '_eve_char_id', '_eve_last_updated'
+        );
+        foreach ($bp_meta_fields as $field) {
+            register_meta('post', $field, array(
+                'show_in_rest' => true,
+                'single' => true,
+                'type' => is_numeric(substr($field, -3)) ? 'number' : 'string',
+                'auth_callback' => '__return_true'
+            ));
+        }
+
+        // Planet meta fields
+        $planet_meta_fields = array(
+            '_eve_planet_id', '_eve_planet_type', '_eve_planet_solar_system_id',
+            '_eve_planet_upgrade_level', '_eve_char_id', '_eve_last_updated'
+        );
+        foreach ($planet_meta_fields as $field) {
+            register_meta('post', $field, array(
+                'show_in_rest' => true,
+                'single' => true,
+                'type' => is_numeric(substr($field, -6)) ? 'number' : 'string',
+                'auth_callback' => '__return_true'
+            ));
+        }
+
         // Register custom post types
         $this->register_custom_post_types();
     }
@@ -55,7 +98,7 @@ class EVE_Observer {
         );
 
         // Add submenus for CPTs
-        add_submenu_page('eve-observer', 'Characters', 'Characters', 'manage_options', 'edit.php?post_type=eve_character');
+        add_submenu_page('eve-observer', 'Dashboard', 'Dashboard', 'manage_options', 'edit.php?post_type=eve_character');
         add_submenu_page('eve-observer', 'Blueprints', 'Blueprints', 'manage_options', 'edit.php?post_type=eve_blueprint');
         add_submenu_page('eve-observer', 'Planets', 'Planets', 'manage_options', 'edit.php?post_type=eve_planet');
     }

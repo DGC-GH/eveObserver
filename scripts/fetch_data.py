@@ -100,7 +100,7 @@ def update_character_in_wp(char_id, char_data):
         # Update existing
         post_id = existing_posts[0]['id']
         url = f"{WP_BASE_URL}/wp-json/wp/v2/eve_character/{post_id}"
-        response = requests.post(url, json=post_data, auth=get_wp_auth())
+        response = requests.put(url, json=post_data, auth=get_wp_auth())
     else:
         # Create new
         url = f"{WP_BASE_URL}/wp-json/wp/v2/eve_character"
@@ -153,7 +153,7 @@ def update_blueprint_in_wp(item_id, blueprint_data, char_id):
         # Update existing
         post_id = existing_posts[0]['id']
         url = f"{WP_BASE_URL}/wp-json/wp/v2/eve_blueprint/{post_id}"
-        response = requests.post(url, json=post_data, auth=get_wp_auth())
+        response = requests.put(url, json=post_data, auth=get_wp_auth())
     else:
         # Create new
         url = f"{WP_BASE_URL}/wp-json/wp/v2/eve_blueprint"
@@ -216,7 +216,7 @@ def update_planet_in_wp(planet_id, planet_data, char_id):
         # Update existing
         post_id = existing_posts[0]['id']
         url = f"{WP_BASE_URL}/wp-json/wp/v2/eve_planet/{post_id}"
-        response = requests.post(url, json=post_data, auth=get_wp_auth())
+        response = requests.put(url, json=post_data, auth=get_wp_auth())
     else:
         # Create new
         url = f"{WP_BASE_URL}/wp-json/wp/v2/eve_planet"
