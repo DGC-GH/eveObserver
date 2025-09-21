@@ -468,7 +468,7 @@ def fetch_corporation_industry_jobs(corp_id, access_token):
     endpoint = f"/corporations/{corp_id}/industry/jobs/"
     return fetch_esi(endpoint, corp_id, access_token)
 
-def extract_blueprints_from_assets(assets_data, owner_type, owner_id, access_token):
+def extract_blueprints_from_assets(assets_data, owner_type, owner_id, access_token, track_bpcs=False):
     """Extract blueprint information from assets data."""
     blueprints = []
     
@@ -480,19 +480,25 @@ def extract_blueprints_from_assets(assets_data, owner_type, owner_id, access_tok
                 # Get type information to check if it's a blueprint
                 type_data = fetch_public_esi(f"/universe/types/{type_id}")
                 if type_data and 'Blueprint' in type_data.get('name', ''):
-                    # This is a blueprint
-                    blueprint_info = {
-                        'item_id': item.get('item_id'),
-                        'type_id': type_id,
-                        'location_id': location_id,
-                        'quantity': item.get('quantity', 1),
-                        'material_efficiency': 0,  # Assets don't provide ME/TE info
-                        'time_efficiency': 0,
-                        'runs': -1,  # Assume BPO unless we can determine otherwise
-                        'source': f"{owner_type}_assets",
-                        'owner_id': owner_id
-                    }
-                    blueprints.append(blueprint_info)
+                    # Check if we should track this blueprint
+                    quantity = item.get('quantity', 1)
+                    is_bpo = quantity == -1
+                    
+                    # Only track BPOs by default, or BPCs if explicitly requested
+                    if is_bpo or track_bpcs:
+                        # This is a blueprint
+                        blueprint_info = {
+                            'item_id': item.get('item_id'),
+                            'type_id': type_id,
+                            'location_id': location_id,
+                            'quantity': quantity,
+                            'material_efficiency': 0,  # Assets don't provide ME/TE info
+                            'time_efficiency': 0,
+                            'runs': -1,  # Assume BPO unless we can determine otherwise
+                            'source': f"{owner_type}_assets",
+                            'owner_id': owner_id
+                        }
+                        blueprints.append(blueprint_info)
             
             # Recursively process containers
             if 'items' in item:
@@ -511,6 +517,7 @@ def extract_blueprints_from_industry_jobs(jobs_data, owner_type, owner_id):
         blueprint_id = job.get('blueprint_id')
         blueprint_type_id = job.get('blueprint_type_id')
         if blueprint_id and blueprint_type_id:
+            # Industry jobs typically use BPOs (quantity = -1)
             blueprint_info = {
                 'item_id': blueprint_id,
                 'type_id': blueprint_type_id,
@@ -538,18 +545,23 @@ def extract_blueprints_from_contracts(contracts_data, owner_type, owner_id):
                     # Get type information to check if it's a blueprint
                     type_data = fetch_public_esi(f"/universe/types/{type_id}")
                     if type_data and 'Blueprint' in type_data.get('name', ''):
-                        blueprint_info = {
-                            'item_id': item.get('item_id', type_id),  # Contracts may not have item_id
-                            'type_id': type_id,
-                            'location_id': None,  # Contracts don't specify location
-                            'quantity': item.get('quantity', 1),
-                            'material_efficiency': 0,  # Contract items don't provide ME/TE
-                            'time_efficiency': 0,
-                            'runs': -1,
-                            'source': f"{owner_type}_contract_{contract.get('contract_id')}",
-                            'owner_id': owner_id
-                        }
-                        blueprints.append(blueprint_info)
+                        quantity = item.get('quantity', 1)
+                        is_bpo = quantity == -1
+                        
+                        # Only track BPOs from contracts (BPCs in contracts are typically for sale/consumable)
+                        if is_bpo:
+                            blueprint_info = {
+                                'item_id': item.get('item_id', type_id),  # Contracts may not have item_id
+                                'type_id': type_id,
+                                'location_id': None,  # Contracts don't specify location
+                                'quantity': quantity,
+                                'material_efficiency': 0,  # Contract items don't provide ME/TE
+                                'time_efficiency': 0,
+                                'runs': -1,
+                                'source': f"{owner_type}_contract_{contract.get('contract_id')}",
+                                'owner_id': owner_id
+                            }
+                            blueprints.append(blueprint_info)
     
     return blueprints
 
@@ -923,13 +935,22 @@ def cleanup_old_posts():
     if response.status_code == 200:
         blueprints = response.json()
         for bp in blueprints:
-            owner_id = bp.get('meta', {}).get('_eve_bp_owner_id')
-            source = bp.get('meta', {}).get('_eve_bp_source', '')
+            meta = bp.get('meta', {})
+            quantity = meta.get('_eve_bp_quantity', -1)
+            owner_id = meta.get('_eve_bp_owner_id')
+            source = meta.get('_eve_bp_source', '')
+            char_id = meta.get('_eve_char_id')
+            
+            # Remove BPCs (we only want to track BPOs now)
+            if quantity != -1:
+                bp_id = meta.get('_eve_bp_item_id')
+                print(f"Deleting BPC (quantity={quantity}): {bp_id}")
+                delete_wp_post('eve_blueprint', bp['id'])
+                continue
+            
             # If it's from a corporation, check if it's No Mercy incorporated
             if owner_id and source.startswith('corp_'):
                 # We need to check if this corp_id belongs to No Mercy incorporated
-                # For now, we'll delete blueprints that aren't from our known corporation
-                # This is a simplified approach - in production you'd want to cross-reference
                 corp_response = requests.get(f"{WP_BASE_URL}/wp-json/wp/v2/eve_corporation?meta_key=_eve_corp_id&meta_value={owner_id}", auth=get_wp_auth())
                 if corp_response.status_code == 200:
                     corp_posts = corp_response.json()
@@ -939,10 +960,15 @@ def cleanup_old_posts():
                         delete_wp_post('eve_blueprint', bp['id'])
                     else:
                         corp_name = corp_posts[0].get('title', {}).get('rendered', '')
-                        if corp_name != 'No Mercy incorporated':
+                        if corp_name.lower() != 'no mercy incorporated':
                             bp_id = bp.get('meta', {}).get('_eve_bp_item_id')
                             print(f"Deleting blueprint from {corp_name}: {bp_id}")
                             delete_wp_post('eve_blueprint', bp['id'])
+            # If it's from character assets/industry jobs and we don't have a char_id, it might be orphaned
+            elif not char_id and not owner_id:
+                # These are from the direct blueprint endpoints - check if they're corporation blueprints
+                # For now, keep them as they come from authenticated sources
+                pass
 
     print("Cleanup completed.")
 
