@@ -1177,6 +1177,8 @@ class EVE_Observer {
                     ),
                 ),
             ),
+        ));
+
         // Register meta fields for contracts
         register_meta('post', '_eve_contract_region_id', array(
             'type' => 'string',
