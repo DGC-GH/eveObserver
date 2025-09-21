@@ -36,9 +36,7 @@ class EVE_Observer {
             'show_in_rest' => true,
             'single' => true,
             'type' => 'string',
-            'auth_callback' => function( $allowed, $meta_key, $object_id, $user_id ) {
-                return current_user_can( 'edit_post', $object_id );
-            }
+            'auth_callback' => '__return_true'
         ));
 
         // Register custom post types
@@ -50,7 +48,7 @@ class EVE_Observer {
             'EVE Observer Dashboard',
             'EVE Observer',
             'manage_options',
-            'eve-observer-dashboard',
+            'eve-observer',
             array($this, 'display_dashboard'),
             'dashicons-chart-line',
             30
@@ -157,7 +155,7 @@ class EVE_Observer {
             'public' => true,
             'supports' => array('title', 'editor', 'custom-fields'),
             'show_in_rest' => true,
-            'show_in_menu' => 'eve-observer-dashboard',
+            'show_in_menu' => 'eve-observer',
         ));
 
         // Blueprint CPT
@@ -169,7 +167,7 @@ class EVE_Observer {
             'public' => true,
             'supports' => array('title', 'editor', 'custom-fields'),
             'show_in_rest' => true,
-            'show_in_menu' => 'eve-observer-dashboard',
+            'show_in_menu' => 'eve-observer',
         ));
 
         // Planet CPT
@@ -181,7 +179,7 @@ class EVE_Observer {
             'public' => true,
             'supports' => array('title', 'editor', 'custom-fields'),
             'show_in_rest' => true,
-            'show_in_menu' => 'eve-observer-dashboard',
+            'show_in_menu' => 'eve-observer',
         ));
 
         // Register ACF field groups if ACF is active
@@ -259,40 +257,53 @@ class EVE_Observer {
             'title' => 'Blueprint Information',
             'fields' => array(
                 array(
+                    'key' => 'field_bp_item_id',
+                    'label' => 'Item ID',
+                    'name' => '_eve_bp_item_id',
+                    'type' => 'text',
+                    'show_in_rest' => true,
+                ),
+                array(
                     'key' => 'field_bp_type_id',
                     'label' => 'Type ID',
                     'name' => '_eve_bp_type_id',
                     'type' => 'text',
+                    'show_in_rest' => true,
                 ),
                 array(
                     'key' => 'field_bp_location_id',
                     'label' => 'Location ID',
                     'name' => '_eve_bp_location_id',
                     'type' => 'text',
+                    'show_in_rest' => true,
                 ),
                 array(
                     'key' => 'field_bp_quantity',
                     'label' => 'Quantity',
                     'name' => '_eve_bp_quantity',
                     'type' => 'number',
+                    'show_in_rest' => true,
                 ),
                 array(
                     'key' => 'field_bp_me',
                     'label' => 'Material Efficiency',
                     'name' => '_eve_bp_me',
                     'type' => 'number',
+                    'show_in_rest' => true,
                 ),
                 array(
                     'key' => 'field_bp_te',
                     'label' => 'Time Efficiency',
                     'name' => '_eve_bp_te',
                     'type' => 'number',
+                    'show_in_rest' => true,
                 ),
                 array(
                     'key' => 'field_bp_runs',
                     'label' => 'Runs',
                     'name' => '_eve_bp_runs',
                     'type' => 'number',
+                    'show_in_rest' => true,
                 ),
             ),
             'location' => array(
@@ -337,27 +348,6 @@ class EVE_Observer {
                     'label' => 'Upgrade Level',
                     'name' => '_eve_planet_upgrade_level',
                     'type' => 'number',
-                    'show_in_rest' => true,
-                ),
-                array(
-                    'key' => 'field_planet_pins',
-                    'label' => 'Extractors/Pins',
-                    'name' => '_eve_planet_pins',
-                    'type' => 'repeater',
-                    'sub_fields' => array(
-                        array(
-                            'key' => 'field_pin_type_id',
-                            'label' => 'Pin Type ID',
-                            'name' => 'pin_type_id',
-                            'type' => 'text',
-                        ),
-                        array(
-                            'key' => 'field_pin_expiry_time',
-                            'label' => 'Expiry Time',
-                            'name' => 'expiry_time',
-                            'type' => 'date_time_picker',
-                        ),
-                    ),
                     'show_in_rest' => true,
                 ),
             ),

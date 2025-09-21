@@ -126,18 +126,19 @@ def fetch_character_blueprints(char_id, access_token):
     endpoint = f"/characters/{char_id}/blueprints/"
     return fetch_esi(endpoint, char_id, access_token)
 
-def update_blueprint_in_wp(blueprint_id, blueprint_data, char_id):
+def update_blueprint_in_wp(item_id, blueprint_data, char_id):
     """Update or create blueprint post in WordPress."""
     # Check if post exists
-    search_url = f"{WP_BASE_URL}/wp-json/wp/v2/eve_blueprint?meta_key=_eve_bp_type_id&meta_value={blueprint_id}"
+    search_url = f"{WP_BASE_URL}/wp-json/wp/v2/eve_blueprint?meta_key=_eve_bp_item_id&meta_value={item_id}"
     response = requests.get(search_url, auth=get_wp_auth())
     existing_posts = response.json() if response.status_code == 200 else []
 
     post_data = {
-        'title': f"Blueprint {blueprint_id}",
+        'title': f"Blueprint {item_id}",
         'status': 'publish',
         'meta': {
-            '_eve_bp_type_id': blueprint_id,
+            '_eve_bp_item_id': item_id,
+            '_eve_bp_type_id': blueprint_data.get('type_id'),
             '_eve_bp_location_id': blueprint_data.get('location_id'),
             '_eve_bp_quantity': blueprint_data.get('quantity', -1),
             '_eve_bp_me': blueprint_data.get('material_efficiency', 0),
@@ -159,9 +160,9 @@ def update_blueprint_in_wp(blueprint_id, blueprint_data, char_id):
         response = requests.post(url, json=post_data, auth=get_wp_auth())
 
     if response.status_code in [200, 201]:
-        print(f"Updated blueprint: {blueprint_id}")
+        print(f"Updated blueprint: {item_id}")
     else:
-        print(f"Failed to update blueprint {blueprint_id}: {response.status_code} - {response.text}")
+        print(f"Failed to update blueprint {item_id}: {response.status_code} - {response.text}")
 
 def fetch_character_industry_jobs(char_id, access_token):
     """Fetch character industry jobs."""
@@ -208,7 +209,8 @@ def update_planet_in_wp(planet_id, planet_data, char_id):
         }
     }
 
-    # Note: pins_data not stored due to REST API permission issues
+    if 'pins' in planet_data:
+        post_data['meta']['_eve_planet_pins_data'] = json.dumps(planet_data['pins'])
 
     if existing_posts:
         # Update existing
@@ -309,7 +311,7 @@ def main():
         if blueprints:
             print(f"Blueprints for {char_name}: {len(blueprints)} items")
             for bp in blueprints:
-                update_blueprint_in_wp(bp['type_id'], bp, char_id)
+                update_blueprint_in_wp(bp['item_id'], bp, char_id)
 
         # Fetch industry jobs
         jobs = fetch_character_industry_jobs(char_id, access_token)
