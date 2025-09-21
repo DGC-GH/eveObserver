@@ -32,22 +32,22 @@ SCOPES = [
     'esi-universe.read_structures.v1',
     # Corporation scopes
     'esi-contracts.read_corporation_contracts.v1',
-    'esi-corporations.read_assets.v1',
-    'esi-corporations.read_wallet.v1',
-    'esi-corporations.read_orders.v1',
-    'esi-corporations.read_industry_jobs.v1',
+    'esi-assets.read_corporation_assets.v1',
+    'esi-wallet.read_corporation_wallets.v1',
+    'esi-markets.read_corporation_orders.v1',
+    'esi-industry.read_corporation_jobs.v1',
     'esi-corporations.read_blueprints.v1',
     'esi-corporations.read_structures.v1',
     # Additional character scopes
-    'esi-characters.read_assets.v1',
-    'esi-characters.read_wallet.v1',
-    'esi-characters.read_killmails.v1',
-    'esi-characters.read_location.v1',
+    'esi-assets.read_assets.v1',
+    'esi-wallet.read_character_wallet.v1',
+    'esi-killmails.read_killmails.v1',
+    'esi-location.read_location.v1',
+    'esi-location.read_online.v1',
     'esi-characters.read_loyalty.v1',
-    'esi-characters.read_clones.v1',
-    'esi-characters.read_implants.v1',
+    'esi-clones.read_clones.v1',
+    'esi-clones.read_implants.v1',
     'esi-characters.read_standings.v1',
-]
 ]
 
 # Load config from .env or set defaults

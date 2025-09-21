@@ -61,25 +61,91 @@ def send_email(subject, body):
         print(f"Failed to send email: {e}")
 
 def fetch_public_esi(endpoint):
-    """Fetch data from ESI API (public endpoints, no auth)."""
+    """Fetch data from ESI API (public endpoints, no auth) with rate limiting."""
+    import time
+
     url = f"{ESI_BASE_URL}{endpoint}"
-    response = requests.get(url)
-    if response.status_code == 200:
-        return response.json()
-    else:
-        print(f"ESI API error for {endpoint}: {response.status_code} - {response.text}")
-        return None
+
+    while True:  # Retry loop for rate limiting
+        response = requests.get(url)
+
+        if response.status_code == 200:
+            return response.json()
+        elif response.status_code == 429:  # Rate limited
+            # Check for X-ESI-Error-Limit-Remain header
+            error_limit_remain = response.headers.get('X-ESI-Error-Limit-Remain')
+            error_limit_reset = response.headers.get('X-ESI-Error-Limit-Reset')
+
+            if error_limit_reset:
+                wait_time = int(error_limit_reset) + 1  # Add 1 second buffer
+                print(f"Rate limited on public endpoint. Waiting {wait_time} seconds...")
+                time.sleep(wait_time)
+                continue
+            else:
+                # Fallback: wait 60 seconds if no reset header
+                print("Rate limited on public endpoint. Waiting 60 seconds...")
+                time.sleep(60)
+                continue
+        elif response.status_code == 420:  # Error limited
+            error_limit_remain = response.headers.get('X-ESI-Error-Limit-Remain')
+            error_limit_reset = response.headers.get('X-ESI-Error-Limit-Reset')
+
+            if error_limit_reset:
+                wait_time = int(error_limit_reset) + 1
+                print(f"Error limited on public endpoint. Waiting {wait_time} seconds...")
+                time.sleep(wait_time)
+                continue
+            else:
+                print("Error limited on public endpoint. Waiting 60 seconds...")
+                time.sleep(60)
+                continue
+        else:
+            print(f"ESI API error for {endpoint}: {response.status_code} - {response.text}")
+            return None
 
 def fetch_esi(endpoint, char_id, access_token):
-    """Fetch data from ESI API."""
+    """Fetch data from ESI API with rate limiting."""
+    import time
+
     url = f"{ESI_BASE_URL}{endpoint}"
     headers = {'Authorization': f'Bearer {access_token}'}
-    response = requests.get(url, headers=headers)
-    if response.status_code == 200:
-        return response.json()
-    else:
-        print(f"ESI API error for {endpoint}: {response.status_code} - {response.text}")
-        return None
+
+    while True:  # Retry loop for rate limiting
+        response = requests.get(url, headers=headers)
+
+        if response.status_code == 200:
+            return response.json()
+        elif response.status_code == 429:  # Rate limited
+            # Check for X-ESI-Error-Limit-Remain header
+            error_limit_remain = response.headers.get('X-ESI-Error-Limit-Remain')
+            error_limit_reset = response.headers.get('X-ESI-Error-Limit-Reset')
+
+            if error_limit_reset:
+                wait_time = int(error_limit_reset) + 1  # Add 1 second buffer
+                print(f"Rate limited. Waiting {wait_time} seconds...")
+                time.sleep(wait_time)
+                continue
+            else:
+                # Fallback: wait 60 seconds if no reset header
+                print("Rate limited. Waiting 60 seconds...")
+                time.sleep(60)
+                continue
+        elif response.status_code == 420:  # Error limited
+            error_limit_remain = response.headers.get('X-ESI-Error-Limit-Remain')
+            error_limit_reset = response.headers.get('X-ESI-Error-Limit-Reset')
+
+            if error_limit_reset:
+                wait_time = int(error_limit_reset) + 1
+                print(f"Error limited. Waiting {wait_time} seconds...")
+                time.sleep(wait_time)
+                continue
+            else:
+                print("Error limited. Waiting 60 seconds...")
+                time.sleep(60)
+                continue
+        else:
+            print(f"ESI API error for {endpoint}: {response.status_code} - {response.text}")
+            return None
 
 def get_wp_auth():
     """Get WordPress authentication tuple."""
@@ -650,16 +716,49 @@ def refresh_token(refresh_token):
         return None
 
 def fetch_market_orders(region_id, type_id):
-    """Fetch market orders for a type in a region."""
+    """Fetch market orders for a type in a region with rate limiting."""
+    import time
+
     endpoint = f"/markets/{region_id}/orders/?type_id={type_id}"
     # Note: market orders don't require auth, but rate limited
     url = f"{ESI_BASE_URL}{endpoint}"
-    response = requests.get(url)
-    if response.status_code == 200:
-        return response.json()
-    else:
-        print(f"ESI API error for market orders: {response.status_code} - {response.text}")
-        return None
+
+    while True:  # Retry loop for rate limiting
+        response = requests.get(url)
+
+        if response.status_code == 200:
+            return response.json()
+        elif response.status_code == 429:  # Rate limited
+            # Check for X-ESI-Error-Limit-Remain header
+            error_limit_remain = response.headers.get('X-ESI-Error-Limit-Remain')
+            error_limit_reset = response.headers.get('X-ESI-Error-Limit-Reset')
+
+            if error_limit_reset:
+                wait_time = int(error_limit_reset) + 1  # Add 1 second buffer
+                print(f"Rate limited on market orders. Waiting {wait_time} seconds...")
+                time.sleep(wait_time)
+                continue
+            else:
+                # Fallback: wait 60 seconds if no reset header
+                print("Rate limited on market orders. Waiting 60 seconds...")
+                time.sleep(60)
+                continue
+        elif response.status_code == 420:  # Error limited
+            error_limit_remain = response.headers.get('X-ESI-Error-Limit-Remain')
+            error_limit_reset = response.headers.get('X-ESI-Error-Limit-Reset')
+
+            if error_limit_reset:
+                wait_time = int(error_limit_reset) + 1
+                print(f"Error limited on market orders. Waiting {wait_time} seconds...")
+                time.sleep(wait_time)
+                continue
+            else:
+                print("Error limited on market orders. Waiting 60 seconds...")
+                time.sleep(60)
+                continue
+        else:
+            print(f"ESI API error for market orders: {response.status_code} - {response.text}")
+            return None
 
 def main():
     """Main data fetching routine."""
