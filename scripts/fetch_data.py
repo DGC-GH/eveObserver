@@ -60,6 +60,16 @@ def send_email(subject, body):
     except Exception as e:
         print(f"Failed to send email: {e}")
 
+def fetch_public_esi(endpoint):
+    """Fetch data from ESI API (public endpoints, no auth)."""
+    url = f"{ESI_BASE_URL}{endpoint}"
+    response = requests.get(url)
+    if response.status_code == 200:
+        return response.json()
+    else:
+        print(f"ESI API error for {endpoint}: {response.status_code} - {response.text}")
+        return None
+
 def fetch_esi(endpoint, char_id, access_token):
     """Fetch data from ESI API."""
     url = f"{ESI_BASE_URL}{endpoint}"
@@ -153,8 +163,19 @@ def update_blueprint_in_wp(item_id, blueprint_data, char_id):
             existing_post = post
             break
 
+    # Get blueprint name
+    type_id = blueprint_data.get('type_id')
+    if type_id:
+        type_data = fetch_public_esi(f"/universe/types/{type_id}")
+        if type_data:
+            title = type_data.get('name', f"Blueprint {item_id}")
+        else:
+            title = f"Blueprint {item_id}"
+    else:
+        title = f"Blueprint {item_id}"
+
     post_data = {
-        'title': f"Blueprint {item_id}",
+        'title': title,
         'slug': f"blueprint-{item_id}",
         'status': 'publish',
         'meta': {
@@ -221,8 +242,15 @@ def update_planet_in_wp(planet_id, planet_data, char_id):
             existing_post = post
             break
 
+    # Get planet name
+    planet_info = fetch_public_esi(f"/universe/planets/{planet_id}")
+    if planet_info:
+        title = planet_info.get('name', f"Planet {planet_id}")
+    else:
+        title = f"Planet {planet_id}"
+
     post_data = {
-        'title': f"Planet {planet_id}",
+        'title': title,
         'slug': f"planet-{planet_id}",
         'status': 'publish',
         'meta': {
