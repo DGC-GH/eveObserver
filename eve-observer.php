@@ -100,6 +100,25 @@ class EVE_Observer {
             ));
         }
 
+        // Contract meta fields
+        $contract_meta_fields = array(
+            '_eve_contract_id', '_eve_contract_type', '_eve_contract_status', '_eve_contract_title',
+            '_eve_contract_for_corp', '_eve_contract_issuer_id', '_eve_contract_issuer_corp_id',
+            '_eve_contract_assignee_id', '_eve_contract_acceptor_id', '_eve_contract_date_issued',
+            '_eve_contract_date_expired', '_eve_contract_date_accepted', '_eve_contract_date_completed',
+            '_eve_contract_price', '_eve_contract_reward', '_eve_contract_collateral', '_eve_contract_buyout',
+            '_eve_contract_volume', '_eve_last_updated'
+        );
+        $numeric_contract_fields = array('_eve_contract_id', '_eve_contract_issuer_id', '_eve_contract_issuer_corp_id', '_eve_contract_assignee_id', '_eve_contract_acceptor_id', '_eve_contract_price', '_eve_contract_reward', '_eve_contract_collateral', '_eve_contract_buyout', '_eve_contract_volume');
+        foreach ($contract_meta_fields as $field) {
+            register_meta('post', $field, array(
+                'show_in_rest' => true,
+                'single' => true,
+                'type' => in_array($field, $numeric_contract_fields) ? 'number' : 'string',
+                'auth_callback' => '__return_true'
+            ));
+        }
+
         // Register custom post types
         $this->register_custom_post_types();
     }
@@ -121,6 +140,7 @@ class EVE_Observer {
         add_submenu_page('eve-observer', 'Blueprints', 'Blueprints', 'manage_options', 'edit.php?post_type=eve_blueprint');
         add_submenu_page('eve-observer', 'Planets', 'Planets', 'manage_options', 'edit.php?post_type=eve_planet');
         add_submenu_page('eve-observer', 'Corporations', 'Corporations', 'manage_options', 'edit.php?post_type=eve_corporation');
+        add_submenu_page('eve-observer', 'Contracts', 'Contracts', 'manage_options', 'edit.php?post_type=eve_contract');
     }
 
     public function enqueue_admin_scripts($hook) {
@@ -215,6 +235,25 @@ class EVE_Observer {
                 echo '<p>No corporation data available.</p>';
             }
             ?>
+
+            <!-- Contracts -->
+            <h2><?php _e('Contracts', 'eve-observer'); ?></h2>
+            <?php
+            $contracts = get_posts(array('post_type' => 'eve_contract', 'numberposts' => -1));
+            if ($contracts) {
+                echo '<p>Total Contracts: ' . count($contracts) . '</p>';
+                echo '<ul>';
+                foreach ($contracts as $contract) {
+                    $contract_id = get_post_meta($contract->ID, '_eve_contract_id', true);
+                    $type = get_post_meta($contract->ID, '_eve_contract_type', true);
+                    $status = get_post_meta($contract->ID, '_eve_contract_status', true);
+                    echo '<li>' . esc_html($contract->post_title) . ' (' . esc_html($type) . ' - ' . esc_html($status) . ') (ID: ' . esc_html($contract_id) . ')</li>';
+                }
+                echo '</ul>';
+            } else {
+                echo '<p>No contract data available.</p>';
+            }
+            ?>
         </div>
         <?php
     }
@@ -273,6 +312,18 @@ class EVE_Observer {
             'labels' => array(
                 'name' => __('Corporations', 'eve-observer'),
                 'singular_name' => __('Corporation', 'eve-observer'),
+            ),
+            'public' => true,
+            'supports' => array('title', 'editor', 'custom-fields'),
+            'show_in_rest' => true,
+            'show_in_menu' => false,
+        ));
+
+        // Contract CPT
+        register_post_type('eve_contract', array(
+            'labels' => array(
+                'name' => __('Contracts', 'eve-observer'),
+                'singular_name' => __('Contract', 'eve-observer'),
             ),
             'public' => true,
             'supports' => array('title', 'editor', 'custom-fields'),
@@ -522,6 +573,172 @@ class EVE_Observer {
                         'param' => 'post_type',
                         'operator' => '==',
                         'value' => 'eve_corporation',
+                    ),
+                ),
+            ),
+        ));
+
+        // Contract Fields
+        acf_add_local_field_group(array(
+            'key' => 'group_eve_contract',
+            'title' => 'Contract Information',
+            'fields' => array(
+                array(
+                    'key' => 'field_contract_id',
+                    'label' => 'Contract ID',
+                    'name' => '_eve_contract_id',
+                    'type' => 'text',
+                    'show_in_rest' => true,
+                ),
+                array(
+                    'key' => 'field_contract_type',
+                    'label' => 'Contract Type',
+                    'name' => '_eve_contract_type',
+                    'type' => 'select',
+                    'choices' => array(
+                        'item_exchange' => 'Item Exchange',
+                        'auction' => 'Auction',
+                        'courier' => 'Courier',
+                        'loan' => 'Loan',
+                    ),
+                    'show_in_rest' => true,
+                ),
+                array(
+                    'key' => 'field_contract_status',
+                    'label' => 'Status',
+                    'name' => '_eve_contract_status',
+                    'type' => 'select',
+                    'choices' => array(
+                        'outstanding' => 'Outstanding',
+                        'in_progress' => 'In Progress',
+                        'finished_issuer' => 'Finished (Issuer)',
+                        'finished_contractor' => 'Finished (Contractor)',
+                        'finished' => 'Finished',
+                        'cancelled' => 'Cancelled',
+                        'rejected' => 'Rejected',
+                        'failed' => 'Failed',
+                        'deleted' => 'Deleted',
+                        'reversed' => 'Reversed',
+                    ),
+                    'show_in_rest' => true,
+                ),
+                array(
+                    'key' => 'field_contract_title',
+                    'label' => 'Title',
+                    'name' => '_eve_contract_title',
+                    'type' => 'text',
+                    'show_in_rest' => true,
+                ),
+                array(
+                    'key' => 'field_contract_for_corp',
+                    'label' => 'For Corporation',
+                    'name' => '_eve_contract_for_corp',
+                    'type' => 'true_false',
+                    'show_in_rest' => true,
+                ),
+                array(
+                    'key' => 'field_contract_issuer_id',
+                    'label' => 'Issuer ID',
+                    'name' => '_eve_contract_issuer_id',
+                    'type' => 'text',
+                    'show_in_rest' => true,
+                ),
+                array(
+                    'key' => 'field_contract_issuer_corp_id',
+                    'label' => 'Issuer Corporation ID',
+                    'name' => '_eve_contract_issuer_corp_id',
+                    'type' => 'text',
+                    'show_in_rest' => true,
+                ),
+                array(
+                    'key' => 'field_contract_assignee_id',
+                    'label' => 'Assignee ID',
+                    'name' => '_eve_contract_assignee_id',
+                    'type' => 'text',
+                    'show_in_rest' => true,
+                ),
+                array(
+                    'key' => 'field_contract_acceptor_id',
+                    'label' => 'Acceptor ID',
+                    'name' => '_eve_contract_acceptor_id',
+                    'type' => 'text',
+                    'show_in_rest' => true,
+                ),
+                array(
+                    'key' => 'field_contract_date_issued',
+                    'label' => 'Date Issued',
+                    'name' => '_eve_contract_date_issued',
+                    'type' => 'date_time_picker',
+                    'show_in_rest' => true,
+                ),
+                array(
+                    'key' => 'field_contract_date_expired',
+                    'label' => 'Date Expired',
+                    'name' => '_eve_contract_date_expired',
+                    'type' => 'date_time_picker',
+                    'show_in_rest' => true,
+                ),
+                array(
+                    'key' => 'field_contract_date_accepted',
+                    'label' => 'Date Accepted',
+                    'name' => '_eve_contract_date_accepted',
+                    'type' => 'date_time_picker',
+                    'show_in_rest' => true,
+                ),
+                array(
+                    'key' => 'field_contract_date_completed',
+                    'label' => 'Date Completed',
+                    'name' => '_eve_contract_date_completed',
+                    'type' => 'date_time_picker',
+                    'show_in_rest' => true,
+                ),
+                array(
+                    'key' => 'field_contract_price',
+                    'label' => 'Price',
+                    'name' => '_eve_contract_price',
+                    'type' => 'number',
+                    'step' => 0.01,
+                    'show_in_rest' => true,
+                ),
+                array(
+                    'key' => 'field_contract_reward',
+                    'label' => 'Reward',
+                    'name' => '_eve_contract_reward',
+                    'type' => 'number',
+                    'step' => 0.01,
+                    'show_in_rest' => true,
+                ),
+                array(
+                    'key' => 'field_contract_collateral',
+                    'label' => 'Collateral',
+                    'name' => '_eve_contract_collateral',
+                    'type' => 'number',
+                    'step' => 0.01,
+                    'show_in_rest' => true,
+                ),
+                array(
+                    'key' => 'field_contract_buyout',
+                    'label' => 'Buyout',
+                    'name' => '_eve_contract_buyout',
+                    'type' => 'number',
+                    'step' => 0.01,
+                    'show_in_rest' => true,
+                ),
+                array(
+                    'key' => 'field_contract_volume',
+                    'label' => 'Volume',
+                    'name' => '_eve_contract_volume',
+                    'type' => 'number',
+                    'step' => 0.01,
+                    'show_in_rest' => true,
+                ),
+            ),
+            'location' => array(
+                array(
+                    array(
+                        'param' => 'post_type',
+                        'operator' => '==',
+                        'value' => 'eve_contract',
                     ),
                 ),
             ),

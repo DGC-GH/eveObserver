@@ -149,6 +149,11 @@ def fetch_character_blueprints(char_id, access_token):
     endpoint = f"/characters/{char_id}/blueprints/"
     return fetch_esi(endpoint, char_id, access_token)
 
+def fetch_character_planets(char_id, access_token):
+    """Fetch character planets."""
+    endpoint = f"/characters/{char_id}/planets/"
+    return fetch_esi(endpoint, char_id, access_token)
+
 def update_blueprint_in_wp(item_id, blueprint_data, char_id, access_token):
     """Update or create blueprint post in WordPress."""
     slug = f"blueprint-{item_id}"
@@ -227,9 +232,9 @@ def fetch_character_industry_jobs(char_id, access_token):
     endpoint = f"/characters/{char_id}/industry/jobs/"
     return fetch_esi(endpoint, char_id, access_token)
 
-def fetch_character_planets(char_id, access_token):
-    """Fetch character planets."""
-    endpoint = f"/characters/{char_id}/planets/"
+def fetch_character_contracts(char_id, access_token):
+    """Fetch character contracts."""
+    endpoint = f"/characters/{char_id}/contracts/"
     return fetch_esi(endpoint, char_id, access_token)
 
 def fetch_corporation_contracts(corp_id, access_token):
@@ -338,6 +343,82 @@ def update_planet_in_wp(planet_id, planet_data, char_id):
     else:
         print(f"Failed to update planet {planet_id}: {response.status_code} - {response.text}")
 
+def update_contract_in_wp(contract_id, contract_data, for_corp=False, entity_id=None):
+    """Update or create contract post in WordPress."""
+    slug = f"contract-{contract_id}"
+    # Check if post exists by slug
+    response = requests.get(f"{WP_BASE_URL}/wp-json/wp/v2/eve_contract?slug={slug}", auth=get_wp_auth())
+    existing_posts = response.json() if response.status_code == 200 else []
+    existing_post = existing_posts[0] if existing_posts else None
+
+    # Get contract type name
+    contract_type = contract_data.get('type', 'unknown')
+    type_names = {
+        'item_exchange': 'Item Exchange',
+        'auction': 'Auction',
+        'courier': 'Courier',
+        'loan': 'Loan'
+    }
+    type_name = type_names.get(contract_type, contract_type.title())
+
+    # Get status
+    status = contract_data.get('status', 'unknown').title()
+
+    # Get issuer/assignee names if available
+    issuer_name = contract_data.get('issuer_corporation_id', 'Unknown')
+    assignee_name = contract_data.get('assignee_id', 'Unknown')
+
+    # Construct title
+    title = f"Contract {contract_id} - {type_name} ({status})"
+
+    post_data = {
+        'title': title,
+        'slug': slug,
+        'status': 'publish',
+        'meta': {
+            '_eve_contract_id': contract_id,
+            '_eve_contract_type': contract_data.get('type'),
+            '_eve_contract_status': contract_data.get('status'),
+            '_eve_contract_issuer_id': contract_data.get('issuer_id'),
+            '_eve_contract_issuer_corp_id': contract_data.get('issuer_corporation_id'),
+            '_eve_contract_assignee_id': contract_data.get('assignee_id'),
+            '_eve_contract_acceptor_id': contract_data.get('acceptor_id'),
+            '_eve_contract_date_issued': contract_data.get('date_issued'),
+            '_eve_contract_date_expired': contract_data.get('date_expired'),
+            '_eve_contract_date_accepted': contract_data.get('date_accepted'),
+            '_eve_contract_date_completed': contract_data.get('date_completed'),
+            '_eve_contract_price': contract_data.get('price'),
+            '_eve_contract_reward': contract_data.get('reward'),
+            '_eve_contract_collateral': contract_data.get('collateral'),
+            '_eve_contract_buyout': contract_data.get('buyout'),
+            '_eve_contract_volume': contract_data.get('volume'),
+            '_eve_contract_days_to_complete': contract_data.get('days_to_complete'),
+            '_eve_contract_title': contract_data.get('title'),
+            '_eve_contract_for_corp': for_corp,
+            '_eve_contract_entity_id': entity_id,
+            '_eve_last_updated': datetime.now(timezone.utc).isoformat()
+        }
+    }
+
+    # Add items data if available
+    if 'items' in contract_data:
+        post_data['meta']['_eve_contract_items'] = json.dumps(contract_data['items'])
+
+    if existing_post:
+        # Update existing
+        post_id = existing_post['id']
+        url = f"{WP_BASE_URL}/wp-json/wp/v2/eve_contract/{post_id}"
+        response = requests.put(url, json=post_data, auth=get_wp_auth())
+    else:
+        # Create new
+        url = f"{WP_BASE_URL}/wp-json/wp/v2/eve_contract"
+        response = requests.post(url, json=post_data, auth=get_wp_auth())
+
+    if response.status_code in [200, 201]:
+        print(f"Updated contract: {contract_id}")
+    else:
+        print(f"Failed to update contract {contract_id}: {response.status_code} - {response.text}")
+
 def save_tokens(tokens):
     """Save tokens to file."""
     with open(TOKENS_FILE, 'w') as f:
@@ -417,6 +498,13 @@ def main():
                     update_corporation_in_wp(corp_id, corp_data)
                     processed_corps.add(corp_id)
 
+                    # Fetch corporation contracts
+                    corp_contracts = fetch_corporation_contracts(corp_id, access_token)
+                    if corp_contracts:
+                        print(f"Corporation contracts for {corp_data.get('name', corp_id)}: {len(corp_contracts)} items")
+                        for contract in corp_contracts:
+                            update_contract_in_wp(contract['contract_id'], contract, for_corp=True, entity_id=corp_id)
+
         # Fetch skills
         skills = fetch_character_skills(char_id, access_token)
         if skills:
@@ -475,6 +563,13 @@ def main():
                             body += f"- Pin {pin['pin_id']}: Type {pin.get('type_id', 'Unknown')} ending {pin['expiry_time']}\n"
                         send_email(subject, body)
                 update_planet_in_wp(planet_id, planet, char_id)
+
+        # Fetch character contracts
+        char_contracts = fetch_character_contracts(char_id, access_token)
+        if char_contracts:
+            print(f"Character contracts for {char_name}: {len(char_contracts)} items")
+            for contract in char_contracts:
+                update_contract_in_wp(contract['contract_id'], contract, for_corp=False, entity_id=char_id)
 
         # Fetch corporation data if available
         # corp_id = char_data.get('corporation_id') if char_data else None
