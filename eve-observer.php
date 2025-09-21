@@ -1136,7 +1136,15 @@ class EVE_Observer {
                     'show_in_rest' => true,
                 ),
             ),
-    }
+        ));
+
+        // Register meta fields for contracts
+        register_meta('post', '_eve_contract_region_id', array(
+            'type' => 'string',
+            'description' => 'Region ID for the contract',
+            'single' => true,
+            'show_in_rest' => true,
+        ));
 
     public function get_post_thumbnail_id_external($thumbnail_id, $post_id = null) {
         if (get_post_meta($post_id, '_thumbnail_external_url', true)) {
