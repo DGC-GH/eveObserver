@@ -112,9 +112,9 @@ class EVE_Observer {
             '_eve_contract_assignee_id', '_eve_contract_acceptor_id', '_eve_contract_date_issued',
             '_eve_contract_date_expired', '_eve_contract_date_accepted', '_eve_contract_date_completed',
             '_eve_contract_price', '_eve_contract_reward', '_eve_contract_collateral', '_eve_contract_buyout',
-            '_eve_contract_volume', '_eve_last_updated'
+            '_eve_contract_volume', '_eve_contract_days_to_complete', '_eve_contract_entity_id', '_eve_contract_items', '_eve_last_updated'
         );
-        $numeric_contract_fields = array('_eve_contract_id', '_eve_contract_issuer_id', '_eve_contract_issuer_corp_id', '_eve_contract_assignee_id', '_eve_contract_acceptor_id', '_eve_contract_price', '_eve_contract_reward', '_eve_contract_collateral', '_eve_contract_buyout', '_eve_contract_volume');
+        $numeric_contract_fields = array('_eve_contract_id', '_eve_contract_issuer_id', '_eve_contract_issuer_corp_id', '_eve_contract_assignee_id', '_eve_contract_acceptor_id', '_eve_contract_price', '_eve_contract_reward', '_eve_contract_collateral', '_eve_contract_buyout', '_eve_contract_volume', '_eve_contract_days_to_complete');
         foreach ($contract_meta_fields as $field) {
             register_meta('post', $field, array(
                 'show_in_rest' => true,
@@ -899,11 +899,24 @@ class EVE_Observer {
                     'show_in_rest' => true,
                 ),
                 array(
-                    'key' => 'field_contract_volume',
-                    'label' => 'Volume',
-                    'name' => '_eve_contract_volume',
+                    'key' => 'field_contract_days_to_complete',
+                    'label' => 'Days to Complete',
+                    'name' => '_eve_contract_days_to_complete',
                     'type' => 'number',
-                    'step' => 0.01,
+                    'show_in_rest' => true,
+                ),
+                array(
+                    'key' => 'field_contract_entity_id',
+                    'label' => 'Entity ID',
+                    'name' => '_eve_contract_entity_id',
+                    'type' => 'text',
+                    'show_in_rest' => true,
+                ),
+                array(
+                    'key' => 'field_contract_items',
+                    'label' => 'Contract Items (JSON)',
+                    'name' => '_eve_contract_items',
+                    'type' => 'textarea',
                     'show_in_rest' => true,
                 ),
             ),

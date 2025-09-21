@@ -12081,3 +12081,184 @@ Summary:
 2025-09-21 21:20:48,363 - INFO - Cleanup completed.
 2025-09-21 21:30:29,254 - WARNING - Resource not found for public endpoint /universe/types/1234
 2025-09-21 21:30:29,534 - WARNING - Resource not found for public endpoint /universe/types/1234
+2025-09-21 21:39:11,379 - INFO - Starting manual contract update...
+2025-09-21 21:39:11,765 - INFO - Processing 59 contracts from page 1...
+2025-09-21 21:39:11,766 - WARNING - Contract post 1206 missing contract_id or entity_id
+2025-09-21 21:39:11,766 - WARNING - Contract post 1205 missing contract_id or entity_id
+2025-09-21 21:39:11,766 - WARNING - Contract post 1204 missing contract_id or entity_id
+2025-09-21 21:39:11,766 - WARNING - Contract post 1203 missing contract_id or entity_id
+2025-09-21 21:39:11,766 - WARNING - Contract post 1202 missing contract_id or entity_id
+2025-09-21 21:39:11,766 - WARNING - Contract post 1201 missing contract_id or entity_id
+2025-09-21 21:39:11,766 - WARNING - Contract post 1200 missing contract_id or entity_id
+2025-09-21 21:39:11,766 - WARNING - Contract post 1199 missing contract_id or entity_id
+2025-09-21 21:39:11,766 - WARNING - Contract post 1198 missing contract_id or entity_id
+2025-09-21 21:39:11,766 - WARNING - Contract post 1197 missing contract_id or entity_id
+2025-09-21 21:39:11,767 - WARNING - Contract post 1196 missing contract_id or entity_id
+2025-09-21 21:39:11,767 - WARNING - Contract post 1195 missing contract_id or entity_id
+2025-09-21 21:39:11,767 - WARNING - Contract post 1194 missing contract_id or entity_id
+2025-09-21 21:39:11,767 - WARNING - Contract post 1193 missing contract_id or entity_id
+2025-09-21 21:39:11,767 - WARNING - Contract post 1192 missing contract_id or entity_id
+2025-09-21 21:39:11,767 - WARNING - Contract post 1191 missing contract_id or entity_id
+2025-09-21 21:39:11,767 - WARNING - Contract post 1190 missing contract_id or entity_id
+2025-09-21 21:39:11,767 - WARNING - Contract post 1189 missing contract_id or entity_id
+2025-09-21 21:39:11,767 - WARNING - Contract post 1188 missing contract_id or entity_id
+2025-09-21 21:39:11,767 - WARNING - Contract post 1187 missing contract_id or entity_id
+2025-09-21 21:39:11,767 - WARNING - Contract post 1186 missing contract_id or entity_id
+2025-09-21 21:39:11,767 - WARNING - Contract post 1185 missing contract_id or entity_id
+2025-09-21 21:39:11,767 - WARNING - Contract post 1184 missing contract_id or entity_id
+2025-09-21 21:39:11,767 - WARNING - Contract post 1183 missing contract_id or entity_id
+2025-09-21 21:39:11,767 - WARNING - Contract post 1182 missing contract_id or entity_id
+2025-09-21 21:39:11,767 - WARNING - Contract post 1181 missing contract_id or entity_id
+2025-09-21 21:39:11,768 - WARNING - Contract post 1180 missing contract_id or entity_id
+2025-09-21 21:39:11,768 - WARNING - Contract post 1179 missing contract_id or entity_id
+2025-09-21 21:39:11,768 - WARNING - Contract post 1178 missing contract_id or entity_id
+2025-09-21 21:39:11,768 - WARNING - Contract post 1177 missing contract_id or entity_id
+2025-09-21 21:39:11,768 - WARNING - Contract post 1176 missing contract_id or entity_id
+2025-09-21 21:39:11,768 - WARNING - Contract post 1175 missing contract_id or entity_id
+2025-09-21 21:39:11,768 - WARNING - Contract post 1174 missing contract_id or entity_id
+2025-09-21 21:39:11,768 - WARNING - Contract post 1173 missing contract_id or entity_id
+2025-09-21 21:39:11,768 - WARNING - Contract post 1172 missing contract_id or entity_id
+2025-09-21 21:39:11,768 - WARNING - Contract post 1171 missing contract_id or entity_id
+2025-09-21 21:39:11,768 - WARNING - Contract post 1170 missing contract_id or entity_id
+2025-09-21 21:39:11,768 - WARNING - Contract post 1169 missing contract_id or entity_id
+2025-09-21 21:39:11,768 - WARNING - Contract post 1168 missing contract_id or entity_id
+2025-09-21 21:39:11,768 - WARNING - Contract post 303 missing contract_id or entity_id
+2025-09-21 21:39:11,768 - WARNING - Contract post 302 missing contract_id or entity_id
+2025-09-21 21:39:11,768 - WARNING - Contract post 301 missing contract_id or entity_id
+2025-09-21 21:39:11,768 - WARNING - Contract post 300 missing contract_id or entity_id
+2025-09-21 21:39:11,768 - WARNING - Contract post 299 missing contract_id or entity_id
+2025-09-21 21:39:11,768 - WARNING - Contract post 298 missing contract_id or entity_id
+2025-09-21 21:39:11,768 - WARNING - Contract post 297 missing contract_id or entity_id
+2025-09-21 21:39:11,769 - WARNING - Contract post 296 missing contract_id or entity_id
+2025-09-21 21:39:11,769 - WARNING - Contract post 295 missing contract_id or entity_id
+2025-09-21 21:39:11,769 - WARNING - Contract post 294 missing contract_id or entity_id
+2025-09-21 21:39:11,769 - WARNING - Contract post 293 missing contract_id or entity_id
+2025-09-21 21:39:11,769 - WARNING - Contract post 292 missing contract_id or entity_id
+2025-09-21 21:39:11,769 - WARNING - Contract post 290 missing contract_id or entity_id
+2025-09-21 21:39:11,769 - WARNING - Contract post 278 missing contract_id or entity_id
+2025-09-21 21:39:11,769 - WARNING - Contract post 276 missing contract_id or entity_id
+2025-09-21 21:39:11,769 - WARNING - Contract post 275 missing contract_id or entity_id
+2025-09-21 21:39:11,769 - WARNING - Contract post 274 missing contract_id or entity_id
+2025-09-21 21:39:11,769 - WARNING - Contract post 273 missing contract_id or entity_id
+2025-09-21 21:39:11,769 - WARNING - Contract post 272 missing contract_id or entity_id
+2025-09-21 21:39:11,769 - WARNING - Contract post 271 missing contract_id or entity_id
+2025-09-21 21:39:11,769 - INFO - Contract update completed!
+2025-09-21 21:39:37,436 - INFO - Starting manual contract update...
+2025-09-21 21:39:37,692 - INFO - Processing 59 contracts from page 1...
+2025-09-21 21:39:38,025 - ERROR - Access forbidden for endpoint /corporations/98092220/contracts/222642413/items/
+2025-09-21 21:39:38,162 - INFO - Updated contract 222642413: 'Contract 222642413 - Item Exchange (Outstanding)'
+2025-09-21 21:39:38,366 - ERROR - Access forbidden for endpoint /corporations/98092220/contracts/222642390/items/
+2025-09-21 21:39:38,523 - INFO - Updated contract 222642390: 'Contract 222642390 - Item Exchange (Outstanding)'
+2025-09-21 21:39:38,663 - ERROR - Access forbidden for endpoint /corporations/98092220/contracts/222642381/items/
+2025-09-21 21:39:38,891 - INFO - Updated contract 222642381: 'Contract 222642381 - Item Exchange (Outstanding)'
+2025-09-21 21:39:39,247 - ERROR - Access forbidden for endpoint /corporations/98092220/contracts/222642299/items/
+2025-09-21 21:39:39,417 - INFO - Updated contract 222642299: 'Contract 222642299 - Item Exchange (Outstanding)'
+2025-09-21 21:39:39,566 - ERROR - Access forbidden for endpoint /corporations/98092220/contracts/222642285/items/
+2025-09-21 21:39:39,731 - INFO - Updated contract 222642285: 'Contract 222642285 - Item Exchange (Outstanding)'
+2025-09-21 21:39:39,941 - ERROR - Access forbidden for endpoint /corporations/98092220/contracts/222642246/items/
+2025-09-21 21:39:40,095 - INFO - Updated contract 222642246: 'Contract 222642246 - Item Exchange (Outstanding)'
+2025-09-21 21:39:40,229 - ERROR - Access forbidden for endpoint /corporations/98092220/contracts/222642175/items/
+2025-09-21 21:39:40,464 - INFO - Updated contract 222642175: 'Contract 222642175 - Item Exchange (Outstanding)'
+2025-09-21 21:39:40,618 - ERROR - Access forbidden for endpoint /corporations/98092220/contracts/222642169/items/
+2025-09-21 21:39:40,795 - INFO - Updated contract 222642169: 'Contract 222642169 - Item Exchange (Outstanding)'
+2025-09-21 21:39:41,052 - ERROR - Access forbidden for endpoint /corporations/98092220/contracts/222642153/items/
+2025-09-21 21:39:41,185 - INFO - Updated contract 222642153: 'Contract 222642153 - Item Exchange (Outstanding)'
+2025-09-21 21:39:41,335 - ERROR - Access forbidden for endpoint /corporations/98092220/contracts/222642133/items/
+2025-09-21 21:39:41,512 - INFO - Updated contract 222642133: 'Contract 222642133 - Item Exchange (Outstanding)'
+2025-09-21 21:39:41,680 - ERROR - Access forbidden for endpoint /corporations/98092220/contracts/222642107/items/
+2025-09-21 21:39:41,823 - INFO - Updated contract 222642107: 'Contract 222642107 - Item Exchange (Outstanding)'
+2025-09-21 21:39:42,035 - ERROR - Access forbidden for endpoint /corporations/98092220/contracts/222642089/items/
+2025-09-21 21:39:42,192 - INFO - Updated contract 222642089: 'Contract 222642089 - Item Exchange (Outstanding)'
+2025-09-21 21:39:42,326 - ERROR - Access forbidden for endpoint /corporations/98092220/contracts/222642077/items/
+2025-09-21 21:39:42,561 - INFO - Updated contract 222642077: 'Contract 222642077 - Item Exchange (Outstanding)'
+2025-09-21 21:39:42,875 - ERROR - Access forbidden for endpoint /corporations/98092220/contracts/222642072/items/
+2025-09-21 21:39:43,085 - INFO - Updated contract 222642072: 'Contract 222642072 - Item Exchange (Outstanding)'
+2025-09-21 21:39:43,223 - ERROR - Access forbidden for endpoint /corporations/98092220/contracts/222642061/items/
+2025-09-21 21:39:43,363 - INFO - Updated contract 222642061: 'Contract 222642061 - Item Exchange (Outstanding)'
+2025-09-21 21:39:43,498 - ERROR - Access forbidden for endpoint /corporations/98092220/contracts/222642037/items/
+2025-09-21 21:39:43,726 - INFO - Updated contract 222642037: 'Contract 222642037 - Item Exchange (Outstanding)'
+2025-09-21 21:39:43,867 - ERROR - Access forbidden for endpoint /corporations/98092220/contracts/222642026/items/
+2025-09-21 21:39:44,009 - INFO - Updated contract 222642026: 'Contract 222642026 - Item Exchange (Outstanding)'
+2025-09-21 21:39:44,240 - ERROR - Access forbidden for endpoint /corporations/98092220/contracts/222642020/items/
+2025-09-21 21:39:44,371 - INFO - Updated contract 222642020: 'Contract 222642020 - Item Exchange (Outstanding)'
+2025-09-21 21:39:44,514 - ERROR - Access forbidden for endpoint /corporations/98092220/contracts/222642013/items/
+2025-09-21 21:39:44,737 - INFO - Updated contract 222642013: 'Contract 222642013 - Item Exchange (Outstanding)'
+2025-09-21 21:39:44,870 - ERROR - Access forbidden for endpoint /corporations/98092220/contracts/222642004/items/
+2025-09-21 21:39:45,008 - INFO - Updated contract 222642004: 'Contract 222642004 - Item Exchange (Outstanding)'
+2025-09-21 21:39:45,224 - ERROR - Access forbidden for endpoint /corporations/98092220/contracts/222641996/items/
+2025-09-21 21:39:45,392 - INFO - Updated contract 222641996: 'Contract 222641996 - Item Exchange (Outstanding)'
+2025-09-21 21:39:45,526 - ERROR - Access forbidden for endpoint /corporations/98092220/contracts/222641993/items/
+2025-09-21 21:39:45,819 - INFO - Updated contract 222641993: 'Contract 222641993 - Item Exchange (Outstanding)'
+2025-09-21 21:39:45,971 - ERROR - Access forbidden for endpoint /corporations/98092220/contracts/222641983/items/
+2025-09-21 21:39:46,133 - INFO - Updated contract 222641983: 'Contract 222641983 - Item Exchange (Outstanding)'
+2025-09-21 21:39:46,353 - ERROR - Access forbidden for endpoint /corporations/98092220/contracts/222641973/items/
+2025-09-21 21:39:46,483 - INFO - Updated contract 222641973: 'Contract 222641973 - Item Exchange (Outstanding)'
+2025-09-21 21:39:46,756 - ERROR - Access forbidden for endpoint /corporations/98092220/contracts/222641961/items/
+2025-09-21 21:39:46,936 - INFO - Updated contract 222641961: 'Contract 222641961 - Item Exchange (Outstanding)'
+2025-09-21 21:39:47,080 - ERROR - Access forbidden for endpoint /corporations/98092220/contracts/222641948/items/
+2025-09-21 21:39:47,284 - INFO - Updated contract 222641948: 'Contract 222641948 - Item Exchange (Outstanding)'
+2025-09-21 21:39:47,420 - ERROR - Access forbidden for endpoint /corporations/98092220/contracts/222641937/items/
+2025-09-21 21:39:47,574 - INFO - Updated contract 222641937: 'Contract 222641937 - Item Exchange (Outstanding)'
+2025-09-21 21:39:47,710 - ERROR - Access forbidden for endpoint /corporations/98092220/contracts/222641925/items/
+2025-09-21 21:39:47,946 - INFO - Updated contract 222641925: 'Contract 222641925 - Item Exchange (Outstanding)'
+2025-09-21 21:39:48,090 - ERROR - Access forbidden for endpoint /corporations/98092220/contracts/222641914/items/
+2025-09-21 21:39:48,329 - INFO - Updated contract 222641914: 'Contract 222641914 - Item Exchange (Outstanding)'
+2025-09-21 21:39:48,470 - ERROR - Access forbidden for endpoint /corporations/98092220/contracts/222641897/items/
+2025-09-21 21:39:48,633 - INFO - Updated contract 222641897: 'Contract 222641897 - Item Exchange (Outstanding)'
+2025-09-21 21:39:48,851 - ERROR - Access forbidden for endpoint /corporations/98092220/contracts/222641882/items/
+2025-09-21 21:39:49,038 - INFO - Updated contract 222641882: 'Contract 222641882 - Item Exchange (Outstanding)'
+2025-09-21 21:39:49,183 - ERROR - Access forbidden for endpoint /corporations/98092220/contracts/222641864/items/
+2025-09-21 21:39:49,376 - INFO - Updated contract 222641864: 'Contract 222641864 - Item Exchange (Outstanding)'
+2025-09-21 21:39:49,517 - ERROR - Access forbidden for endpoint /corporations/98092220/contracts/222641849/items/
+2025-09-21 21:39:49,669 - INFO - Updated contract 222641849: 'Contract 222641849 - Item Exchange (Outstanding)'
+2025-09-21 21:39:49,810 - ERROR - Access forbidden for endpoint /corporations/98092220/contracts/222641837/items/
+2025-09-21 21:39:50,039 - INFO - Updated contract 222641837: 'Contract 222641837 - Item Exchange (Outstanding)'
+2025-09-21 21:39:50,182 - ERROR - Access forbidden for endpoint /corporations/98092220/contracts/222641828/items/
+2025-09-21 21:39:50,334 - INFO - Updated contract 222641828: 'Contract 222641828 - Item Exchange (Outstanding)'
+2025-09-21 21:39:50,573 - ERROR - Access forbidden for endpoint /corporations/98092220/contracts/222641822/items/
+2025-09-21 21:39:50,756 - INFO - Updated contract 222641822: 'Contract 222641822 - Item Exchange (Outstanding)'
+2025-09-21 21:39:51,017 - ERROR - Access forbidden for endpoint /corporations/98092220/contracts/222641814/items/
+2025-09-21 21:39:51,210 - INFO - Updated contract 222641814: 'Contract 222641814 - Item Exchange (Outstanding)'
+2025-09-21 21:39:51,380 - ERROR - Access forbidden for endpoint /corporations/98092220/contracts/222641803/items/
+2025-09-21 21:39:51,657 - INFO - Updated contract 222641803: 'Contract 222641803 - Item Exchange (Outstanding)'
+2025-09-21 21:39:51,824 - ERROR - Access forbidden for endpoint /corporations/98092220/contracts/222641777/items/
+2025-09-21 21:39:51,999 - INFO - Updated contract 222641777: 'Contract 222641777 - Item Exchange (Outstanding)'
+2025-09-21 21:39:52,150 - ERROR - Access forbidden for endpoint /corporations/98753370/contracts/222619308/items/
+2025-09-21 21:39:52,292 - INFO - Updated contract 222619308: 'Contract 222619308 - Item Exchange (Outstanding)'
+2025-09-21 21:39:52,521 - ERROR - Access forbidden for endpoint /corporations/98753370/contracts/222619307/items/
+2025-09-21 21:39:52,707 - INFO - Updated contract 222619307: 'Contract 222619307 - Item Exchange (Outstanding)'
+2025-09-21 21:39:52,843 - ERROR - Access forbidden for endpoint /corporations/98753370/contracts/222619248/items/
+2025-09-21 21:39:53,048 - INFO - Updated contract 222619248: 'Contract 222619248 - Item Exchange (Outstanding)'
+2025-09-21 21:39:53,200 - ERROR - Access forbidden for endpoint /corporations/98753370/contracts/222619247/items/
+2025-09-21 21:39:53,388 - INFO - Updated contract 222619247: 'Contract 222619247 - Item Exchange (Outstanding)'
+2025-09-21 21:39:53,602 - ERROR - Access forbidden for endpoint /corporations/98753370/contracts/222619246/items/
+2025-09-21 21:39:53,771 - INFO - Updated contract 222619246: 'Contract 222619246 - Item Exchange (Outstanding)'
+2025-09-21 21:39:54,096 - ERROR - Access forbidden for endpoint /corporations/98753370/contracts/222619245/items/
+2025-09-21 21:39:54,241 - INFO - Updated contract 222619245: 'Contract 222619245 - Item Exchange (Outstanding)'
+2025-09-21 21:39:54,384 - ERROR - Access forbidden for endpoint /corporations/98067874/contracts/222348765/items/
+2025-09-21 21:39:54,620 - INFO - Updated contract 222348765: 'Contract 222348765 - Item Exchange (Outstanding)'
+2025-09-21 21:39:54,756 - ERROR - Access forbidden for endpoint /corporations/98067874/contracts/222348764/items/
+2025-09-21 21:39:54,903 - INFO - Updated contract 222348764: 'Contract 222348764 - Item Exchange (Outstanding)'
+2025-09-21 21:39:55,047 - ERROR - Access forbidden for endpoint /corporations/98067874/contracts/222348763/items/
+2025-09-21 21:39:55,273 - INFO - Updated contract 222348763: 'Contract 222348763 - Item Exchange (Outstanding)'
+2025-09-21 21:39:55,419 - ERROR - Access forbidden for endpoint /corporations/98067874/contracts/222348762/items/
+2025-09-21 21:39:55,562 - INFO - Updated contract 222348762: 'Contract 222348762 - Item Exchange (Outstanding)'
+2025-09-21 21:39:55,772 - ERROR - Access forbidden for endpoint /corporations/98067874/contracts/222348761/items/
+2025-09-21 21:39:55,955 - INFO - Updated contract 222348761: 'Contract 222348761 - Item Exchange (Outstanding)'
+2025-09-21 21:39:56,192 - ERROR - Access forbidden for endpoint /corporations/98067874/contracts/222348760/items/
+2025-09-21 21:39:56,342 - INFO - Updated contract 222348760: 'Contract 222348760 - Item Exchange (Outstanding)'
+2025-09-21 21:39:56,624 - ERROR - Access forbidden for endpoint /corporations/98067874/contracts/222219078/items/
+2025-09-21 21:39:56,864 - INFO - Updated contract 222219078: 'Contract 222219078 - Item Exchange (Outstanding)'
+2025-09-21 21:39:56,999 - ERROR - Access forbidden for endpoint /corporations/98067874/contracts/222217960/items/
+2025-09-21 21:39:57,144 - INFO - Updated contract 222217960: 'Contract 222217960 - Item Exchange (Outstanding)'
+2025-09-21 21:39:57,366 - ERROR - Access forbidden for endpoint /corporations/98067874/contracts/222217748/items/
+2025-09-21 21:39:57,522 - INFO - Updated contract 222217748: 'Contract 222217748 - Item Exchange (Outstanding)'
+2025-09-21 21:39:57,789 - ERROR - Access forbidden for endpoint /corporations/98067874/contracts/222217747/items/
+2025-09-21 21:39:57,949 - INFO - Updated contract 222217747: 'Contract 222217747 - Item Exchange (Outstanding)'
+2025-09-21 21:39:58,085 - ERROR - Access forbidden for endpoint /corporations/98067874/contracts/222217746/items/
+2025-09-21 21:39:58,290 - INFO - Updated contract 222217746: 'Contract 222217746 - Item Exchange (Outstanding)'
+2025-09-21 21:40:06,780 - INFO - Updated contract 221945707: '21 Items (x78) - Contract 221945707'
+2025-09-21 21:40:14,543 - INFO - Updated contract 221945685: '21 Items (x78) - Contract 221945685'
+2025-09-21 21:40:22,257 - INFO - Updated contract 221945676: '21 Items (x78) - Contract 221945676'
+2025-09-21 21:40:22,259 - INFO - Contract update completed!
+2025-09-21 21:40:47,770 - ERROR - Access forbidden for endpoint /corporations/98753370/contracts/221945707/items/
