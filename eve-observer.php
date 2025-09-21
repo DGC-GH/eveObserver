@@ -184,6 +184,78 @@ class EVE_Observer {
     }
 
     public function enqueue_admin_scripts($hook) {
+        // Add clipboard functionality for all admin pages
+        wp_add_inline_script('jquery', '
+            function copyToClipboard(text) {
+                if (navigator.clipboard && window.isSecureContext) {
+                    navigator.clipboard.writeText(text).then(function() {
+                        // Show success feedback
+                        showCopyFeedback("Link copied to clipboard!");
+                    }).catch(function(err) {
+                        console.error("Failed to copy: ", err);
+                        fallbackCopyTextToClipboard(text);
+                    });
+                } else {
+                    fallbackCopyTextToClipboard(text);
+                }
+            }
+            
+            function fallbackCopyTextToClipboard(text) {
+                var textArea = document.createElement("textarea");
+                textArea.value = text;
+                textArea.style.position = "fixed";
+                textArea.style.left = "-999999px";
+                textArea.style.top = "-999999px";
+                document.body.appendChild(textArea);
+                textArea.focus();
+                textArea.select();
+                try {
+                    var successful = document.execCommand("copy");
+                    if (successful) {
+                        showCopyFeedback("Link copied to clipboard!");
+                    } else {
+                        showCopyFeedback("Copy failed", true);
+                    }
+                } catch (err) {
+                    showCopyFeedback("Copy failed: " + err, true);
+                }
+                document.body.removeChild(textArea);
+            }
+            
+            function showCopyFeedback(message, isError = false) {
+                // Remove existing feedback
+                var existing = document.querySelector(".copy-feedback");
+                if (existing) {
+                    existing.remove();
+                }
+                
+                // Create feedback element
+                var feedback = document.createElement("div");
+                feedback.className = "copy-feedback";
+                feedback.innerHTML = message;
+                feedback.style.cssText = "
+                    position: fixed;
+                    top: 20px;
+                    right: 20px;
+                    background: " + (isError ? "#dc3545" : "#28a745") + ";
+                    color: white;
+                    padding: 10px 15px;
+                    border-radius: 4px;
+                    z-index: 9999;
+                    font-weight: bold;
+                    box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+                ";
+                document.body.appendChild(feedback);
+                
+                // Remove after 3 seconds
+                setTimeout(function() {
+                    if (feedback.parentNode) {
+                        feedback.parentNode.removeChild(feedback);
+                    }
+                }, 3000);
+            }
+        ');
+
         if ($hook !== 'toplevel_page_eve-observer-dashboard') {
             return;
         }
@@ -1046,6 +1118,8 @@ class EVE_Observer {
         if ($column === 'outbid') {
             $is_outbid = get_post_meta($post_id, '_eve_contract_outbid', true) === 'true';
             $contract_id = get_post_meta($post_id, '_eve_contract_id', true);
+            $contract_title = get_post_meta($post_id, '_eve_contract_title', true);
+            $start_location_id = get_post_meta($post_id, '_eve_contract_start_location_id', true);
             $market_price = get_post_meta($post_id, '_eve_contract_market_price', true);
             
             if ($is_outbid) {
@@ -1058,12 +1132,25 @@ class EVE_Observer {
                 $icon = '✅';
             }
             
+            // Build EVE chat link for clipboard copying
+            $eve_chat_link = '';
+            if ($is_outbid && !empty($contract_id) && !empty($start_location_id) && !empty($contract_title)) {
+                $eve_chat_link = "<a href=\"contract:{$start_location_id}//{$contract_id}\">" . esc_html($contract_title) . "</a>";
+            }
+            
             // Make contract ID clickable to open in EVE client
             $eve_client_url = "eve://app/contract/{$contract_id}";
             $clickable_id = "<a href='" . esc_url($eve_client_url) . "' target='_blank' style='color: #0073aa; text-decoration: none;' title='Open in EVE Client'>" . esc_html($contract_id) . "</a>";
             
             echo "<div style='display: flex; align-items: center; gap: 8px;'>";
-            echo "<span style='color: " . esc_attr($color) . "; font-weight: bold;'>" . esc_html($icon . ' ' . $status_text) . "</span>";
+            
+            // Make status clickable for clipboard copy if outbid
+            if ($is_outbid && !empty($eve_chat_link)) {
+                echo "<span style='color: " . esc_attr($color) . "; font-weight: bold; cursor: pointer;' onclick='copyToClipboard(\"" . esc_js($eve_chat_link) . "\")' title='Click to copy EVE chat link'>" . esc_html($icon . ' ' . $status_text) . "</span>";
+            } else {
+                echo "<span style='color: " . esc_attr($color) . "; font-weight: bold;'>" . esc_html($icon . ' ' . $status_text) . "</span>";
+            }
+            
             if ($is_outbid && !empty($market_price) && is_numeric($market_price)) {
                 $formatted_price = number_format((float)$market_price, 2);
                 echo "<span style='color: #666; font-size: 12px;'>Market: " . esc_html($formatted_price) . " ISK</span>";
