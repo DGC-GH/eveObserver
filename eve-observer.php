@@ -1145,6 +1145,7 @@ class EVE_Observer {
             'single' => true,
             'show_in_rest' => true,
         ));
+    }
 
     public function get_post_thumbnail_id_external($thumbnail_id, $post_id = null) {
         if (get_post_meta($post_id, '_thumbnail_external_url', true)) {
