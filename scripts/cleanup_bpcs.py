@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-EVE Observer BPC Cleanup Script
+EVE Obse    return (username, password)anup Script
 Removes all Blueprint Copies (BPCs) from WordPress database.
 BPCs are identified by having quantity != -1 (BPOs have quantity = -1).
 """
@@ -26,36 +26,48 @@ logging.basicConfig(
 logger = logging.getLogger(__name__)
 
 def get_wordpress_auth():
-    """Get WordPress authentication headers."""
+    """Get WordPress authentication tuple for requests."""
     username = os.getenv('WP_USERNAME')
     password = os.getenv('WP_APP_PASSWORD')
 
     if not username or not password:
         raise ValueError("WP_USERNAME and WP_APP_PASSWORD environment variables must be set")
 
-    auth = requests.auth.HTTPBasicAuth(username, password)
-    return {'Authorization': f'Basic {auth.username}:{auth.password}'}
+    return (username, password)
 
 def get_all_blueprint_posts():
-    """Get all blueprint posts from WordPress."""
-    headers = get_wordpress_auth()
-    url = f"{WP_BASE_URL}/wp-json/wp/v2/eve_blueprint"
+    """Get all blueprint posts from WordPress with pagination."""
+    auth = get_wordpress_auth()
 
     logger.info("Fetching all blueprint posts from WordPress...")
-    response = requests.get(url, headers=headers, params={'per_page': 100})
+    posts = []
+    page = 1
 
-    if response.status_code != 200:
-        logger.error(f"Failed to fetch blueprint posts: {response.status_code} - {response.text}")
-        return []
+    while True:
+        response = requests.get(
+            f"{WP_BASE_URL}/wp-json/wp/v2/eve_blueprint",
+            auth=auth,
+            params={'per_page': 100, 'page': page}
+        )
 
-    posts = response.json()
-    logger.info(f"Found {len(posts)} blueprint posts")
+        if response.status_code != 200:
+            logger.error(f"Failed to fetch page {page}: {response.status_code} - {response.text}")
+            break
 
+        page_posts = response.json()
+        if not page_posts:
+            break
+
+        posts.extend(page_posts)
+        logger.debug(f"Fetched {len(page_posts)} posts from page {page}")
+        page += 1
+
+    logger.info(f"Found {len(posts)} blueprint posts total")
     return posts
 
 def delete_bpc_posts(posts):
     """Delete BPC posts (quantity != -1)."""
-    headers = get_wordpress_auth()
+    auth = get_wordpress_auth()
     deleted_count = 0
     bpo_count = 0
 
@@ -65,7 +77,7 @@ def delete_bpc_posts(posts):
 
         # Get the quantity meta field
         meta_url = f"{WP_BASE_URL}/wp-json/wp/v2/eve_blueprint/{post_id}"
-        meta_response = requests.get(meta_url, headers=headers)
+        meta_response = requests.get(meta_url, auth=auth)
 
         if meta_response.status_code != 200:
             logger.error(f"Failed to get meta for post {post_id}: {meta_response.status_code}")
@@ -83,7 +95,7 @@ def delete_bpc_posts(posts):
         if quantity != -1:
             # This is a BPC, delete it
             delete_url = f"{WP_BASE_URL}/wp-json/wp/v2/eve_blueprint/{post_id}"
-            delete_response = requests.delete(delete_url, headers=headers, params={'force': True})
+            delete_response = requests.delete(delete_url, auth=auth, params={'force': True})
 
             if delete_response.status_code == 200:
                 logger.info(f"Deleted BPC post: {title} (ID: {post_id}, quantity: {quantity})")
