@@ -559,7 +559,7 @@ def update_blueprint_in_wp(blueprint_data, wp_post_id_cache, char_id, access_tok
     # Add featured image from type icon
     type_id = blueprint_data.get('type_id')
     if type_id:
-        image_url = fetch_type_icon(type_id, size=128)
+        image_url = fetch_type_icon(type_id, size=512)
         # Check if type icon changed before updating
         existing_image_url = existing_post.get('meta', {}).get('_thumbnail_external_url') if existing_post else None
         if existing_image_url != image_url:
@@ -838,8 +838,7 @@ def update_blueprint_from_asset_in_wp(blueprint_data, wp_post_id_cache, access_t
             '_eve_bp_me': blueprint_data.get('material_efficiency', 0),
             '_eve_bp_te': blueprint_data.get('time_efficiency', 0),
             '_eve_bp_runs': blueprint_data.get('runs', -1),
-            '_eve_bp_source': source,
-            '_eve_bp_owner_id': owner_id,
+            '_eve_char_id': char_id,
             '_eve_last_updated': datetime.now(timezone.utc).isoformat()
         }
     }
@@ -847,7 +846,7 @@ def update_blueprint_from_asset_in_wp(blueprint_data, wp_post_id_cache, access_t
     # Add featured image from type icon
     type_id = blueprint_data.get('type_id')
     if type_id:
-        image_url = fetch_type_icon(type_id, size=128)
+        image_url = fetch_type_icon(type_id, size=512)
         # Check if type icon changed before updating
         existing_image_url = existing_post.get('meta', {}).get('_thumbnail_external_url') if existing_post else None
         if existing_image_url != image_url:
@@ -899,211 +898,120 @@ def fetch_character_industry_jobs(char_id, access_token):
     endpoint = f"/characters/{char_id}/industry/jobs/"
     return fetch_esi(endpoint, char_id, access_token)
 
-def fetch_character_contracts(char_id, access_token):
-    """Fetch character contracts."""
-    endpoint = f"/characters/{char_id}/contracts/"
-    return fetch_esi(endpoint, char_id, access_token)
-
-def fetch_corporation_contracts(corp_id, access_token):
-    """Fetch corporation contracts."""
-    endpoint = f"/corporations/{corp_id}/contracts/"
-    return fetch_esi(endpoint, corp_id, access_token)
-
 def fetch_corporation_assets(corp_id, access_token):
     """Fetch corporation assets."""
     endpoint = f"/corporations/{corp_id}/assets/"
-    return fetch_esi(endpoint, corp_id, access_token)
+    return fetch_esi(endpoint, None, access_token)  # Corp endpoint doesn't need char_id
 
-def update_corporation_in_wp(corp_id, corp_data):
-    """Update or create corporation post in WordPress."""
-    slug = f"corporation-{corp_id}"
-    # Check if post exists by slug
-    response = requests.get(f"{WP_BASE_URL}/wp-json/wp/v2/eve_corporation?slug={slug}", auth=get_wp_auth())
-    existing_posts = response.json() if response.status_code == 200 else []
-    existing_post = existing_posts[0] if existing_posts else None
-
-    post_data = {
-        'title': corp_data.get('name', f"Corporation {corp_id}"),
-        'slug': slug,
-        'status': 'publish',
-        'meta': {
-            '_eve_corp_id': corp_id,
-            '_eve_corp_name': corp_data.get('name'),
-            '_eve_corp_ticker': corp_data.get('ticker'),
-            '_eve_corp_member_count': corp_data.get('member_count'),
-            '_eve_corp_ceo_id': corp_data.get('ceo_id'),
-            '_eve_corp_alliance_id': corp_data.get('alliance_id'),
-            '_eve_corp_tax_rate': corp_data.get('tax_rate'),
-            '_eve_last_updated': datetime.now(timezone.utc).isoformat()
+def generate_contract_title(contract_data, contract_items=None, blueprint_cache=None):
+    """Generate a descriptive contract title based on items."""
+    if blueprint_cache is None:
+        blueprint_cache = load_blueprint_cache()
+    
+    contract_id = contract_data.get('contract_id')
+    contract_type = contract_data.get('type', 'unknown')
+    status = contract_data.get('status', 'unknown').title()
+    
+    # If no items, use default format
+    if not contract_items:
+        type_names = {
+            'item_exchange': 'Item Exchange',
+            'auction': 'Auction',
+            'courier': 'Courier',
+            'loan': 'Loan'
         }
-    }
-
-    # Add featured image from corporation logo
-    logo_url = fetch_corporation_logo(corp_id)
-    if logo_url:
-        # Check if logo changed before updating
-        existing_logo_url = existing_post.get('meta', {}).get('_thumbnail_external_url') if existing_post else None
-        if existing_logo_url != logo_url:
-            post_data['meta']['_thumbnail_external_url'] = logo_url
-            logger.info(f"Updated logo for corporation: {corp_data.get('name', corp_id)}")
+        type_name = type_names.get(contract_type, contract_type.title())
+        return f"Contract {contract_id} - {type_name} ({status})"
+    
+    # If we have items, create a more descriptive title
+    if len(contract_items) == 1:
+        # Single item contract
+        item = contract_items[0]
+        type_id = item.get('type_id')
+        quantity = item.get('quantity', 1)
+        
+        if type_id:
+            # Get item name
+            if str(type_id) in blueprint_cache:
+                item_name = blueprint_cache[str(type_id)]
+            else:
+                type_data = fetch_public_esi(f"/universe/types/{type_id}")
+                if type_data:
+                    item_name = type_data.get('name', f"Item {type_id}")
+                    # Only cache if it's actually a blueprint
+                    if 'Blueprint' in item_name:
+                        cleaned_name = item_name.replace(" Blueprint", "").strip()
+                        blueprint_cache[str(type_id)] = cleaned_name
+                        save_blueprint_cache(blueprint_cache)
+                else:
+                    item_name = f"Item {type_id}"
+            
+            # Check if it's a blueprint (quantity -1 indicates BPO, or check if it's in blueprint cache)
+            is_blueprint = str(type_id) in blueprint_cache
+            if not is_blueprint:
+                # Double-check with ESI if not in cache
+                type_data = fetch_public_esi(f"/universe/types/{type_id}")
+                is_blueprint = type_data and 'Blueprint' in type_data.get('name', '')
+            
+            if is_blueprint:
+                bp_type = "BPO" if quantity == -1 else "BPC"
+                return f"{item_name} {bp_type} - Contract {contract_id}"
+            else:
+                # Regular item
+                return f"{item_name} (x{quantity}) - Contract {contract_id}"
+    
+    else:
+        # Multiple items contract
+        blueprint_count = 0
+        total_quantity = 0
+        
+        for item in contract_items:
+            quantity = item.get('quantity', 1)
+            total_quantity += abs(quantity)  # Use abs in case of BPOs
+            
+            # Check if it's a blueprint
+            type_id = item.get('type_id')
+            if type_id:
+                # First check if it's in blueprint cache
+                if str(type_id) in blueprint_cache:
+                    blueprint_count += 1
+                else:
+                    # Check with ESI
+                    type_data = fetch_public_esi(f"/universe/types/{type_id}")
+                    if type_data and 'Blueprint' in type_data.get('name', ''):
+                        blueprint_count += 1
+        
+        if blueprint_count == len(contract_items):
+            # All items are blueprints
+            return f"{blueprint_count} Blueprints - Contract {contract_id}"
+        elif blueprint_count > 0:
+            # Mix of blueprints and other items
+            return f"{blueprint_count} Blueprints + {len(contract_items) - blueprint_count} Items - Contract {contract_id}"
         else:
-            logger.info(f"Logo unchanged for corporation: {corp_data.get('name', corp_id)}")
+            # No blueprints, just regular items
+            return f"{len(contract_items)} Items (x{total_quantity}) - Contract {contract_id}"
 
-    if existing_post:
-        # Update existing
-        post_id = existing_post['id']
-        url = f"{WP_BASE_URL}/wp-json/wp/v2/eve_corporation/{post_id}"
-        response = requests.put(url, json=post_data, auth=get_wp_auth())
-    else:
-        # Create new
-        url = f"{WP_BASE_URL}/wp-json/wp/v2/eve_corporation"
-        response = requests.post(url, json=post_data, auth=get_wp_auth())
-
-    if response.status_code in [200, 201]:
-        logger.info(f"Updated corporation: {corp_data.get('name', corp_id)}")
-    else:
-        logger.error(f"Failed to update corporation {corp_id}: {response.status_code} - {response.text}")
-
-def fetch_planet_details(char_id, planet_id, access_token):
-    """Fetch detailed planet information including pins."""
-    endpoint = f"/characters/{char_id}/planets/{planet_id}/"
-    return fetch_esi(endpoint, char_id, access_token)
-
-def fetch_character_portrait(char_id):
-    """Fetch character portrait URLs from ESI."""
-    endpoint = f"/characters/{char_id}/portrait/"
-    return fetch_public_esi(endpoint)
-
-def fetch_corporation_logo(corp_id):
-    """Fetch corporation logo URL from images service."""
-    # Use images.evetech.net service directly
-    return f"https://images.evetech.net/corporations/{corp_id}/logo?size=128"
-
-def fetch_alliance_logo(alliance_id):
-    """Fetch alliance logo URLs from ESI."""
-    endpoint = f"/alliances/{alliance_id}/logos/"
-    return fetch_public_esi(endpoint)
-
-def fetch_type_icon(type_id, size=64):
-    """Fetch type render URL from ESI."""
-    # ESI provides render URLs for types (3D images)
-    return f"https://images.evetech.net/types/{type_id}/render?size={size}"
-
-def fetch_planet_image(planet_type_id, size=512):
-    """Fetch planet image URL from ESI."""
-    return f"https://images.evetech.net/types/{planet_type_id}/render?size={size}"
-
-def upload_image_to_wordpress(image_url, filename, alt_text=""):
-    """Upload an image to WordPress media library using external URL and return the media ID."""
-    try:
-        # Use WordPress's built-in external URL support
-        data = {
-            'source_url': image_url,
-            'alt_text': alt_text,
-            'caption': alt_text
-        }
-
-        # Upload to WordPress using source_url
-        upload_url = f"{WP_BASE_URL}/wp-json/wp/v2/media"
-        upload_response = requests.post(upload_url, json=data, auth=get_wp_auth())
-
-        if upload_response.status_code in [200, 201]:
-            media_data = upload_response.json()
-            return media_data['id']
-        else:
-            logger.warning(f"Failed to create media from URL: {upload_response.status_code} - {upload_response.text}")
-            return None
-
-    except Exception as e:
-        logger.error(f"Error creating media from URL {image_url}: {e}")
-        return None
-
-def update_planet_in_wp(planet_id, planet_data, char_id):
-    """Update or create planet post in WordPress."""
-    slug = f"planet-{planet_id}"
-    # Check if post exists by slug
-    response = requests.get(f"{WP_BASE_URL}/wp-json/wp/v2/eve_planet?slug={slug}", auth=get_wp_auth())
-    existing_posts = response.json() if response.status_code == 200 else []
-    existing_post = existing_posts[0] if existing_posts else None
-
-    # Get planet name
-    planet_info = fetch_public_esi(f"/universe/planets/{planet_id}")
-    if planet_info:
-        title = planet_info.get('name', f"Planet {planet_id}")
-    else:
-        title = f"Planet {planet_id}"
-
-    post_data = {
-        'title': title,
-        'slug': f"planet-{planet_id}",
-        'status': 'publish',
-        'meta': {
-            '_eve_planet_id': planet_id,
-            '_eve_planet_type': planet_data.get('planet_type'),
-            '_eve_planet_solar_system_id': planet_data.get('solar_system_id'),
-            '_eve_planet_upgrade_level': planet_data.get('upgrade_level'),
-            '_eve_char_id': char_id,
-            '_eve_last_updated': datetime.now(timezone.utc).isoformat()
-        }
-    }
-
-    # Add featured image from planet render
-    planet_type_id = planet_data.get('planet_type')
-    if planet_type_id:
-        image_url = fetch_planet_image(planet_type_id, size=512)
-        # Check if planet render changed before updating
-        existing_image_url = existing_post.get('meta', {}).get('_thumbnail_external_url') if existing_post else None
-        if existing_image_url != image_url:
-            post_data['meta']['_thumbnail_external_url'] = image_url
-            logger.info(f"Updated planet render for: {title}")
-        else:
-            logger.info(f"Planet render unchanged for: {title}")
-
-    if 'pins' in planet_data:
-        post_data['meta']['_eve_planet_pins_data'] = json.dumps(planet_data['pins'])
-
-    if existing_post:
-        # Update existing
-        post_id = existing_post['id']
-        url = f"{WP_BASE_URL}/wp-json/wp/v2/eve_planet/{post_id}"
-        response = requests.put(url, json=post_data, auth=get_wp_auth())
-    else:
-        # Create new
-        url = f"{WP_BASE_URL}/wp-json/wp/v2/eve_planet"
-        response = requests.post(url, json=post_data, auth=get_wp_auth())
-
-    if response.status_code in [200, 201]:
-        logger.info(f"Updated planet: {planet_id}")
-    else:
-        logger.error(f"Failed to update planet {planet_id}: {response.status_code} - {response.text}")
-
-def update_contract_in_wp(contract_id, contract_data, for_corp=False, entity_id=None):
+def update_contract_in_wp(contract_id, contract_data, for_corp=False, entity_id=None, access_token=None, blueprint_cache=None):
     """Update or create contract post in WordPress."""
+    if blueprint_cache is None:
+        blueprint_cache = load_blueprint_cache()
+    
     slug = f"contract-{contract_id}"
     # Check if post exists by slug
     response = requests.get(f"{WP_BASE_URL}/wp-json/wp/v2/eve_contract?slug={slug}", auth=get_wp_auth())
     existing_posts = response.json() if response.status_code == 200 else []
     existing_post = existing_posts[0] if existing_posts else None
 
-    # Get contract type name
-    contract_type = contract_data.get('type', 'unknown')
-    type_names = {
-        'item_exchange': 'Item Exchange',
-        'auction': 'Auction',
-        'courier': 'Courier',
-        'loan': 'Loan'
-    }
-    type_name = type_names.get(contract_type, contract_type.title())
+    # Fetch contract items if we have access token
+    contract_items = None
+    if access_token:
+        if for_corp and entity_id:
+            contract_items = fetch_corporation_contract_items(entity_id, contract_id, access_token)
+        elif not for_corp and entity_id:
+            contract_items = fetch_character_contract_items(entity_id, contract_id, access_token)
 
-    # Get status
-    status = contract_data.get('status', 'unknown').title()
-
-    # Get issuer/assignee names if available
-    issuer_name = contract_data.get('issuer_corporation_id', 'Unknown')
-    assignee_name = contract_data.get('assignee_id', 'Unknown')
-
-    # Construct title
-    title = f"Contract {contract_id} - {type_name} ({status})"
+    # Generate descriptive title
+    title = generate_contract_title(contract_data, contract_items, blueprint_cache)
 
     post_data = {
         'title': title,
@@ -1138,30 +1046,25 @@ def update_contract_in_wp(contract_id, contract_data, for_corp=False, entity_id=
     post_data['meta'] = {k: v for k, v in post_data['meta'].items() if v is not None}
 
     # Add items data if available
-    if 'items' in contract_data:
-        post_data['meta']['_eve_contract_items'] = json.dumps(contract_data['items'])
+    if contract_items:
+        post_data['meta']['_eve_contract_items'] = json.dumps(contract_items)
         
         # Set thumbnail based on blueprint items in contract
         thumbnail_url = None
-        for item in contract_data['items']:
+        for item in contract_items:
             type_id = item.get('type_id')
             if type_id:
                 # Check if this is a blueprint
                 type_data = fetch_public_esi(f"/universe/types/{type_id}")
                 if type_data and 'Blueprint' in type_data.get('name', ''):
-                    # Try to get the blueprint icon
-                    icon_url = f"https://images.evetech.net/types/{type_id}/icon?size=64"
-                    try:
-                        icon_response = requests.head(icon_url, timeout=5)
-                        if icon_response.status_code == 200:
-                            thumbnail_url = icon_url
-                            break
-                    except:
-                        pass
+                    # Use the improved fetch_type_icon function
+                    thumbnail_url = fetch_type_icon(type_id, size=512)
+                    if thumbnail_url and not thumbnail_url.startswith('https://via.placeholder.com'):
+                        break
         
         # If no blueprint icon found, use contract placeholder
         if not thumbnail_url:
-            thumbnail_url = "https://via.placeholder.com/64x64/e74c3c/ffffff?text=Contract"
+            thumbnail_url = "https://via.placeholder.com/512x512/e74c3c/ffffff?text=Contract"
         
         # Check if thumbnail changed before updating
         existing_thumbnail = existing_post.get('meta', {}).get('_thumbnail_external_url') if existing_post else None
@@ -1169,6 +1072,21 @@ def update_contract_in_wp(contract_id, contract_data, for_corp=False, entity_id=
             post_data['meta']['_thumbnail_external_url'] = thumbnail_url
 
     if existing_post:
+        # Check if title changed before updating
+        existing_title = existing_post.get('title', {}).get('rendered', '')
+        existing_meta = existing_post.get('meta', {})
+        
+        # Compare key fields to see if update is needed
+        needs_update = (
+            existing_title != title or
+            str(existing_meta.get('_eve_contract_status', '')) != str(contract_data.get('status', '')) or
+            str(existing_meta.get('_eve_contract_items', '')) != str(json.dumps(contract_items) if contract_items else '')
+        )
+        
+        if not needs_update:
+            logger.info(f"Contract {contract_id} unchanged, skipping update")
+            return
+        
         # Update existing
         post_id = existing_post['id']
         url = f"{WP_BASE_URL}/wp-json/wp/v2/eve_contract/{post_id}"
@@ -1179,88 +1097,24 @@ def update_contract_in_wp(contract_id, contract_data, for_corp=False, entity_id=
         response = requests.post(url, json=post_data, auth=get_wp_auth())
 
     if response.status_code in [200, 201]:
-        logger.info(f"Updated contract: {contract_id}")
+        logger.info(f"Updated contract: {contract_id} - {title}")
     else:
         logger.error(f"Failed to update contract {contract_id}: {response.status_code} - {response.text}")
 
-def delete_wp_post(post_type, post_id):
-    """Delete a post from WordPress."""
-    url = f"{WP_BASE_URL}/wp-json/wp/v2/{post_type}/{post_id}"
-    response = requests.delete(url, auth=get_wp_auth())
-    if response.status_code in [200, 204]:
-        logger.info(f"Deleted {post_type} post: {post_id}")
-        return True
-    else:
-        logger.error(f"Failed to delete {post_type} post {post_id}: {response.status_code} - {response.text}")
-        return False
+def fetch_character_portrait(char_id):
+    """Fetch character portrait URLs from ESI."""
+    endpoint = f"/characters/{char_id}/portrait/"
+    return fetch_public_esi(endpoint)
 
-def save_tokens(tokens):
-    """Save tokens to file."""
-    with open(TOKENS_FILE, 'w') as f:
-        json.dump(tokens, f)
+def fetch_corporation_logo(corp_id):
+    """Fetch corporation logo URLs from ESI."""
+    endpoint = f"/corporations/{corp_id}/logo/"
+    return fetch_public_esi(endpoint)
 
-def cleanup_old_posts():
-    """Clean up posts that don't match our criteria."""
-    logger.info("Starting cleanup of old posts...")
-
-    # Clean up contract posts (delete finished/deleted contracts)
-    response = requests.get(f"{WP_BASE_URL}/wp-json/wp/v2/eve_contract", auth=get_wp_auth(), params={'per_page': WP_PER_PAGE})
-    if response.status_code == 200:
-        contracts = response.json()
-        for contract in contracts:
-            status = contract.get('meta', {}).get('_eve_contract_status')
-            if status in ['finished', 'deleted']:
-                contract_id = contract.get('meta', {}).get('_eve_contract_id')
-                logger.info(f"Deleting finished/deleted contract: {contract_id}")
-                delete_wp_post('eve_contract', contract['id'])
-            elif status == 'expired':
-                # List expired contracts for manual deletion
-                contract_id = contract.get('meta', {}).get('_eve_contract_id')
-                title = contract.get('title', {}).get('rendered', f'Contract {contract_id}')
-                logger.info(f"EXPIRED CONTRACT TO DELETE MANUALLY: {title} (ID: {contract_id})")
-
-    # Clean up blueprint posts (only keep those from No Mercy incorporated or characters)
-    response = requests.get(f"{WP_BASE_URL}/wp-json/wp/v2/eve_blueprint", auth=get_wp_auth(), params={'per_page': WP_PER_PAGE})
-    if response.status_code == 200:
-        blueprints = response.json()
-        for bp in blueprints:
-            meta = bp.get('meta', {})
-            quantity = meta.get('_eve_bp_quantity', -1)
-            owner_id = meta.get('_eve_bp_owner_id')
-            source = meta.get('_eve_bp_source', '')
-            char_id = meta.get('_eve_char_id')
-            
-            # Remove BPCs (we only want to track BPOs now)
-            if quantity != -1:
-                bp_id = meta.get('_eve_bp_item_id')
-                logger.info(f"Deleting BPC (quantity={quantity}): {bp_id}")
-                delete_wp_post('eve_blueprint', bp['id'])
-                continue
-            
-            # If it's from a corporation, check if it's No Mercy incorporated
-            if owner_id and source.startswith('corp_'):
-                # We need to check if this corp_id belongs to No Mercy incorporated
-                corp_response = requests.get(f"{WP_BASE_URL}/wp-json/wp/v2/eve_corporation?meta_key=_eve_corp_id&meta_value={owner_id}", auth=get_wp_auth())
-                if corp_response.status_code == 200:
-                    corp_posts = corp_response.json()
-                    if not corp_posts:  # Corporation not found in our records
-                        bp_id = bp.get('meta', {}).get('_eve_bp_item_id')
-                        logger.info(f"Deleting blueprint from unknown corporation: {bp_id}")
-                        delete_wp_post('eve_blueprint', bp['id'])
-                    else:
-                        corp_name = corp_posts[0].get('title', {}).get('rendered', '')
-                        if corp_name.lower() != 'no mercy incorporated':
-                            bp_id = bp.get('meta', {}).get('_eve_bp_item_id')
-                            logger.info(f"Deleting blueprint from {corp_name}: {bp_id}")
-                            delete_wp_post('eve_blueprint', bp['id'])
-            # If it's from character assets/industry jobs and we don't have a char_id, it might be orphaned
-            elif not char_id and not owner_id:
-                # These are from the direct blueprint endpoints - check if they're corporation blueprints
-                # For now, keep them as they come from authenticated sources
-                pass
-
-    logger.info("Cleanup completed.")
-
+def fetch_planet_details(char_id, planet_id, access_token):
+    """Fetch detailed planet colony information."""
+    endpoint = f"/characters/{char_id}/planets/{planet_id}/"
+    return fetch_esi(endpoint, char_id, access_token) 
 def refresh_token(refresh_token):
     """Refresh an access token."""
     data = {
@@ -1323,8 +1177,12 @@ def fetch_market_orders(region_id, type_id):
                 logger.info("Error limited on market orders. Waiting 60 seconds...")
                 time.sleep(60)
                 continue
+        elif response.status_code >= 500:
+            logger.warning(f"SERVER ERROR {response.status_code} on market orders: {response.text}")
+            time.sleep(5)  # Wait before retrying
+            continue
         else:
-            logger.error(f"ESI API error for market orders: {response.status_code} - {response.text}")
+            logger.error(f"Unexpected error fetching market orders: {response.status_code} - {response.text}")
             return None
 
 def collect_corporation_members(tokens):
@@ -1524,7 +1382,7 @@ def process_corporation_contracts(corp_id, access_token, corp_data):
                 continue
             elif contract_status == 'expired':
                 logger.info(f"EXPIRED CORPORATION CONTRACT TO DELETE MANUALLY: {contract['contract_id']}")
-            update_contract_in_wp(contract['contract_id'], contract, for_corp=True, entity_id=corp_id)
+            update_contract_in_wp(contract['contract_id'], contract, for_corp=True, entity_id=corp_id, access_token=access_token)
 
 def process_character_data(char_id, token_data, wp_post_id_cache, blueprint_cache, location_cache, structure_cache, failed_structures):
     """Process data for a single character."""
@@ -1692,7 +1550,215 @@ def process_character_contracts(char_id, access_token, char_name, wp_post_id_cac
                 continue
             elif contract_status == 'expired':
                 logger.info(f"EXPIRED CHARACTER CONTRACT TO DELETE MANUALLY: {contract['contract_id']}")
-            update_contract_in_wp(contract['contract_id'], contract, for_corp=False, entity_id=char_id)
+            update_contract_in_wp(contract['contract_id'], contract, for_corp=False, entity_id=char_id, access_token=access_token)
 
-if __name__ == '__main__':
-    main()
+def fetch_type_icon(type_id, size=512):
+    """Fetch type icon URL from images.evetech.net with fallback."""
+    # Try the 'bp' variation first for blueprints, then fallback to regular icon
+    variations = ['bp', 'icon']
+    
+    for variation in variations:
+        icon_url = f"https://images.evetech.net/types/{type_id}/{variation}?size={size}"
+        # Test if the URL exists by making a HEAD request
+        try:
+            response = requests.head(icon_url, timeout=5)
+            if response.status_code == 200:
+                return icon_url
+        except:
+            continue
+    
+    # If no icon found, return placeholder
+    return f"https://via.placeholder.com/{size}x{size}/cccccc/000000?text=No+Icon"
+
+def update_corporation_in_wp(corp_id, corp_data):
+    """Update or create corporation post in WordPress."""
+    slug = f"corporation-{corp_id}"
+    # Check if post exists by slug
+    response = requests.get(f"{WP_BASE_URL}/wp-json/wp/v2/eve_corporation?slug={slug}", auth=get_wp_auth())
+    existing_posts = response.json() if response.status_code == 200 else []
+    existing_post = existing_posts[0] if existing_posts else None
+
+    post_data = {
+        'title': corp_data['name'],
+        'slug': slug,
+        'status': 'publish',
+        'meta': {
+            '_eve_corp_id': corp_id,
+            '_eve_corp_name': corp_data['name'],
+            '_eve_corp_ticker': corp_data.get('ticker'),
+            '_eve_corp_member_count': corp_data.get('member_count'),
+            '_eve_corp_ceo_id': corp_data.get('ceo_id'),
+            '_eve_corp_tax_rate': corp_data.get('tax_rate'),
+            '_eve_last_updated': datetime.now(timezone.utc).isoformat()
+        }
+    }
+
+    # Add optional fields if they exist
+    optional_fields = {
+        '_eve_corp_alliance_id': corp_data.get('alliance_id'),
+        '_eve_corp_date_founded': corp_data.get('date_founded'),
+        '_eve_corp_creator_id': corp_data.get('creator_id'),
+        '_eve_corp_home_station_id': corp_data.get('home_station_id'),
+        '_eve_corp_shares': corp_data.get('shares'),
+        '_eve_corp_description': corp_data.get('description'),
+        '_eve_corp_url': corp_data.get('url'),
+        '_eve_corp_war_eligible': corp_data.get('war_eligible'),
+        '_eve_corp_faction_id': corp_data.get('faction_id')
+    }
+    for key, value in optional_fields.items():
+        if value is not None:
+            post_data['meta'][key] = value
+
+    # Add featured image from corporation logo
+    logo_data = fetch_corporation_logo(corp_id)
+    if logo_data and 'px256x256' in logo_data:
+        new_logo_url = logo_data['px256x256']
+        # Check if logo changed before updating
+        existing_logo_url = existing_post.get('meta', {}).get('_thumbnail_external_url') if existing_post else None
+        if existing_logo_url != new_logo_url:
+            post_data['meta']['_thumbnail_external_url'] = new_logo_url
+            logger.info(f"Updated logo for corporation: {corp_data['name']}")
+        else:
+            logger.info(f"Logo unchanged for corporation: {corp_data['name']}")
+
+    if existing_post:
+        # Update existing
+        post_id = existing_post['id']
+        url = f"{WP_BASE_URL}/wp-json/wp/v2/eve_corporation/{post_id}"
+        response = requests.put(url, json=post_data, auth=get_wp_auth())
+    else:
+        # Create new
+        url = f"{WP_BASE_URL}/wp-json/wp/v2/eve_corporation"
+        response = requests.post(url, json=post_data, auth=get_wp_auth())
+
+    if response.status_code in [200, 201]:
+        logger.info(f"Updated corporation: {corp_data['name']}")
+    else:
+        logger.error(f"Failed to update corporation {corp_data['name']}: {response.status_code} - {response.text}")
+
+def update_planet_in_wp(planet_id, planet_data, char_id):
+    """Update or create planet post in WordPress."""
+    slug = f"planet-{planet_id}"
+    # Check if post exists by slug
+    response = requests.get(f"{WP_BASE_URL}/wp-json/wp/v2/eve_planet?slug={slug}", auth=get_wp_auth())
+    existing_posts = response.json() if response.status_code == 200 else []
+    existing_post = existing_posts[0] if existing_posts else None
+
+    # Get planet name from ESI
+    planet_type_data = fetch_public_esi(f"/universe/types/{planet_data.get('type_id')}")
+    planet_name = planet_type_data.get('name', f"Planet {planet_id}") if planet_type_data else f"Planet {planet_id}"
+
+    post_data = {
+        'title': f"{planet_name} - {char_id}",
+        'slug': slug,
+        'status': 'publish',
+        'meta': {
+            '_eve_planet_id': planet_id,
+            '_eve_planet_type_id': planet_data.get('type_id'),
+            '_eve_planet_name': planet_name,
+            '_eve_planet_solar_system_id': planet_data.get('solar_system_id'),
+            '_eve_char_id': char_id,
+            '_eve_last_updated': datetime.now(timezone.utc).isoformat()
+        }
+    }
+
+    # Add colony details if available
+    if 'pins' in planet_data:
+        post_data['meta']['_eve_planet_pins'] = json.dumps(planet_data['pins'])
+    if 'routes' in planet_data:
+        post_data['meta']['_eve_planet_routes'] = json.dumps(planet_data['routes'])
+    if 'links' in planet_data:
+        post_data['meta']['_eve_planet_links'] = json.dumps(planet_data['links'])
+
+    # Add featured image from planet type icon
+    type_id = planet_data.get('type_id')
+    if type_id:
+        image_url = fetch_type_icon(type_id, size=512)
+        # Check if image changed before updating
+        existing_image_url = existing_post.get('meta', {}).get('_thumbnail_external_url') if existing_post else None
+        if existing_image_url != image_url:
+            post_data['meta']['_thumbnail_external_url'] = image_url
+            logger.info(f"Updated image for planet: {planet_name}")
+        else:
+            logger.info(f"Image unchanged for planet: {planet_name}")
+
+    if existing_post:
+        # Update existing
+        post_id = existing_post['id']
+        url = f"{WP_BASE_URL}/wp-json/wp/v2/eve_planet/{post_id}"
+        response = requests.put(url, json=post_data, auth=get_wp_auth())
+    else:
+        # Create new
+        url = f"{WP_BASE_URL}/wp-json/wp/v2/eve_planet"
+        response = requests.post(url, json=post_data, auth=get_wp_auth())
+
+    if response.status_code in [200, 201]:
+        logger.info(f"Updated planet: {planet_id}")
+    else:
+        logger.error(f"Failed to update planet {planet_id}: {response.status_code} - {response.text}")
+
+def save_failed_structures(failed_structures):
+    """Save failed structures cache."""
+    save_cache(FAILED_STRUCTURES_FILE, failed_structures)
+
+def cleanup_old_posts():
+    """Clean up posts that don't match our criteria."""
+    logger.info("Starting cleanup of old posts...")
+
+    # Clean up contract posts (delete finished/deleted contracts)
+    response = requests.get(f"{WP_BASE_URL}/wp-json/wp/v2/eve_contract", auth=get_wp_auth(), params={'per_page': WP_PER_PAGE})
+    if response.status_code == 200:
+        contracts = response.json()
+        for contract in contracts:
+            status = contract.get('meta', {}).get('_eve_contract_status')
+            if status in ['finished', 'deleted']:
+                contract_id = contract.get('meta', {}).get('_eve_contract_id')
+                logger.info(f"Deleting finished/deleted contract: {contract_id}")
+                delete_wp_post('eve_contract', contract['id'])
+            elif status == 'expired':
+                # List expired contracts for manual deletion
+                contract_id = contract.get('meta', {}).get('_eve_contract_id')
+                title = contract.get('title', {}).get('rendered', f'Contract {contract_id}')
+                logger.info(f"EXPIRED CONTRACT TO DELETE MANUALLY: {title} (ID: {contract_id})")
+
+    # Clean up blueprint posts (only keep those from No Mercy incorporated or characters)
+    response = requests.get(f"{WP_BASE_URL}/wp-json/wp/v2/eve_blueprint", auth=get_wp_auth(), params={'per_page': WP_PER_PAGE})
+    if response.status_code == 200:
+        blueprints = response.json()
+        for bp in blueprints:
+            meta = bp.get('meta', {})
+            quantity = meta.get('_eve_bp_quantity', -1)
+            owner_id = meta.get('_eve_bp_owner_id')
+            source = meta.get('_eve_bp_source', '')
+            char_id = meta.get('_eve_char_id')
+            
+            # Remove BPCs (we only want to track BPOs now)
+            if quantity != -1:
+                bp_id = meta.get('_eve_bp_item_id')
+                logger.info(f"Deleting BPC (quantity={quantity}): {bp_id}")
+                delete_wp_post('eve_blueprint', bp['id'])
+                continue
+            
+            # If it's from a corporation, check if it's No Mercy incorporated
+            if owner_id and source.startswith('corp_'):
+                # We need to check if this corp_id belongs to No Mercy incorporated
+                corp_response = requests.get(f"{WP_BASE_URL}/wp-json/wp/v2/eve_corporation?meta_key=_eve_corp_id&meta_value={owner_id}", auth=get_wp_auth())
+                if corp_response.status_code == 200:
+                    corp_posts = corp_response.json()
+                    if not corp_posts:  # Corporation not found in our records
+                        bp_id = bp.get('meta', {}).get('_eve_bp_item_id')
+                        logger.info(f"Deleting blueprint from unknown corporation: {bp_id}")
+                        delete_wp_post('eve_blueprint', bp['id'])
+                    else:
+                        corp_name = corp_posts[0].get('title', {}).get('rendered', '')
+                        if corp_name.lower() != 'no mercy incorporated':
+                            bp_id = bp.get('meta', {}).get('_eve_bp_item_id')
+                            logger.info(f"Deleting blueprint from {corp_name}: {bp_id}")
+                            delete_wp_post('eve_blueprint', bp['id'])
+            # If it's from character assets/industry jobs and we don't have a char_id, it might be orphaned
+            elif not char_id and not owner_id:
+                # These are from the direct blueprint endpoints - check if they're corporation blueprints
+                # For now, keep them as they come from authenticated sources
+                pass
+
+    logger.info("Cleanup completed.")

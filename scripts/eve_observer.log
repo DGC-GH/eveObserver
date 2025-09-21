@@ -10518,3 +10518,1566 @@ Summary:
 2025-09-21 20:28:58,421 - INFO - Set logo for corporation: No Mercy Incorporated
 2025-09-21 20:28:58,569 - INFO - Updated corporation: No Mercy Incorporated
 2025-09-21 20:28:58,570 - INFO - Fetching corporation blueprints for 98092220...
+2025-09-21 20:54:13,237 - INFO - Starting cleanup of old posts...
+2025-09-21 20:54:14,134 - INFO - Cleanup completed.
+2025-09-21 20:54:14,819 - INFO - Portrait unchanged for character: Mr FiLiN
+2025-09-21 20:54:15,018 - INFO - Updated character: Mr FiLiN
+2025-09-21 20:54:16,363 - INFO - Portrait unchanged for character: Dr FiLiN
+2025-09-21 20:54:16,514 - INFO - Updated character: Dr FiLiN
+2025-09-21 20:54:17,132 - INFO - Portrait unchanged for character: Orev Khazar
+2025-09-21 20:54:17,378 - INFO - Updated character: Orev Khazar
+2025-09-21 20:54:18,089 - INFO - Portrait unchanged for character: Sir FiLiN
+2025-09-21 20:54:18,237 - INFO - Updated character: Sir FiLiN
+2025-09-21 20:54:18,949 - INFO - Portrait unchanged for character: Filin Khan
+2025-09-21 20:54:19,100 - INFO - Updated character: Filin Khan
+2025-09-21 20:54:19,792 - INFO - Portrait unchanged for character: Corvin Khan
+2025-09-21 20:54:20,045 - INFO - Updated character: Corvin Khan
+2025-09-21 20:54:21,996 - INFO - Portrait unchanged for character: FiLiN Core
+2025-09-21 20:54:22,150 - INFO - Updated character: FiLiN Core
+2025-09-21 20:54:24,778 - INFO - Portrait unchanged for character: Raven Madyar
+2025-09-21 20:54:24,938 - INFO - Updated character: Raven Madyar
+2025-09-21 20:54:26,099 - INFO - Portrait unchanged for character: Vran Ruthen
+2025-09-21 20:54:26,344 - INFO - Updated character: Vran Ruthen
+2025-09-21 20:54:26,345 - INFO - Trying to fetch corporation data for corp 98644650 using Mr FiLiN's token...
+2025-09-21 20:54:26,542 - INFO - Successfully fetched corporation data using Mr FiLiN's token
+2025-09-21 20:54:26,542 - INFO - Skipping corporation: Kybernauts (only processing ['no mercy incorporated'])
+2025-09-21 20:54:26,542 - INFO - Trying to fetch corporation data for corp 98092220 using Dr FiLiN's token...
+2025-09-21 20:54:26,938 - INFO - Successfully fetched corporation data using Dr FiLiN's token
+2025-09-21 20:54:27,077 - INFO - Logo unchanged for corporation: No Mercy Incorporated
+2025-09-21 20:54:27,241 - INFO - Updated corporation: No Mercy Incorporated
+2025-09-21 20:54:27,242 - INFO - Fetching corporation blueprints for 98092220...
+2025-09-21 20:54:27,481 - INFO - Corporation blueprints: 864 items
+2025-09-21 20:54:27,967 - ERROR - Access forbidden for endpoint /universe/structures/1048892560419
+2025-09-21 20:54:27,968 - ERROR - Access forbidden for endpoint /universe/structures/1048892560419
+2025-09-21 20:54:27,974 - WARNING - Blueprint 1023593233897 generated an exception: name 'save_failed_structures' is not defined
+2025-09-21 20:54:27,975 - WARNING - Blueprint 1023121749544 generated an exception: name 'save_failed_structures' is not defined
+2025-09-21 20:54:27,993 - ERROR - Access forbidden for endpoint /universe/structures/1048892560419
+2025-09-21 20:54:27,994 - WARNING - Blueprint 1023121750606 generated an exception: name 'save_failed_structures' is not defined
+2025-09-21 20:54:28,514 - INFO - Updated type icon for blueprint: R-O Trigger Neurolink Conduit
+2025-09-21 20:54:28,514 - INFO - Blueprint 1045441177897 unchanged, skipping update
+2025-09-21 20:54:28,537 - INFO - Updated type icon for blueprint: Sustained Shield Emitter
+2025-09-21 20:54:28,537 - INFO - Blueprint 1045441142350 unchanged, skipping update
+2025-09-21 20:54:28,543 - INFO - Updated type icon for blueprint: Titanium Diborite Armor Plate
+2025-09-21 20:54:28,543 - INFO - Blueprint 1045441143276 unchanged, skipping update
+2025-09-21 20:54:29,031 - INFO - Updated type icon for blueprint: Capital Laser Focusing Crystals
+2025-09-21 20:54:29,031 - INFO - Blueprint 1045441196207 unchanged, skipping update
+2025-09-21 20:54:29,100 - INFO - Updated type icon for blueprint: Capital Fusion Thruster
+2025-09-21 20:54:29,100 - INFO - Blueprint 1045441195512 unchanged, skipping update
+2025-09-21 20:54:29,336 - INFO - Updated type icon for blueprint: Capital EM Pulse Generator
+2025-09-21 20:54:29,337 - INFO - Blueprint 1045441194700 unchanged, skipping update
+2025-09-21 20:54:29,553 - INFO - Updated type icon for blueprint: Capital Linear Shield Emitter
+2025-09-21 20:54:29,553 - INFO - Blueprint 1045441197718 unchanged, skipping update
+2025-09-21 20:54:29,619 - INFO - Updated type icon for blueprint: Capital Nanoelectrical Microprocessor
+2025-09-21 20:54:29,619 - INFO - Blueprint 1045441200093 unchanged, skipping update
+2025-09-21 20:54:29,739 - INFO - Updated type icon for blueprint: Capital Radar Sensor Cluster
+2025-09-21 20:54:29,739 - INFO - Blueprint 1045441200934 unchanged, skipping update
+2025-09-21 20:54:30,115 - INFO - Updated type icon for blueprint: Capital Tesseract Capacitor Unit
+2025-09-21 20:54:30,115 - INFO - Blueprint 1045441201642 unchanged, skipping update
+2025-09-21 20:54:30,183 - INFO - Updated type icon for blueprint: Capital Tungsten Carbide Armor Plate
+2025-09-21 20:54:30,183 - INFO - Blueprint 1045441203945 unchanged, skipping update
+2025-09-21 20:54:30,260 - INFO - Updated type icon for blueprint: Fulleroferrocene Power Conduits
+2025-09-21 20:54:30,261 - INFO - Blueprint 1045441247943 unchanged, skipping update
+2025-09-21 20:54:31,957 - INFO - Updated type icon for blueprint: Nanowire Composites
+2025-09-21 20:54:31,960 - INFO - Blueprint 1045441250647 unchanged, skipping update
+2025-09-21 20:54:31,961 - INFO - Updated type icon for blueprint: Neurovisual Output Analyzer
+2025-09-21 20:54:31,961 - INFO - Blueprint 1045441251310 unchanged, skipping update
+2025-09-21 20:54:32,105 - INFO - Updated type icon for blueprint: Metallofullerene Plating
+2025-09-21 20:54:32,105 - INFO - Blueprint 1045441248880 unchanged, skipping update
+2025-09-21 20:54:32,482 - INFO - Updated type icon for blueprint: Reconfigured Subspace Calibrator
+2025-09-21 20:54:32,482 - INFO - Blueprint 1045441252767 unchanged, skipping update
+2025-09-21 20:54:32,635 - INFO - Updated type icon for blueprint: Superconducting Radar Amplifier
+2025-09-21 20:54:32,635 - INFO - Blueprint 1045441259441 unchanged, skipping update
+2025-09-21 20:54:32,674 - INFO - Updated type icon for blueprint: Capital Crystalline Carbonide Armor Plate
+2025-09-21 20:54:32,674 - INFO - Blueprint 1045441358768 unchanged, skipping update
+2025-09-21 20:54:33,007 - INFO - Updated type icon for blueprint: Capital Fusion Reactor Unit
+2025-09-21 20:54:33,008 - INFO - Blueprint 1045441359482 unchanged, skipping update
+2025-09-21 20:54:33,194 - INFO - Updated type icon for blueprint: Capital Magnetometric Sensor Cluster
+2025-09-21 20:54:33,195 - INFO - Blueprint 1045441360873 unchanged, skipping update
+2025-09-21 20:54:33,200 - INFO - Updated type icon for blueprint: Capital Ion Thruster
+2025-09-21 20:54:33,201 - INFO - Blueprint 1045441360231 unchanged, skipping update
+2025-09-21 20:54:33,532 - INFO - Updated type icon for blueprint: Capital Oscillator Capacitor Unit
+2025-09-21 20:54:33,532 - INFO - Blueprint 1045441361384 unchanged, skipping update
+2025-09-21 20:54:33,735 - INFO - Updated type icon for blueprint: Capital Particle Accelerator Unit
+2025-09-21 20:54:33,735 - INFO - Blueprint 1045441362088 unchanged, skipping update
+2025-09-21 20:54:33,742 - INFO - Updated type icon for blueprint: Capital Photon Microprocessor
+2025-09-21 20:54:33,742 - INFO - Blueprint 1045441365698 unchanged, skipping update
+2025-09-21 20:54:34,056 - INFO - Updated type icon for blueprint: Capital Plasma Pulse Generator
+2025-09-21 20:54:34,057 - INFO - Blueprint 1045441366482 unchanged, skipping update
+2025-09-21 20:54:34,276 - INFO - Updated type icon for blueprint: Capital Electrolytic Capacitor Unit
+2025-09-21 20:54:34,277 - INFO - Blueprint 1045441369610 unchanged, skipping update
+2025-09-21 20:54:34,280 - INFO - Updated type icon for blueprint: Capital Pulse Shield Emitter
+2025-09-21 20:54:34,281 - INFO - Blueprint 1045441367815 unchanged, skipping update
+2025-09-21 20:54:34,582 - INFO - Updated type icon for blueprint: Capital Ladar Sensor Cluster
+2025-09-21 20:54:34,582 - INFO - Blueprint 1045441374287 unchanged, skipping update
+2025-09-21 20:54:34,851 - INFO - Updated type icon for blueprint: Capital Nuclear Reactor Unit
+2025-09-21 20:54:34,852 - INFO - Blueprint 1045441376322 unchanged, skipping update
+2025-09-21 20:54:34,872 - INFO - Updated type icon for blueprint: Capital Nuclear Pulse Generator
+2025-09-21 20:54:34,872 - INFO - Blueprint 1045441375616 unchanged, skipping update
+2025-09-21 20:54:35,102 - INFO - Updated type icon for blueprint: Capital Plasma Thruster
+2025-09-21 20:54:35,102 - INFO - Blueprint 1045441377161 unchanged, skipping update
+2025-09-21 20:54:35,411 - INFO - Updated type icon for blueprint: Reinforced Metallofullerene Alloys
+2025-09-21 20:54:35,411 - INFO - Blueprint 1045442719592 unchanged, skipping update
+2025-09-21 20:54:35,417 - INFO - Updated type icon for blueprint: Capital Thermonuclear Trigger Unit
+2025-09-21 20:54:35,417 - INFO - Blueprint 1045441378054 unchanged, skipping update
+2025-09-21 20:54:35,636 - INFO - Updated type icon for blueprint: Superconducting Gravimetric Amplifier
+2025-09-21 20:54:35,636 - INFO - Blueprint 1045442721258 unchanged, skipping update
+2025-09-21 20:54:35,971 - INFO - Updated type icon for blueprint: Superconducting Magnetometric Amplifier
+2025-09-21 20:54:35,971 - INFO - Blueprint 1045442724600 unchanged, skipping update
+2025-09-21 20:54:35,998 - INFO - Updated type icon for blueprint: Warfare Computation Core
+2025-09-21 20:54:35,998 - INFO - Blueprint 1045442726002 unchanged, skipping update
+2025-09-21 20:54:36,156 - INFO - Updated type icon for blueprint: Superconducting Ladar Amplifier
+2025-09-21 20:54:36,156 - INFO - Blueprint 1045443017972 unchanged, skipping update
+2025-09-21 20:54:36,453 - INFO - Updated type icon for blueprint: Plasma Pulse Generator
+2025-09-21 20:54:36,453 - INFO - Blueprint 1045443207486 unchanged, skipping update
+2025-09-21 20:54:36,482 - INFO - Updated type icon for blueprint: Pulse Shield Emitter
+2025-09-21 20:54:36,483 - INFO - Blueprint 1045443208337 unchanged, skipping update
+2025-09-21 20:54:36,675 - INFO - Updated type icon for blueprint: S-R Trigger Neurolink Conduit
+2025-09-21 20:54:36,676 - INFO - Blueprint 1045456972232 unchanged, skipping update
+2025-09-21 20:54:36,948 - INFO - Updated type icon for blueprint: G-O Trigger Neurolink Conduit
+2025-09-21 20:54:36,948 - INFO - Blueprint 1045456976435 unchanged, skipping update
+2025-09-21 20:54:37,003 - INFO - Updated type icon for blueprint: Nuclear Reactor Unit
+2025-09-21 20:54:37,003 - INFO - Blueprint 1045507077812 unchanged, skipping update
+2025-09-21 20:54:37,097 - INFO - Updated type icon for blueprint: Ladar Sensor Cluster
+2025-09-21 20:54:37,098 - INFO - Blueprint 1045514378038 unchanged, skipping update
+2025-09-21 20:54:37,438 - INFO - Updated type icon for blueprint: Ion Thruster
+2025-09-21 20:54:37,438 - INFO - Blueprint 1045540470039 unchanged, skipping update
+2025-09-21 20:54:37,475 - INFO - Updated type icon for blueprint: Capital Fernite Carbide Composite Armor Plate
+2025-09-21 20:54:37,475 - INFO - Blueprint 1045568294445 unchanged, skipping update
+2025-09-21 20:54:37,576 - INFO - Updated type icon for blueprint: Auto-Integrity Preservation Seal
+2025-09-21 20:54:37,576 - INFO - Blueprint 1045570493611 unchanged, skipping update
+2025-09-21 20:54:37,944 - ERROR - Access forbidden for endpoint /universe/structures/1048497019672
+2025-09-21 20:54:37,945 - WARNING - Blueprint 1045570597854 generated an exception: name 'save_failed_structures' is not defined
+2025-09-21 20:54:38,027 - INFO - Updated type icon for blueprint: Life Support Backup Unit
+2025-09-21 20:54:38,027 - INFO - Blueprint 1045570497892 unchanged, skipping update
+2025-09-21 20:54:38,246 - INFO - Updated type icon for blueprint: Electrolytic Capacitor Unit
+2025-09-21 20:54:38,246 - INFO - Blueprint 1045594580237 unchanged, skipping update
+2025-09-21 20:54:38,445 - INFO - Updated type icon for blueprint: Nanomechanical Microprocessor
+2025-09-21 20:54:38,445 - INFO - Blueprint 1045594582010 unchanged, skipping update
+2025-09-21 20:54:38,538 - INFO - Updated type icon for blueprint: Scalar Capacitor Unit
+2025-09-21 20:54:38,538 - INFO - Blueprint 1045608044563 unchanged, skipping update
+2025-09-21 20:54:38,680 - INFO - Updated type icon for blueprint: Quantum Microprocessor
+2025-09-21 20:54:38,682 - INFO - Blueprint 1045608045085 unchanged, skipping update
+2025-09-21 20:54:38,938 - INFO - Updated type icon for blueprint: Plasma Thruster
+2025-09-21 20:54:38,938 - INFO - Blueprint 1045608045947 unchanged, skipping update
+2025-09-21 20:54:39,179 - INFO - Updated type icon for blueprint: Magpulse Thruster
+2025-09-21 20:54:39,179 - INFO - Blueprint 1045618042330 unchanged, skipping update
+2025-09-21 20:54:39,191 - INFO - Updated type icon for blueprint: Fernite Carbide Composite Armor Plate
+2025-09-21 20:54:39,192 - INFO - Blueprint 1045618045431 unchanged, skipping update
+2025-09-21 20:54:39,470 - INFO - Updated type icon for blueprint: Graviton Reactor Unit
+2025-09-21 20:54:39,470 - INFO - Blueprint 1045618098057 unchanged, skipping update
+2025-09-21 20:54:39,712 - INFO - Updated type icon for blueprint: Squall
+2025-09-21 20:54:39,713 - INFO - Updated type icon for blueprint: Squall
+2025-09-21 20:54:39,929 - INFO - Updated type icon for blueprint: Squall
+2025-09-21 20:54:39,989 - INFO - Updated blueprint: 1045627298456
+2025-09-21 20:54:39,990 - INFO - Updated blueprint: 1045627284388
+2025-09-21 20:54:40,116 - INFO - Updated blueprint: 1045627298995
+2025-09-21 20:54:40,489 - INFO - Updated type icon for blueprint: Squall
+2025-09-21 20:54:40,540 - INFO - Updated type icon for blueprint: Squall
+2025-09-21 20:54:40,559 - INFO - Updated type icon for blueprint: Squall
+2025-09-21 20:54:40,651 - INFO - Updated blueprint: 1045627299335
+2025-09-21 20:54:40,672 - INFO - Updated blueprint: 1045631743088
+2025-09-21 20:54:40,733 - INFO - Updated blueprint: 1045631820801
+2025-09-21 20:54:41,090 - INFO - Updated type icon for blueprint: Squall
+2025-09-21 20:54:41,219 - INFO - Updated type icon for blueprint: Squall
+2025-09-21 20:54:41,235 - INFO - Updated type icon for blueprint: Squall
+2025-09-21 20:54:41,237 - INFO - Updated blueprint: 1045631820987
+2025-09-21 20:54:41,405 - INFO - Updated blueprint: 1045631821111
+2025-09-21 20:54:41,510 - INFO - Updated blueprint: 1045631820908
+2025-09-21 20:54:41,609 - INFO - Updated type icon for blueprint: Squall
+2025-09-21 20:54:41,750 - INFO - Updated blueprint: 1045631821222
+2025-09-21 20:54:41,786 - INFO - Updated type icon for blueprint: Squall
+2025-09-21 20:54:41,936 - INFO - Updated type icon for blueprint: Squall
+2025-09-21 20:54:42,020 - INFO - Updated blueprint: 1045631821358
+2025-09-21 20:54:42,082 - INFO - Updated blueprint: 1045631821473
+2025-09-21 20:54:42,095 - INFO - Updated type icon for blueprint: Squall
+2025-09-21 20:54:42,234 - INFO - Updated blueprint: 1045631821588
+2025-09-21 20:54:42,348 - INFO - Updated type icon for blueprint: Squall
+2025-09-21 20:54:42,487 - INFO - Updated type icon for blueprint: Squall
+2025-09-21 20:54:42,572 - INFO - Updated blueprint: 1045631821778
+2025-09-21 20:54:42,629 - INFO - Updated type icon for blueprint: Squall
+2025-09-21 20:54:42,640 - INFO - Updated blueprint: 1045631856745
+2025-09-21 20:54:42,766 - INFO - Updated blueprint: 1045631897778
+2025-09-21 20:54:42,871 - INFO - Updated type icon for blueprint: Squall
+2025-09-21 20:54:43,017 - INFO - Updated type icon for blueprint: Squall
+2025-09-21 20:54:43,097 - INFO - Updated blueprint: 1045631898068
+2025-09-21 20:54:43,170 - INFO - Updated type icon for blueprint: Squall
+2025-09-21 20:54:43,171 - INFO - Updated blueprint: 1045631898197
+2025-09-21 20:54:43,329 - INFO - Updated blueprint: 1045631898364
+2025-09-21 20:54:43,579 - INFO - Updated type icon for blueprint: Squall
+2025-09-21 20:54:43,623 - INFO - Updated type icon for blueprint: Squall
+2025-09-21 20:54:43,735 - INFO - Updated blueprint: 1045631898598
+2025-09-21 20:54:43,756 - INFO - Updated type icon for blueprint: Squall
+2025-09-21 20:54:43,762 - INFO - Updated blueprint: 1045640331892
+2025-09-21 20:54:43,901 - INFO - Updated blueprint: 1045640388883
+2025-09-21 20:54:44,201 - INFO - Updated type icon for blueprint: Squall
+2025-09-21 20:54:44,239 - INFO - Updated type icon for blueprint: Squall
+2025-09-21 20:54:44,328 - INFO - Updated type icon for blueprint: Squall
+2025-09-21 20:54:44,336 - INFO - Updated blueprint: 1045640400989
+2025-09-21 20:54:44,414 - INFO - Updated blueprint: 1045640413970
+2025-09-21 20:54:44,542 - INFO - Updated blueprint: 1045640476461
+2025-09-21 20:54:44,727 - INFO - Updated type icon for blueprint: Squall
+2025-09-21 20:54:44,862 - INFO - Updated type icon for blueprint: Squall
+2025-09-21 20:54:44,898 - INFO - Updated blueprint: 1045640479269
+2025-09-21 20:54:44,936 - INFO - Updated type icon for blueprint: Squall
+2025-09-21 20:54:45,067 - INFO - Updated blueprint: 1045640479457
+2025-09-21 20:54:45,169 - INFO - Updated blueprint: 1045640479629
+2025-09-21 20:54:45,290 - INFO - Updated type icon for blueprint: Squall
+2025-09-21 20:54:45,451 - INFO - Updated blueprint: 1045647052587
+2025-09-21 20:54:45,464 - INFO - Updated type icon for blueprint: Squall
+2025-09-21 20:54:45,672 - INFO - Updated type icon for blueprint: Squall
+2025-09-21 20:54:45,683 - INFO - Updated blueprint: 1045647052752
+2025-09-21 20:54:45,817 - INFO - Updated blueprint: 1045647052952
+2025-09-21 20:54:45,937 - INFO - Updated type icon for blueprint: Squall
+2025-09-21 20:54:46,114 - INFO - Updated blueprint: 1045647831857
+2025-09-21 20:54:46,183 - INFO - Updated type icon for blueprint: Squall
+2025-09-21 20:54:46,253 - INFO - Updated type icon for blueprint: Squall
+2025-09-21 20:54:46,331 - INFO - Updated blueprint: 1045647832058
+2025-09-21 20:54:46,398 - INFO - Updated blueprint: 1045647832286
+2025-09-21 20:54:46,500 - INFO - Updated type icon for blueprint: Squall
+2025-09-21 20:54:46,725 - INFO - Updated blueprint: 1045647832671
+2025-09-21 20:54:46,745 - INFO - Updated type icon for blueprint: Squall
+2025-09-21 20:54:46,807 - INFO - Updated type icon for blueprint: Squall
+2025-09-21 20:54:46,917 - INFO - Updated blueprint: 1045647832993
+2025-09-21 20:54:46,956 - INFO - Updated blueprint: 1045647833326
+2025-09-21 20:54:47,178 - INFO - Updated type icon for blueprint: Squall
+2025-09-21 20:54:47,314 - INFO - Updated blueprint: 1045647833763
+2025-09-21 20:54:47,374 - INFO - Updated type icon for blueprint: Squall
+2025-09-21 20:54:47,375 - INFO - Blueprint 1045648045584 unchanged, skipping update
+2025-09-21 20:54:47,433 - INFO - Updated type icon for blueprint: Squall
+2025-09-21 20:54:47,577 - INFO - Updated blueprint: 1045647834018
+2025-09-21 20:54:47,811 - INFO - Updated type icon for blueprint: Squall
+2025-09-21 20:54:47,946 - INFO - Updated blueprint: 1045648317694
+2025-09-21 20:54:48,032 - INFO - Updated type icon for blueprint: Squall
+2025-09-21 20:54:48,210 - INFO - Updated type icon for blueprint: Nova Light Missile
+2025-09-21 20:54:48,210 - INFO - Updated blueprint: 1045648319219
+2025-09-21 20:54:48,211 - INFO - Blueprint 1045710384666 unchanged, skipping update
+2025-09-21 20:54:48,484 - INFO - Updated type icon for blueprint: Scourge Light Missile
+2025-09-21 20:54:48,484 - INFO - Blueprint 1045710417630 unchanged, skipping update
+2025-09-21 20:54:48,552 - INFO - Updated type icon for blueprint: Squall
+2025-09-21 20:54:48,612 - INFO - Updated type icon for blueprint: Hornet I
+2025-09-21 20:54:48,612 - INFO - Blueprint 1045730159350 unchanged, skipping update
+2025-09-21 20:54:48,740 - INFO - Updated blueprint: 1045729548362
+2025-09-21 20:54:48,914 - INFO - Updated type icon for blueprint: Squall
+2025-09-21 20:54:49,009 - INFO - Updated type icon for blueprint: Squall
+2025-09-21 20:54:49,055 - INFO - Updated blueprint: 1045742494850
+2025-09-21 20:54:49,060 - INFO - Updated type icon for blueprint: Squall
+2025-09-21 20:54:49,149 - INFO - Updated blueprint: 1045742495229
+2025-09-21 20:54:49,263 - INFO - Updated blueprint: 1045742495412
+2025-09-21 20:54:49,569 - INFO - Updated type icon for blueprint: Iron Charge S
+2025-09-21 20:54:49,570 - INFO - Blueprint 1045824284242 unchanged, skipping update
+2025-09-21 20:54:49,597 - INFO - Updated type icon for blueprint: Capital Tesseract Capacitor Unit
+2025-09-21 20:54:49,881 - INFO - Updated blueprint: 1048491192978
+2025-09-21 20:54:50,037 - INFO - Updated type icon for blueprint: Nova Auto-Targeting Light Missile I
+2025-09-21 20:54:50,038 - INFO - Blueprint 1045872934323 unchanged, skipping update
+2025-09-21 20:54:50,210 - INFO - Updated type icon for blueprint: Capital EM Pulse Generator
+2025-09-21 20:54:50,474 - INFO - Updated blueprint: 1048491238225
+2025-09-21 20:54:50,492 - INFO - Updated type icon for blueprint: Capital Antimatter Reactor Unit
+2025-09-21 20:54:50,493 - INFO - Blueprint 1048497103438 unchanged, skipping update
+2025-09-21 20:54:50,590 - INFO - Updated type icon for blueprint: Capital Deflection Shield Emitter
+2025-09-21 20:54:50,590 - INFO - Blueprint 1048497113189 unchanged, skipping update
+2025-09-21 20:54:50,946 - INFO - Updated type icon for blueprint: Capital EM Pulse Generator
+2025-09-21 20:54:51,021 - INFO - Updated type icon for blueprint: Capital Fernite Carbide Composite Armor Plate
+2025-09-21 20:54:51,024 - INFO - Updated type icon for blueprint: Capital Fusion Thruster
+2025-09-21 20:54:51,084 - INFO - Updated blueprint: 1048497114164
+2025-09-21 20:54:51,174 - INFO - Updated blueprint: 1048497115473
+2025-09-21 20:54:51,176 - INFO - Updated blueprint: 1048497117281
+2025-09-21 20:54:51,549 - INFO - Updated type icon for blueprint: Capital Ladar Sensor Cluster
+2025-09-21 20:54:51,572 - INFO - Updated type icon for blueprint: Capital Gravimetric Sensor Cluster
+2025-09-21 20:54:51,572 - INFO - Blueprint 1048497118042 unchanged, skipping update
+2025-09-21 20:54:51,708 - INFO - Updated blueprint: 1048497121737
+2025-09-21 20:54:51,719 - INFO - Updated type icon for blueprint: Capital Graviton Reactor Unit
+2025-09-21 20:54:51,719 - INFO - Blueprint 1048497120066 unchanged, skipping update
+2025-09-21 20:54:52,086 - INFO - Updated type icon for blueprint: Capital Magpulse Thruster
+2025-09-21 20:54:52,087 - INFO - Blueprint 1048497131383 unchanged, skipping update
+2025-09-21 20:54:52,112 - INFO - Updated type icon for blueprint: Capital Nuclear Pulse Generator
+2025-09-21 20:54:52,146 - INFO - Updated type icon for blueprint: Capital Nanomechanical Microprocessor
+2025-09-21 20:54:52,146 - INFO - Blueprint 1048497132562 unchanged, skipping update
+2025-09-21 20:54:52,247 - INFO - Updated blueprint: 1048497133143
+2025-09-21 20:54:52,509 - INFO - Updated type icon for blueprint: Capital Plasma Thruster
+2025-09-21 20:54:52,647 - INFO - Updated type icon for blueprint: Capital Quantum Microprocessor
+2025-09-21 20:54:52,647 - INFO - Blueprint 1048497139737 unchanged, skipping update
+2025-09-21 20:54:52,664 - INFO - Updated blueprint: 1048497137640
+2025-09-21 20:54:52,744 - INFO - Updated type icon for blueprint: Deflection Shield Emitter
+2025-09-21 20:54:52,744 - INFO - Blueprint 1048497171975 unchanged, skipping update
+2025-09-21 20:54:53,066 - INFO - Updated type icon for blueprint: Capital Tesseract Capacitor Unit
+2025-09-21 20:54:53,113 - INFO - Updated type icon for blueprint: Plasma Thruster
+2025-09-21 20:54:53,198 - INFO - Updated blueprint: 1048497178895
+2025-09-21 20:54:53,229 - INFO - Updated type icon for blueprint: Capital Scalar Capacitor Unit
+2025-09-21 20:54:53,230 - INFO - Blueprint 1048497174523 unchanged, skipping update
+2025-09-21 20:54:53,257 - INFO - Updated blueprint: 1048497312227
+2025-09-21 20:54:53,606 - INFO - Updated type icon for blueprint: Magpulse Thruster
+2025-09-21 20:54:53,609 - INFO - Updated type icon for blueprint: Magpulse Thruster
+2025-09-21 20:54:53,631 - INFO - Updated type icon for blueprint: Graviton Reactor Unit
+2025-09-21 20:54:53,751 - INFO - Updated blueprint: 1048497316785
+2025-09-21 20:54:53,752 - INFO - Updated blueprint: 1048497347779
+2025-09-21 20:54:53,772 - INFO - Updated blueprint: 1048497346575
+2025-09-21 20:54:54,152 - INFO - Updated type icon for blueprint: Plasma Thruster
+2025-09-21 20:54:54,153 - INFO - Updated type icon for blueprint: Plasma Thruster
+2025-09-21 20:54:54,205 - INFO - Updated type icon for blueprint: Magpulse Thruster
+2025-09-21 20:54:54,313 - INFO - Updated blueprint: 1048497394220
+2025-09-21 20:54:54,314 - INFO - Updated blueprint: 1048497353807
+2025-09-21 20:54:54,342 - INFO - Updated blueprint: 1048497397841
+2025-09-21 20:54:54,679 - INFO - Updated type icon for blueprint: Graviton Reactor Unit
+2025-09-21 20:54:54,691 - INFO - Updated type icon for blueprint: Electrolytic Capacitor Unit
+2025-09-21 20:54:54,772 - INFO - Updated type icon for blueprint: Capital Deflection Shield Emitter
+2025-09-21 20:54:54,839 - INFO - Updated blueprint: 1048497398887
+2025-09-21 20:54:54,840 - INFO - Updated blueprint: 1048497400969
+2025-09-21 20:54:55,053 - INFO - Updated blueprint: 1048534146849
+2025-09-21 20:54:55,271 - INFO - Updated type icon for blueprint: Capital Fernite Carbide Composite Armor Plate
+2025-09-21 20:54:55,281 - INFO - Updated type icon for blueprint: Capital EM Pulse Generator
+2025-09-21 20:54:55,420 - INFO - Updated type icon for blueprint: Capital Graviton Reactor Unit
+2025-09-21 20:54:55,423 - INFO - Updated blueprint: 1048534147370
+2025-09-21 20:54:55,428 - INFO - Updated blueprint: 1048534148235
+2025-09-21 20:54:55,662 - INFO - Updated blueprint: 1048534155309
+2025-09-21 20:54:55,880 - INFO - Updated type icon for blueprint: Capital Ladar Sensor Cluster
+2025-09-21 20:54:55,890 - INFO - Updated type icon for blueprint: Capital Magpulse Thruster
+2025-09-21 20:54:56,078 - INFO - Updated blueprint: 1048534157118
+2025-09-21 20:54:56,079 - INFO - Updated blueprint: 1048534160961
+2025-09-21 20:54:56,179 - INFO - Updated type icon for blueprint: Capital Nanomechanical Microprocessor
+2025-09-21 20:54:56,320 - INFO - Updated blueprint: 1048534163506
+2025-09-21 20:54:56,414 - INFO - Updated type icon for blueprint: Capital Plasma Thruster
+2025-09-21 20:54:56,603 - INFO - Updated blueprint: 1048534171025
+2025-09-21 20:54:56,738 - INFO - Updated type icon for blueprint: Capital Tesseract Capacitor Unit
+2025-09-21 20:54:56,743 - INFO - Updated type icon for blueprint: Capital Nuclear Pulse Generator
+2025-09-21 20:54:56,904 - INFO - Updated blueprint: 1048534164477
+2025-09-21 20:54:56,913 - INFO - Updated blueprint: 1048534174691
+2025-09-21 20:54:57,166 - INFO - Updated type icon for blueprint: Deflection Shield Emitter
+2025-09-21 20:54:57,310 - INFO - Updated blueprint: 1048534178618
+2025-09-21 20:54:57,361 - INFO - Updated type icon for blueprint: Nanomechanical Microprocessor
+2025-09-21 20:54:57,484 - INFO - Updated type icon for blueprint: Graviton Reactor Unit
+2025-09-21 20:54:57,524 - INFO - Updated blueprint: 1048556396402
+2025-09-21 20:54:57,650 - INFO - Updated blueprint: 1048534182526
+2025-09-21 20:54:57,720 - INFO - Updated type icon for blueprint: Magpulse Thruster
+2025-09-21 20:54:57,868 - INFO - Updated blueprint: 1048556397510
+2025-09-21 20:54:57,919 - INFO - Updated type icon for blueprint: Graviton Reactor Unit
+2025-09-21 20:54:57,964 - INFO - Updated type icon for blueprint: Capital Tungsten Carbide Armor Plate
+2025-09-21 20:54:58,083 - INFO - Updated blueprint: 1048556399713
+2025-09-21 20:54:58,179 - INFO - Updated blueprint: 1048572180110
+2025-09-21 20:54:58,280 - INFO - Updated type icon for blueprint: Capital Tesseract Capacitor Unit
+2025-09-21 20:54:58,431 - INFO - Updated blueprint: 1048572180881
+2025-09-21 20:54:58,487 - INFO - Updated type icon for blueprint: Capital Deflection Shield Emitter
+2025-09-21 20:54:58,499 - INFO - Updated type icon for blueprint: Capital Scalar Capacitor Unit
+2025-09-21 20:54:58,701 - INFO - Updated blueprint: 1048572205336
+2025-09-21 20:54:58,702 - INFO - Updated blueprint: 1048572181562
+2025-09-21 20:54:58,848 - INFO - Updated type icon for blueprint: Capital EM Pulse Generator
+2025-09-21 20:54:58,989 - INFO - Updated blueprint: 1048572206820
+2025-09-21 20:54:58,997 - INFO - Updated type icon for blueprint: Capital Fernite Carbide Composite Armor Plate
+2025-09-21 20:54:59,226 - INFO - Updated blueprint: 1048572208142
+2025-09-21 20:54:59,393 - INFO - Updated type icon for blueprint: Capital Graviton Reactor Unit
+2025-09-21 20:54:59,581 - INFO - Updated blueprint: 1048572211846
+2025-09-21 20:54:59,590 - INFO - Updated type icon for blueprint: Capital Ladar Sensor Cluster
+2025-09-21 20:54:59,749 - INFO - Updated blueprint: 1048572214764
+2025-09-21 20:54:59,770 - INFO - Updated type icon for blueprint: Capital Fusion Thruster
+2025-09-21 20:54:59,974 - INFO - Updated blueprint: 1048572209514
+2025-09-21 20:54:59,979 - INFO - Updated type icon for blueprint: Capital Linear Shield Emitter
+2025-09-21 20:55:00,147 - INFO - Updated blueprint: 1048753789102
+2025-09-21 20:55:00,432 - INFO - Updated type icon for blueprint: Capital Pulse Shield Emitter
+2025-09-21 20:55:00,439 - INFO - Updated type icon for blueprint: Capital Magpulse Thruster
+2025-09-21 20:55:00,592 - INFO - Updated type icon for blueprint: Capital Plasma Thruster
+2025-09-21 20:55:00,633 - INFO - Updated blueprint: 1048753834364
+2025-09-21 20:55:00,636 - INFO - Updated blueprint: 1048753820347
+2025-09-21 20:55:00,804 - INFO - Updated blueprint: 1048753835009
+2025-09-21 20:55:01,012 - INFO - Updated type icon for blueprint: Capital Nuclear Pulse Generator
+2025-09-21 20:55:01,163 - INFO - Updated blueprint: 1048753836771
+2025-09-21 20:55:01,538 - INFO - Updated type icon for blueprint: Capital Photon Microprocessor
+2025-09-21 20:55:01,698 - INFO - Updated blueprint: 1048753835545
+2025-09-21 20:55:01,750 - INFO - Updated type icon for blueprint: Capital EM Pulse Generator
+2025-09-21 20:55:01,942 - INFO - Updated type icon for blueprint: Capital Nanomechanical Microprocessor
+2025-09-21 20:55:01,966 - INFO - Updated blueprint: 1048755110183
+2025-09-21 20:55:02,100 - INFO - Updated blueprint: 1048753837463
+2025-09-21 20:55:02,181 - INFO - Updated type icon for blueprint: Capital Fusion Thruster
+2025-09-21 20:55:02,367 - INFO - Updated blueprint: 1048755111133
+2025-09-21 20:55:02,431 - INFO - Updated type icon for blueprint: Capital Linear Shield Emitter
+2025-09-21 20:55:02,518 - INFO - Updated type icon for blueprint: Capital Nanoelectrical Microprocessor
+2025-09-21 20:55:02,601 - INFO - Updated blueprint: 1048755112726
+2025-09-21 20:55:02,681 - INFO - Updated blueprint: 1048755113552
+2025-09-21 20:55:02,738 - INFO - Updated type icon for blueprint: Capital Radar Sensor Cluster
+2025-09-21 20:55:02,966 - INFO - Updated blueprint: 1048755114427
+2025-09-21 20:55:03,024 - INFO - Updated type icon for blueprint: Capital Tesseract Capacitor Unit
+2025-09-21 20:55:03,067 - INFO - Updated type icon for blueprint: Capital Tungsten Carbide Armor Plate
+2025-09-21 20:55:03,165 - INFO - Updated blueprint: 1048755116658
+2025-09-21 20:55:03,216 - INFO - Updated blueprint: 1048755117310
+2025-09-21 20:55:03,538 - INFO - Updated type icon for blueprint: Capital Gravimetric Sensor Cluster
+2025-09-21 20:55:03,656 - INFO - Updated type icon for blueprint: Capital Graviton Reactor Unit
+2025-09-21 20:55:03,721 - INFO - Updated blueprint: 1048755118869
+2025-09-21 20:55:03,945 - INFO - Updated blueprint: 1048755120497
+2025-09-21 20:55:03,947 - INFO - Updated type icon for blueprint: Capital Magpulse Thruster
+2025-09-21 20:55:04,110 - INFO - Updated blueprint: 1048755120972
+2025-09-21 20:55:04,241 - INFO - Updated type icon for blueprint: Capital Quantum Microprocessor
+2025-09-21 20:55:04,272 - INFO - Updated type icon for blueprint: Capital Scalar Capacitor Unit
+2025-09-21 20:55:04,466 - INFO - Updated blueprint: 1048755121539
+2025-09-21 20:55:04,470 - INFO - Updated blueprint: 1048755122441
+2025-09-21 20:55:04,529 - INFO - Updated type icon for blueprint: Capital Crystalline Carbonide Armor Plate
+2025-09-21 20:55:04,683 - INFO - Updated blueprint: 1048755125414
+2025-09-21 20:55:04,803 - INFO - Updated type icon for blueprint: Capital Ion Thruster
+2025-09-21 20:55:04,989 - INFO - Updated blueprint: 1048755126793
+2025-09-21 20:55:05,237 - INFO - Updated type icon for blueprint: Capital Oscillator Capacitor Unit
+2025-09-21 20:55:05,366 - INFO - Updated type icon for blueprint: Capital Particle Accelerator Unit
+2025-09-21 20:55:05,419 - INFO - Updated blueprint: 1048755128622
+2025-09-21 20:55:05,530 - INFO - Updated type icon for blueprint: Capital Magnetometric Sensor Cluster
+2025-09-21 20:55:05,625 - INFO - Updated blueprint: 1048755129183
+2025-09-21 20:55:05,670 - INFO - Updated blueprint: 1048755128010
+2025-09-21 20:55:05,844 - INFO - Updated type icon for blueprint: Capital Photon Microprocessor
+2025-09-21 20:55:06,034 - INFO - Updated blueprint: 1048755129857
+2025-09-21 20:55:07,102 - INFO - Updated type icon for blueprint: Capital Deflection Shield Emitter
+2025-09-21 20:55:07,168 - INFO - Updated type icon for blueprint: Capital Fernite Carbide Composite Armor Plate
+2025-09-21 20:55:07,262 - INFO - Updated blueprint: 1048755133911
+2025-09-21 20:55:07,306 - INFO - Updated blueprint: 1048755136406
+2025-09-21 20:55:07,498 - INFO - Updated type icon for blueprint: Capital Ladar Sensor Cluster
+2025-09-21 20:55:07,670 - INFO - Updated type icon for blueprint: Capital Nanomechanical Microprocessor
+2025-09-21 20:55:07,730 - INFO - Updated type icon for blueprint: Capital Nuclear Pulse Generator
+2025-09-21 20:55:07,736 - INFO - Updated blueprint: 1048755137030
+2025-09-21 20:55:07,817 - INFO - Updated blueprint: 1048755137882
+2025-09-21 20:55:07,870 - INFO - Updated blueprint: 1048755138399
+2025-09-21 20:55:08,041 - INFO - Updated type icon for blueprint: Capital Plasma Thruster
+2025-09-21 20:55:08,203 - INFO - Updated type icon for blueprint: Auto-Integrity Preservation Seal
+2025-09-21 20:55:08,256 - INFO - Updated type icon for blueprint: Life Support Backup Unit
+2025-09-21 20:55:08,268 - INFO - Updated blueprint: 1048755140242
+2025-09-21 20:55:08,341 - INFO - Updated blueprint: 1048755428682
+2025-09-21 20:55:08,404 - INFO - Updated blueprint: 1048755430294
+2025-09-21 20:55:08,689 - INFO - Updated type icon for blueprint: Life Support Backup Unit
+2025-09-21 20:55:08,790 - INFO - Updated type icon for blueprint: Life Support Backup Unit
+2025-09-21 20:55:08,832 - INFO - Updated blueprint: 1048755430355
+2025-09-21 20:55:08,936 - INFO - Updated blueprint: 1048755430504
+2025-09-21 20:55:08,967 - INFO - Updated type icon for blueprint: Life Support Backup Unit
+2025-09-21 20:55:09,180 - INFO - Updated blueprint: 1048755430435
+2025-09-21 20:55:09,225 - INFO - Updated type icon for blueprint: Capital Antimatter Reactor Unit
+2025-09-21 20:55:09,325 - INFO - Updated type icon for blueprint: Capital EM Pulse Generator
+2025-09-21 20:55:09,366 - INFO - Updated blueprint: 1048755447765
+2025-09-21 20:55:09,487 - INFO - Updated blueprint: 1048755448634
+2025-09-21 20:55:09,502 - INFO - Updated type icon for blueprint: Capital Fusion Thruster
+2025-09-21 20:55:09,706 - INFO - Updated blueprint: 1048755449534
+2025-09-21 20:55:09,802 - INFO - Updated type icon for blueprint: Capital Thermonuclear Trigger Unit
+2025-09-21 20:55:09,991 - INFO - Updated blueprint: 1048755452886
+2025-09-21 20:55:10,040 - INFO - Updated type icon for blueprint: Capital Plasma Thruster
+2025-09-21 20:55:10,086 - INFO - Updated type icon for blueprint: Capital Nuclear Pulse Generator
+2025-09-21 20:55:10,338 - INFO - Updated blueprint: 1048755453478
+2025-09-21 20:55:10,341 - INFO - Updated blueprint: 1048755455038
+2025-09-21 20:55:10,437 - INFO - Updated type icon for blueprint: Capital Nanomechanical Microprocessor
+2025-09-21 20:55:10,603 - INFO - Updated blueprint: 1048755455495
+2025-09-21 20:55:10,664 - INFO - Updated type icon for blueprint: Capital Ladar Sensor Cluster
+2025-09-21 20:55:10,890 - INFO - Updated type icon for blueprint: Capital Fernite Carbide Composite Armor Plate
+2025-09-21 20:55:10,895 - INFO - Updated blueprint: 1048755456560
+2025-09-21 20:55:11,079 - INFO - Updated blueprint: 1048755457115
+2025-09-21 20:55:11,150 - INFO - Updated type icon for blueprint: Capital Electrolytic Capacitor Unit
+2025-09-21 20:55:11,418 - INFO - Updated blueprint: 1048755458408
+2025-09-21 20:55:11,477 - INFO - Updated type icon for blueprint: Capital Pulse Shield Emitter
+2025-09-21 20:55:11,641 - INFO - Updated blueprint: 1048755461101
+2025-09-21 20:55:11,859 - INFO - Updated type icon for blueprint: Capital Electrolytic Capacitor Unit
+2025-09-21 20:55:11,977 - INFO - Updated type icon for blueprint: Capital Plasma Pulse Generator
+2025-09-21 20:55:12,007 - INFO - Updated blueprint: 1048755470646
+2025-09-21 20:55:12,031 - INFO - Updated type icon for blueprint: Capital Deflection Shield Emitter
+2025-09-21 20:55:12,141 - INFO - Updated blueprint: 1048755471334
+2025-09-21 20:55:12,199 - INFO - Updated blueprint: 1048755459020
+2025-09-21 20:55:12,397 - INFO - Updated type icon for blueprint: Capital Photon Microprocessor
+2025-09-21 20:55:12,489 - INFO - Updated type icon for blueprint: Capital Particle Accelerator Unit
+2025-09-21 20:55:12,553 - INFO - Updated blueprint: 1048755472125
+2025-09-21 20:55:12,600 - INFO - Updated type icon for blueprint: Capital Oscillator Capacitor Unit
+2025-09-21 20:55:12,631 - INFO - Updated blueprint: 1048755472640
+2025-09-21 20:55:12,856 - INFO - Updated blueprint: 1048755473578
+2025-09-21 20:55:12,970 - INFO - Updated type icon for blueprint: Capital Magnetometric Sensor Cluster
+2025-09-21 20:55:13,013 - INFO - Updated type icon for blueprint: Capital Ion Thruster
+2025-09-21 20:55:13,111 - INFO - Updated blueprint: 1048755474381
+2025-09-21 20:55:13,167 - INFO - Updated blueprint: 1048755475197
+2025-09-21 20:55:13,500 - INFO - Updated type icon for blueprint: Capital Crystalline Carbonide Armor Plate
+2025-09-21 20:55:13,571 - INFO - Updated type icon for blueprint: Capital Laser Focusing Crystals
+2025-09-21 20:55:13,679 - INFO - Updated blueprint: 1048755477552
+2025-09-21 20:55:13,712 - INFO - Updated blueprint: 1048793172563
+2025-09-21 20:55:13,723 - INFO - Updated type icon for blueprint: Capital Titanium Diborite Armor Plate
+2025-09-21 20:55:13,724 - INFO - Blueprint 1048755478242 unchanged, skipping update
+2025-09-21 20:55:14,065 - INFO - Updated type icon for blueprint: Life Support Backup Unit
+2025-09-21 20:55:14,066 - INFO - Updated type icon for blueprint: Capital Electrolytic Capacitor Unit
+2025-09-21 20:55:14,068 - INFO - Updated type icon for blueprint: Capital Linear Shield Emitter
+2025-09-21 20:55:14,227 - INFO - Updated blueprint: 1048793182748
+2025-09-21 20:55:14,235 - INFO - Updated blueprint: 1048793172855
+2025-09-21 20:55:14,238 - INFO - Updated blueprint: 1048853918187
+2025-09-21 20:55:14,609 - INFO - Updated type icon for blueprint: Life Support Backup Unit
+2025-09-21 20:55:14,612 - INFO - Updated type icon for blueprint: Life Support Backup Unit
+2025-09-21 20:55:14,618 - INFO - Updated type icon for blueprint: Life Support Backup Unit
+2025-09-21 20:55:14,776 - INFO - Updated blueprint: 1048853934928
+2025-09-21 20:55:14,781 - INFO - Updated blueprint: 1048853933937
+2025-09-21 20:55:14,783 - INFO - Updated blueprint: 1048853934689
+2025-09-21 20:55:15,169 - INFO - Updated type icon for blueprint: Life Support Backup Unit
+2025-09-21 20:55:15,247 - INFO - Updated type icon for blueprint: Capital Photon Microprocessor
+2025-09-21 20:55:15,356 - INFO - Updated blueprint: 1048853935147
+2025-09-21 20:55:15,358 - INFO - Updated type icon for blueprint: Capital Nanoelectrical Microprocessor
+2025-09-21 20:55:15,476 - INFO - Updated blueprint: 1048854321095
+2025-09-21 20:55:15,604 - INFO - Updated blueprint: 1048854331940
+2025-09-21 20:55:15,807 - INFO - Updated type icon for blueprint: Capital Radar Sensor Cluster
+2025-09-21 20:55:16,018 - INFO - Updated blueprint: 1048854332408
+2025-09-21 20:55:16,044 - INFO - Updated type icon for blueprint: Capital Tungsten Carbide Armor Plate
+2025-09-21 20:55:16,188 - INFO - Updated blueprint: 1048854334148
+2025-09-21 20:55:16,333 - INFO - Updated type icon for blueprint: Capital Gravimetric Sensor Cluster
+2025-09-21 20:55:16,530 - INFO - Updated blueprint: 1048854334853
+2025-09-21 20:55:16,792 - INFO - Updated type icon for blueprint: Capital Graviton Pulse Generator
+2025-09-21 20:55:16,792 - INFO - Blueprint 1048854335779 unchanged, skipping update
+2025-09-21 20:55:16,818 - INFO - Updated type icon for blueprint: Capital Graviton Reactor Unit
+2025-09-21 20:55:16,889 - INFO - Updated type icon for blueprint: Capital Tesseract Capacitor Unit
+2025-09-21 20:55:16,953 - INFO - Updated blueprint: 1048854336495
+2025-09-21 20:55:17,049 - INFO - Updated blueprint: 1048854333216
+2025-09-21 20:55:17,189 - INFO - Updated type icon for blueprint: Capital Magpulse Thruster
+2025-09-21 20:55:17,331 - INFO - Updated blueprint: 1048854337154
+2025-09-21 20:55:17,368 - INFO - Updated type icon for blueprint: Capital Photon Microprocessor
+2025-09-21 20:55:17,386 - INFO - Updated type icon for blueprint: Capital Quantum Microprocessor
+2025-09-21 20:55:17,571 - INFO - Updated blueprint: 1048854337872
+2025-09-21 20:55:17,572 - INFO - Updated blueprint: 1048854354150
+2025-09-21 20:55:17,832 - INFO - Updated type icon for blueprint: Capital Sustained Shield Emitter
+2025-09-21 20:55:17,833 - INFO - Blueprint 1048854358040 unchanged, skipping update
+2025-09-21 20:55:17,921 - INFO - Updated type icon for blueprint: Capital Scalar Capacitor Unit
+2025-09-21 20:55:18,099 - INFO - Updated type icon for blueprint: Capital Superconductor Rails
+2025-09-21 20:55:18,100 - INFO - Blueprint 1048854359089 unchanged, skipping update
+2025-09-21 20:55:18,101 - INFO - Updated blueprint: 1048854360242
+2025-09-21 20:55:18,217 - INFO - Updated type icon for blueprint: Capital Radar Sensor Cluster
+2025-09-21 20:55:18,379 - INFO - Updated blueprint: 1048854369185
+2025-09-21 20:55:18,406 - INFO - Updated type icon for blueprint: Capital Radar Sensor Cluster
+2025-09-21 20:55:18,408 - INFO - Updated type icon for blueprint: Auto-Integrity Preservation Seal
+2025-09-21 20:55:18,619 - INFO - Updated blueprint: 1048854384007
+2025-09-21 20:55:18,620 - INFO - Updated blueprint: 1048854398154
+2025-09-21 20:55:18,781 - INFO - Updated type icon for blueprint: Auto-Integrity Preservation Seal
+2025-09-21 20:55:18,927 - INFO - Updated blueprint: 1048854399758
+2025-09-21 20:55:18,957 - INFO - Updated type icon for blueprint: Auto-Integrity Preservation Seal
+2025-09-21 20:55:18,959 - INFO - Updated type icon for blueprint: Auto-Integrity Preservation Seal
+2025-09-21 20:55:19,146 - INFO - Updated blueprint: 1048854413030
+2025-09-21 20:55:19,147 - INFO - Updated blueprint: 1048854401183
+2025-09-21 20:55:19,309 - INFO - Updated type icon for blueprint: Auto-Integrity Preservation Seal
+2025-09-21 20:55:19,440 - INFO - Updated type icon for blueprint: Auto-Integrity Preservation Seal
+2025-09-21 20:55:19,493 - INFO - Updated blueprint: 1048854415530
+2025-09-21 20:55:19,554 - INFO - Updated type icon for blueprint: Auto-Integrity Preservation Seal
+2025-09-21 20:55:19,671 - INFO - Updated blueprint: 1048854415763
+2025-09-21 20:55:19,799 - INFO - Updated blueprint: 1048854416044
+2025-09-21 20:55:19,865 - INFO - Updated type icon for blueprint: Auto-Integrity Preservation Seal
+2025-09-21 20:55:20,008 - INFO - Updated type icon for blueprint: Auto-Integrity Preservation Seal
+2025-09-21 20:55:20,024 - INFO - Updated blueprint: 1048854416872
+2025-09-21 20:55:20,191 - INFO - Updated blueprint: 1048854418099
+2025-09-21 20:55:20,287 - INFO - Updated type icon for blueprint: Vexor
+2025-09-21 20:55:20,287 - INFO - Blueprint 1048854467446 unchanged, skipping update
+2025-09-21 20:55:20,401 - INFO - Updated type icon for blueprint: Vexor
+2025-09-21 20:55:20,402 - INFO - Blueprint 1048854468099 unchanged, skipping update
+2025-09-21 20:55:20,505 - INFO - Updated type icon for blueprint: Vexor
+2025-09-21 20:55:20,505 - INFO - Blueprint 1048854468567 unchanged, skipping update
+2025-09-21 20:55:20,912 - INFO - Updated type icon for blueprint: R.A.M.- Starship Tech
+2025-09-21 20:55:20,912 - INFO - Blueprint 1048892615386 unchanged, skipping update
+2025-09-21 20:55:20,921 - INFO - Updated type icon for blueprint: Electromechanical Microprocessor
+2025-09-21 20:55:20,921 - INFO - Blueprint 1048892818270 unchanged, skipping update
+2025-09-21 20:55:21,247 - INFO - Updated type icon for blueprint: Fission Reactor Unit
+2025-09-21 20:55:21,247 - INFO - Blueprint 1048892819939 unchanged, skipping update
+2025-09-21 20:55:21,403 - INFO - Updated type icon for blueprint: Hyperconductive Gravimetric Sensor Cluster
+2025-09-21 20:55:21,403 - INFO - Blueprint 1048892821950 unchanged, skipping update
+2025-09-21 20:55:21,459 - INFO - Updated type icon for blueprint: Fission Thruster
+2025-09-21 20:55:21,460 - INFO - Blueprint 1048892820689 unchanged, skipping update
+2025-09-21 20:55:21,670 - INFO - Updated type icon for blueprint: Metaprismatic Armor Plate
+2025-09-21 20:55:21,671 - INFO - Blueprint 1048892823333 unchanged, skipping update
+2025-09-21 20:55:21,915 - INFO - Updated type icon for blueprint: Pentachoron Capacitor Unit
+2025-09-21 20:55:21,916 - INFO - Blueprint 1048892824791 unchanged, skipping update
+2025-09-21 20:55:21,993 - INFO - Updated type icon for blueprint: Repelling Shield Emitter
+2025-09-21 20:55:21,993 - INFO - Blueprint 1048892825918 unchanged, skipping update
+2025-09-21 20:55:22,292 - INFO - Updated type icon for blueprint: U-C Trigger Neurolink Conduit
+2025-09-21 20:55:22,292 - INFO - Blueprint 1049574103840 unchanged, skipping update
+2025-09-21 20:55:22,533 - INFO - Updated type icon for blueprint: Nuclear Pulse Generator
+2025-09-21 20:55:22,533 - INFO - Blueprint 1049574317609 unchanged, skipping update
+2025-09-21 20:55:22,557 - INFO - Updated type icon for blueprint: Thermonuclear Trigger Unit
+2025-09-21 20:55:22,557 - INFO - Blueprint 1049574314029 unchanged, skipping update
+2025-09-21 20:55:22,814 - INFO - Updated type icon for blueprint: Photon Microprocessor
+2025-09-21 20:55:22,815 - INFO - Blueprint 1049574441448 unchanged, skipping update
+2025-09-21 20:55:23,108 - INFO - Updated type icon for blueprint: Particle Accelerator Unit
+2025-09-21 20:55:23,108 - INFO - Blueprint 1049574442751 unchanged, skipping update
+2025-09-21 20:55:23,132 - INFO - Updated type icon for blueprint: Oscillator Capacitor Unit
+2025-09-21 20:55:23,132 - INFO - Blueprint 1049574444009 unchanged, skipping update
+2025-09-21 20:55:23,342 - INFO - Updated type icon for blueprint: Magnetometric Sensor Cluster
+2025-09-21 20:55:23,343 - INFO - Blueprint 1049574447488 unchanged, skipping update
+2025-09-21 20:55:23,619 - INFO - Updated type icon for blueprint: Fusion Reactor Unit
+2025-09-21 20:55:23,620 - INFO - Blueprint 1049574449602 unchanged, skipping update
+2025-09-21 20:55:23,639 - INFO - Updated type icon for blueprint: Crystalline Carbonide Armor Plate
+2025-09-21 20:55:23,640 - INFO - Blueprint 1049574451532 unchanged, skipping update
+2025-09-21 20:55:23,870 - INFO - Updated type icon for blueprint: Superconductor Rails
+2025-09-21 20:55:23,870 - INFO - Blueprint 1049574579770 unchanged, skipping update
+2025-09-21 20:55:24,105 - INFO - Updated type icon for blueprint: Graviton Pulse Generator
+2025-09-21 20:55:24,106 - INFO - Blueprint 1049574582590 unchanged, skipping update
+2025-09-21 20:55:24,146 - INFO - Updated type icon for blueprint: Tungsten Carbide Armor Plate
+2025-09-21 20:55:24,146 - INFO - Blueprint 1049574677299 unchanged, skipping update
+2025-09-21 20:55:24,280 - INFO - Updated type icon for blueprint: Tesseract Capacitor Unit
+2025-09-21 20:55:24,280 - INFO - Blueprint 1049574682998 unchanged, skipping update
+2025-09-21 20:55:24,571 - INFO - Updated type icon for blueprint: Radar Sensor Cluster
+2025-09-21 20:55:24,572 - INFO - Blueprint 1049574685686 unchanged, skipping update
+2025-09-21 20:55:24,654 - INFO - Updated type icon for blueprint: Nanoelectrical Microprocessor
+2025-09-21 20:55:24,654 - INFO - Blueprint 1049574687167 unchanged, skipping update
+2025-09-21 20:55:24,818 - INFO - Updated type icon for blueprint: Linear Shield Emitter
+2025-09-21 20:55:24,819 - INFO - Blueprint 1049574688527 unchanged, skipping update
+2025-09-21 20:55:25,120 - INFO - Updated type icon for blueprint: Laser Focusing Crystals
+2025-09-21 20:55:25,120 - INFO - Blueprint 1049574690328 unchanged, skipping update
+2025-09-21 20:55:25,223 - INFO - Updated type icon for blueprint: Fusion Thruster
+2025-09-21 20:55:25,223 - INFO - Blueprint 1049574692766 unchanged, skipping update
+2025-09-21 20:55:25,439 - INFO - Updated type icon for blueprint: EM Pulse Generator
+2025-09-21 20:55:25,440 - INFO - Blueprint 1049574694012 unchanged, skipping update
+2025-09-21 20:55:25,617 - INFO - Updated type icon for blueprint: Antimatter Reactor Unit
+2025-09-21 20:55:25,618 - INFO - Blueprint 1049574695751 unchanged, skipping update
+2025-09-21 20:55:25,861 - INFO - Updated type icon for blueprint: Helium Fuel Block
+2025-09-21 20:55:25,861 - INFO - Blueprint 1049574705873 unchanged, skipping update
+2025-09-21 20:55:25,964 - INFO - Updated type icon for blueprint: Hydrogen Fuel Block
+2025-09-21 20:55:25,965 - INFO - Blueprint 1049574708304 unchanged, skipping update
+2025-09-21 20:55:26,273 - INFO - Updated type icon for blueprint: Capital Antimatter Reactor Unit
+2025-09-21 20:55:26,274 - INFO - Blueprint 1049574751987 unchanged, skipping update
+2025-09-21 20:55:26,330 - INFO - Updated type icon for blueprint: Nitrogen Fuel Block
+2025-09-21 20:55:26,330 - INFO - Blueprint 1049574712131 unchanged, skipping update
+2025-09-21 20:55:26,654 - INFO - Updated type icon for blueprint: Capital EM Pulse Generator
+2025-09-21 20:55:26,654 - INFO - Blueprint 1049574753605 unchanged, skipping update
+2025-09-21 20:55:26,710 - INFO - Updated type icon for blueprint: Oxygen Fuel Block
+2025-09-21 20:55:26,710 - INFO - Blueprint 1049574725214 unchanged, skipping update
+2025-09-21 20:55:26,722 - INFO - Updated type icon for blueprint: Capital Fusion Thruster
+2025-09-21 20:55:26,722 - INFO - Blueprint 1049574755244 unchanged, skipping update
+2025-09-21 20:55:27,095 - INFO - Updated type icon for blueprint: Capital Linear Shield Emitter
+2025-09-21 20:55:27,095 - INFO - Blueprint 1049574759425 unchanged, skipping update
+2025-09-21 20:55:27,161 - INFO - Updated type icon for blueprint: Capital Nanoelectrical Microprocessor
+2025-09-21 20:55:27,161 - INFO - Blueprint 1049574760705 unchanged, skipping update
+2025-09-21 20:55:27,385 - INFO - Updated type icon for blueprint: Capital Radar Sensor Cluster
+2025-09-21 20:55:27,386 - INFO - Blueprint 1049574762041 unchanged, skipping update
+2025-09-21 20:55:27,531 - INFO - Updated type icon for blueprint: Capital Tesseract Capacitor Unit
+2025-09-21 20:55:27,532 - INFO - Blueprint 1049574763305 unchanged, skipping update
+2025-09-21 20:55:27,561 - INFO - Updated type icon for blueprint: Capital Laser Focusing Crystals
+2025-09-21 20:55:27,561 - INFO - Blueprint 1049574756931 unchanged, skipping update
+2025-09-21 20:55:27,761 - INFO - Updated type icon for blueprint: Capital Tungsten Carbide Armor Plate
+2025-09-21 20:55:27,762 - INFO - Blueprint 1049574764624 unchanged, skipping update
+2025-09-21 20:55:27,811 - INFO - Updated type icon for blueprint: Capital Gravimetric Sensor Cluster
+2025-09-21 20:55:27,811 - INFO - Blueprint 1049574767458 unchanged, skipping update
+2025-09-21 20:55:27,832 - INFO - Updated type icon for blueprint: Capital Graviton Pulse Generator
+2025-09-21 20:55:27,832 - INFO - Blueprint 1049574768724 unchanged, skipping update
+2025-09-21 20:55:28,167 - INFO - Updated type icon for blueprint: Capital Magpulse Thruster
+2025-09-21 20:55:28,167 - INFO - Blueprint 1049574771593 unchanged, skipping update
+2025-09-21 20:55:28,204 - INFO - Updated type icon for blueprint: Capital Titanium Diborite Armor Plate
+2025-09-21 20:55:28,204 - INFO - Blueprint 1049574781697 unchanged, skipping update
+2025-09-21 20:55:28,240 - INFO - Updated type icon for blueprint: Capital Graviton Reactor Unit
+2025-09-21 20:55:28,240 - INFO - Blueprint 1049574769783 unchanged, skipping update
+2025-09-21 20:55:28,437 - INFO - Updated type icon for blueprint: Capital Crystalline Carbonide Armor Plate
+2025-09-21 20:55:28,437 - INFO - Blueprint 1049574783623 unchanged, skipping update
+2025-09-21 20:55:28,601 - INFO - Updated type icon for blueprint: Capital Ion Thruster
+2025-09-21 20:55:28,601 - INFO - Blueprint 1049574786127 unchanged, skipping update
+2025-09-21 20:55:28,603 - INFO - Updated type icon for blueprint: Capital Fusion Reactor Unit
+2025-09-21 20:55:28,603 - INFO - Blueprint 1049574784788 unchanged, skipping update
+2025-09-21 20:55:28,906 - INFO - Updated type icon for blueprint: Capital Particle Accelerator Unit
+2025-09-21 20:55:28,907 - INFO - Blueprint 1049574790307 unchanged, skipping update
+2025-09-21 20:55:28,948 - INFO - Updated type icon for blueprint: Capital Oscillator Capacitor Unit
+2025-09-21 20:55:28,948 - INFO - Blueprint 1049574788474 unchanged, skipping update
+2025-09-21 20:55:28,973 - INFO - Updated type icon for blueprint: Capital Magnetometric Sensor Cluster
+2025-09-21 20:55:28,973 - INFO - Blueprint 1049574787807 unchanged, skipping update
+2025-09-21 20:55:29,252 - INFO - Updated type icon for blueprint: Capital Ladar Sensor Cluster
+2025-09-21 20:55:29,253 - INFO - Blueprint 1049574805777 unchanged, skipping update
+2025-09-21 20:55:29,258 - INFO - Updated type icon for blueprint: Capital Nanomechanical Microprocessor
+2025-09-21 20:55:29,258 - INFO - Blueprint 1049574812602 unchanged, skipping update
+2025-09-21 20:55:29,407 - INFO - Updated type icon for blueprint: Capital Nuclear Pulse Generator
+2025-09-21 20:55:29,407 - INFO - Blueprint 1049574814115 unchanged, skipping update
+2025-09-21 20:55:29,537 - INFO - Updated type icon for blueprint: Capital Plasma Thruster
+2025-09-21 20:55:29,537 - INFO - Blueprint 1049574816825 unchanged, skipping update
+2025-09-21 20:55:29,694 - INFO - Updated type icon for blueprint: Capital Nuclear Reactor Unit
+2025-09-21 20:55:29,694 - INFO - Blueprint 1049574815479 unchanged, skipping update
+2025-09-21 20:55:29,779 - INFO - Updated type icon for blueprint: Capital Thermonuclear Trigger Unit
+2025-09-21 20:55:29,779 - INFO - Blueprint 1049574817909 unchanged, skipping update
+2025-09-21 20:55:29,914 - INFO - Updated type icon for blueprint: Life Support Backup Unit
+2025-09-21 20:55:29,915 - INFO - Blueprint 1049574869338 unchanged, skipping update
+2025-09-21 20:55:30,002 - INFO - Updated type icon for blueprint: Life Support Backup Unit
+2025-09-21 20:55:30,003 - INFO - Blueprint 1049576016678 unchanged, skipping update
+2025-09-21 20:55:30,199 - INFO - Updated type icon for blueprint: Life Support Backup Unit
+2025-09-21 20:55:30,199 - INFO - Blueprint 1049576017392 unchanged, skipping update
+2025-09-21 20:55:30,335 - INFO - Updated type icon for blueprint: Life Support Backup Unit
+2025-09-21 20:55:30,335 - INFO - Blueprint 1049576017671 unchanged, skipping update
+2025-09-21 20:55:30,462 - INFO - Updated type icon for blueprint: Life Support Backup Unit
+2025-09-21 20:55:30,462 - INFO - Blueprint 1049576017866 unchanged, skipping update
+2025-09-21 20:55:30,520 - INFO - Updated type icon for blueprint: Life Support Backup Unit
+2025-09-21 20:55:30,520 - INFO - Blueprint 1049576018142 unchanged, skipping update
+2025-09-21 20:55:30,854 - INFO - Updated type icon for blueprint: Life Support Backup Unit
+2025-09-21 20:55:30,854 - INFO - Updated type icon for blueprint: Life Support Backup Unit
+2025-09-21 20:55:30,854 - INFO - Blueprint 1049576019228 unchanged, skipping update
+2025-09-21 20:55:30,855 - INFO - Blueprint 1049576018885 unchanged, skipping update
+2025-09-21 20:55:30,975 - INFO - Updated type icon for blueprint: Life Support Backup Unit
+2025-09-21 20:55:30,975 - INFO - Blueprint 1049576018563 unchanged, skipping update
+2025-09-21 20:55:31,291 - INFO - Updated type icon for blueprint: Life Support Backup Unit
+2025-09-21 20:55:31,291 - INFO - Blueprint 1049576019604 unchanged, skipping update
+2025-09-21 20:55:31,303 - INFO - Updated type icon for blueprint: Helium Fuel Block
+2025-09-21 20:55:31,303 - INFO - Blueprint 1049576044342 unchanged, skipping update
+2025-09-21 20:55:31,390 - INFO - Updated type icon for blueprint: Hydrogen Fuel Block
+2025-09-21 20:55:31,390 - INFO - Blueprint 1049576045884 unchanged, skipping update
+2025-09-21 20:55:31,608 - INFO - Updated type icon for blueprint: Oxygen Fuel Block
+2025-09-21 20:55:31,608 - INFO - Blueprint 1049576048517 unchanged, skipping update
+2025-09-21 20:55:31,740 - INFO - Updated type icon for blueprint: Nitrogen Fuel Block
+2025-09-21 20:55:31,740 - INFO - Blueprint 1049576047227 unchanged, skipping update
+2025-09-21 20:55:31,773 - INFO - Updated type icon for blueprint: Capital Antimatter Reactor Unit
+2025-09-21 20:55:31,773 - INFO - Blueprint 1049576540350 unchanged, skipping update
+2025-09-21 20:55:31,972 - INFO - Updated type icon for blueprint: Capital EM Pulse Generator
+2025-09-21 20:55:31,973 - INFO - Blueprint 1049576541010 unchanged, skipping update
+2025-09-21 20:55:32,025 - INFO - Updated type icon for blueprint: Capital Fusion Thruster
+2025-09-21 20:55:32,025 - INFO - Blueprint 1049576541669 unchanged, skipping update
+2025-09-21 20:55:32,060 - INFO - Updated type icon for blueprint: Capital Laser Focusing Crystals
+2025-09-21 20:55:32,060 - INFO - Blueprint 1049576546106 unchanged, skipping update
+2025-09-21 20:55:32,356 - INFO - Updated type icon for blueprint: Capital Linear Shield Emitter
+2025-09-21 20:55:32,356 - INFO - Blueprint 1049576547463 unchanged, skipping update
+2025-09-21 20:55:32,417 - INFO - Updated type icon for blueprint: Capital Radar Sensor Cluster
+2025-09-21 20:55:32,417 - INFO - Updated type icon for blueprint: Capital Nanoelectrical Microprocessor
+2025-09-21 20:55:32,417 - INFO - Blueprint 1049576548631 unchanged, skipping update
+2025-09-21 20:55:32,418 - INFO - Blueprint 1049576547988 unchanged, skipping update
+2025-09-21 20:55:32,675 - INFO - Updated type icon for blueprint: Capital Tesseract Capacitor Unit
+2025-09-21 20:55:32,676 - INFO - Blueprint 1049576549259 unchanged, skipping update
+2025-09-21 20:55:32,813 - INFO - Updated type icon for blueprint: Capital Tungsten Carbide Armor Plate
+2025-09-21 20:55:32,813 - INFO - Blueprint 1049576555733 unchanged, skipping update
+2025-09-21 20:55:32,853 - INFO - Updated type icon for blueprint: Capital Gravimetric Sensor Cluster
+2025-09-21 20:55:32,853 - INFO - Blueprint 1049576556736 unchanged, skipping update
+2025-09-21 20:55:33,038 - INFO - Updated type icon for blueprint: Capital Graviton Pulse Generator
+2025-09-21 20:55:33,038 - INFO - Blueprint 1049576557386 unchanged, skipping update
+2025-09-21 20:55:33,141 - INFO - Updated type icon for blueprint: Capital Magpulse Thruster
+2025-09-21 20:55:33,141 - INFO - Blueprint 1049576559320 unchanged, skipping update
+2025-09-21 20:55:33,163 - INFO - Updated type icon for blueprint: Capital Graviton Reactor Unit
+2025-09-21 20:55:33,163 - INFO - Blueprint 1049576558540 unchanged, skipping update
+2025-09-21 20:55:33,430 - INFO - Updated type icon for blueprint: Capital Titanium Diborite Armor Plate
+2025-09-21 20:55:33,430 - INFO - Blueprint 1049576627404 unchanged, skipping update
+2025-09-21 20:55:33,464 - INFO - Updated type icon for blueprint: Capital Crystalline Carbonide Armor Plate
+2025-09-21 20:55:33,464 - INFO - Blueprint 1049576629954 unchanged, skipping update
+2025-09-21 20:55:33,652 - INFO - Updated type icon for blueprint: Capital Fusion Reactor Unit
+2025-09-21 20:55:33,652 - INFO - Blueprint 1049576630884 unchanged, skipping update
+2025-09-21 20:55:33,847 - INFO - Updated type icon for blueprint: Capital Ion Thruster
+2025-09-21 20:55:33,847 - INFO - Blueprint 1049576631501 unchanged, skipping update
+2025-09-21 20:55:33,859 - INFO - Updated type icon for blueprint: Capital Magnetometric Sensor Cluster
+2025-09-21 20:55:33,859 - INFO - Blueprint 1049576632228 unchanged, skipping update
+2025-09-21 20:55:34,020 - INFO - Updated type icon for blueprint: Capital Oscillator Capacitor Unit
+2025-09-21 20:55:34,020 - INFO - Blueprint 1049576644465 unchanged, skipping update
+2025-09-21 20:55:34,153 - INFO - Updated type icon for blueprint: Capital Particle Accelerator Unit
+2025-09-21 20:55:34,153 - INFO - Blueprint 1049576645167 unchanged, skipping update
+2025-09-21 20:55:34,420 - INFO - Updated type icon for blueprint: Capital Thermonuclear Trigger Unit
+2025-09-21 20:55:34,421 - INFO - Updated type icon for blueprint: Capital Plasma Thruster
+2025-09-21 20:55:34,421 - INFO - Blueprint 1049589408412 unchanged, skipping update
+2025-09-21 20:55:34,421 - INFO - Blueprint 1049589409028 unchanged, skipping update
+2025-09-21 20:55:34,538 - INFO - Updated type icon for blueprint: Capital Nuclear Reactor Unit
+2025-09-21 20:55:34,538 - INFO - Blueprint 1049589409666 unchanged, skipping update
+2025-09-21 20:55:34,724 - INFO - Updated type icon for blueprint: Capital Nuclear Pulse Generator
+2025-09-21 20:55:34,724 - INFO - Blueprint 1049589412723 unchanged, skipping update
+2025-09-21 20:55:34,725 - INFO - Skipping BPC (quantity=-2) for item_id: 1036054513632
+2025-09-21 20:55:34,725 - INFO - Skipping BPC (quantity=-2) for item_id: 1036076438367
+2025-09-21 20:55:34,725 - INFO - Skipping BPC (quantity=-2) for item_id: 1036331152847
+2025-09-21 20:55:34,725 - INFO - Skipping BPC (quantity=-2) for item_id: 1045531183853
+2025-09-21 20:55:34,725 - INFO - Skipping BPC (quantity=-2) for item_id: 1045531322169
+2025-09-21 20:55:34,725 - INFO - Skipping BPC (quantity=-2) for item_id: 1045531322170
+2025-09-21 20:55:34,725 - INFO - Skipping BPC (quantity=-2) for item_id: 1045588045876
+2025-09-21 20:55:34,725 - INFO - Skipping BPC (quantity=-2) for item_id: 1045588478437
+2025-09-21 20:55:34,725 - INFO - Skipping BPC (quantity=-2) for item_id: 1045588719558
+2025-09-21 20:55:34,725 - INFO - Skipping BPC (quantity=-2) for item_id: 1045588746248
+2025-09-21 20:55:34,725 - INFO - Skipping BPC (quantity=-2) for item_id: 1045588796901
+2025-09-21 20:55:34,725 - INFO - Skipping BPC (quantity=-2) for item_id: 1045588796905
+2025-09-21 20:55:34,726 - INFO - Skipping BPC (quantity=-2) for item_id: 1045588966368
+2025-09-21 20:55:34,726 - INFO - Skipping BPC (quantity=-2) for item_id: 1045589383356
+2025-09-21 20:55:34,726 - INFO - Skipping BPC (quantity=-2) for item_id: 1045589524430
+2025-09-21 20:55:34,726 - INFO - Skipping BPC (quantity=-2) for item_id: 1045589829162
+2025-09-21 20:55:34,726 - INFO - Skipping BPC (quantity=-2) for item_id: 1045589856352
+2025-09-21 20:55:34,726 - INFO - Skipping BPC (quantity=-2) for item_id: 1045589970713
+2025-09-21 20:55:34,726 - INFO - Skipping BPC (quantity=-2) for item_id: 1045590002421
+2025-09-21 20:55:34,726 - INFO - Skipping BPC (quantity=-2) for item_id: 1045609989463
+2025-09-21 20:55:34,726 - INFO - Skipping BPC (quantity=-2) for item_id: 1045610074246
+2025-09-21 20:55:34,726 - INFO - Skipping BPC (quantity=-2) for item_id: 1045610327209
+2025-09-21 20:55:34,726 - INFO - Skipping BPC (quantity=-2) for item_id: 1045636214197
+2025-09-21 20:55:34,726 - INFO - Skipping BPC (quantity=-2) for item_id: 1045636214207
+2025-09-21 20:55:34,726 - INFO - Skipping BPC (quantity=-2) for item_id: 1045639629391
+2025-09-21 20:55:34,726 - INFO - Skipping BPC (quantity=-2) for item_id: 1045639631055
+2025-09-21 20:55:34,726 - INFO - Skipping BPC (quantity=-2) for item_id: 1045640242611
+2025-09-21 20:55:34,726 - INFO - Skipping BPC (quantity=-2) for item_id: 1045640244168
+2025-09-21 20:55:34,726 - INFO - Skipping BPC (quantity=-2) for item_id: 1045640245869
+2025-09-21 20:55:34,726 - INFO - Skipping BPC (quantity=-2) for item_id: 1045640246655
+2025-09-21 20:55:34,726 - INFO - Skipping BPC (quantity=-2) for item_id: 1045640247932
+2025-09-21 20:55:34,727 - INFO - Skipping BPC (quantity=-2) for item_id: 1045640734556
+2025-09-21 20:55:34,727 - INFO - Skipping BPC (quantity=-2) for item_id: 1045640745069
+2025-09-21 20:55:34,727 - INFO - Skipping BPC (quantity=-2) for item_id: 1045640746061
+2025-09-21 20:55:34,727 - INFO - Skipping BPC (quantity=-2) for item_id: 1045640746571
+2025-09-21 20:55:34,727 - INFO - Skipping BPC (quantity=-2) for item_id: 1045640747011
+2025-09-21 20:55:34,727 - INFO - Skipping BPC (quantity=-2) for item_id: 1045640748237
+2025-09-21 20:55:34,727 - INFO - Skipping BPC (quantity=-2) for item_id: 1045711927769
+2025-09-21 20:55:34,727 - INFO - Skipping BPC (quantity=-2) for item_id: 1045711927780
+2025-09-21 20:55:34,727 - INFO - Skipping BPC (quantity=-2) for item_id: 1045771383136
+2025-09-21 20:55:34,727 - INFO - Skipping BPC (quantity=-2) for item_id: 1045771383149
+2025-09-21 20:55:34,727 - INFO - Skipping BPC (quantity=-2) for item_id: 1045771413739
+2025-09-21 20:55:34,727 - INFO - Skipping BPC (quantity=-2) for item_id: 1045771413749
+2025-09-21 20:55:34,727 - INFO - Skipping BPC (quantity=-2) for item_id: 1045771413755
+2025-09-21 20:55:34,727 - INFO - Skipping BPC (quantity=-2) for item_id: 1045771413762
+2025-09-21 20:55:34,727 - INFO - Skipping BPC (quantity=-2) for item_id: 1045771413766
+2025-09-21 20:55:34,727 - INFO - Skipping BPC (quantity=-2) for item_id: 1045771413771
+2025-09-21 20:55:34,727 - INFO - Skipping BPC (quantity=-2) for item_id: 1045771413775
+2025-09-21 20:55:34,727 - INFO - Skipping BPC (quantity=-2) for item_id: 1045771413796
+2025-09-21 20:55:34,727 - INFO - Skipping BPC (quantity=-2) for item_id: 1045771413816
+2025-09-21 20:55:34,727 - INFO - Skipping BPC (quantity=-2) for item_id: 1045804102077
+2025-09-21 20:55:34,727 - INFO - Skipping BPC (quantity=-2) for item_id: 1045804102078
+2025-09-21 20:55:34,727 - INFO - Skipping BPC (quantity=-2) for item_id: 1045804102079
+2025-09-21 20:55:34,727 - INFO - Skipping BPC (quantity=-2) for item_id: 1045804102083
+2025-09-21 20:55:34,728 - INFO - Skipping BPC (quantity=-2) for item_id: 1045804102084
+2025-09-21 20:55:34,728 - INFO - Skipping BPC (quantity=-2) for item_id: 1045804102085
+2025-09-21 20:55:34,728 - INFO - Skipping BPC (quantity=-2) for item_id: 1045804102098
+2025-09-21 20:55:34,728 - INFO - Skipping BPC (quantity=-2) for item_id: 1045804102099
+2025-09-21 20:55:34,728 - INFO - Skipping BPC (quantity=-2) for item_id: 1045804102100
+2025-09-21 20:55:34,728 - INFO - Skipping BPC (quantity=-2) for item_id: 1045804102106
+2025-09-21 20:55:34,728 - INFO - Skipping BPC (quantity=-2) for item_id: 1045804102107
+2025-09-21 20:55:34,728 - INFO - Skipping BPC (quantity=-2) for item_id: 1045804102108
+2025-09-21 20:55:34,728 - INFO - Skipping BPC (quantity=-2) for item_id: 1045804102116
+2025-09-21 20:55:34,728 - INFO - Skipping BPC (quantity=-2) for item_id: 1045804102117
+2025-09-21 20:55:34,728 - INFO - Skipping BPC (quantity=-2) for item_id: 1045804102118
+2025-09-21 20:55:34,728 - INFO - Skipping BPC (quantity=-2) for item_id: 1045804102125
+2025-09-21 20:55:34,728 - INFO - Skipping BPC (quantity=-2) for item_id: 1045804102126
+2025-09-21 20:55:34,728 - INFO - Skipping BPC (quantity=-2) for item_id: 1045804102127
+2025-09-21 20:55:34,728 - INFO - Skipping BPC (quantity=-2) for item_id: 1045804102129
+2025-09-21 20:55:34,728 - INFO - Skipping BPC (quantity=-2) for item_id: 1045804102130
+2025-09-21 20:55:34,728 - INFO - Skipping BPC (quantity=-2) for item_id: 1045804102131
+2025-09-21 20:55:34,728 - INFO - Skipping BPC (quantity=-2) for item_id: 1045804102134
+2025-09-21 20:55:34,728 - INFO - Skipping BPC (quantity=-2) for item_id: 1045804102135
+2025-09-21 20:55:34,728 - INFO - Skipping BPC (quantity=-2) for item_id: 1045804102136
+2025-09-21 20:55:34,728 - INFO - Skipping BPC (quantity=-2) for item_id: 1045804102146
+2025-09-21 20:55:34,728 - INFO - Skipping BPC (quantity=-2) for item_id: 1045804102147
+2025-09-21 20:55:34,728 - INFO - Skipping BPC (quantity=-2) for item_id: 1045804102148
+2025-09-21 20:55:34,728 - INFO - Skipping BPC (quantity=-2) for item_id: 1045804102157
+2025-09-21 20:55:34,729 - INFO - Skipping BPC (quantity=-2) for item_id: 1045804102158
+2025-09-21 20:55:34,729 - INFO - Skipping BPC (quantity=-2) for item_id: 1045804102159
+2025-09-21 20:55:34,729 - INFO - Skipping BPC (quantity=-2) for item_id: 1045806224835
+2025-09-21 20:55:34,729 - INFO - Skipping BPC (quantity=-2) for item_id: 1045825716569
+2025-09-21 20:55:34,729 - INFO - Skipping BPC (quantity=-2) for item_id: 1045825716605
+2025-09-21 20:55:34,729 - INFO - Skipping BPC (quantity=-2) for item_id: 1045825716633
+2025-09-21 20:55:34,729 - INFO - Skipping BPC (quantity=-2) for item_id: 1045825716648
+2025-09-21 20:55:34,729 - INFO - Skipping BPC (quantity=-2) for item_id: 1045825716649
+2025-09-21 20:55:34,729 - INFO - Skipping BPC (quantity=-2) for item_id: 1045825734454
+2025-09-21 20:55:34,729 - INFO - Skipping BPC (quantity=-2) for item_id: 1045825734455
+2025-09-21 20:55:34,729 - INFO - Skipping BPC (quantity=-2) for item_id: 1045825734456
+2025-09-21 20:55:34,729 - INFO - Skipping BPC (quantity=-2) for item_id: 1045825734457
+2025-09-21 20:55:34,729 - INFO - Skipping BPC (quantity=-2) for item_id: 1045825734471
+2025-09-21 20:55:34,729 - INFO - Skipping BPC (quantity=-2) for item_id: 1045825734472
+2025-09-21 20:55:34,729 - INFO - Skipping BPC (quantity=-2) for item_id: 1045825734473
+2025-09-21 20:55:34,729 - INFO - Skipping BPC (quantity=-2) for item_id: 1045825734474
+2025-09-21 20:55:34,729 - INFO - Skipping BPC (quantity=-2) for item_id: 1045833402616
+2025-09-21 20:55:34,729 - INFO - Skipping BPC (quantity=-2) for item_id: 1045833402653
+2025-09-21 20:55:34,729 - INFO - Skipping BPC (quantity=-2) for item_id: 1045833402685
+2025-09-21 20:55:34,729 - INFO - Skipping BPC (quantity=-2) for item_id: 1045909044112
+2025-09-21 20:55:34,729 - INFO - Skipping BPC (quantity=-2) for item_id: 1045909044113
+2025-09-21 20:55:34,729 - INFO - Skipping BPC (quantity=-2) for item_id: 1045909044114
+2025-09-21 20:55:34,730 - INFO - Skipping BPC (quantity=-2) for item_id: 1045909044115
+2025-09-21 20:55:34,730 - INFO - Skipping BPC (quantity=-2) for item_id: 1045909044123
+2025-09-21 20:55:34,730 - INFO - Skipping BPC (quantity=-2) for item_id: 1045909044137
+2025-09-21 20:55:34,730 - INFO - Skipping BPC (quantity=-2) for item_id: 1045909044138
+2025-09-21 20:55:34,730 - INFO - Skipping BPC (quantity=-2) for item_id: 1045909044139
+2025-09-21 20:55:34,730 - INFO - Skipping BPC (quantity=-2) for item_id: 1045909044155
+2025-09-21 20:55:34,730 - INFO - Skipping BPC (quantity=-2) for item_id: 1045909044156
+2025-09-21 20:55:34,730 - INFO - Skipping BPC (quantity=-2) for item_id: 1045909044157
+2025-09-21 20:55:34,730 - INFO - Skipping BPC (quantity=-2) for item_id: 1045909044160
+2025-09-21 20:55:34,730 - INFO - Skipping BPC (quantity=-2) for item_id: 1045909044169
+2025-09-21 20:55:34,730 - INFO - Skipping BPC (quantity=-2) for item_id: 1045909044170
+2025-09-21 20:55:34,730 - INFO - Skipping BPC (quantity=-2) for item_id: 1045909044191
+2025-09-21 20:55:34,730 - INFO - Skipping BPC (quantity=-2) for item_id: 1045909044192
+2025-09-21 20:55:34,730 - INFO - Skipping BPC (quantity=-2) for item_id: 1045909044193
+2025-09-21 20:55:34,730 - INFO - Skipping BPC (quantity=-2) for item_id: 1045909044206
+2025-09-21 20:55:34,730 - INFO - Skipping BPC (quantity=-2) for item_id: 1045909044207
+2025-09-21 20:55:34,730 - INFO - Skipping BPC (quantity=-2) for item_id: 1045909044208
+2025-09-21 20:55:34,730 - INFO - Skipping BPC (quantity=-2) for item_id: 1045909044209
+2025-09-21 20:55:34,730 - INFO - Skipping BPC (quantity=-2) for item_id: 1045909044210
+2025-09-21 20:55:34,730 - INFO - Skipping BPC (quantity=-2) for item_id: 1045909044211
+2025-09-21 20:55:34,730 - INFO - Skipping BPC (quantity=-2) for item_id: 1047026312111
+2025-09-21 20:55:34,730 - INFO - Skipping BPC (quantity=-2) for item_id: 1047026312127
+2025-09-21 20:55:34,730 - INFO - Skipping BPC (quantity=-2) for item_id: 1047026312130
+2025-09-21 20:55:34,730 - INFO - Skipping BPC (quantity=-2) for item_id: 1047026312138
+2025-09-21 20:55:34,731 - INFO - Skipping BPC (quantity=-2) for item_id: 1047026312148
+2025-09-21 20:55:34,731 - INFO - Skipping BPC (quantity=-2) for item_id: 1047026312151
+2025-09-21 20:55:34,731 - INFO - Skipping BPC (quantity=-2) for item_id: 1047026312158
+2025-09-21 20:55:34,731 - INFO - Skipping BPC (quantity=-2) for item_id: 1047026312167
+2025-09-21 20:55:34,731 - INFO - Skipping BPC (quantity=-2) for item_id: 1047026312176
+2025-09-21 20:55:34,731 - INFO - Skipping BPC (quantity=-2) for item_id: 1047026312195
+2025-09-21 20:55:34,731 - INFO - Skipping BPC (quantity=-2) for item_id: 1047026369404
+2025-09-21 20:55:34,731 - INFO - Skipping BPC (quantity=-2) for item_id: 1047026369405
+2025-09-21 20:55:34,731 - INFO - Skipping BPC (quantity=-2) for item_id: 1047026369406
+2025-09-21 20:55:34,731 - INFO - Skipping BPC (quantity=-2) for item_id: 1047026369613
+2025-09-21 20:55:34,731 - INFO - Skipping BPC (quantity=-2) for item_id: 1047026369614
+2025-09-21 20:55:34,731 - INFO - Skipping BPC (quantity=-2) for item_id: 1047026369615
+2025-09-21 20:55:34,731 - INFO - Skipping BPC (quantity=-2) for item_id: 1047026369632
+2025-09-21 20:55:34,731 - INFO - Skipping BPC (quantity=-2) for item_id: 1047026369633
+2025-09-21 20:55:34,731 - INFO - Skipping BPC (quantity=-2) for item_id: 1047026369634
+2025-09-21 20:55:34,731 - INFO - Skipping BPC (quantity=-2) for item_id: 1047026369646
+2025-09-21 20:55:34,731 - INFO - Skipping BPC (quantity=-2) for item_id: 1047026369647
+2025-09-21 20:55:34,731 - INFO - Skipping BPC (quantity=-2) for item_id: 1047026369648
+2025-09-21 20:55:34,731 - INFO - Skipping BPC (quantity=-2) for item_id: 1047026369673
+2025-09-21 20:55:34,731 - INFO - Skipping BPC (quantity=-2) for item_id: 1047026369674
+2025-09-21 20:55:34,731 - INFO - Skipping BPC (quantity=-2) for item_id: 1047026369675
+2025-09-21 20:55:34,731 - INFO - Skipping BPC (quantity=-2) for item_id: 1047026369693
+2025-09-21 20:55:34,731 - INFO - Skipping BPC (quantity=-2) for item_id: 1047026369694
+2025-09-21 20:55:34,731 - INFO - Skipping BPC (quantity=-2) for item_id: 1047026369695
+2025-09-21 20:55:34,731 - INFO - Skipping BPC (quantity=-2) for item_id: 1047026369719
+2025-09-21 20:55:34,731 - INFO - Skipping BPC (quantity=-2) for item_id: 1047026369720
+2025-09-21 20:55:34,731 - INFO - Skipping BPC (quantity=-2) for item_id: 1047026369721
+2025-09-21 20:55:34,731 - INFO - Skipping BPC (quantity=-2) for item_id: 1047026369728
+2025-09-21 20:55:34,731 - INFO - Skipping BPC (quantity=-2) for item_id: 1047026369729
+2025-09-21 20:55:34,731 - INFO - Skipping BPC (quantity=-2) for item_id: 1047026369730
+2025-09-21 20:55:34,732 - INFO - Skipping BPC (quantity=-2) for item_id: 1047026369761
+2025-09-21 20:55:34,732 - INFO - Skipping BPC (quantity=-2) for item_id: 1047026369762
+2025-09-21 20:55:34,732 - INFO - Skipping BPC (quantity=-2) for item_id: 1047026369763
+2025-09-21 20:55:34,732 - INFO - Skipping BPC (quantity=-2) for item_id: 1047026385319
+2025-09-21 20:55:34,732 - INFO - Skipping BPC (quantity=-2) for item_id: 1047026385324
+2025-09-21 20:55:34,732 - INFO - Skipping BPC (quantity=-2) for item_id: 1047026385343
+2025-09-21 20:55:34,732 - INFO - Skipping BPC (quantity=-2) for item_id: 1047026385344
+2025-09-21 20:55:34,732 - INFO - Skipping BPC (quantity=-2) for item_id: 1047026385345
+2025-09-21 20:55:34,732 - INFO - Skipping BPC (quantity=-2) for item_id: 1047026412483
+2025-09-21 20:55:34,732 - INFO - Skipping BPC (quantity=-2) for item_id: 1047026412484
+2025-09-21 20:55:34,732 - INFO - Skipping BPC (quantity=-2) for item_id: 1047026412515
+2025-09-21 20:55:34,732 - INFO - Skipping BPC (quantity=-2) for item_id: 1047026412516
+2025-09-21 20:55:34,732 - INFO - Skipping BPC (quantity=-2) for item_id: 1047026412532
+2025-09-21 20:55:34,732 - INFO - Skipping BPC (quantity=-2) for item_id: 1047026412533
+2025-09-21 20:55:34,732 - INFO - Skipping BPC (quantity=-2) for item_id: 1047026412542
+2025-09-21 20:55:34,732 - INFO - Skipping BPC (quantity=-2) for item_id: 1047026412543
+2025-09-21 20:55:34,732 - INFO - Skipping BPC (quantity=-2) for item_id: 1047026412555
+2025-09-21 20:55:34,732 - INFO - Skipping BPC (quantity=-2) for item_id: 1047026412556
+2025-09-21 20:55:34,732 - INFO - Skipping BPC (quantity=-2) for item_id: 1047026412575
+2025-09-21 20:55:34,732 - INFO - Skipping BPC (quantity=-2) for item_id: 1047026412576
+2025-09-21 20:55:34,732 - INFO - Skipping BPC (quantity=-2) for item_id: 1047026412594
+2025-09-21 20:55:34,732 - INFO - Skipping BPC (quantity=-2) for item_id: 1047026412595
+2025-09-21 20:55:34,732 - INFO - Skipping BPC (quantity=-2) for item_id: 1047026412608
+2025-09-21 20:55:34,732 - INFO - Skipping BPC (quantity=-2) for item_id: 1047026412609
+2025-09-21 20:55:34,732 - INFO - Skipping BPC (quantity=-2) for item_id: 1047026412624
+2025-09-21 20:55:34,733 - INFO - Skipping BPC (quantity=-2) for item_id: 1047026412625
+2025-09-21 20:55:34,733 - INFO - Skipping BPC (quantity=-2) for item_id: 1047026412639
+2025-09-21 20:55:34,733 - INFO - Skipping BPC (quantity=-2) for item_id: 1047026412640
+2025-09-21 20:55:34,733 - INFO - Skipping BPC (quantity=-2) for item_id: 1047026442596
+2025-09-21 20:55:34,733 - INFO - Skipping BPC (quantity=-2) for item_id: 1047026442597
+2025-09-21 20:55:34,733 - INFO - Skipping BPC (quantity=-2) for item_id: 1047026442598
+2025-09-21 20:55:34,733 - INFO - Skipping BPC (quantity=-2) for item_id: 1047026442616
+2025-09-21 20:55:34,733 - INFO - Skipping BPC (quantity=-2) for item_id: 1047026442617
+2025-09-21 20:55:34,733 - INFO - Skipping BPC (quantity=-2) for item_id: 1047026442618
+2025-09-21 20:55:34,733 - INFO - Skipping BPC (quantity=-2) for item_id: 1047026442628
+2025-09-21 20:55:34,733 - INFO - Skipping BPC (quantity=-2) for item_id: 1047026442629
+2025-09-21 20:55:34,733 - INFO - Skipping BPC (quantity=-2) for item_id: 1047026442630
+2025-09-21 20:55:34,733 - INFO - Skipping BPC (quantity=-2) for item_id: 1047026442638
+2025-09-21 20:55:34,733 - INFO - Skipping BPC (quantity=-2) for item_id: 1047026442639
+2025-09-21 20:55:34,733 - INFO - Skipping BPC (quantity=-2) for item_id: 1047026442640
+2025-09-21 20:55:34,733 - INFO - Skipping BPC (quantity=-2) for item_id: 1047026442647
+2025-09-21 20:55:34,733 - INFO - Skipping BPC (quantity=-2) for item_id: 1047026442648
+2025-09-21 20:55:34,733 - INFO - Skipping BPC (quantity=-2) for item_id: 1047026442649
+2025-09-21 20:55:34,733 - INFO - Skipping BPC (quantity=-2) for item_id: 1047026442662
+2025-09-21 20:55:34,733 - INFO - Skipping BPC (quantity=-2) for item_id: 1047026442663
+2025-09-21 20:55:34,734 - INFO - Skipping BPC (quantity=-2) for item_id: 1047026442664
+2025-09-21 20:55:34,734 - INFO - Skipping BPC (quantity=-2) for item_id: 1047026442681
+2025-09-21 20:55:34,734 - INFO - Skipping BPC (quantity=-2) for item_id: 1047026442682
+2025-09-21 20:55:34,734 - INFO - Skipping BPC (quantity=-2) for item_id: 1047026442683
+2025-09-21 20:55:34,734 - INFO - Skipping BPC (quantity=-2) for item_id: 1047026442697
+2025-09-21 20:55:34,734 - INFO - Skipping BPC (quantity=-2) for item_id: 1047026442698
+2025-09-21 20:55:34,734 - INFO - Skipping BPC (quantity=-2) for item_id: 1047026442699
+2025-09-21 20:55:34,734 - INFO - Skipping BPC (quantity=-2) for item_id: 1047026442704
+2025-09-21 20:55:34,734 - INFO - Skipping BPC (quantity=-2) for item_id: 1047026442705
+2025-09-21 20:55:34,734 - INFO - Skipping BPC (quantity=-2) for item_id: 1047026442706
+2025-09-21 20:55:34,734 - INFO - Skipping BPC (quantity=-2) for item_id: 1047026442720
+2025-09-21 20:55:34,734 - INFO - Skipping BPC (quantity=-2) for item_id: 1047026442721
+2025-09-21 20:55:34,734 - INFO - Skipping BPC (quantity=-2) for item_id: 1047026442722
+2025-09-21 20:55:34,734 - INFO - Skipping BPC (quantity=-2) for item_id: 1047036597703
+2025-09-21 20:55:34,734 - INFO - Skipping BPC (quantity=-2) for item_id: 1047036597705
+2025-09-21 20:55:34,734 - INFO - Skipping BPC (quantity=-2) for item_id: 1047036597742
+2025-09-21 20:55:34,734 - INFO - Skipping BPC (quantity=-2) for item_id: 1047036597743
+2025-09-21 20:55:34,734 - INFO - Skipping BPC (quantity=-2) for item_id: 1047036597761
+2025-09-21 20:55:34,734 - INFO - Skipping BPC (quantity=-2) for item_id: 1047036597762
+2025-09-21 20:55:34,734 - INFO - Skipping BPC (quantity=-2) for item_id: 1047036597771
+2025-09-21 20:55:34,734 - INFO - Skipping BPC (quantity=-2) for item_id: 1047036597772
+2025-09-21 20:55:34,734 - INFO - Skipping BPC (quantity=-2) for item_id: 1047036736725
+2025-09-21 20:55:34,734 - INFO - Skipping BPC (quantity=-2) for item_id: 1047036736749
+2025-09-21 20:55:34,734 - INFO - Skipping BPC (quantity=-2) for item_id: 1047036736764
+2025-09-21 20:55:34,734 - INFO - Skipping BPC (quantity=-2) for item_id: 1047036736785
+2025-09-21 20:55:34,734 - INFO - Skipping BPC (quantity=-2) for item_id: 1047036736796
+2025-09-21 20:55:34,734 - INFO - Skipping BPC (quantity=-2) for item_id: 1047036736817
+2025-09-21 20:55:34,734 - INFO - Skipping BPC (quantity=-2) for item_id: 1047036736823
+2025-09-21 20:55:34,734 - INFO - Skipping BPC (quantity=-2) for item_id: 1047036736844
+2025-09-21 20:55:34,735 - INFO - Skipping BPC (quantity=-2) for item_id: 1047036736853
+2025-09-21 20:55:34,735 - INFO - Skipping BPC (quantity=-2) for item_id: 1047036736858
+2025-09-21 20:55:34,735 - INFO - Skipping BPC (quantity=-2) for item_id: 1047036755571
+2025-09-21 20:55:34,735 - INFO - Skipping BPC (quantity=-2) for item_id: 1047036755572
+2025-09-21 20:55:34,735 - INFO - Skipping BPC (quantity=-2) for item_id: 1047036755591
+2025-09-21 20:55:34,735 - INFO - Skipping BPC (quantity=-2) for item_id: 1047036755592
+2025-09-21 20:55:34,735 - INFO - Skipping BPC (quantity=-2) for item_id: 1047036755603
+2025-09-21 20:55:34,735 - INFO - Skipping BPC (quantity=-2) for item_id: 1047036755604
+2025-09-21 20:55:34,735 - INFO - Skipping BPC (quantity=-2) for item_id: 1047036755615
+2025-09-21 20:55:34,735 - INFO - Skipping BPC (quantity=-2) for item_id: 1047036755616
+2025-09-21 20:55:34,735 - INFO - Skipping BPC (quantity=-2) for item_id: 1047036755634
+2025-09-21 20:55:34,735 - INFO - Skipping BPC (quantity=-2) for item_id: 1047036755635
+2025-09-21 20:55:34,735 - INFO - Skipping BPC (quantity=-2) for item_id: 1047036755651
+2025-09-21 20:55:34,735 - INFO - Skipping BPC (quantity=-2) for item_id: 1047036755652
+2025-09-21 20:55:34,735 - INFO - Skipping BPC (quantity=-2) for item_id: 1047036755658
+2025-09-21 20:55:34,735 - INFO - Skipping BPC (quantity=-2) for item_id: 1047036755659
+2025-09-21 20:55:34,735 - INFO - Skipping BPC (quantity=-2) for item_id: 1047036755683
+2025-09-21 20:55:34,735 - INFO - Skipping BPC (quantity=-2) for item_id: 1047036755684
+2025-09-21 20:55:34,735 - INFO - Skipping BPC (quantity=-2) for item_id: 1047036755695
+2025-09-21 20:55:34,735 - INFO - Skipping BPC (quantity=-2) for item_id: 1047036755696
+2025-09-21 20:55:34,735 - INFO - Skipping BPC (quantity=-2) for item_id: 1047036777362
+2025-09-21 20:55:34,735 - INFO - Skipping BPC (quantity=-2) for item_id: 1047036777363
+2025-09-21 20:55:34,735 - INFO - Skipping BPC (quantity=-2) for item_id: 1047036777375
+2025-09-21 20:55:34,735 - INFO - Skipping BPC (quantity=-2) for item_id: 1047036777376
+2025-09-21 20:55:34,735 - INFO - Skipping BPC (quantity=-2) for item_id: 1047036777385
+2025-09-21 20:55:34,735 - INFO - Skipping BPC (quantity=-2) for item_id: 1047036777386
+2025-09-21 20:55:34,735 - INFO - Skipping BPC (quantity=-2) for item_id: 1047036777394
+2025-09-21 20:55:34,735 - INFO - Skipping BPC (quantity=-2) for item_id: 1047036777395
+2025-09-21 20:55:34,735 - INFO - Skipping BPC (quantity=-2) for item_id: 1047036777411
+2025-09-21 20:55:34,735 - INFO - Skipping BPC (quantity=-2) for item_id: 1047036777412
+2025-09-21 20:55:34,735 - INFO - Skipping BPC (quantity=-2) for item_id: 1047036777423
+2025-09-21 20:55:34,736 - INFO - Skipping BPC (quantity=-2) for item_id: 1047036777424
+2025-09-21 20:55:34,736 - INFO - Skipping BPC (quantity=-2) for item_id: 1047036777440
+2025-09-21 20:55:34,736 - INFO - Skipping BPC (quantity=-2) for item_id: 1047036777441
+2025-09-21 20:55:34,736 - INFO - Skipping BPC (quantity=-2) for item_id: 1047036777477
+2025-09-21 20:55:34,736 - INFO - Skipping BPC (quantity=-2) for item_id: 1047036777478
+2025-09-21 20:55:34,736 - INFO - Skipping BPC (quantity=-2) for item_id: 1047036777488
+2025-09-21 20:55:34,736 - INFO - Skipping BPC (quantity=-2) for item_id: 1047036777489
+2025-09-21 20:55:34,736 - INFO - Skipping BPC (quantity=-2) for item_id: 1047036777514
+2025-09-21 20:55:34,736 - INFO - Skipping BPC (quantity=-2) for item_id: 1047036777515
+2025-09-21 20:55:34,736 - INFO - Skipping BPC (quantity=-2) for item_id: 1047036788152
+2025-09-21 20:55:34,736 - INFO - Skipping BPC (quantity=-2) for item_id: 1047036788168
+2025-09-21 20:55:34,736 - INFO - Skipping BPC (quantity=-2) for item_id: 1047036788169
+2025-09-21 20:55:34,736 - INFO - Skipping BPC (quantity=-2) for item_id: 1047036788182
+2025-09-21 20:55:34,736 - INFO - Skipping BPC (quantity=-2) for item_id: 1047036788183
+2025-09-21 20:55:34,736 - INFO - Skipping BPC (quantity=-2) for item_id: 1047036788210
+2025-09-21 20:55:34,736 - INFO - Skipping BPC (quantity=-2) for item_id: 1047036788211
+2025-09-21 20:55:34,736 - INFO - Skipping BPC (quantity=-2) for item_id: 1047036788227
+2025-09-21 20:55:34,736 - INFO - Skipping BPC (quantity=-2) for item_id: 1047036788228
+2025-09-21 20:55:34,736 - INFO - Skipping BPC (quantity=-2) for item_id: 1047036788237
+2025-09-21 20:55:34,736 - INFO - Skipping BPC (quantity=-2) for item_id: 1047036788238
+2025-09-21 20:55:34,736 - INFO - Skipping BPC (quantity=-2) for item_id: 1047036788252
+2025-09-21 20:55:34,736 - INFO - Skipping BPC (quantity=-2) for item_id: 1047036788253
+2025-09-21 20:55:34,736 - INFO - Skipping BPC (quantity=-2) for item_id: 1047036813599
+2025-09-21 20:55:34,736 - INFO - Skipping BPC (quantity=-2) for item_id: 1047036813600
+2025-09-21 20:55:34,736 - INFO - Skipping BPC (quantity=-2) for item_id: 1047036813614
+2025-09-21 20:55:34,736 - INFO - Skipping BPC (quantity=-2) for item_id: 1047036813615
+2025-09-21 20:55:34,736 - INFO - Skipping BPC (quantity=-2) for item_id: 1047036813626
+2025-09-21 20:55:34,736 - INFO - Skipping BPC (quantity=-2) for item_id: 1047036813627
+2025-09-21 20:55:34,736 - INFO - Skipping BPC (quantity=-2) for item_id: 1047036813637
+2025-09-21 20:55:34,736 - INFO - Skipping BPC (quantity=-2) for item_id: 1047036813638
+2025-09-21 20:55:34,736 - INFO - Skipping BPC (quantity=-2) for item_id: 1047036813697
+2025-09-21 20:55:34,736 - INFO - Skipping BPC (quantity=-2) for item_id: 1047036813698
+2025-09-21 20:55:34,736 - INFO - Skipping BPC (quantity=-2) for item_id: 1047036813707
+2025-09-21 20:55:34,737 - INFO - Skipping BPC (quantity=-2) for item_id: 1047036813708
+2025-09-21 20:55:34,737 - INFO - Skipping BPC (quantity=-2) for item_id: 1047036813723
+2025-09-21 20:55:34,737 - INFO - Skipping BPC (quantity=-2) for item_id: 1047036813724
+2025-09-21 20:55:34,737 - INFO - Skipping BPC (quantity=-2) for item_id: 1047036813730
+2025-09-21 20:55:34,737 - INFO - Skipping BPC (quantity=-2) for item_id: 1047036813731
+2025-09-21 20:55:34,737 - INFO - Skipping BPC (quantity=-2) for item_id: 1047036813741
+2025-09-21 20:55:34,737 - INFO - Skipping BPC (quantity=-2) for item_id: 1047036813742
+2025-09-21 20:55:34,737 - INFO - Skipping BPC (quantity=-2) for item_id: 1047036813748
+2025-09-21 20:55:34,737 - INFO - Skipping BPC (quantity=-2) for item_id: 1047036813749
+2025-09-21 20:55:34,737 - INFO - Skipping BPC (quantity=-2) for item_id: 1047036829396
+2025-09-21 20:55:34,737 - INFO - Skipping BPC (quantity=-2) for item_id: 1047036829405
+2025-09-21 20:55:34,737 - INFO - Skipping BPC (quantity=-2) for item_id: 1047036829434
+2025-09-21 20:55:34,737 - INFO - Skipping BPC (quantity=-2) for item_id: 1047036829459
+2025-09-21 20:55:34,737 - INFO - Skipping BPC (quantity=-2) for item_id: 1047036829467
+2025-09-21 20:55:34,737 - INFO - Skipping BPC (quantity=-2) for item_id: 1047036829474
+2025-09-21 20:55:34,737 - INFO - Skipping BPC (quantity=-2) for item_id: 1047036829500
+2025-09-21 20:55:34,737 - INFO - Skipping BPC (quantity=-2) for item_id: 1047036829519
+2025-09-21 20:55:34,737 - INFO - Skipping BPC (quantity=-2) for item_id: 1047036829530
+2025-09-21 20:55:34,737 - INFO - Skipping BPC (quantity=-2) for item_id: 1047036829557
+2025-09-21 20:55:34,737 - INFO - Skipping BPC (quantity=-2) for item_id: 1047110440414
+2025-09-21 20:55:34,737 - INFO - Skipping BPC (quantity=-2) for item_id: 1047110440415
+2025-09-21 20:55:34,737 - INFO - Skipping BPC (quantity=-2) for item_id: 1047110440416
+2025-09-21 20:55:34,737 - INFO - Skipping BPC (quantity=-2) for item_id: 1047110440420
+2025-09-21 20:55:34,737 - INFO - Skipping BPC (quantity=-2) for item_id: 1047110440421
+2025-09-21 20:55:34,737 - INFO - Skipping BPC (quantity=-2) for item_id: 1047110440422
+2025-09-21 20:55:34,737 - INFO - Skipping BPC (quantity=-2) for item_id: 1047110440429
+2025-09-21 20:55:34,737 - INFO - Skipping BPC (quantity=-2) for item_id: 1047110440430
+2025-09-21 20:55:34,737 - INFO - Skipping BPC (quantity=-2) for item_id: 1047110440431
+2025-09-21 20:55:34,737 - INFO - Skipping BPC (quantity=-2) for item_id: 1047110440449
+2025-09-21 20:55:34,737 - INFO - Skipping BPC (quantity=-2) for item_id: 1047110440450
+2025-09-21 20:55:34,737 - INFO - Skipping BPC (quantity=-2) for item_id: 1047110440451
+2025-09-21 20:55:34,737 - INFO - Skipping BPC (quantity=-2) for item_id: 1047110440457
+2025-09-21 20:55:34,737 - INFO - Skipping BPC (quantity=-2) for item_id: 1047110440458
+2025-09-21 20:55:34,738 - INFO - Skipping BPC (quantity=-2) for item_id: 1047110440459
+2025-09-21 20:55:34,738 - INFO - Skipping BPC (quantity=-2) for item_id: 1047110440474
+2025-09-21 20:55:34,738 - INFO - Skipping BPC (quantity=-2) for item_id: 1047110440475
+2025-09-21 20:55:34,738 - INFO - Skipping BPC (quantity=-2) for item_id: 1047110440476
+2025-09-21 20:55:34,738 - INFO - Skipping BPC (quantity=-2) for item_id: 1047110440483
+2025-09-21 20:55:34,738 - INFO - Skipping BPC (quantity=-2) for item_id: 1047110440484
+2025-09-21 20:55:34,738 - INFO - Skipping BPC (quantity=-2) for item_id: 1047110440485
+2025-09-21 20:55:34,738 - INFO - Skipping BPC (quantity=-2) for item_id: 1047110440494
+2025-09-21 20:55:34,738 - INFO - Skipping BPC (quantity=-2) for item_id: 1047110440495
+2025-09-21 20:55:34,738 - INFO - Skipping BPC (quantity=-2) for item_id: 1047110440497
+2025-09-21 20:55:34,738 - INFO - Skipping BPC (quantity=-2) for item_id: 1047110440499
+2025-09-21 20:55:34,738 - INFO - Skipping BPC (quantity=-2) for item_id: 1047110440500
+2025-09-21 20:55:34,738 - INFO - Skipping BPC (quantity=-2) for item_id: 1047110440501
+2025-09-21 20:55:34,738 - INFO - Skipping BPC (quantity=-2) for item_id: 1047110440505
+2025-09-21 20:55:34,738 - INFO - Skipping BPC (quantity=-2) for item_id: 1047110440507
+2025-09-21 20:55:34,738 - INFO - Skipping BPC (quantity=-2) for item_id: 1047110440508
+2025-09-21 20:55:34,738 - INFO - Skipping BPC (quantity=-2) for item_id: 1047110450656
+2025-09-21 20:55:34,738 - INFO - Skipping BPC (quantity=-2) for item_id: 1047110450657
+2025-09-21 20:55:34,738 - INFO - Skipping BPC (quantity=-2) for item_id: 1047110450658
+2025-09-21 20:55:34,738 - INFO - Skipping BPC (quantity=-2) for item_id: 1047110450668
+2025-09-21 20:55:34,738 - INFO - Skipping BPC (quantity=-2) for item_id: 1047110450669
+2025-09-21 20:55:34,738 - INFO - Skipping BPC (quantity=-2) for item_id: 1047110450670
+2025-09-21 20:55:34,739 - INFO - Skipping BPC (quantity=-2) for item_id: 1047110450684
+2025-09-21 20:55:34,739 - INFO - Skipping BPC (quantity=-2) for item_id: 1047110450685
+2025-09-21 20:55:34,740 - INFO - Updated type icon for blueprint: Capital Nanomechanical Microprocessor
+2025-09-21 20:55:34,740 - INFO - Skipping BPC (quantity=-2) for item_id: 1047110450686
+2025-09-21 20:55:34,740 - INFO - Blueprint 1049589413302 unchanged, skipping update
+2025-09-21 20:55:34,740 - INFO - Skipping BPC (quantity=-2) for item_id: 1047110450704
+2025-09-21 20:55:34,740 - INFO - Skipping BPC (quantity=-2) for item_id: 1047110450705
+2025-09-21 20:55:34,740 - INFO - Skipping BPC (quantity=-2) for item_id: 1047110450706
+2025-09-21 20:55:34,740 - INFO - Skipping BPC (quantity=-2) for item_id: 1047110450715
+2025-09-21 20:55:34,740 - INFO - Skipping BPC (quantity=-2) for item_id: 1047110450716
+2025-09-21 20:55:34,740 - INFO - Skipping BPC (quantity=-2) for item_id: 1047110450717
+2025-09-21 20:55:34,740 - INFO - Skipping BPC (quantity=-2) for item_id: 1047110450738
+2025-09-21 20:55:34,740 - INFO - Skipping BPC (quantity=-2) for item_id: 1047110450739
+2025-09-21 20:55:34,741 - INFO - Skipping BPC (quantity=-2) for item_id: 1047110450740
+2025-09-21 20:55:34,741 - INFO - Skipping BPC (quantity=-2) for item_id: 1047110450745
+2025-09-21 20:55:34,741 - INFO - Skipping BPC (quantity=-2) for item_id: 1047110450746
+2025-09-21 20:55:34,741 - INFO - Skipping BPC (quantity=-2) for item_id: 1047110450747
+2025-09-21 20:55:34,741 - INFO - Skipping BPC (quantity=-2) for item_id: 1047110450766
+2025-09-21 20:55:34,741 - INFO - Skipping BPC (quantity=-2) for item_id: 1047110450767
+2025-09-21 20:55:34,741 - INFO - Skipping BPC (quantity=-2) for item_id: 1047110450768
+2025-09-21 20:55:34,741 - INFO - Skipping BPC (quantity=-2) for item_id: 1047110450770
+2025-09-21 20:55:34,741 - INFO - Skipping BPC (quantity=-2) for item_id: 1047110450771
+2025-09-21 20:55:34,741 - INFO - Skipping BPC (quantity=-2) for item_id: 1047110450772
+2025-09-21 20:55:34,741 - INFO - Skipping BPC (quantity=-2) for item_id: 1047110450789
+2025-09-21 20:55:34,741 - INFO - Skipping BPC (quantity=-2) for item_id: 1047110450790
+2025-09-21 20:55:34,741 - INFO - Skipping BPC (quantity=-2) for item_id: 1047110450791
+2025-09-21 20:55:34,741 - INFO - Skipping BPC (quantity=-2) for item_id: 1047110469278
+2025-09-21 20:55:34,742 - INFO - Skipping BPC (quantity=-2) for item_id: 1047110469279
+2025-09-21 20:55:34,742 - INFO - Skipping BPC (quantity=-2) for item_id: 1047110469280
+2025-09-21 20:55:34,742 - INFO - Skipping BPC (quantity=-2) for item_id: 1047110469291
+2025-09-21 20:55:34,742 - INFO - Skipping BPC (quantity=-2) for item_id: 1047110469292
+2025-09-21 20:55:34,742 - INFO - Skipping BPC (quantity=-2) for item_id: 1047110469293
+2025-09-21 20:55:34,742 - INFO - Skipping BPC (quantity=-2) for item_id: 1047110469308
+2025-09-21 20:55:34,742 - INFO - Skipping BPC (quantity=-2) for item_id: 1047110469309
+2025-09-21 20:55:34,742 - INFO - Skipping BPC (quantity=-2) for item_id: 1047110469310
+2025-09-21 20:55:34,742 - INFO - Skipping BPC (quantity=-2) for item_id: 1047110469327
+2025-09-21 20:55:34,742 - INFO - Skipping BPC (quantity=-2) for item_id: 1047110469329
+2025-09-21 20:55:34,742 - INFO - Skipping BPC (quantity=-2) for item_id: 1047110469330
+2025-09-21 20:55:34,742 - INFO - Skipping BPC (quantity=-2) for item_id: 1047110469334
+2025-09-21 20:55:34,742 - INFO - Skipping BPC (quantity=-2) for item_id: 1047110469335
+2025-09-21 20:55:34,742 - INFO - Skipping BPC (quantity=-2) for item_id: 1047110469336
+2025-09-21 20:55:34,742 - INFO - Skipping BPC (quantity=-2) for item_id: 1047110469339
+2025-09-21 20:55:34,742 - INFO - Skipping BPC (quantity=-2) for item_id: 1047110469340
+2025-09-21 20:55:34,742 - INFO - Skipping BPC (quantity=-2) for item_id: 1047110469341
+2025-09-21 20:55:34,742 - INFO - Skipping BPC (quantity=-2) for item_id: 1047110469356
+2025-09-21 20:55:34,742 - INFO - Skipping BPC (quantity=-2) for item_id: 1047110469357
+2025-09-21 20:55:34,742 - INFO - Skipping BPC (quantity=-2) for item_id: 1047110469358
+2025-09-21 20:55:34,742 - INFO - Skipping BPC (quantity=-2) for item_id: 1047110469385
+2025-09-21 20:55:34,743 - INFO - Skipping BPC (quantity=-2) for item_id: 1047110469386
+2025-09-21 20:55:34,743 - INFO - Skipping BPC (quantity=-2) for item_id: 1047110469387
+2025-09-21 20:55:34,743 - INFO - Skipping BPC (quantity=-2) for item_id: 1047110469394
+2025-09-21 20:55:34,743 - INFO - Skipping BPC (quantity=-2) for item_id: 1047110469395
+2025-09-21 20:55:34,743 - INFO - Skipping BPC (quantity=-2) for item_id: 1047110469396
+2025-09-21 20:55:34,743 - INFO - Skipping BPC (quantity=-2) for item_id: 1047110477397
+2025-09-21 20:55:34,743 - INFO - Skipping BPC (quantity=-2) for item_id: 1047110477398
+2025-09-21 20:55:34,743 - INFO - Skipping BPC (quantity=-2) for item_id: 1047110477399
+2025-09-21 20:55:34,743 - INFO - Skipping BPC (quantity=-2) for item_id: 1047110477407
+2025-09-21 20:55:34,743 - INFO - Skipping BPC (quantity=-2) for item_id: 1047110477408
+2025-09-21 20:55:34,743 - INFO - Skipping BPC (quantity=-2) for item_id: 1047110477409
+2025-09-21 20:55:34,743 - INFO - Skipping BPC (quantity=-2) for item_id: 1047110477412
+2025-09-21 20:55:34,743 - INFO - Skipping BPC (quantity=-2) for item_id: 1047110477413
+2025-09-21 20:55:34,743 - INFO - Skipping BPC (quantity=-2) for item_id: 1047110477414
+2025-09-21 20:55:34,743 - INFO - Skipping BPC (quantity=-2) for item_id: 1047110477423
+2025-09-21 20:55:34,743 - INFO - Skipping BPC (quantity=-2) for item_id: 1047110477424
+2025-09-21 20:55:34,743 - INFO - Skipping BPC (quantity=-2) for item_id: 1047110477425
+2025-09-21 20:55:34,743 - INFO - Skipping BPC (quantity=-2) for item_id: 1047110508768
+2025-09-21 20:55:34,743 - INFO - Skipping BPC (quantity=-2) for item_id: 1047110508769
+2025-09-21 20:55:34,743 - INFO - Skipping BPC (quantity=-2) for item_id: 1047110508770
+2025-09-21 20:55:34,743 - INFO - Skipping BPC (quantity=-2) for item_id: 1047110508775
+2025-09-21 20:55:34,743 - INFO - Skipping BPC (quantity=-2) for item_id: 1047110508776
+2025-09-21 20:55:34,744 - INFO - Skipping BPC (quantity=-2) for item_id: 1047110508777
+2025-09-21 20:55:34,744 - INFO - Skipping BPC (quantity=-2) for item_id: 1047110508787
+2025-09-21 20:55:34,744 - INFO - Skipping BPC (quantity=-2) for item_id: 1047110508788
+2025-09-21 20:55:34,744 - INFO - Skipping BPC (quantity=-2) for item_id: 1047110508789
+2025-09-21 20:55:34,744 - INFO - Skipping BPC (quantity=-2) for item_id: 1047110508798
+2025-09-21 20:55:34,744 - INFO - Skipping BPC (quantity=-2) for item_id: 1047110508800
+2025-09-21 20:55:34,744 - INFO - Skipping BPC (quantity=-2) for item_id: 1047110508801
+2025-09-21 20:55:34,744 - INFO - Skipping BPC (quantity=-2) for item_id: 1047110508815
+2025-09-21 20:55:34,744 - INFO - Skipping BPC (quantity=-2) for item_id: 1047110508816
+2025-09-21 20:55:34,744 - INFO - Skipping BPC (quantity=-2) for item_id: 1047110508817
+2025-09-21 20:55:34,744 - INFO - Skipping BPC (quantity=-2) for item_id: 1047110508825
+2025-09-21 20:55:34,744 - INFO - Skipping BPC (quantity=-2) for item_id: 1047110508826
+2025-09-21 20:55:34,744 - INFO - Skipping BPC (quantity=-2) for item_id: 1047110508827
+2025-09-21 20:55:34,744 - INFO - Skipping BPC (quantity=-2) for item_id: 1047110508833
+2025-09-21 20:55:34,744 - INFO - Skipping BPC (quantity=-2) for item_id: 1047110508834
+2025-09-21 20:55:34,744 - INFO - Skipping BPC (quantity=-2) for item_id: 1047110508835
+2025-09-21 20:55:34,744 - INFO - Skipping BPC (quantity=-2) for item_id: 1047110508846
+2025-09-21 20:55:34,744 - INFO - Skipping BPC (quantity=-2) for item_id: 1047110508847
+2025-09-21 20:55:34,744 - INFO - Skipping BPC (quantity=-2) for item_id: 1047110508848
+2025-09-21 20:55:34,744 - INFO - Skipping BPC (quantity=-2) for item_id: 1047110508857
+2025-09-21 20:55:34,744 - INFO - Skipping BPC (quantity=-2) for item_id: 1047110508858
+2025-09-21 20:55:34,744 - INFO - Skipping BPC (quantity=-2) for item_id: 1047110508859
+2025-09-21 20:55:34,744 - INFO - Skipping BPC (quantity=-2) for item_id: 1047110508865
+2025-09-21 20:55:34,744 - INFO - Skipping BPC (quantity=-2) for item_id: 1047110508866
+2025-09-21 20:55:34,745 - INFO - Skipping BPC (quantity=-2) for item_id: 1047110508867
+2025-09-21 20:55:34,745 - INFO - Skipping BPC (quantity=-2) for item_id: 1047110528520
+2025-09-21 20:55:34,745 - INFO - Skipping BPC (quantity=-2) for item_id: 1047110528521
+2025-09-21 20:55:34,745 - INFO - Skipping BPC (quantity=-2) for item_id: 1047110528522
+2025-09-21 20:55:34,745 - INFO - Skipping BPC (quantity=-2) for item_id: 1047110528527
+2025-09-21 20:55:34,745 - INFO - Skipping BPC (quantity=-2) for item_id: 1047110528528
+2025-09-21 20:55:34,745 - INFO - Skipping BPC (quantity=-2) for item_id: 1047110528529
+2025-09-21 20:55:34,745 - INFO - Skipping BPC (quantity=-2) for item_id: 1047110528532
+2025-09-21 20:55:34,745 - INFO - Skipping BPC (quantity=-2) for item_id: 1047110528533
+2025-09-21 20:55:34,745 - INFO - Skipping BPC (quantity=-2) for item_id: 1047110528534
+2025-09-21 20:55:34,745 - INFO - Skipping BPC (quantity=-2) for item_id: 1047110528540
+2025-09-21 20:55:34,745 - INFO - Skipping BPC (quantity=-2) for item_id: 1047110528541
+2025-09-21 20:55:34,745 - INFO - Skipping BPC (quantity=-2) for item_id: 1047110528542
+2025-09-21 20:55:34,745 - INFO - Skipping BPC (quantity=-2) for item_id: 1047110528565
+2025-09-21 20:55:34,745 - INFO - Skipping BPC (quantity=-2) for item_id: 1047110528566
+2025-09-21 20:55:34,745 - INFO - Skipping BPC (quantity=-2) for item_id: 1047110528567
+2025-09-21 20:55:34,745 - INFO - Skipping BPC (quantity=-2) for item_id: 1047110528581
+2025-09-21 20:55:34,746 - INFO - Skipping BPC (quantity=-2) for item_id: 1047110528582
+2025-09-21 20:55:34,746 - INFO - Skipping BPC (quantity=-2) for item_id: 1047110528583
+2025-09-21 20:55:34,746 - INFO - Skipping BPC (quantity=-2) for item_id: 1047110528591
+2025-09-21 20:55:34,746 - INFO - Skipping BPC (quantity=-2) for item_id: 1047110528592
+2025-09-21 20:55:34,746 - INFO - Skipping BPC (quantity=-2) for item_id: 1047110528593
+2025-09-21 20:55:34,746 - INFO - Skipping BPC (quantity=-2) for item_id: 1047110528597
+2025-09-21 20:55:34,746 - INFO - Skipping BPC (quantity=-2) for item_id: 1047110528598
+2025-09-21 20:55:34,746 - INFO - Skipping BPC (quantity=-2) for item_id: 1047110528599
+2025-09-21 20:55:34,746 - INFO - Skipping BPC (quantity=-2) for item_id: 1047110528603
+2025-09-21 20:55:34,746 - INFO - Skipping BPC (quantity=-2) for item_id: 1047110528604
+2025-09-21 20:55:34,746 - INFO - Skipping BPC (quantity=-2) for item_id: 1047110528605
+2025-09-21 20:55:34,746 - INFO - Skipping BPC (quantity=-2) for item_id: 1047110528612
+2025-09-21 20:55:34,746 - INFO - Skipping BPC (quantity=-2) for item_id: 1047110528613
+2025-09-21 20:55:34,746 - INFO - Skipping BPC (quantity=-2) for item_id: 1047110528614
+2025-09-21 20:55:34,746 - INFO - Skipping BPC (quantity=-2) for item_id: 1047110544826
+2025-09-21 20:55:34,746 - INFO - Skipping BPC (quantity=-2) for item_id: 1047110544827
+2025-09-21 20:55:34,746 - INFO - Skipping BPC (quantity=-2) for item_id: 1047110544828
+2025-09-21 20:55:34,746 - INFO - Skipping BPC (quantity=-2) for item_id: 1047110544834
+2025-09-21 20:55:34,746 - INFO - Skipping BPC (quantity=-2) for item_id: 1047110544835
+2025-09-21 20:55:34,746 - INFO - Skipping BPC (quantity=-2) for item_id: 1047110544836
+2025-09-21 20:55:34,746 - INFO - Skipping BPC (quantity=-2) for item_id: 1047110544842
+2025-09-21 20:55:34,746 - INFO - Skipping BPC (quantity=-2) for item_id: 1047110544843
+2025-09-21 20:55:34,746 - INFO - Skipping BPC (quantity=-2) for item_id: 1047110544844
+2025-09-21 20:55:34,746 - INFO - Skipping BPC (quantity=-2) for item_id: 1047110544866
+2025-09-21 20:55:34,747 - INFO - Skipping BPC (quantity=-2) for item_id: 1047110544867
+2025-09-21 20:55:34,747 - INFO - Skipping BPC (quantity=-2) for item_id: 1047110544868
+2025-09-21 20:55:34,747 - INFO - Skipping BPC (quantity=-2) for item_id: 1047110544900
+2025-09-21 20:55:34,747 - INFO - Skipping BPC (quantity=-2) for item_id: 1047110544901
+2025-09-21 20:55:34,747 - INFO - Skipping BPC (quantity=-2) for item_id: 1047110544902
+2025-09-21 20:55:34,747 - INFO - Skipping BPC (quantity=-2) for item_id: 1047110544909
+2025-09-21 20:55:34,747 - INFO - Skipping BPC (quantity=-2) for item_id: 1047110544910
+2025-09-21 20:55:34,747 - INFO - Skipping BPC (quantity=-2) for item_id: 1047110544911
+2025-09-21 20:55:34,747 - INFO - Skipping BPC (quantity=-2) for item_id: 1047110544917
+2025-09-21 20:55:34,747 - INFO - Skipping BPC (quantity=-2) for item_id: 1047110544918
+2025-09-21 20:55:34,747 - INFO - Skipping BPC (quantity=-2) for item_id: 1047110544919
+2025-09-21 20:55:34,747 - INFO - Skipping BPC (quantity=-2) for item_id: 1047110544932
+2025-09-21 20:55:34,747 - INFO - Skipping BPC (quantity=-2) for item_id: 1047110544933
+2025-09-21 20:55:34,747 - INFO - Skipping BPC (quantity=-2) for item_id: 1047110544940
+2025-09-21 20:55:34,747 - INFO - Skipping BPC (quantity=-2) for item_id: 1047110544941
+2025-09-21 20:55:34,747 - INFO - Skipping BPC (quantity=-2) for item_id: 1047110544942
+2025-09-21 20:55:34,747 - INFO - Skipping BPC (quantity=-2) for item_id: 1049154112988
+2025-09-21 20:55:34,747 - INFO - Skipping BPC (quantity=-2) for item_id: 1049189267397
+2025-09-21 20:55:34,747 - INFO - Skipping BPC (quantity=-2) for item_id: 1049189267399
+2025-09-21 20:55:34,747 - INFO - Skipping BPC (quantity=-2) for item_id: 1049189396686
+2025-09-21 20:55:34,747 - INFO - Skipping BPC (quantity=-2) for item_id: 1049189396688
+2025-09-21 20:55:34,747 - INFO - Skipping BPC (quantity=-2) for item_id: 1049525608375
+2025-09-21 20:55:34,747 - INFO - Skipping BPC (quantity=-2) for item_id: 1049525609728
+2025-09-21 20:55:34,747 - INFO - Skipping BPC (quantity=-2) for item_id: 1049525610271
+2025-09-21 20:55:34,748 - INFO - Skipping BPC (quantity=-2) for item_id: 1049525610272
+2025-09-21 20:55:34,748 - INFO - Skipping BPC (quantity=-2) for item_id: 1049525610273
+2025-09-21 20:55:34,748 - INFO - Skipping BPC (quantity=-2) for item_id: 1049525610328
+2025-09-21 20:55:34,748 - INFO - Skipping BPC (quantity=2) for item_id: 1049574793461
+2025-09-21 20:55:34,748 - INFO - Skipping BPC (quantity=2) for item_id: 1049574798333
+2025-09-21 20:55:34,748 - INFO - Skipping BPC (quantity=2) for item_id: 1049574801034
+2025-09-21 20:55:34,748 - INFO - Skipping BPC (quantity=4) for item_id: 1049574801832
+2025-09-21 20:55:34,748 - INFO - Skipping BPC (quantity=2) for item_id: 1049574804593
+2025-09-21 20:55:34,927 - INFO - Updated type icon for blueprint: Capital Ladar Sensor Cluster
+2025-09-21 20:55:34,927 - INFO - Blueprint 1049589451922 unchanged, skipping update
+2025-09-21 20:59:39,036 - INFO - Corporation industry job blueprints: 82 items
+2025-09-21 20:59:39,588 - INFO - Updated type icon for blueprint: Life Support Backup Unit
+2025-09-21 20:59:39,596 - INFO - Updated type icon for blueprint: Life Support Backup Unit
+2025-09-21 20:59:39,599 - INFO - Updated type icon for blueprint: Life Support Backup Unit
+2025-09-21 20:59:39,918 - INFO - Updated blueprint from corp_industry_job: 1049576019228
+2025-09-21 20:59:39,921 - INFO - Updated blueprint from corp_industry_job: 1049576019604
+2025-09-21 20:59:39,921 - INFO - Updated blueprint from corp_industry_job: 1049576018885
+2025-09-21 20:59:40,314 - INFO - Updated type icon for blueprint: Life Support Backup Unit
+2025-09-21 20:59:40,335 - INFO - Updated type icon for blueprint: Life Support Backup Unit
+2025-09-21 20:59:40,340 - INFO - Updated type icon for blueprint: Life Support Backup Unit
+2025-09-21 20:59:40,562 - INFO - Updated blueprint from corp_industry_job: 1049576018142
+2025-09-21 20:59:40,590 - INFO - Updated blueprint from corp_industry_job: 1049576017866
+2025-09-21 20:59:40,597 - INFO - Updated blueprint from corp_industry_job: 1049576018563
+2025-09-21 20:59:41,010 - INFO - Updated type icon for blueprint: Life Support Backup Unit
+2025-09-21 20:59:41,055 - INFO - Updated type icon for blueprint: Life Support Backup Unit
+2025-09-21 20:59:41,093 - INFO - Updated type icon for blueprint: Life Support Backup Unit
+2025-09-21 20:59:41,293 - INFO - Updated blueprint from corp_industry_job: 1049576016678
+2025-09-21 20:59:41,294 - INFO - Updated blueprint from corp_industry_job: 1049576017392
+2025-09-21 20:59:41,301 - INFO - Updated blueprint from corp_industry_job: 1049576017671
+2025-09-21 20:59:41,659 - INFO - Updated type icon for blueprint: Capital Ion Thruster
+2025-09-21 20:59:41,667 - INFO - Updated type icon for blueprint: Capital Fusion Reactor Unit
+2025-09-21 20:59:42,007 - INFO - Updated blueprint from corp_industry_job: 1049576631501
+2025-09-21 20:59:42,008 - INFO - Updated blueprint from corp_industry_job: 1049576630884
+2025-09-21 20:59:42,124 - INFO - Updated type icon for blueprint: Life Support Backup Unit
+2025-09-21 20:59:42,340 - INFO - Updated blueprint from corp_industry_job: 1049574869338
+2025-09-21 20:59:42,433 - INFO - Updated type icon for blueprint: Capital Magnetometric Sensor Cluster
+2025-09-21 20:59:42,433 - INFO - Updated type icon for blueprint: Capital Titanium Diborite Armor Plate
+2025-09-21 20:59:42,681 - INFO - Updated blueprint from corp_industry_job: 1049576632228
+2025-09-21 20:59:42,684 - INFO - Updated blueprint from corp_industry_job: 1049576627404
+2025-09-21 20:59:43,060 - INFO - Updated type icon for blueprint: Capital Crystalline Carbonide Armor Plate
+2025-09-21 20:59:43,132 - INFO - Updated type icon for blueprint: Capital Gravimetric Sensor Cluster
+2025-09-21 20:59:43,172 - INFO - Updated type icon for blueprint: Capital Tungsten Carbide Armor Plate
+2025-09-21 20:59:43,225 - INFO - Updated blueprint from corp_industry_job: 1049576629954
+2025-09-21 20:59:43,280 - INFO - Updated blueprint from corp_industry_job: 1049576556736
+2025-09-21 20:59:43,388 - INFO - Updated blueprint from corp_industry_job: 1049576555733
+2025-09-21 20:59:43,683 - INFO - Updated type icon for blueprint: Capital Graviton Pulse Generator
+2025-09-21 20:59:43,809 - INFO - Updated type icon for blueprint: Capital Magpulse Thruster
+2025-09-21 20:59:43,809 - INFO - Updated type icon for blueprint: Capital Graviton Reactor Unit
+2025-09-21 20:59:43,913 - INFO - Updated blueprint from corp_industry_job: 1049576557386
+2025-09-21 20:59:44,113 - INFO - Updated blueprint from corp_industry_job: 1049576558540
+2025-09-21 20:59:44,115 - INFO - Updated blueprint from corp_industry_job: 1049576559320
+2025-09-21 20:59:44,647 - INFO - Updated type icon for blueprint: Capital Radar Sensor Cluster
+2025-09-21 20:59:44,649 - INFO - Updated type icon for blueprint: Capital Tesseract Capacitor Unit
+2025-09-21 20:59:44,655 - INFO - Updated type icon for blueprint: Capital Nanoelectrical Microprocessor
+2025-09-21 20:59:44,830 - INFO - Updated blueprint from corp_industry_job: 1049576549259
+2025-09-21 20:59:44,831 - INFO - Updated blueprint from corp_industry_job: 1049576548631
+2025-09-21 20:59:44,841 - INFO - Updated blueprint from corp_industry_job: 1049576547988
+2025-09-21 20:59:45,310 - INFO - Updated type icon for blueprint: Capital Fusion Thruster
+2025-09-21 20:59:45,344 - INFO - Updated type icon for blueprint: Capital Laser Focusing Crystals
+2025-09-21 20:59:45,370 - INFO - Updated type icon for blueprint: Capital Linear Shield Emitter
+2025-09-21 20:59:45,486 - INFO - Updated blueprint from corp_industry_job: 1049576541669
+2025-09-21 20:59:45,683 - INFO - Updated blueprint from corp_industry_job: 1049576547463
+2025-09-21 20:59:45,684 - INFO - Updated blueprint from corp_industry_job: 1049576546106
+2025-09-21 20:59:46,025 - INFO - Updated type icon for blueprint: Capital EM Pulse Generator
+2025-09-21 20:59:46,079 - INFO - Updated type icon for blueprint: Capital Antimatter Reactor Unit
+2025-09-21 20:59:46,093 - INFO - Updated type icon for blueprint: Oxygen Fuel Block
+2025-09-21 20:59:46,218 - INFO - Updated blueprint from corp_industry_job: 1049576541010
+2025-09-21 20:59:46,343 - INFO - Updated blueprint from corp_industry_job: 1049576540350
+2025-09-21 20:59:46,367 - INFO - Updated blueprint from corp_industry_job: 1049576048517
+2025-09-21 20:59:47,261 - INFO - Updated type icon for blueprint: Hydrogen Fuel Block
+2025-09-21 20:59:47,301 - INFO - Updated type icon for blueprint: Nitrogen Fuel Block
+2025-09-21 20:59:47,346 - INFO - Updated type icon for blueprint: Helium Fuel Block
+2025-09-21 20:59:47,410 - INFO - Updated blueprint from corp_industry_job: 1049576045884
+2025-09-21 20:59:47,478 - INFO - Updated blueprint from corp_industry_job: 1049576047227
+2025-09-21 20:59:47,488 - INFO - Updated blueprint from corp_industry_job: 1049576044342
+2025-09-21 20:59:47,952 - INFO - Updated type icon for blueprint: Capital Plasma Thruster
+2025-09-21 20:59:47,953 - INFO - Updated type icon for blueprint: Capital Nuclear Reactor Unit
+2025-09-21 20:59:48,149 - INFO - Updated type icon for blueprint: Capital Nuclear Pulse Generator
+2025-09-21 20:59:48,206 - INFO - Updated blueprint from corp_industry_job: 1049574816825
+2025-09-21 20:59:48,302 - INFO - Updated blueprint from corp_industry_job: 1049574815479
+2025-09-21 20:59:48,405 - INFO - Updated blueprint from corp_industry_job: 1049574814115
+2025-09-21 20:59:48,692 - INFO - Updated type icon for blueprint: Capital Nanomechanical Microprocessor
+2025-09-21 20:59:48,856 - INFO - Updated type icon for blueprint: Capital EM Pulse Generator
+2025-09-21 20:59:48,898 - INFO - Updated type icon for blueprint: Capital Ladar Sensor Cluster
+2025-09-21 20:59:48,936 - INFO - Updated blueprint from corp_industry_job: 1049574812602
+2025-09-21 20:59:49,009 - INFO - Updated blueprint from corp_industry_job: 1049574753605
+2025-09-21 20:59:49,155 - INFO - Updated blueprint from corp_industry_job: 1049574805777
+2025-09-21 20:59:49,416 - INFO - Updated type icon for blueprint: Capital Particle Accelerator Unit
+2025-09-21 20:59:49,488 - INFO - Updated type icon for blueprint: Capital Oscillator Capacitor Unit
+2025-09-21 20:59:49,511 - INFO - Updated type icon for blueprint: Capital Magnetometric Sensor Cluster
+2025-09-21 20:59:49,563 - INFO - Updated blueprint from corp_industry_job: 1049574790307
+2025-09-21 20:59:49,681 - INFO - Updated blueprint from corp_industry_job: 1049574787807
+2025-09-21 20:59:49,682 - INFO - Updated blueprint from corp_industry_job: 1049574788474
+2025-09-21 20:59:50,063 - INFO - Updated type icon for blueprint: Capital Nanoelectrical Microprocessor
+2025-09-21 20:59:50,074 - INFO - Updated type icon for blueprint: Capital Ion Thruster
+2025-09-21 20:59:50,110 - INFO - Updated type icon for blueprint: Capital Radar Sensor Cluster
+2025-09-21 20:59:50,401 - INFO - Updated blueprint from corp_industry_job: 1049574786127
+2025-09-21 20:59:50,403 - INFO - Updated blueprint from corp_industry_job: 1049574760705
+2025-09-21 20:59:50,404 - INFO - Updated blueprint from corp_industry_job: 1049574762041
+2025-09-21 20:59:50,803 - INFO - Updated type icon for blueprint: Capital Fusion Reactor Unit
+2025-09-21 20:59:50,815 - INFO - Updated type icon for blueprint: Capital Crystalline Carbonide Armor Plate
+2025-09-21 20:59:50,927 - INFO - Updated type icon for blueprint: Capital Titanium Diborite Armor Plate
+2025-09-21 20:59:51,062 - INFO - Updated blueprint from corp_industry_job: 1049574784788
+2025-09-21 20:59:51,064 - INFO - Updated blueprint from corp_industry_job: 1049574783623
+2025-09-21 20:59:51,115 - INFO - Updated blueprint from corp_industry_job: 1049574781697
+2025-09-21 20:59:51,524 - INFO - Updated type icon for blueprint: Capital Graviton Reactor Unit
+2025-09-21 20:59:51,525 - INFO - Updated type icon for blueprint: Capital Magpulse Thruster
+2025-09-21 20:59:51,634 - INFO - Updated type icon for blueprint: Capital Graviton Pulse Generator
+2025-09-21 20:59:51,777 - INFO - Updated blueprint from corp_industry_job: 1049574771593
+2025-09-21 20:59:51,780 - INFO - Updated blueprint from corp_industry_job: 1049574769783
+2025-09-21 20:59:51,972 - INFO - Updated blueprint from corp_industry_job: 1049574768724
+2025-09-21 20:59:52,174 - INFO - Updated type icon for blueprint: Capital Gravimetric Sensor Cluster
+2025-09-21 20:59:52,498 - INFO - Updated blueprint from corp_industry_job: 1049574767458
+2025-09-21 20:59:52,541 - INFO - Updated type icon for blueprint: Capital Tungsten Carbide Armor Plate
+2025-09-21 20:59:52,652 - INFO - Updated type icon for blueprint: Capital Tesseract Capacitor Unit
+2025-09-21 20:59:52,690 - INFO - Updated blueprint from corp_industry_job: 1049574764624
+2025-09-21 20:59:52,830 - INFO - Updated blueprint from corp_industry_job: 1049574763305
+2025-09-21 20:59:52,904 - INFO - Updated type icon for blueprint: Capital Linear Shield Emitter
+2025-09-21 20:59:53,132 - INFO - Updated blueprint from corp_industry_job: 1049574759425
+2025-09-21 20:59:53,192 - INFO - Updated type icon for blueprint: Capital Laser Focusing Crystals
+2025-09-21 20:59:53,203 - INFO - Updated type icon for blueprint: Capital Fusion Thruster
+2025-09-21 20:59:53,431 - INFO - Updated blueprint from corp_industry_job: 1049574756931
+2025-09-21 20:59:53,446 - INFO - Updated blueprint from corp_industry_job: 1049574755244
+2025-09-21 20:59:53,608 - INFO - Updated type icon for blueprint: Capital Antimatter Reactor Unit
+2025-09-21 20:59:53,759 - INFO - Updated blueprint from corp_industry_job: 1049574751987
+2025-09-21 20:59:54,070 - INFO - Updated type icon for blueprint: Oxygen Fuel Block
+2025-09-21 20:59:54,071 - INFO - Updated type icon for blueprint: Nitrogen Fuel Block
+2025-09-21 20:59:54,233 - INFO - Updated blueprint from corp_industry_job: 1049574712131
+2025-09-21 20:59:54,234 - INFO - Updated type icon for blueprint: Hydrogen Fuel Block
+2025-09-21 20:59:54,234 - INFO - Updated blueprint from corp_industry_job: 1049574725214
+2025-09-21 20:59:54,501 - INFO - Updated blueprint from corp_industry_job: 1049574708304
+2025-09-21 20:59:54,658 - INFO - Updated type icon for blueprint: Helium Fuel Block
+2025-09-21 20:59:54,786 - INFO - Updated type icon for blueprint: Antimatter Reactor Unit
+2025-09-21 20:59:54,809 - INFO - Updated blueprint from corp_industry_job: 1049574705873
+2025-09-21 20:59:55,123 - INFO - Updated blueprint from corp_industry_job: 1049574695751
+2025-09-21 20:59:55,211 - INFO - Updated type icon for blueprint: EM Pulse Generator
+2025-09-21 20:59:55,449 - INFO - Updated blueprint from corp_industry_job: 1049574694012
+2025-09-21 20:59:55,541 - INFO - Updated type icon for blueprint: Fusion Thruster
+2025-09-21 20:59:55,644 - INFO - Updated type icon for blueprint: Laser Focusing Crystals
+2025-09-21 20:59:55,791 - INFO - Updated blueprint from corp_industry_job: 1049574690328
+2025-09-21 20:59:55,794 - INFO - Updated blueprint from corp_industry_job: 1049574692766
+2025-09-21 20:59:55,869 - INFO - Updated type icon for blueprint: Linear Shield Emitter
+2025-09-21 20:59:56,166 - INFO - Updated blueprint from corp_industry_job: 1049574688527
+2025-09-21 20:59:56,323 - INFO - Updated type icon for blueprint: Radar Sensor Cluster
+2025-09-21 20:59:56,335 - INFO - Updated type icon for blueprint: Nanoelectrical Microprocessor
+2025-09-21 20:59:56,495 - INFO - Updated blueprint from corp_industry_job: 1049574685686
+2025-09-21 20:59:56,696 - INFO - Updated type icon for blueprint: Tesseract Capacitor Unit
+2025-09-21 20:59:56,699 - INFO - Updated blueprint from corp_industry_job: 1049574687167
+2025-09-21 20:59:56,870 - INFO - Updated blueprint from corp_industry_job: 1049574682998
+2025-09-21 20:59:56,873 - INFO - Updated type icon for blueprint: Tungsten Carbide Armor Plate
+2025-09-21 20:59:57,215 - INFO - Updated blueprint from corp_industry_job: 1049574677299
+2025-09-21 20:59:57,255 - INFO - Updated type icon for blueprint: Graviton Pulse Generator
+2025-09-21 20:59:57,395 - INFO - Updated type icon for blueprint: Superconductor Rails
+2025-09-21 20:59:57,402 - INFO - Updated blueprint from corp_industry_job: 1049574582590
+2025-09-21 20:59:57,745 - INFO - Updated type icon for blueprint: Crystalline Carbonide Armor Plate
+2025-09-21 20:59:57,747 - INFO - Updated blueprint from corp_industry_job: 1049574579770
+2025-09-21 20:59:57,900 - INFO - Updated blueprint from corp_industry_job: 1049574451532
+2025-09-21 20:59:57,928 - INFO - Updated type icon for blueprint: Fusion Reactor Unit
+2025-09-21 20:59:58,156 - INFO - Updated blueprint from corp_industry_job: 1049574449602
+2025-09-21 20:59:58,164 - INFO - Updated type icon for blueprint: Magnetometric Sensor Cluster
+2025-09-21 20:59:58,339 - INFO - Updated type icon for blueprint: Oscillator Capacitor Unit
+2025-09-21 20:59:58,423 - INFO - Updated blueprint from corp_industry_job: 1049574447488
+2025-09-21 20:59:58,593 - INFO - Updated blueprint from corp_industry_job: 1049574444009
+2025-09-21 20:59:58,841 - INFO - Updated type icon for blueprint: Particle Accelerator Unit
+2025-09-21 20:59:58,866 - INFO - Updated type icon for blueprint: Photon Microprocessor
+2025-09-21 20:59:58,965 - INFO - Updated type icon for blueprint: Nuclear Pulse Generator
+2025-09-21 20:59:58,990 - INFO - Updated blueprint from corp_industry_job: 1049574442751
+2025-09-21 20:59:59,018 - INFO - Updated blueprint from corp_industry_job: 1049574441448
+2025-09-21 20:59:59,210 - INFO - Updated blueprint from corp_industry_job: 1049574317609
+2025-09-21 20:59:59,502 - INFO - Updated type icon for blueprint: U-C Trigger Neurolink Conduit
+2025-09-21 20:59:59,504 - INFO - Updated type icon for blueprint: Thermonuclear Trigger Unit
+2025-09-21 20:59:59,731 - INFO - Updated type icon for blueprint: R.A.M.- Starship Tech
+2025-09-21 20:59:59,840 - INFO - Updated blueprint from corp_industry_job: 1049574314029
+2025-09-21 20:59:59,841 - INFO - Updated blueprint from corp_industry_job: 1049574103840
+2025-09-21 20:59:59,982 - INFO - Updated blueprint from corp_industry_job: 1048892615386
+2025-09-21 21:00:00,939 - INFO - Corporation contracts for No Mercy Incorporated: 105 items
+2025-09-21 21:00:00,940 - INFO - Deleting finished/deleted corporation contract: 221890581
+2025-09-21 21:00:01,211 - INFO - Deleting finished/deleted corporation contract: 221890605
+2025-09-21 21:00:01,495 - INFO - Deleting finished/deleted corporation contract: 221890612
+2025-09-21 21:00:01,734 - INFO - Deleting finished/deleted corporation contract: 221890629
+2025-09-21 21:00:01,936 - INFO - Deleting finished/deleted corporation contract: 221890654
+2025-09-21 21:00:02,068 - INFO - Deleting finished/deleted corporation contract: 221890658
+2025-09-21 21:00:02,351 - INFO - Deleting finished/deleted corporation contract: 221890667
+2025-09-21 21:00:02,609 - INFO - Deleting finished/deleted corporation contract: 221890677
+2025-09-21 21:00:02,784 - INFO - Deleting finished/deleted corporation contract: 221890681
+2025-09-21 21:00:02,978 - INFO - Deleting finished/deleted corporation contract: 221890694
+2025-09-21 21:00:03,116 - INFO - Deleting finished/deleted corporation contract: 221890706
+2025-09-21 21:00:03,311 - INFO - Deleting finished/deleted corporation contract: 221890711
+2025-09-21 21:00:03,506 - INFO - Deleting finished/deleted corporation contract: 221890727
+2025-09-21 21:00:03,709 - INFO - Deleting finished/deleted corporation contract: 221890735
+2025-09-21 21:00:03,925 - INFO - Deleting finished/deleted corporation contract: 221890748
+2025-09-21 21:00:04,149 - INFO - Deleting finished/deleted corporation contract: 221890819
+2025-09-21 21:00:04,360 - INFO - Deleting finished/deleted corporation contract: 221890847
+2025-09-21 21:00:04,557 - INFO - Deleting finished/deleted corporation contract: 221890864
+2025-09-21 21:00:04,696 - INFO - Deleting finished/deleted corporation contract: 221890876
+2025-09-21 21:00:04,882 - INFO - Deleting finished/deleted corporation contract: 221890887
+2025-09-21 21:00:05,076 - INFO - Deleting finished/deleted corporation contract: 221890893
+2025-09-21 21:00:05,236 - INFO - Deleting finished/deleted corporation contract: 221890900
+2025-09-21 21:00:05,779 - INFO - Updated contract: 221945676
+2025-09-21 21:00:06,293 - INFO - Updated contract: 221945685
+2025-09-21 21:00:06,869 - INFO - Updated contract: 221945707
+2025-09-21 21:00:07,364 - INFO - Updated contract: 222217746
+2025-09-21 21:00:07,859 - INFO - Updated contract: 222217747
+2025-09-21 21:00:08,365 - INFO - Updated contract: 222217748
+2025-09-21 21:00:08,366 - INFO - Deleting finished/deleted corporation contract: 222217959
+2025-09-21 21:00:08,913 - INFO - Updated contract: 222217960
+2025-09-21 21:00:08,915 - INFO - Deleting finished/deleted corporation contract: 222217961
+2025-09-21 21:00:09,151 - INFO - Deleting finished/deleted corporation contract: 222217962
+2025-09-21 21:00:09,399 - INFO - Deleting finished/deleted corporation contract: 222217963
+2025-09-21 21:00:09,606 - INFO - Deleting finished/deleted corporation contract: 222219047
+2025-09-21 21:00:09,897 - INFO - Deleting finished/deleted corporation contract: 222219048
+2025-09-21 21:00:10,123 - INFO - Deleting finished/deleted corporation contract: 222219062
+2025-09-21 21:00:10,322 - INFO - Deleting finished/deleted corporation contract: 222219063
+2025-09-21 21:00:10,505 - INFO - Deleting finished/deleted corporation contract: 222219064
+2025-09-21 21:00:10,846 - INFO - Deleting finished/deleted corporation contract: 222219065
+2025-09-21 21:00:11,021 - INFO - Deleting finished/deleted corporation contract: 222219066
+2025-09-21 21:00:11,369 - INFO - Deleting finished/deleted corporation contract: 222219077
+2025-09-21 21:00:12,094 - INFO - Updated contract: 222219078
+2025-09-21 21:00:12,097 - INFO - Deleting finished/deleted corporation contract: 222230472
+2025-09-21 21:00:12,747 - INFO - Updated contract: 222348760
+2025-09-21 21:00:13,132 - INFO - Updated contract: 222348761
+2025-09-21 21:00:13,600 - INFO - Updated contract: 222348762
+2025-09-21 21:00:13,968 - INFO - Updated contract: 222348763
+2025-09-21 21:00:14,494 - INFO - Updated contract: 222348764
+2025-09-21 21:00:15,053 - INFO - Updated contract: 222348765
+2025-09-21 21:00:15,656 - INFO - Updated contract: 222619245
+2025-09-21 21:00:16,177 - INFO - Updated contract: 222619246
+2025-09-21 21:00:16,586 - INFO - Updated contract: 222619247
+2025-09-21 21:00:16,950 - INFO - Updated contract: 222619248
+2025-09-21 21:00:17,344 - INFO - Updated contract: 222619307
+2025-09-21 21:00:17,847 - INFO - Updated contract: 222619308
+2025-09-21 21:00:17,848 - INFO - Deleting finished/deleted corporation contract: 222641766
+2025-09-21 21:00:18,513 - INFO - Updated contract: 222641777
+2025-09-21 21:00:18,515 - INFO - Deleting finished/deleted corporation contract: 222641790
+2025-09-21 21:00:19,039 - INFO - Updated contract: 222641803
+2025-09-21 21:00:19,392 - INFO - Updated contract: 222641814
+2025-09-21 21:00:19,727 - INFO - Updated contract: 222641822
+2025-09-21 21:00:20,086 - INFO - Updated contract: 222641828
+2025-09-21 21:00:20,433 - INFO - Updated contract: 222641837
+2025-09-21 21:00:20,768 - INFO - Updated contract: 222641849
+2025-09-21 21:00:21,140 - INFO - Updated contract: 222641864
+2025-09-21 21:00:21,507 - INFO - Updated contract: 222641882
+2025-09-21 21:00:21,972 - INFO - Updated contract: 222641897
+2025-09-21 21:00:22,382 - INFO - Updated contract: 222641914
+2025-09-21 21:00:22,709 - INFO - Updated contract: 222641925
+2025-09-21 21:00:23,032 - INFO - Updated contract: 222641937
+2025-09-21 21:00:23,432 - INFO - Updated contract: 222641948
+2025-09-21 21:00:23,756 - INFO - Updated contract: 222641961
+2025-09-21 21:00:24,085 - INFO - Updated contract: 222641973
+2025-09-21 21:00:24,436 - INFO - Updated contract: 222641983
+2025-09-21 21:00:24,807 - INFO - Updated contract: 222641993
+2025-09-21 21:00:25,137 - INFO - Updated contract: 222641996
+2025-09-21 21:00:25,534 - INFO - Updated contract: 222642004
+2025-09-21 21:00:25,960 - INFO - Updated contract: 222642013
+2025-09-21 21:00:26,380 - INFO - Updated contract: 222642020
+2025-09-21 21:00:26,751 - INFO - Updated contract: 222642026
+2025-09-21 21:00:27,256 - INFO - Updated contract: 222642037
+2025-09-21 21:00:27,259 - INFO - Deleting finished/deleted corporation contract: 222642043
+2025-09-21 21:00:27,779 - INFO - Updated contract: 222642061
+2025-09-21 21:00:28,141 - INFO - Updated contract: 222642072
+2025-09-21 21:00:28,476 - INFO - Updated contract: 222642077
+2025-09-21 21:00:28,821 - INFO - Updated contract: 222642089
+2025-09-21 21:00:29,167 - INFO - Updated contract: 222642107
+2025-09-21 21:00:29,521 - INFO - Updated contract: 222642133
+2025-09-21 21:00:29,860 - INFO - Updated contract: 222642153
+2025-09-21 21:00:30,218 - INFO - Updated contract: 222642169
+2025-09-21 21:00:30,568 - INFO - Updated contract: 222642175
+2025-09-21 21:00:30,569 - INFO - Deleting finished/deleted corporation contract: 222642197
+2025-09-21 21:00:30,719 - INFO - Deleting finished/deleted corporation contract: 222642209
+2025-09-21 21:00:30,868 - INFO - Deleting finished/deleted corporation contract: 222642216
+2025-09-21 21:00:31,092 - INFO - Deleting finished/deleted corporation contract: 222642226
+2025-09-21 21:00:31,620 - INFO - Updated contract: 222642246
+2025-09-21 21:00:31,622 - INFO - Deleting finished/deleted corporation contract: 222642262
+2025-09-21 21:00:31,768 - INFO - Deleting finished/deleted corporation contract: 222642273
+2025-09-21 21:00:32,328 - INFO - Updated contract: 222642285
+2025-09-21 21:00:32,673 - INFO - Updated contract: 222642299
+2025-09-21 21:00:32,674 - INFO - Deleting finished/deleted corporation contract: 222642324
+2025-09-21 21:00:32,837 - INFO - Deleting finished/deleted corporation contract: 222642345
+2025-09-21 21:00:33,384 - INFO - Updated contract: 222642381
+2025-09-21 21:00:33,716 - INFO - Updated contract: 222642390
+2025-09-21 21:00:34,015 - INFO - Updated contract: 222642413
+2025-09-21 21:00:34,018 - INFO - Fetching additional data for Mr FiLiN...
+2025-09-21 21:00:34,766 - INFO - Updated skills for character 90020513
+2025-09-21 21:00:34,770 - INFO - Skills for Mr FiLiN: 124188071 SP
+2025-09-21 21:00:34,770 - INFO - Fetching blueprints for Mr FiLiN...
+2025-09-21 21:00:35,025 - INFO - Character blueprints: 28 items
+2025-09-21 21:00:35,468 - INFO - Updated type icon for blueprint: Capital Scalar Capacitor Unit
+2025-09-21 21:00:35,586 - INFO - Updated type icon for blueprint: Capital Superconductor Rails
+2025-09-21 21:00:35,640 - INFO - Updated blueprint: 1049574774038
+2025-09-21 21:00:35,821 - INFO - Updated blueprint: 1049574775416
+2025-09-21 21:00:35,885 - INFO - Updated type icon for blueprint: Capital Quantum Microprocessor
+2025-09-21 21:00:36,049 - INFO - Updated blueprint: 1049574772710
+2025-09-21 21:00:36,204 - INFO - Updated type icon for blueprint: Capital Pulse Shield Emitter
+2025-09-21 21:00:36,337 - INFO - Updated type icon for blueprint: Capital Sustained Shield Emitter
+2025-09-21 21:00:36,452 - INFO - Updated blueprint: 1049574799503
+2025-09-21 21:00:36,453 - INFO - Updated type icon for blueprint: Capital Quantum Microprocessor
+2025-09-21 21:00:36,636 - INFO - Updated blueprint: 1049574776419
+2025-09-21 21:00:36,688 - INFO - Updated blueprint: 1049576658476
+2025-09-21 21:00:36,941 - INFO - Updated type icon for blueprint: Capital Scalar Capacitor Unit
+2025-09-21 21:00:37,131 - INFO - Updated blueprint: 1049576660794
+2025-09-21 21:00:37,452 - INFO - Updated type icon for blueprint: Capital Sustained Shield Emitter
+2025-09-21 21:00:37,527 - INFO - Updated type icon for blueprint: Capital Superconductor Rails
+2025-09-21 21:00:37,603 - INFO - Updated type icon for blueprint: Capital Pulse Shield Emitter
+2025-09-21 21:00:37,618 - INFO - Updated blueprint: 1049576662770
+2025-09-21 21:00:37,619 - INFO - Skipping BPC (quantity=-2) for item_id: 1049226288533
+2025-09-21 21:00:37,619 - INFO - Skipping BPC (quantity=-2) for item_id: 1049226288534
+2025-09-21 21:00:37,619 - INFO - Skipping BPC (quantity=-2) for item_id: 1049229367998
+2025-09-21 21:00:37,619 - INFO - Skipping BPC (quantity=-2) for item_id: 1049229368000
+2025-09-21 21:00:37,619 - INFO - Skipping BPC (quantity=-2) for item_id: 1049233539505
+2025-09-21 21:00:37,619 - INFO - Skipping BPC (quantity=-2) for item_id: 1049233539510
+2025-09-21 21:00:37,619 - INFO - Skipping BPC (quantity=-2) for item_id: 1049233743679
+2025-09-21 21:00:37,619 - INFO - Skipping BPC (quantity=-2) for item_id: 1049233743681
+2025-09-21 21:00:37,620 - INFO - Skipping BPC (quantity=-2) for item_id: 1049234154334
+2025-09-21 21:00:37,620 - INFO - Skipping BPC (quantity=-2) for item_id: 1049234154340
+2025-09-21 21:00:37,620 - INFO - Skipping BPC (quantity=-2) for item_id: 1049234289107
+2025-09-21 21:00:37,620 - INFO - Skipping BPC (quantity=-2) for item_id: 1049234289111
+2025-09-21 21:00:37,620 - INFO - Skipping BPC (quantity=-2) for item_id: 1049234501753
+2025-09-21 21:00:37,620 - INFO - Skipping BPC (quantity=-2) for item_id: 1049234501755
+2025-09-21 21:00:37,620 - INFO - Skipping BPC (quantity=-2) for item_id: 1049234593891
+2025-09-21 21:00:37,620 - INFO - Skipping BPC (quantity=-2) for item_id: 1049234593892
+2025-09-21 21:00:37,620 - INFO - Skipping BPC (quantity=-2) for item_id: 1049234697152
+2025-09-21 21:00:37,620 - INFO - Skipping BPC (quantity=-2) for item_id: 1049234697154
+2025-09-21 21:00:37,714 - INFO - Updated blueprint: 1049576661931
+2025-09-21 21:00:37,781 - INFO - Updated blueprint: 1049576663499
+2025-09-21 21:20:47,558 - INFO - Starting cleanup of old posts...
+2025-09-21 21:20:48,363 - INFO - Cleanup completed.
+2025-09-21 21:30:29,254 - WARNING - Resource not found for public endpoint /universe/types/1234
+2025-09-21 21:30:29,534 - WARNING - Resource not found for public endpoint /universe/types/1234
