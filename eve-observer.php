@@ -53,6 +53,11 @@ class EVE_Observer {
             'dashicons-chart-line',
             30
         );
+
+        // Add submenus for CPTs
+        add_submenu_page('eve-observer', 'Characters', 'Characters', 'manage_options', 'edit.php?post_type=eve_character');
+        add_submenu_page('eve-observer', 'Blueprints', 'Blueprints', 'manage_options', 'edit.php?post_type=eve_blueprint');
+        add_submenu_page('eve-observer', 'Planets', 'Planets', 'manage_options', 'edit.php?post_type=eve_planet');
     }
 
     public function enqueue_admin_scripts($hook) {
@@ -155,7 +160,7 @@ class EVE_Observer {
             'public' => true,
             'supports' => array('title', 'editor', 'custom-fields'),
             'show_in_rest' => true,
-            'show_in_menu' => 'eve-observer',
+            'show_in_menu' => false,
         ));
 
         // Blueprint CPT
@@ -167,7 +172,7 @@ class EVE_Observer {
             'public' => true,
             'supports' => array('title', 'editor', 'custom-fields'),
             'show_in_rest' => true,
-            'show_in_menu' => 'eve-observer',
+            'show_in_menu' => false,
         ));
 
         // Planet CPT
@@ -179,7 +184,7 @@ class EVE_Observer {
             'public' => true,
             'supports' => array('title', 'editor', 'custom-fields'),
             'show_in_rest' => true,
-            'show_in_menu' => 'eve-observer',
+            'show_in_menu' => false,
         ));
 
         // Register ACF field groups if ACF is active
