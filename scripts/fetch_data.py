@@ -356,15 +356,15 @@ def update_character_in_wp(char_id, char_data):
 
     # Add featured image from character portrait
     portrait_data = fetch_character_portrait(char_id)
-    if portrait_data and 'px64x64' in portrait_data:
-        image_url = portrait_data['px64x64']
-        # Only set if not already set or if it changed
-        current_external_url = existing_post.get('meta', {}).get('_thumbnail_external_url') if existing_post else None
-        if current_external_url != image_url:
-            post_data['meta']['_thumbnail_external_url'] = image_url
-            logger.info(f"Set portrait URL for character: {char_data['name']}")
+    if portrait_data and 'px256x256' in portrait_data:
+        new_portrait_url = portrait_data['px256x256']
+        # Check if portrait changed before updating
+        existing_portrait_url = existing_post.get('meta', {}).get('_thumbnail_external_url') if existing_post else None
+        if existing_portrait_url != new_portrait_url:
+            post_data['meta']['_thumbnail_external_url'] = new_portrait_url
+            logger.info(f"Updated portrait for character: {char_data['name']}")
         else:
-            logger.info(f"Portrait URL unchanged for character: {char_data['name']}")
+            logger.info(f"Portrait unchanged for character: {char_data['name']}")
 
     if existing_post:
         # Update existing
@@ -560,13 +560,13 @@ def update_blueprint_in_wp(blueprint_data, wp_post_id_cache, char_id, access_tok
     type_id = blueprint_data.get('type_id')
     if type_id:
         image_url = fetch_type_icon(type_id, size=128)
-        # Only set if not already set or if it changed
-        current_external_url = existing_post.get('meta', {}).get('_thumbnail_external_url') if existing_post else None
-        if current_external_url != image_url:
+        # Check if type icon changed before updating
+        existing_image_url = existing_post.get('meta', {}).get('_thumbnail_external_url') if existing_post else None
+        if existing_image_url != image_url:
             post_data['meta']['_thumbnail_external_url'] = image_url
-            logger.info(f"Set type icon URL for blueprint: {type_name}")
+            logger.info(f"Updated type icon for blueprint: {type_name}")
         else:
-            logger.info(f"Type icon URL unchanged for blueprint: {type_name}")
+            logger.info(f"Type icon unchanged for blueprint: {type_name}")
 
     if existing_post:
         # Check if data has changed before updating
@@ -848,13 +848,13 @@ def update_blueprint_from_asset_in_wp(blueprint_data, wp_post_id_cache, access_t
     type_id = blueprint_data.get('type_id')
     if type_id:
         image_url = fetch_type_icon(type_id, size=128)
-        # Only set if not already set or if it changed
-        current_external_url = existing_post.get('meta', {}).get('_thumbnail_external_url') if existing_post else None
-        if current_external_url != image_url:
+        # Check if type icon changed before updating
+        existing_image_url = existing_post.get('meta', {}).get('_thumbnail_external_url') if existing_post else None
+        if existing_image_url != image_url:
             post_data['meta']['_thumbnail_external_url'] = image_url
-            logger.info(f"Set type icon URL for blueprint from {source}: {type_name}")
+            logger.info(f"Updated type icon for blueprint: {type_name}")
         else:
-            logger.info(f"Type icon URL unchanged for blueprint from {source}: {type_name}")
+            logger.info(f"Type icon unchanged for blueprint: {type_name}")
 
     if existing_post:
         # Check if data has changed before updating
@@ -941,13 +941,13 @@ def update_corporation_in_wp(corp_id, corp_data):
     # Add featured image from corporation logo
     logo_url = fetch_corporation_logo(corp_id)
     if logo_url:
-        # Only set if not already set or if it changed
-        current_external_url = existing_post.get('meta', {}).get('_thumbnail_external_url') if existing_post else None
-        if current_external_url != logo_url:
+        # Check if logo changed before updating
+        existing_logo_url = existing_post.get('meta', {}).get('_thumbnail_external_url') if existing_post else None
+        if existing_logo_url != logo_url:
             post_data['meta']['_thumbnail_external_url'] = logo_url
-            logger.info(f"Set logo URL for corporation: {corp_data.get('name', corp_id)}")
+            logger.info(f"Updated logo for corporation: {corp_data.get('name', corp_id)}")
         else:
-            logger.info(f"Logo URL unchanged for corporation: {corp_data.get('name', corp_id)}")
+            logger.info(f"Logo unchanged for corporation: {corp_data.get('name', corp_id)}")
 
     if existing_post:
         # Update existing
@@ -994,36 +994,28 @@ def fetch_planet_image(planet_type_id, size=512):
     return f"https://images.evetech.net/types/{planet_type_id}/render?size={size}"
 
 def upload_image_to_wordpress(image_url, filename, alt_text=""):
-    """Upload an image to WordPress media library and return the media ID."""
+    """Upload an image to WordPress media library using external URL and return the media ID."""
     try:
-        # Download the image
-        response = requests.get(image_url, timeout=30)
-        if response.status_code != 200:
-            logger.warning(f"Failed to download image from {image_url}")
-            return None
-
-        # Prepare the file for upload
-        files = {
-            'file': (filename, response.content, response.headers.get('content-type', 'image/png'))
-        }
+        # Use WordPress's built-in external URL support
         data = {
+            'source_url': image_url,
             'alt_text': alt_text,
             'caption': alt_text
         }
 
-        # Upload to WordPress
+        # Upload to WordPress using source_url
         upload_url = f"{WP_BASE_URL}/wp-json/wp/v2/media"
-        upload_response = requests.post(upload_url, files=files, data=data, auth=get_wp_auth())
+        upload_response = requests.post(upload_url, json=data, auth=get_wp_auth())
 
         if upload_response.status_code in [200, 201]:
             media_data = upload_response.json()
             return media_data['id']
         else:
-            logger.warning(f"Failed to upload image to WordPress: {upload_response.status_code} - {upload_response.text}")
+            logger.warning(f"Failed to create media from URL: {upload_response.status_code} - {upload_response.text}")
             return None
 
     except Exception as e:
-        logger.error(f"Error uploading image {image_url}: {e}")
+        logger.error(f"Error creating media from URL {image_url}: {e}")
         return None
 
 def update_planet_in_wp(planet_id, planet_data, char_id):
@@ -1059,13 +1051,13 @@ def update_planet_in_wp(planet_id, planet_data, char_id):
     planet_type_id = planet_data.get('planet_type')
     if planet_type_id:
         image_url = fetch_planet_image(planet_type_id, size=512)
-        # Only set if not already set or if it changed
-        current_external_url = existing_post.get('meta', {}).get('_thumbnail_external_url') if existing_post else None
-        if current_external_url != image_url:
+        # Check if planet render changed before updating
+        existing_image_url = existing_post.get('meta', {}).get('_thumbnail_external_url') if existing_post else None
+        if existing_image_url != image_url:
             post_data['meta']['_thumbnail_external_url'] = image_url
-            logger.info(f"Set planet render URL for: {title}")
+            logger.info(f"Updated planet render for: {title}")
         else:
-            logger.info(f"Planet render URL unchanged for: {title}")
+            logger.info(f"Planet render unchanged for: {title}")
 
     if 'pins' in planet_data:
         post_data['meta']['_eve_planet_pins_data'] = json.dumps(planet_data['pins'])

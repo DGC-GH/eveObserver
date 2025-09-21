@@ -134,6 +134,20 @@ class EVE_Observer {
 
         // Hook to handle external featured images
         add_filter('post_thumbnail_html', array($this, 'post_thumbnail_external_url'), 10, 5);
+        add_filter('get_post_thumbnail_id', array($this, 'get_post_thumbnail_id_external'), 10, 1);
+
+        // Add thumbnail columns to admin list tables
+        add_filter('manage_eve_character_posts_columns', array($this, 'add_thumbnail_column'));
+        add_action('manage_eve_character_posts_custom_column', array($this, 'display_thumbnail_column'), 10, 2);
+        
+        add_filter('manage_eve_blueprint_posts_columns', array($this, 'add_thumbnail_column'));
+        add_action('manage_eve_blueprint_posts_custom_column', array($this, 'display_thumbnail_column'), 10, 2);
+        
+        add_filter('manage_eve_planet_posts_columns', array($this, 'add_thumbnail_column'));
+        add_action('manage_eve_planet_posts_custom_column', array($this, 'display_thumbnail_column'), 10, 2);
+        
+        add_filter('manage_eve_corporation_posts_columns', array($this, 'add_thumbnail_column'));
+        add_action('manage_eve_corporation_posts_custom_column', array($this, 'display_thumbnail_column'), 10, 2);
 
         // Register custom post types
         $this->register_custom_post_types();
@@ -896,26 +910,64 @@ class EVE_Observer {
         ));
     }
 
-    public function post_thumbnail_external_url($html, $post_id, $post_thumbnail_id, $size, $attr) {
-        $external_url = get_post_meta($post_id, '_thumbnail_external_url', true);
+    public function get_post_thumbnail_id_external($thumbnail_id, $post_id = null) {
+        if (get_post_meta($post_id, '_thumbnail_external_url', true)) {
+            // Return a dummy ID to indicate external image exists
+            return 'external';
+        }
         
-        if (!empty($external_url)) {
-            $alt = get_the_title($post_id);
-            $class = isset($attr['class']) ? $attr['class'] : 'wp-post-image';
-            $width = isset($attr['width']) ? $attr['width'] : '';
-            $height = isset($attr['height']) ? $attr['height'] : '';
+        return $thumbnail_id;
+    }
+
+    public function post_thumbnail_external_url($html, $post_id, $post_thumbnail_id, $size, $attr) {
+        // Check if this is an external image (our dummy ID)
+        if ($post_thumbnail_id === 'external') {
+            $external_url = get_post_meta($post_id, '_thumbnail_external_url', true);
             
-            $html = sprintf(
-                '<img src="%s" alt="%s" class="%s" width="%s" height="%s" />',
-                esc_url($external_url),
-                esc_attr($alt),
-                esc_attr($class),
-                esc_attr($width),
-                esc_attr($height)
-            );
+            if (!empty($external_url)) {
+                $alt = get_the_title($post_id);
+                $class = isset($attr['class']) ? $attr['class'] : 'wp-post-image';
+                $width = isset($attr['width']) ? $attr['width'] : '';
+                $height = isset($attr['height']) ? $attr['height'] : '';
+                
+                $html = sprintf(
+                    '<img src="%s" alt="%s" class="%s" width="%s" height="%s" />',
+                    esc_url($external_url),
+                    esc_attr($alt),
+                    esc_attr($class),
+                    esc_attr($width),
+                    esc_attr($height)
+                );
+            }
         }
         
         return $html;
+    }
+
+    public function add_thumbnail_column($columns) {
+        $new_columns = array();
+        
+        // Insert thumbnail column before title
+        foreach ($columns as $key => $value) {
+            if ($key === 'title') {
+                $new_columns['thumbnail'] = __('Thumbnail', 'eve-observer');
+            }
+            $new_columns[$key] = $value;
+        }
+        
+        return $new_columns;
+    }
+
+    public function display_thumbnail_column($column, $post_id) {
+        if ($column === 'thumbnail') {
+            $thumbnail_url = get_post_meta($post_id, '_thumbnail_external_url', true);
+            
+            if (!empty($thumbnail_url)) {
+                echo '<img src="' . esc_url($thumbnail_url) . '" alt="' . esc_attr(get_the_title($post_id)) . '" style="width: 50px; height: 50px; object-fit: cover; border-radius: 4px;" />';
+            } else {
+                echo '<div style="width: 50px; height: 50px; background: #f0f0f0; border: 1px solid #ddd; border-radius: 4px; display: flex; align-items: center; justify-content: center; color: #999; font-size: 20px;">📷</div>';
+            }
+        }
     }
 }
 
