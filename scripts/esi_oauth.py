@@ -24,11 +24,11 @@ TOKEN_URL = 'https://login.eveonline.com/v2/oauth/token'
 SCOPES = [
     'esi-characters.read_blueprints.v1',
     'esi-industry.read_character_jobs.v1',
-    'esi-planets.read_customs_offices.v1',
-    'esi-characters.read_planets.v1',
+    'esi-planets.manage_planets.v1',
     'esi-markets.read_character_orders.v1',
     'esi-contracts.read_character_contracts.v1',
-    'esi-corporations.read_contracts.v1',
+    'esi-contracts.read_corporation_contracts.v1',
+    'esi-skills.read_skills.v1',
 ]
 
 # Load config from .env or set defaults
