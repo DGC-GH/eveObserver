@@ -72,6 +72,41 @@ class EVE_Observer {
         // Flush rewrite rules on deactivation
         flush_rewrite_rules();
     }
+
+    private function register_custom_post_types() {
+        // Character CPT
+        register_post_type('eve_character', array(
+            'labels' => array(
+                'name' => __('Characters', 'eve-observer'),
+                'singular_name' => __('Character', 'eve-observer'),
+            ),
+            'public' => true,
+            'supports' => array('title', 'editor', 'custom-fields'),
+            'show_in_rest' => true,
+        ));
+
+        // Blueprint CPT
+        register_post_type('eve_blueprint', array(
+            'labels' => array(
+                'name' => __('Blueprints', 'eve-observer'),
+                'singular_name' => __('Blueprint', 'eve-observer'),
+            ),
+            'public' => true,
+            'supports' => array('title', 'editor', 'custom-fields'),
+            'show_in_rest' => true,
+        ));
+
+        // Planet CPT
+        register_post_type('eve_planet', array(
+            'labels' => array(
+                'name' => __('Planets', 'eve-observer'),
+                'singular_name' => __('Planet', 'eve-observer'),
+            ),
+            'public' => true,
+            'supports' => array('title', 'editor', 'custom-fields'),
+            'show_in_rest' => true,
+        ));
+    }
 }
 
 // Initialize the plugin
