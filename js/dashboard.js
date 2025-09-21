@@ -23,6 +23,7 @@ class EVEDashboard {
         await this.loadAllData();
         this.setupSearch();
         this.setupCardClicks();
+        this.setupActionButtons();
         this.renderChart();
         this.renderAllTables();
         this.hideLoaders();
@@ -180,15 +181,36 @@ class EVEDashboard {
         }
     }
 
-    setupCardClicks() {
-        const cards = document.querySelectorAll('.eve-card-clickable');
-        cards.forEach(card => {
-            card.style.cursor = 'pointer';
-            card.addEventListener('click', () => {
-                const section = card.dataset.section;
-                this.scrollToSection(section);
-            });
-        });
+    setupActionButtons() {
+        const copyOutbidBtn = document.getElementById('copy-outbid-contracts');
+        if (copyOutbidBtn) {
+            copyOutbidBtn.addEventListener('click', () => this.copyOutbidContracts());
+        }
+    }
+
+    copyOutbidContracts() {
+        const outbidContracts = this.data.contracts.filter(contract => 
+            contract.meta && contract.meta._eve_contract_outbid === 'true'
+        );
+
+        if (outbidContracts.length === 0) {
+            alert('No outbid contracts found.');
+            return;
+        }
+
+        const links = outbidContracts.map(contract => {
+            const contractId = contract.meta._eve_contract_id;
+            const regionId = contract.meta._eve_contract_region_id || contract.meta._eve_contract_start_location_id;
+            const title = contract.title?.rendered || `Contract ${contractId}`;
+            
+            if (regionId && contractId) {
+                return `<a href="contract:${regionId}//${contractId}">${this.escapeHtml(title)}</a>`;
+            }
+            return '';
+        }).filter(link => link);
+
+        const fullText = links.join('\n');
+        copyToClipboard(fullText);
     }
 
     debouncedSearch(section, query) {

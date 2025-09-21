@@ -241,7 +241,7 @@ body {
     color: var(--text-secondary);
 }
 
-.eve-search-container {
+.eve-section-actions {
     margin-bottom: 20px;
     display: flex;
     gap: 12px;

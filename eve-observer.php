@@ -113,7 +113,7 @@ class EVE_Observer {
             '_eve_contract_date_expired', '_eve_contract_date_accepted', '_eve_contract_date_completed',
             '_eve_contract_price', '_eve_contract_reward', '_eve_contract_collateral', '_eve_contract_buyout',
             '_eve_contract_volume', '_eve_contract_days_to_complete', '_eve_contract_entity_id', '_eve_contract_items', '_eve_last_updated',
-            '_eve_contract_outbid', '_eve_contract_market_price'
+            '_eve_contract_outbid', '_eve_contract_market_price', '_eve_contract_region_id'
         );
         $numeric_contract_fields = array('_eve_contract_id', '_eve_contract_issuer_id', '_eve_contract_issuer_corp_id', '_eve_contract_assignee_id', '_eve_contract_acceptor_id', '_eve_contract_price', '_eve_contract_reward', '_eve_contract_collateral', '_eve_contract_buyout', '_eve_contract_volume', '_eve_contract_days_to_complete', '_eve_contract_market_price');
         foreach ($contract_meta_fields as $field) {
@@ -450,6 +450,9 @@ class EVE_Observer {
                     <span>Loading contracts...</span>
                 </div>
                 <div id="contracts-content" style="display: none;">
+                    <div class="eve-section-actions">
+                        <button id="copy-outbid-contracts" class="button button-secondary"><?php _e('Copy Outbid Contracts', 'eve-observer'); ?></button>
+                    </div>
                     <div class="eve-search-container">
                         <input type="text" class="eve-search-input" id="contracts-search" placeholder="Search contracts...">
                     </div>
@@ -1119,6 +1122,13 @@ class EVE_Observer {
                     'show_in_rest' => true,
                 ),
                 array(
+                    'key' => 'field_contract_region_id',
+                    'label' => 'Region ID',
+                    'name' => '_eve_contract_region_id',
+                    'type' => 'text',
+                    'show_in_rest' => true,
+                ),
+                array(
                     'key' => 'field_contract_items',
                     'label' => 'Contract Items (JSON)',
                     'name' => '_eve_contract_items',
@@ -1126,16 +1136,6 @@ class EVE_Observer {
                     'show_in_rest' => true,
                 ),
             ),
-            'location' => array(
-                array(
-                    array(
-                        'param' => 'post_type',
-                        'operator' => '==',
-                        'value' => 'eve_contract',
-                    ),
-                ),
-            ),
-        ));
     }
 
     public function get_post_thumbnail_id_external($thumbnail_id, $post_id = null) {

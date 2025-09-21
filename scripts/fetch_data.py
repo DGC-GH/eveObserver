@@ -1092,6 +1092,9 @@ def update_contract_in_wp(contract_id, contract_data, for_corp=False, entity_id=
     # Generate descriptive title
     title = generate_contract_title(contract_data, contract_items, blueprint_cache)
 
+    # Get region_id from start_location_id
+    region_id = get_region_from_location(contract_data.get('start_location_id'))
+
     post_data = {
         'title': title,
         'slug': slug,
@@ -1119,6 +1122,7 @@ def update_contract_in_wp(contract_id, contract_data, for_corp=False, entity_id=
             '_eve_contract_title': contract_data.get('title'),
             '_eve_contract_for_corp': str(for_corp).lower(),
             '_eve_contract_entity_id': str(entity_id),
+            '_eve_contract_region_id': str(region_id) if region_id else None,
             '_eve_last_updated': datetime.now(timezone.utc).isoformat()
         }
     }
@@ -1193,10 +1197,39 @@ def update_contract_in_wp(contract_id, contract_data, for_corp=False, entity_id=
     else:
         logger.error(f"Failed to update contract {contract_id}: {response.status_code} - {response.text}")
 
-def fetch_market_orders(region_id, type_id):
-    """Fetch market orders for a specific region and type."""
-    endpoint = f"/markets/{region_id}/orders/?type_id={type_id}"
-    return fetch_public_esi(endpoint)
+def get_region_from_location(location_id):
+    """Get region_id from a location_id (station or structure)."""
+    if not location_id:
+        return None
+    
+    region_id = None
+    if location_id >= 1000000000000:  # Structure
+        # For structures, we need to fetch structure info to get solar_system_id, then region
+        struct_data = fetch_public_esi(f"/universe/structures/{location_id}")
+        if struct_data:
+            solar_system_id = struct_data.get('solar_system_id')
+            if solar_system_id:
+                system_data = fetch_public_esi(f"/universe/systems/{solar_system_id}")
+                if system_data:
+                    constellation_id = system_data.get('constellation_id')
+                    if constellation_id:
+                        constellation_data = fetch_public_esi(f"/universe/constellations/{constellation_id}")
+                        if constellation_data:
+                            region_id = constellation_data.get('region_id')
+    else:  # Station
+        station_data = fetch_public_esi(f"/universe/stations/{location_id}")
+        if station_data:
+            system_id = station_data.get('system_id')
+            if system_id:
+                system_data = fetch_public_esi(f"/universe/systems/{system_id}")
+                if system_data:
+                    constellation_id = system_data.get('constellation_id')
+                    if constellation_id:
+                        constellation_data = fetch_public_esi(f"/universe/constellations/{constellation_id}")
+                        if constellation_data:
+                            region_id = constellation_data.get('region_id')
+    
+    return region_id
 
 def fetch_character_portrait(char_id):
     """Fetch character portrait URLs from ESI."""
@@ -1259,32 +1292,7 @@ def check_contract_market_competition(contract_data, contract_items):
         return False, None
     
     # Get region_id from location
-    region_id = None
-    if start_location_id >= 1000000000000:  # Structure
-        # For structures, we need to fetch structure info to get solar_system_id, then region
-        struct_data = fetch_public_esi(f"/universe/structures/{start_location_id}")
-        if struct_data:
-            solar_system_id = struct_data.get('solar_system_id')
-            if solar_system_id:
-                system_data = fetch_public_esi(f"/universe/systems/{solar_system_id}")
-                if system_data:
-                    region_id = system_data.get('constellation_id')
-                    if region_id:
-                        constellation_data = fetch_public_esi(f"/universe/constellations/{region_id}")
-                        if constellation_data:
-                            region_id = constellation_data.get('region_id')
-    else:  # Station
-        station_data = fetch_public_esi(f"/universe/stations/{start_location_id}")
-        if station_data:
-            system_id = station_data.get('system_id')
-            if system_id:
-                system_data = fetch_public_esi(f"/universe/systems/{system_id}")
-                if system_data:
-                    constellation_id = system_data.get('constellation_id')
-                    if constellation_id:
-                        constellation_data = fetch_public_esi(f"/universe/constellations/{constellation_id}")
-                        if constellation_data:
-                            region_id = constellation_data.get('region_id')
+    region_id = get_region_from_location(start_location_id)
     
     if not region_id:
         return False, None

@@ -2389,3 +2389,69 @@
 2025-09-22 00:44:13,772 - INFO - Updated planet: 40087450
 2025-09-22 00:44:14,308 - INFO - Updated planet: 40087468
 2025-09-22 00:44:14,873 - INFO - Updated planet: 40087521
+2025-09-22 01:08:57,107 - INFO - Portrait unchanged for character: Mr FiLiN
+2025-09-22 01:08:57,334 - INFO - Updated character: Mr FiLiN
+2025-09-22 01:08:57,672 - INFO - Portrait unchanged for character: Dr FiLiN
+2025-09-22 01:08:57,931 - INFO - Updated character: Dr FiLiN
+2025-09-22 01:08:58,342 - INFO - Portrait unchanged for character: Orev Khazar
+2025-09-22 01:08:58,499 - INFO - Updated character: Orev Khazar
+2025-09-22 01:08:58,860 - INFO - Portrait unchanged for character: Sir FiLiN
+2025-09-22 01:08:59,002 - INFO - Updated character: Sir FiLiN
+2025-09-22 01:08:59,388 - INFO - Portrait unchanged for character: Filin Khan
+2025-09-22 01:08:59,555 - INFO - Updated character: Filin Khan
+2025-09-22 01:09:00,078 - INFO - Portrait unchanged for character: Corvin Khan
+2025-09-22 01:09:00,247 - INFO - Updated character: Corvin Khan
+2025-09-22 01:09:00,644 - INFO - Portrait unchanged for character: FiLiN Core
+2025-09-22 01:09:00,820 - INFO - Updated character: FiLiN Core
+2025-09-22 01:09:01,283 - INFO - Portrait unchanged for character: Raven Madyar
+2025-09-22 01:09:01,474 - INFO - Updated character: Raven Madyar
+2025-09-22 01:09:01,817 - INFO - Portrait unchanged for character: Vran Ruthen
+2025-09-22 01:09:02,493 - INFO - Updated character: Vran Ruthen
+2025-09-22 01:09:02,494 - INFO - Starting cleanup of old posts...
+2025-09-22 01:09:02,816 - INFO - Deleting private contract: 222697575
+2025-09-22 01:09:03,015 - INFO - Deleted eve_contract post: 2881
+2025-09-22 01:09:03,016 - INFO - Deleting private contract: 222697571
+2025-09-22 01:09:03,158 - INFO - Deleted eve_contract post: 2880
+2025-09-22 01:09:03,159 - INFO - Deleting private contract: 222697565
+2025-09-22 01:09:03,335 - INFO - Deleted eve_contract post: 2879
+2025-09-22 01:09:03,336 - INFO - Deleting private contract: 222697552
+2025-09-22 01:09:03,540 - INFO - Deleted eve_contract post: 2878
+2025-09-22 01:09:03,542 - INFO - Deleting private contract: 222697538
+2025-09-22 01:09:03,695 - INFO - Deleted eve_contract post: 2877
+2025-09-22 01:09:03,698 - INFO - Deleting private contract: 222697519
+2025-09-22 01:09:03,896 - INFO - Deleted eve_contract post: 2876
+2025-09-22 01:09:03,899 - INFO - Deleting private contract: 222697508
+2025-09-22 01:09:04,152 - INFO - Deleted eve_contract post: 2875
+2025-09-22 01:09:04,153 - INFO - Deleting private contract: 222697477
+2025-09-22 01:09:04,317 - INFO - Deleted eve_contract post: 2874
+2025-09-22 01:09:04,319 - INFO - Deleting private contract: 222697456
+2025-09-22 01:09:04,495 - INFO - Deleted eve_contract post: 2873
+2025-09-22 01:09:04,498 - INFO - Deleting private contract: 222697441
+2025-09-22 01:09:04,763 - INFO - Deleted eve_contract post: 2872
+2025-09-22 01:09:04,765 - INFO - Deleting private contract: 222697423
+2025-09-22 01:09:04,933 - INFO - Deleted eve_contract post: 2871
+2025-09-22 01:09:04,936 - INFO - Deleting private contract: 222619308
+2025-09-22 01:09:05,113 - INFO - Deleted eve_contract post: 2870
+2025-09-22 01:09:05,115 - INFO - Deleting private contract: 222619307
+2025-09-22 01:09:05,272 - INFO - Deleted eve_contract post: 2869
+2025-09-22 01:09:05,274 - INFO - Deleting private contract: 222619248
+2025-09-22 01:09:05,423 - INFO - Deleted eve_contract post: 2868
+2025-09-22 01:09:05,425 - INFO - Deleting private contract: 222619247
+2025-09-22 01:09:05,637 - INFO - Deleted eve_contract post: 2867
+2025-09-22 01:09:05,637 - INFO - Deleting private contract: 222619246
+2025-09-22 01:09:05,823 - INFO - Deleted eve_contract post: 2866
+2025-09-22 01:09:05,825 - INFO - Deleting private contract: 222619245
+2025-09-22 01:09:05,973 - INFO - Deleted eve_contract post: 2865
+2025-09-22 01:09:05,975 - INFO - Deleting private contract: 222348765
+2025-09-22 01:09:06,179 - INFO - Deleted eve_contract post: 2864
+2025-09-22 01:09:06,181 - INFO - Deleting private contract: 222348764
+2025-09-22 01:09:06,359 - INFO - Deleted eve_contract post: 2863
+2025-09-22 01:09:06,361 - INFO - Deleting private contract: 222348763
+2025-09-22 01:09:06,523 - INFO - Deleted eve_contract post: 2862
+2025-09-22 01:09:06,525 - INFO - Deleting private contract: 222348762
+2025-09-22 01:09:06,799 - INFO - Deleted eve_contract post: 2861
+2025-09-22 01:09:06,801 - INFO - Deleting private contract: 222348761
+2025-09-22 01:09:06,950 - INFO - Deleted eve_contract post: 2860
+2025-09-22 01:09:06,952 - INFO - Deleting private contract: 222348760
+2025-09-22 01:09:07,213 - INFO - Deleted eve_contract post: 2859
+2025-09-22 01:09:07,215 - INFO - Deleting private contract: 222219078
