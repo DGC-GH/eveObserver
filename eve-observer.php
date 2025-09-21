@@ -1060,14 +1060,15 @@ class EVE_Observer {
             
             // Make contract ID clickable to open in EVE client
             $eve_client_url = "eve://app/contract/{$contract_id}";
-            $clickable_id = "<a href='{$eve_client_url}' target='_blank' style='color: #0073aa; text-decoration: none;' title='Open in EVE Client'>{$contract_id}</a>";
+            $clickable_id = "<a href='" . esc_url($eve_client_url) . "' target='_blank' style='color: #0073aa; text-decoration: none;' title='Open in EVE Client'>" . esc_html($contract_id) . "</a>";
             
             echo "<div style='display: flex; align-items: center; gap: 8px;'>";
-            echo "<span style='color: {$color}; font-weight: bold;'>{$icon} {$status_text}</span>";
-            if ($is_outbid && $market_price) {
-                echo "<span style='color: #666; font-size: 12px;'>Market: " . number_format(float($market_price), 2) . " ISK</span>";
+            echo "<span style='color: " . esc_attr($color) . "; font-weight: bold;'>" . esc_html($icon . ' ' . $status_text) . "</span>";
+            if ($is_outbid && !empty($market_price) && is_numeric($market_price)) {
+                $formatted_price = number_format((float)$market_price, 2);
+                echo "<span style='color: #666; font-size: 12px;'>Market: " . esc_html($formatted_price) . " ISK</span>";
             }
-            echo "<span style='color: #666; font-size: 12px;'>ID: {$clickable_id}</span>";
+            echo "<span style='color: #666; font-size: 12px;'>ID: " . $clickable_id . "</span>";
             echo "</div>";
         }
     }
