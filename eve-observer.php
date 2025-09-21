@@ -1214,7 +1214,7 @@ class EVE_Observer {
 
     public function display_outbid_column($column, $post_id) {
         if ($column === 'outbid') {
-            $is_outbid = get_post_meta($post_id, '_eve_contract_outbid', true) === 'true';
+            $is_outbid = get_post_meta($post_id, '_eve_contract_outbid', true) === '1';
             $contract_id = get_post_meta($post_id, '_eve_contract_id', true);
             $contract_title = get_post_meta($post_id, '_eve_contract_title', true);
             $start_location_id = get_post_meta($post_id, '_eve_contract_start_location_id', true);
@@ -1279,9 +1279,9 @@ class EVE_Observer {
         
         if ($query->get('orderby') === 'outbid') {
             $query->set('meta_key', '_eve_contract_outbid');
-            $query->set('orderby', 'meta_value');
-            // Sort 'true' before 'false' (outbid contracts first)
-            $query->set('meta_type', 'CHAR');
+            $query->set('orderby', 'meta_value_num');
+            // ACF true_false stores '1' for true, '0' for false
+            // In DESC order: '1' (outbid) comes before '0' (not outbid)
         }
     }
 }
