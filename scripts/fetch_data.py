@@ -11,8 +11,20 @@ from datetime import datetime, timedelta, timezone
 from dotenv import load_dotenv
 import smtplib
 from email.mime.text import MIMEText
+import logging
 
 load_dotenv()
+
+# Configure logging
+logging.basicConfig(
+    level=logging.INFO,
+    format='%(asctime)s - %(levelname)s - %(message)s',
+    handlers=[
+        logging.FileHandler('eve_observer.log'),
+        logging.StreamHandler()
+    ]
+)
+logger = logging.getLogger(__name__)
 
 # Configuration
 WP_BASE_URL = os.getenv('WP_URL', 'https://your-wordpress-site.com')
@@ -36,6 +48,8 @@ BLUEPRINT_CACHE_FILE = os.path.join(CACHE_DIR, 'blueprint_names.json')
 LOCATION_CACHE_FILE = os.path.join(CACHE_DIR, 'location_names.json')
 STRUCTURE_CACHE_FILE = os.path.join(CACHE_DIR, 'structure_names.json')
 FAILED_STRUCTURES_FILE = os.path.join(CACHE_DIR, 'failed_structures.json')
+# WordPress post ID cache
+WP_POST_ID_CACHE_FILE = os.path.join(CACHE_DIR, 'wp_post_ids.json')
 
 def load_tokens():
     """Load stored tokens."""
@@ -94,7 +108,26 @@ def load_failed_structures():
     """Load failed structures cache."""
     return load_cache(FAILED_STRUCTURES_FILE)
 
-def process_blueprints_parallel(blueprints, update_func, *args, **kwargs):
+def load_wp_post_id_cache():
+    """Load WordPress post ID cache."""
+    return load_cache(WP_POST_ID_CACHE_FILE)
+
+def save_wp_post_id_cache(cache):
+    """Save WordPress post ID cache."""
+    save_cache(WP_POST_ID_CACHE_FILE, cache)
+
+def get_cached_wp_post_id(cache, post_type, item_id):
+    """Get cached WordPress post ID for an item."""
+    key = f"{post_type}_{item_id}"
+    return cache.get(key)
+
+def set_cached_wp_post_id(cache, post_type, item_id, post_id):
+    """Cache WordPress post ID for an item."""
+    key = f"{post_type}_{item_id}"
+    cache[key] = post_id
+    save_wp_post_id_cache(cache)
+
+def process_blueprints_parallel(blueprints, update_func, wp_post_id_cache, *args, **kwargs):
     """Process blueprints in parallel while respecting rate limits."""
     from concurrent.futures import ThreadPoolExecutor, as_completed
     import time
@@ -105,7 +138,7 @@ def process_blueprints_parallel(blueprints, update_func, *args, **kwargs):
     with ThreadPoolExecutor(max_workers=max_workers) as executor:
         # Submit all blueprint update tasks
         future_to_bp = {
-            executor.submit(update_func, bp, *args, **kwargs): bp 
+            executor.submit(update_func, bp, wp_post_id_cache, *args, **kwargs): bp 
             for bp in blueprints
         }
 
@@ -117,14 +150,14 @@ def process_blueprints_parallel(blueprints, update_func, *args, **kwargs):
                 # Small delay between requests to be rate limit friendly
                 time.sleep(0.1)
             except Exception as exc:
-                print(f'Blueprint {bp.get("item_id", "unknown")} generated an exception: {exc}')
+                logger.warning(f'Blueprint {bp.get("item_id", "unknown")} generated an exception: {exc}')
 
     return results
 
 def send_email(subject, body):
     """Send an email alert."""
     if not all([EMAIL_SMTP_SERVER, EMAIL_USERNAME, EMAIL_PASSWORD, EMAIL_FROM, EMAIL_TO]):
-        print("Email configuration incomplete, skipping alert.")
+        logger.warning("Email configuration incomplete, skipping alert.")
         return
 
     msg = MIMEText(body)
@@ -138,96 +171,172 @@ def send_email(subject, body):
         server.login(EMAIL_USERNAME, EMAIL_PASSWORD)
         server.sendmail(EMAIL_FROM, EMAIL_TO, msg.as_string())
         server.quit()
-        print(f"Alert email sent: {subject}")
+        logger.info(f"Alert email sent: {subject}")
     except Exception as e:
-        print(f"Failed to send email: {e}")
+        logger.error(f"Failed to send email: {e}")
 
-def fetch_public_esi(endpoint):
-    """Fetch data from ESI API (public endpoints, no auth) with rate limiting."""
+def fetch_public_esi(endpoint, max_retries=3):
+    """Fetch data from ESI API (public endpoints, no auth) with rate limiting and error handling."""
     import time
 
     url = f"{ESI_BASE_URL}{endpoint}"
 
-    while True:  # Retry loop for rate limiting
-        response = requests.get(url)
+    for attempt in range(max_retries):
+        try:
+            response = requests.get(url, timeout=30)
 
-        if response.status_code == 200:
-            return response.json()
-        elif response.status_code == 429:  # Rate limited
-            # Check for X-ESI-Error-Limit-Remain header
-            error_limit_remain = response.headers.get('X-ESI-Error-Limit-Remain')
-            error_limit_reset = response.headers.get('X-ESI-Error-Limit-Reset')
+            if response.status_code == 200:
+                return response.json()
+            elif response.status_code == 404:
+                logger.warning(f"Resource not found for public endpoint {endpoint}")
+                return None
+            elif response.status_code == 429:  # Rate limited
+                # Check for X-ESI-Error-Limit-Remain header
+                error_limit_remain = response.headers.get('X-ESI-Error-Limit-Remain')
+                error_limit_reset = response.headers.get('X-ESI-Error-Limit-Reset')
 
-            if error_limit_reset:
-                wait_time = int(error_limit_reset) + 1  # Add 1 second buffer
-                print(f"[{datetime.now().strftime('%H:%M:%S')}] RATE LIMIT: Waiting {wait_time} seconds for public endpoint...")
+                if error_limit_reset:
+                    wait_time = int(error_limit_reset) + 1  # Add 1 second buffer
+                    logger.info(f"RATE LIMIT: Waiting {wait_time} seconds for public endpoint...")
+                    time.sleep(wait_time)
+                    continue
+                else:
+                    # Fallback: wait 60 seconds if no reset header
+                    logger.info(f"RATE LIMIT: Waiting 60 seconds for public endpoint (no reset header)...")
+                    time.sleep(60)
+                    continue
+            elif response.status_code == 420:  # Error limited
+                error_limit_remain = response.headers.get('X-ESI-Error-Limit-Remain')
+                error_limit_reset = response.headers.get('X-ESI-Error-Limit-Reset')
+
+                if error_limit_reset:
+                    wait_time = int(error_limit_reset) + 1
+                    logger.info(f"ERROR LIMIT: Waiting {wait_time} seconds for public endpoint...")
+                    time.sleep(wait_time)
+                    continue
+                else:
+                    logger.info(f"ERROR LIMIT: Waiting 60 seconds for public endpoint...")
+                    time.sleep(60)
+                    continue
+            elif response.status_code >= 500:
+                # Server error, retry
+                if attempt < max_retries - 1:
+                    wait_time = 2 ** attempt  # Exponential backoff
+                    logger.warning(f"SERVER ERROR {response.status_code}: Retrying in {wait_time} seconds...")
+                    time.sleep(wait_time)
+                    continue
+                else:
+                    logger.error(f"SERVER ERROR {response.status_code}: Max retries exceeded")
+                    return None
+            else:
+                logger.error(f"ESI API error for {endpoint}: {response.status_code} - {response.text}")
+                return None
+
+        except requests.exceptions.Timeout:
+            if attempt < max_retries - 1:
+                wait_time = 2 ** attempt
+                logger.warning(f"TIMEOUT: Retrying in {wait_time} seconds...")
                 time.sleep(wait_time)
                 continue
             else:
-                # Fallback: wait 60 seconds if no reset header
-                print(f"[{datetime.now().strftime('%H:%M:%S')}] RATE LIMIT: Waiting 60 seconds for public endpoint (no reset header)...")
-                time.sleep(60)
-                continue
-        elif response.status_code == 420:  # Error limited
-            error_limit_remain = response.headers.get('X-ESI-Error-Limit-Remain')
-            error_limit_reset = response.headers.get('X-ESI-Error-Limit-Reset')
-
-            if error_limit_reset:
-                wait_time = int(error_limit_reset) + 1
-                print(f"[{datetime.now().strftime('%H:%M:%S')}] ERROR LIMIT: Waiting {wait_time} seconds for public endpoint...")
+                logger.error("TIMEOUT: Max retries exceeded")
+                return None
+        except requests.exceptions.RequestException as e:
+            if attempt < max_retries - 1:
+                wait_time = 2 ** attempt
+                logger.warning(f"NETWORK ERROR: {e}. Retrying in {wait_time} seconds...")
                 time.sleep(wait_time)
                 continue
             else:
-                print(f"[{datetime.now().strftime('%H:%M:%S')}] ERROR LIMIT: Waiting 60 seconds for public endpoint...")
-                time.sleep(60)
-                continue
-        else:
-            print(f"ESI API error for {endpoint}: {response.status_code} - {response.text}")
-            return None
+                logger.error(f"NETWORK ERROR: {e}. Max retries exceeded")
+                return None
 
-def fetch_esi(endpoint, char_id, access_token):
-    """Fetch data from ESI API with rate limiting."""
+    return None
+
+def fetch_esi(endpoint, char_id, access_token, max_retries=3):
+    """Fetch data from ESI API with rate limiting and error handling."""
     import time
 
     url = f"{ESI_BASE_URL}{endpoint}"
     headers = {'Authorization': f'Bearer {access_token}'}
 
-    while True:  # Retry loop for rate limiting
-        response = requests.get(url, headers=headers)
+    for attempt in range(max_retries):
+        try:
+            response = requests.get(url, headers=headers, timeout=30)
 
-        if response.status_code == 200:
-            return response.json()
-        elif response.status_code == 429:  # Rate limited
-            # Check for X-ESI-Error-Limit-Remain header
-            error_limit_remain = response.headers.get('X-ESI-Error-Limit-Remain')
-            error_limit_reset = response.headers.get('X-ESI-Error-Limit-Reset')
+            if response.status_code == 200:
+                return response.json()
+            elif response.status_code == 401:
+                logger.error(f"Authentication failed for endpoint {endpoint}")
+                return None
+            elif response.status_code == 403:
+                logger.error(f"Access forbidden for endpoint {endpoint}")
+                return None
+            elif response.status_code == 404:
+                logger.warning(f"Resource not found for endpoint {endpoint}")
+                return None
+            elif response.status_code == 429:  # Rate limited
+                # Check for X-ESI-Error-Limit-Remain header
+                error_limit_remain = response.headers.get('X-ESI-Error-Limit-Remain')
+                error_limit_reset = response.headers.get('X-ESI-Error-Limit-Reset')
 
-            if error_limit_reset:
-                wait_time = int(error_limit_reset) + 1  # Add 1 second buffer
-                print(f"[{datetime.now().strftime('%H:%M:%S')}] RATE LIMIT: Waiting {wait_time} seconds...")
+                if error_limit_reset:
+                    wait_time = int(error_limit_reset) + 1  # Add 1 second buffer
+                    logger.info(f"RATE LIMIT: Waiting {wait_time} seconds...")
+                    time.sleep(wait_time)
+                    continue
+                else:
+                    # Fallback: wait 60 seconds if no reset header
+                    logger.info(f"RATE LIMIT: Waiting 60 seconds (no reset header)...")
+                    time.sleep(60)
+                    continue
+            elif response.status_code == 420:  # Error limited
+                error_limit_remain = response.headers.get('X-ESI-Error-Limit-Remain')
+                error_limit_reset = response.headers.get('X-ESI-Error-Limit-Reset')
+
+                if error_limit_reset:
+                    wait_time = int(error_limit_reset) + 1
+                    logger.info(f"ERROR LIMIT: Waiting {wait_time} seconds...")
+                    time.sleep(wait_time)
+                    continue
+                else:
+                    logger.info(f"ERROR LIMIT: Waiting 60 seconds...")
+                    time.sleep(60)
+                    continue
+            elif response.status_code >= 500:
+                # Server error, retry
+                if attempt < max_retries - 1:
+                    wait_time = 2 ** attempt  # Exponential backoff
+                    logger.warning(f"SERVER ERROR {response.status_code}: Retrying in {wait_time} seconds...")
+                    time.sleep(wait_time)
+                    continue
+                else:
+                    logger.error(f"SERVER ERROR {response.status_code}: Max retries exceeded")
+                    return None
+            else:
+                logger.error(f"ESI API error for {endpoint}: {response.status_code} - {response.text}")
+                return None
+
+        except requests.exceptions.Timeout:
+            if attempt < max_retries - 1:
+                wait_time = 2 ** attempt
+                logger.warning(f"TIMEOUT: Retrying in {wait_time} seconds...")
                 time.sleep(wait_time)
                 continue
             else:
-                # Fallback: wait 60 seconds if no reset header
-                print(f"[{datetime.now().strftime('%H:%M:%S')}] RATE LIMIT: Waiting 60 seconds (no reset header)...")
-                time.sleep(60)
-                continue
-        elif response.status_code == 420:  # Error limited
-            error_limit_remain = response.headers.get('X-ESI-Error-Limit-Remain')
-            error_limit_reset = response.headers.get('X-ESI-Error-Limit-Reset')
-
-            if error_limit_reset:
-                wait_time = int(error_limit_reset) + 1
-                print(f"[{datetime.now().strftime('%H:%M:%S')}] ERROR LIMIT: Waiting {wait_time} seconds...")
+                logger.error("TIMEOUT: Max retries exceeded")
+                return None
+        except requests.exceptions.RequestException as e:
+            if attempt < max_retries - 1:
+                wait_time = 2 ** attempt
+                logger.warning(f"NETWORK ERROR: {e}. Retrying in {wait_time} seconds...")
                 time.sleep(wait_time)
                 continue
             else:
-                print(f"[{datetime.now().strftime('%H:%M:%S')}] ERROR LIMIT: Waiting 60 seconds...")
-                time.sleep(60)
-                continue
-        else:
-            print(f"ESI API error for {endpoint}: {response.status_code} - {response.text}")
-            return None
+                logger.error(f"NETWORK ERROR: {e}. Max retries exceeded")
+                return None
+
+    return None
 
 def get_wp_auth():
     """Get WordPress authentication tuple."""
@@ -278,9 +387,9 @@ def update_character_in_wp(char_id, char_data):
         response = requests.post(url, json=post_data, auth=get_wp_auth())
 
     if response.status_code in [200, 201]:
-        print(f"Updated character: {char_data['name']}")
+        logger.info(f"Updated character: {char_data['name']}")
     else:
-        print(f"Failed to update character {char_data['name']}: {response.status_code} - {response.text}")
+        logger.error(f"Failed to update character {char_data['name']}: {response.status_code} - {response.text}")
 
 def update_character_skills_in_wp(char_id, skills_data):
     """Update character post with skills data."""
@@ -302,9 +411,9 @@ def update_character_skills_in_wp(char_id, skills_data):
         url = f"{WP_BASE_URL}/wp-json/wp/v2/eve_character/{post_id}"
         response = requests.put(url, json=post_data, auth=get_wp_auth())
         if response.status_code in [200, 201]:
-            print(f"Updated skills for character {char_id}")
+            logger.info(f"Updated skills for character {char_id}")
         else:
-            print(f"Failed to update skills for character {char_id}: {response.status_code} - {response.text}")
+            logger.error(f"Failed to update skills for character {char_id}: {response.status_code} - {response.text}")
 
 def fetch_character_data(char_id, access_token):
     """Fetch basic character data from ESI."""
@@ -326,7 +435,7 @@ def fetch_character_planets(char_id, access_token):
     endpoint = f"/characters/{char_id}/planets/"
     return fetch_esi(endpoint, char_id, access_token)
 
-def update_blueprint_in_wp(item_id, blueprint_data, char_id, access_token, blueprint_cache=None, location_cache=None, structure_cache=None, failed_structures=None):
+def update_blueprint_in_wp(item_id, blueprint_data, char_id, access_token, blueprint_cache=None, location_cache=None, structure_cache=None, failed_structures=None, wp_post_id_cache=None):
     """Update or create blueprint post in WordPress."""
     if blueprint_cache is None:
         blueprint_cache = load_blueprint_cache()
@@ -336,12 +445,32 @@ def update_blueprint_in_wp(item_id, blueprint_data, char_id, access_token, bluep
         structure_cache = load_structure_cache()
     if failed_structures is None:
         failed_structures = load_failed_structures()
+    if wp_post_id_cache is None:
+        wp_post_id_cache = load_wp_post_id_cache()
 
     slug = f"blueprint-{item_id}"
-    # Check if post exists by slug
-    response = requests.get(f"{WP_BASE_URL}/wp-json/wp/v2/eve_blueprint?slug={slug}", auth=get_wp_auth())
-    existing_posts = response.json() if response.status_code == 200 else []
-    existing_post = existing_posts[0] if existing_posts else None
+    
+    # Try to get post ID from cache first
+    cached_post_id = get_cached_wp_post_id(wp_post_id_cache, 'eve_blueprint', item_id)
+    
+    if cached_post_id:
+        # Use direct post ID lookup
+        response = requests.get(f"{WP_BASE_URL}/wp-json/wp/v2/eve_blueprint/{cached_post_id}", auth=get_wp_auth())
+        if response.status_code == 200:
+            existing_post = response.json()
+        else:
+            # Cache might be stale, fall back to slug lookup
+            cached_post_id = None
+            existing_post = None
+    else:
+        # Fall back to slug lookup
+        response = requests.get(f"{WP_BASE_URL}/wp-json/wp/v2/eve_blueprint?slug={slug}", auth=get_wp_auth())
+        existing_posts = response.json() if response.status_code == 200 else []
+        existing_post = existing_posts[0] if existing_posts else None
+        
+        # Cache the post ID if found
+        if existing_post:
+            set_cached_wp_post_id(wp_post_id_cache, 'eve_blueprint', item_id, existing_post['id'])
 
     # Get blueprint name and details
     type_id = blueprint_data.get('type_id')
@@ -436,7 +565,7 @@ def update_blueprint_in_wp(item_id, blueprint_data, char_id, access_token, bluep
         )
         
         if not needs_update:
-            print(f"Blueprint {item_id} unchanged, skipping update")
+            logger.info(f"Blueprint {item_id} unchanged, skipping update")
             return
         
         # Update existing
@@ -447,11 +576,16 @@ def update_blueprint_in_wp(item_id, blueprint_data, char_id, access_token, bluep
         # Create new
         url = f"{WP_BASE_URL}/wp-json/wp/v2/eve_blueprint"
         response = requests.post(url, json=post_data, auth=get_wp_auth())
+        
+        # Cache the new post ID if creation was successful
+        if response.status_code in [200, 201]:
+            new_post = response.json()
+            set_cached_wp_post_id(wp_post_id_cache, 'eve_blueprint', item_id, new_post['id'])
 
     if response.status_code in [200, 201]:
-        print(f"Updated blueprint: {item_id}")
+        logger.info(f"Updated blueprint: {item_id}")
     else:
-        print(f"Failed to update blueprint {item_id}: {response.status_code} - {response.text}")
+        logger.error(f"Failed to update blueprint {item_id}: {response.status_code} - {response.text}")
 
 def fetch_character_assets(char_id, access_token):
     """Fetch character assets."""
@@ -565,7 +699,7 @@ def extract_blueprints_from_contracts(contracts_data, owner_type, owner_id):
     
     return blueprints
 
-def update_blueprint_from_asset_in_wp(blueprint_data, access_token, blueprint_cache=None, location_cache=None, structure_cache=None, failed_structures=None):
+def update_blueprint_from_asset_in_wp(blueprint_data, access_token, blueprint_cache=None, location_cache=None, structure_cache=None, failed_structures=None, wp_post_id_cache=None):
     """Update or create blueprint post from asset/industry/contract data."""
     if blueprint_cache is None:
         blueprint_cache = load_blueprint_cache()
@@ -575,16 +709,36 @@ def update_blueprint_from_asset_in_wp(blueprint_data, access_token, blueprint_ca
         structure_cache = load_structure_cache()
     if failed_structures is None:
         failed_structures = load_failed_structures()
+    if wp_post_id_cache is None:
+        wp_post_id_cache = load_wp_post_id_cache()
 
     item_id = blueprint_data['item_id']
     owner_id = blueprint_data['owner_id']
     source = blueprint_data['source']
     
     slug = f"blueprint-{item_id}"
-    # Check if post exists by slug
-    response = requests.get(f"{WP_BASE_URL}/wp-json/wp/v2/eve_blueprint?slug={slug}", auth=get_wp_auth())
-    existing_posts = response.json() if response.status_code == 200 else []
-    existing_post = existing_posts[0] if existing_posts else None
+    
+    # Try to get post ID from cache first
+    cached_post_id = get_cached_wp_post_id(wp_post_id_cache, 'eve_blueprint', item_id)
+    
+    if cached_post_id:
+        # Use direct post ID lookup
+        response = requests.get(f"{WP_BASE_URL}/wp-json/wp/v2/eve_blueprint/{cached_post_id}", auth=get_wp_auth())
+        if response.status_code == 200:
+            existing_post = response.json()
+        else:
+            # Cache might be stale, fall back to slug lookup
+            cached_post_id = None
+            existing_post = None
+    else:
+        # Fall back to slug lookup
+        response = requests.get(f"{WP_BASE_URL}/wp-json/wp/v2/eve_blueprint?slug={slug}", auth=get_wp_auth())
+        existing_posts = response.json() if response.status_code == 200 else []
+        existing_post = existing_posts[0] if existing_posts else None
+        
+        # Cache the post ID if found
+        if existing_post:
+            set_cached_wp_post_id(wp_post_id_cache, 'eve_blueprint', item_id, existing_post['id'])
 
     # Get blueprint name and details
     type_id = blueprint_data.get('type_id')
@@ -682,7 +836,7 @@ def update_blueprint_from_asset_in_wp(blueprint_data, access_token, blueprint_ca
         )
         
         if not needs_update:
-            print(f"Blueprint from {source}: {item_id} unchanged, skipping update")
+            logger.info(f"Blueprint from {source}: {item_id} unchanged, skipping update")
             return
         
         # Update existing
@@ -693,11 +847,16 @@ def update_blueprint_from_asset_in_wp(blueprint_data, access_token, blueprint_ca
         # Create new
         url = f"{WP_BASE_URL}/wp-json/wp/v2/eve_blueprint"
         response = requests.post(url, json=post_data, auth=get_wp_auth())
+        
+        # Cache the new post ID if creation was successful
+        if response.status_code in [200, 201]:
+            new_post = response.json()
+            set_cached_wp_post_id(wp_post_id_cache, 'eve_blueprint', item_id, new_post['id'])
 
     if response.status_code in [200, 201]:
-        print(f"Updated blueprint from {source}: {item_id}")
+        logger.info(f"Updated blueprint from {source}: {item_id}")
     else:
-        print(f"Failed to update blueprint {item_id} from {source}: {response.status_code} - {response.text}")
+        logger.error(f"Failed to update blueprint {item_id} from {source}: {response.status_code} - {response.text}")
 
 def fetch_character_industry_jobs(char_id, access_token):
     """Fetch character industry jobs."""
@@ -754,9 +913,9 @@ def update_corporation_in_wp(corp_id, corp_data):
         response = requests.post(url, json=post_data, auth=get_wp_auth())
 
     if response.status_code in [200, 201]:
-        print(f"Updated corporation: {corp_data.get('name', corp_id)}")
+        logger.info(f"Updated corporation: {corp_data.get('name', corp_id)}")
     else:
-        print(f"Failed to update corporation {corp_id}: {response.status_code} - {response.text}")
+        logger.error(f"Failed to update corporation {corp_id}: {response.status_code} - {response.text}")
 
 def fetch_planet_details(char_id, planet_id, access_token):
     """Fetch detailed planet information including pins."""
@@ -811,9 +970,9 @@ def update_planet_in_wp(planet_id, planet_data, char_id):
         response = requests.post(url, json=post_data, auth=get_wp_auth())
 
     if response.status_code in [200, 201]:
-        print(f"Updated planet: {planet_id}")
+        logger.info(f"Updated planet: {planet_id}")
     else:
-        print(f"Failed to update planet {planet_id}: {response.status_code} - {response.text}")
+        logger.error(f"Failed to update planet {planet_id}: {response.status_code} - {response.text}")
 
 def update_contract_in_wp(contract_id, contract_data, for_corp=False, entity_id=None):
     """Update or create contract post in WordPress."""
@@ -890,19 +1049,19 @@ def update_contract_in_wp(contract_id, contract_data, for_corp=False, entity_id=
         response = requests.post(url, json=post_data, auth=get_wp_auth())
 
     if response.status_code in [200, 201]:
-        print(f"Updated contract: {contract_id}")
+        logger.info(f"Updated contract: {contract_id}")
     else:
-        print(f"Failed to update contract {contract_id}: {response.status_code} - {response.text}")
+        logger.error(f"Failed to update contract {contract_id}: {response.status_code} - {response.text}")
 
 def delete_wp_post(post_type, post_id):
     """Delete a post from WordPress."""
     url = f"{WP_BASE_URL}/wp-json/wp/v2/{post_type}/{post_id}"
     response = requests.delete(url, auth=get_wp_auth())
     if response.status_code in [200, 204]:
-        print(f"Deleted {post_type} post: {post_id}")
+        logger.info(f"Deleted {post_type} post: {post_id}")
         return True
     else:
-        print(f"Failed to delete {post_type} post {post_id}: {response.status_code} - {response.text}")
+        logger.error(f"Failed to delete {post_type} post {post_id}: {response.status_code} - {response.text}")
         return False
 
 def save_tokens(tokens):
@@ -912,7 +1071,7 @@ def save_tokens(tokens):
 
 def cleanup_old_posts():
     """Clean up posts that don't match our criteria."""
-    print("Starting cleanup of old posts...")
+    logger.info("Starting cleanup of old posts...")
 
     # Clean up contract posts (delete finished/deleted contracts)
     response = requests.get(f"{WP_BASE_URL}/wp-json/wp/v2/eve_contract", auth=get_wp_auth(), params={'per_page': 100})
@@ -922,13 +1081,13 @@ def cleanup_old_posts():
             status = contract.get('meta', {}).get('_eve_contract_status')
             if status in ['finished', 'deleted']:
                 contract_id = contract.get('meta', {}).get('_eve_contract_id')
-                print(f"Deleting finished/deleted contract: {contract_id}")
+                logger.info(f"Deleting finished/deleted contract: {contract_id}")
                 delete_wp_post('eve_contract', contract['id'])
             elif status == 'expired':
                 # List expired contracts for manual deletion
                 contract_id = contract.get('meta', {}).get('_eve_contract_id')
                 title = contract.get('title', {}).get('rendered', f'Contract {contract_id}')
-                print(f"EXPIRED CONTRACT TO DELETE MANUALLY: {title} (ID: {contract_id})")
+                logger.info(f"EXPIRED CONTRACT TO DELETE MANUALLY: {title} (ID: {contract_id})")
 
     # Clean up blueprint posts (only keep those from No Mercy incorporated or characters)
     response = requests.get(f"{WP_BASE_URL}/wp-json/wp/v2/eve_blueprint", auth=get_wp_auth(), params={'per_page': 100})
@@ -944,7 +1103,7 @@ def cleanup_old_posts():
             # Remove BPCs (we only want to track BPOs now)
             if quantity != -1:
                 bp_id = meta.get('_eve_bp_item_id')
-                print(f"Deleting BPC (quantity={quantity}): {bp_id}")
+                logger.info(f"Deleting BPC (quantity={quantity}): {bp_id}")
                 delete_wp_post('eve_blueprint', bp['id'])
                 continue
             
@@ -956,13 +1115,13 @@ def cleanup_old_posts():
                     corp_posts = corp_response.json()
                     if not corp_posts:  # Corporation not found in our records
                         bp_id = bp.get('meta', {}).get('_eve_bp_item_id')
-                        print(f"Deleting blueprint from unknown corporation: {bp_id}")
+                        logger.info(f"Deleting blueprint from unknown corporation: {bp_id}")
                         delete_wp_post('eve_blueprint', bp['id'])
                     else:
                         corp_name = corp_posts[0].get('title', {}).get('rendered', '')
                         if corp_name.lower() != 'no mercy incorporated':
                             bp_id = bp.get('meta', {}).get('_eve_bp_item_id')
-                            print(f"Deleting blueprint from {corp_name}: {bp_id}")
+                            logger.info(f"Deleting blueprint from {corp_name}: {bp_id}")
                             delete_wp_post('eve_blueprint', bp['id'])
             # If it's from character assets/industry jobs and we don't have a char_id, it might be orphaned
             elif not char_id and not owner_id:
@@ -970,7 +1129,7 @@ def cleanup_old_posts():
                 # For now, keep them as they come from authenticated sources
                 pass
 
-    print("Cleanup completed.")
+    logger.info("Cleanup completed.")
 
 def refresh_token(refresh_token):
     """Refresh an access token."""
@@ -990,7 +1149,7 @@ def refresh_token(refresh_token):
             'expires_at': expires_at.isoformat()
         }
     else:
-        print(f"Failed to refresh token: {response.status_code} - {response.text}")
+        logger.error(f"Failed to refresh token: {response.status_code} - {response.text}")
         return None
 
 def fetch_market_orders(region_id, type_id):
@@ -1013,12 +1172,12 @@ def fetch_market_orders(region_id, type_id):
 
             if error_limit_reset:
                 wait_time = int(error_limit_reset) + 1  # Add 1 second buffer
-                print(f"Rate limited on market orders. Waiting {wait_time} seconds...")
+                logger.info(f"Rate limited on market orders. Waiting {wait_time} seconds...")
                 time.sleep(wait_time)
                 continue
             else:
                 # Fallback: wait 60 seconds if no reset header
-                print("Rate limited on market orders. Waiting 60 seconds...")
+                logger.info("Rate limited on market orders. Waiting 60 seconds...")
                 time.sleep(60)
                 continue
         elif response.status_code == 420:  # Error limited
@@ -1027,15 +1186,15 @@ def fetch_market_orders(region_id, type_id):
 
             if error_limit_reset:
                 wait_time = int(error_limit_reset) + 1
-                print(f"Error limited on market orders. Waiting {wait_time} seconds...")
+                logger.info(f"Error limited on market orders. Waiting {wait_time} seconds...")
                 time.sleep(wait_time)
                 continue
             else:
-                print("Error limited on market orders. Waiting 60 seconds...")
+                logger.info("Error limited on market orders. Waiting 60 seconds...")
                 time.sleep(60)
                 continue
         else:
-            print(f"ESI API error for market orders: {response.status_code} - {response.text}")
+            logger.error(f"ESI API error for market orders: {response.status_code} - {response.text}")
             return None
 
 def main():
@@ -1045,13 +1204,15 @@ def main():
     location_cache = load_location_cache()
     structure_cache = load_structure_cache()
     failed_structures = load_failed_structures()
+    wp_post_id_cache = load_wp_post_id_cache()
+    wp_post_id_cache = load_wp_post_id_cache()
 
     # Clean up old posts first
     cleanup_old_posts()
 
     tokens = load_tokens()
     if not tokens:
-        print("No authorized characters found. Run 'python esi_oauth.py authorize' first.")
+        logger.error("No authorized characters found. Run 'python esi_oauth.py authorize' first.")
         return
 
     # Collect all corporations and their member characters
@@ -1067,7 +1228,7 @@ def main():
                 token_data.update(new_token)
                 save_tokens(tokens)
             else:
-                print(f"Failed to refresh token for {token_data['name']}")
+                logger.warning(f"Failed to refresh token for {token_data['name']}")
                 continue
 
         access_token = token_data['access_token']
@@ -1096,37 +1257,38 @@ def main():
         successful_char_id = None
 
         for char_id, access_token, char_name in members:
-            print(f"Trying to fetch corporation data for corp {corp_id} using {char_name}'s token...")
+            logger.info(f"Trying to fetch corporation data for corp {corp_id} using {char_name}'s token...")
             corp_data = fetch_corporation_data(corp_id, access_token)
             if corp_data:
                 successful_token = access_token
                 successful_char_name = char_name
                 successful_char_id = char_id
-                print(f"Successfully fetched corporation data using {char_name}'s token")
+                logger.info(f"Successfully fetched corporation data using {char_name}'s token")
                 break
             else:
-                print(f"Failed to fetch corporation data using {char_name}'s token (likely no access)")
+                logger.warning(f"Failed to fetch corporation data using {char_name}'s token (likely no access)")
 
         if corp_data:
             corp_name = corp_data.get('name', '')
             if corp_name.lower() != 'no mercy incorporated':
-                print(f"Skipping corporation: {corp_name} (only processing No Mercy incorporated)")
+                logger.info(f"Skipping corporation: {corp_name} (only processing No Mercy incorporated)")
                 continue
 
             update_corporation_in_wp(corp_id, corp_data)
             processed_corps.add(corp_id)
 
             # Fetch corporation blueprints from various sources
-            print(f"Fetching corporation blueprints for {corp_data.get('name', corp_id)}...")
+            logger.info(f"Fetching corporation blueprints for {corp_data.get('name', corp_id)}...")
             
             # From corporation blueprints endpoint
             corp_blueprints = fetch_corporation_blueprints(corp_id, successful_token)
             if corp_blueprints:
-                print(f"Corporation blueprints: {len(corp_blueprints)} items")
+                logger.info(f"Corporation blueprints: {len(corp_blueprints)} items")
                 # Process blueprints in parallel
                 process_blueprints_parallel(
                     corp_blueprints, 
                     update_blueprint_in_wp, 
+                    wp_post_id_cache,
                     successful_char_id, 
                     successful_token,
                     blueprint_cache,
@@ -1140,11 +1302,12 @@ def main():
             if corp_assets:
                 asset_blueprints = extract_blueprints_from_assets(corp_assets, 'corp', corp_id, successful_token)
                 if asset_blueprints:
-                    print(f"Corporation asset blueprints: {len(asset_blueprints)} items")
+                    logger.info(f"Corporation asset blueprints: {len(asset_blueprints)} items")
                     # Process blueprints in parallel
                     process_blueprints_parallel(
                         asset_blueprints,
                         update_blueprint_from_asset_in_wp,
+                        wp_post_id_cache,
                         successful_token,
                         blueprint_cache,
                         location_cache,
@@ -1157,11 +1320,12 @@ def main():
             if corp_industry_jobs:
                 job_blueprints = extract_blueprints_from_industry_jobs(corp_industry_jobs, 'corp', corp_id)
                 if job_blueprints:
-                    print(f"Corporation industry job blueprints: {len(job_blueprints)} items")
+                    logger.info(f"Corporation industry job blueprints: {len(job_blueprints)} items")
                     # Process blueprints in parallel
                     process_blueprints_parallel(
                         job_blueprints,
                         update_blueprint_from_asset_in_wp,
+                        wp_post_id_cache,
                         successful_token,
                         blueprint_cache,
                         location_cache,
@@ -1172,14 +1336,15 @@ def main():
             # From corporation contracts (blueprints already processed above)
             corp_contracts = fetch_corporation_contracts(corp_id, successful_token)
             if corp_contracts:
-                print(f"Corporation contracts for {corp_data.get('name', corp_id)}: {len(corp_contracts)} items")
+                logger.info(f"Corporation contracts for {corp_data.get('name', corp_id)}: {len(corp_contracts)} items")
                 contract_blueprints = extract_blueprints_from_contracts(corp_contracts, 'corp', corp_id)
                 if contract_blueprints:
-                    print(f"Corporation contract blueprints: {len(contract_blueprints)} items")
+                    logger.info(f"Corporation contract blueprints: {len(contract_blueprints)} items")
                     # Process blueprints in parallel
                     process_blueprints_parallel(
                         contract_blueprints,
                         update_blueprint_from_asset_in_wp,
+                        wp_post_id_cache,
                         successful_token,
                         blueprint_cache,
                         location_cache,
@@ -1190,7 +1355,7 @@ def main():
                 for contract in corp_contracts:
                     contract_status = contract.get('status', '')
                     if contract_status in ['finished', 'deleted']:
-                        print(f"Deleting finished/deleted corporation contract: {contract['contract_id']}")
+                        logger.info(f"Deleting finished/deleted corporation contract: {contract['contract_id']}")
                         # Find and delete the WordPress post
                         slug = f"contract-{contract['contract_id']}"
                         response = requests.get(f"{WP_BASE_URL}/wp-json/wp/v2/eve_contract?slug={slug}", auth=get_wp_auth())
@@ -1200,7 +1365,7 @@ def main():
                                 delete_wp_post('eve_contract', posts[0]['id'])
                         continue
                     elif contract_status == 'expired':
-                        print(f"EXPIRED CORPORATION CONTRACT TO DELETE MANUALLY: {contract['contract_id']}")
+                        logger.info(f"EXPIRED CORPORATION CONTRACT TO DELETE MANUALLY: {contract['contract_id']}")
                     update_contract_in_wp(contract['contract_id'], contract, for_corp=True, entity_id=corp_id)
 
     # Now process individual character data (skills, blueprints, etc.)
@@ -1208,26 +1373,27 @@ def main():
         access_token = token_data['access_token']
         char_name = token_data['name']
 
-        print(f"Fetching additional data for {char_name}...")
+        logger.info(f"Fetching additional data for {char_name}...")
 
         # Fetch skills
         skills = fetch_character_skills(char_id, access_token)
         if skills:
             # Update character with skills data
             update_character_skills_in_wp(char_id, skills)
-            print(f"Skills for {char_name}: {skills['total_sp']} SP")
+            logger.info(f"Skills for {char_name}: {skills['total_sp']} SP")
 
         # Fetch blueprints from all sources
-        print(f"Fetching blueprints for {char_name}...")
+        logger.info(f"Fetching blueprints for {char_name}...")
         
         # From character blueprints endpoint
         blueprints = fetch_character_blueprints(char_id, access_token)
         if blueprints:
-            print(f"Character blueprints: {len(blueprints)} items")
+            logger.info(f"Character blueprints: {len(blueprints)} items")
             # Process blueprints in parallel
             process_blueprints_parallel(
                 blueprints,
                 update_blueprint_in_wp,
+                wp_post_id_cache,
                 char_id,
                 access_token,
                 blueprint_cache,
@@ -1241,11 +1407,12 @@ def main():
         if char_assets:
             asset_blueprints = extract_blueprints_from_assets(char_assets, 'char', char_id, access_token)
             if asset_blueprints:
-                print(f"Character asset blueprints: {len(asset_blueprints)} items")
+                logger.info(f"Character asset blueprints: {len(asset_blueprints)} items")
                 # Process blueprints in parallel
                 process_blueprints_parallel(
                     asset_blueprints,
                     update_blueprint_from_asset_in_wp,
+                    wp_post_id_cache,
                     access_token,
                     blueprint_cache,
                     location_cache,
@@ -1256,14 +1423,15 @@ def main():
         # From character industry jobs (blueprints already processed above)
         jobs = fetch_character_industry_jobs(char_id, access_token)
         if jobs:
-            print(f"Industry jobs for {char_name}: {len(jobs)} active")
+            logger.info(f"Industry jobs for {char_name}: {len(jobs)} active")
             job_blueprints = extract_blueprints_from_industry_jobs(jobs, 'char', char_id)
             if job_blueprints:
-                print(f"Character industry job blueprints: {len(job_blueprints)} items")
+                logger.info(f"Character industry job blueprints: {len(job_blueprints)} items")
                 # Process blueprints in parallel
                 process_blueprints_parallel(
                     job_blueprints,
                     update_blueprint_from_asset_in_wp,
+                    wp_post_id_cache,
                     access_token,
                     blueprint_cache,
                     location_cache,
@@ -1290,7 +1458,7 @@ def main():
         # Fetch planets
         planets = fetch_character_planets(char_id, access_token)
         if planets:
-            print(f"Planets for {char_name}: {len(planets)} colonies")
+            logger.info(f"Planets for {char_name}: {len(planets)} colonies")
             for planet in planets:
                 planet_id = planet['planet_id']
                 # Fetch details
@@ -1316,14 +1484,15 @@ def main():
         # Fetch character contracts (blueprints already processed above)
         char_contracts = fetch_character_contracts(char_id, access_token)
         if char_contracts:
-            print(f"Character contracts for {char_name}: {len(char_contracts)} items")
+            logger.info(f"Character contracts for {char_name}: {len(char_contracts)} items")
             contract_blueprints = extract_blueprints_from_contracts(char_contracts, 'char', char_id)
             if contract_blueprints:
-                print(f"Character contract blueprints: {len(contract_blueprints)} items")
+                logger.info(f"Character contract blueprints: {len(contract_blueprints)} items")
                 # Process blueprints in parallel
                 process_blueprints_parallel(
                     contract_blueprints,
                     update_blueprint_from_asset_in_wp,
+                    wp_post_id_cache,
                     access_token,
                     blueprint_cache,
                     location_cache,
@@ -1334,7 +1503,7 @@ def main():
             for contract in char_contracts:
                 contract_status = contract.get('status', '')
                 if contract_status in ['finished', 'deleted']:
-                    print(f"Deleting finished/deleted character contract: {contract['contract_id']}")
+                    logger.info(f"Deleting finished/deleted character contract: {contract['contract_id']}")
                     # Find and delete the WordPress post
                     slug = f"contract-{contract['contract_id']}"
                     response = requests.get(f"{WP_BASE_URL}/wp-json/wp/v2/eve_contract?slug={slug}", auth=get_wp_auth())
@@ -1344,7 +1513,7 @@ def main():
                             delete_wp_post('eve_contract', posts[0]['id'])
                     continue
                 elif contract_status == 'expired':
-                    print(f"EXPIRED CHARACTER CONTRACT TO DELETE MANUALLY: {contract['contract_id']}")
+                    logger.info(f"EXPIRED CHARACTER CONTRACT TO DELETE MANUALLY: {contract['contract_id']}")
                 update_contract_in_wp(contract['contract_id'], contract, for_corp=False, entity_id=char_id)
 
 if __name__ == '__main__':
