@@ -1121,11 +1121,15 @@ class EVE_Observer {
             $eve_link = '';
             $link_title = !empty($contract_title) ? esc_html($contract_title) : 'Contract';
             if (!empty($contract_id)) {
-                if (!empty($start_location_id)) {
-                    $eve_link = 'contract:' . $start_location_id . '//' . $contract_id;
+                $location_id = $start_location_id;
+                if (empty($location_id)) {
+                    $location_id = get_post_meta($post_id, '_eve_contract_end_location_id', true);
+                }
+                if (!empty($location_id)) {
+                    $eve_link = '<a href="contract:' . $location_id . '//' . $contract_id . '">' . $link_title . '</a>';
                 } else {
                     // Fallback: create link without location (might still work in some cases)
-                    $eve_link = 'contract://' . $contract_id;
+                    $eve_link = '<a href="contract://' . $contract_id . '">' . $link_title . '</a>';
                 }
             }
             
