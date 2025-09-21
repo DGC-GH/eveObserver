@@ -71,6 +71,10 @@ def fetch_esi(endpoint, char_id, access_token):
         print(f"ESI API error for {endpoint}: {response.status_code} - {response.text}")
         return None
 
+def get_wp_auth():
+    """Get WordPress authentication tuple."""
+    return (WP_USERNAME, WP_APP_PASSWORD)
+
 def update_character_in_wp(char_id, char_data):
     """Update or create character post in WordPress."""
     # Check if post exists
@@ -252,10 +256,6 @@ def refresh_token(refresh_token):
     else:
         print(f"Failed to refresh token: {response.status_code} - {response.text}")
         return None
-
-def get_wp_auth():
-    """Get WordPress authentication tuple."""
-    return (WP_USERNAME, WP_APP_PASSWORD)
 
 def fetch_market_orders(region_id, type_id):
     """Fetch market orders for a type in a region."""

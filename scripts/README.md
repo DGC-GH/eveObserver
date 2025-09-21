@@ -25,12 +25,17 @@ This directory contains Python scripts for interacting with the EVE ESI API and 
    python esi_oauth.py authorize
    ```
 
-2. Fetch data:
+2. Authorize all characters in sequence:
+   ```bash
+   python esi_oauth.py authorize_all
+   ```
+
+3. Fetch data:
    ```bash
    python fetch_data.py
    ```
 
-3. List authorized characters:
+4. List authorized characters:
    ```bash
    python esi_oauth.py list
    ```

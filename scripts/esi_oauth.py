@@ -166,6 +166,31 @@ def refresh_token(char_id):
 
     print(f"Refreshed token for character: {tokens[char_id]['name']}")
 
+def authorize_all_characters():
+    """Authorize all characters in sequence."""
+    print("Starting authorization for all characters.")
+    print("You'll need to authorize each character one by one in your browser.")
+    print("For each character, copy the redirect URL and paste it when prompted.\n")
+    
+    while True:
+        try:
+            authorize_character()
+            print("\nCharacter authorized successfully!")
+            choice = input("Authorize another character? (y/n): ").strip().lower()
+            if choice != 'y':
+                break
+        except KeyboardInterrupt:
+            print("\nAuthorization cancelled.")
+            break
+        except Exception as e:
+            print(f"Error during authorization: {e}")
+            choice = input("Try again? (y/n): ").strip().lower()
+            if choice != 'y':
+                break
+    
+    print("Authorization process complete.")
+    list_characters()
+
 def list_characters():
     """List all authorized characters."""
     tokens = load_tokens()
@@ -182,13 +207,15 @@ if __name__ == '__main__':
 
     if len(sys.argv) < 2:
         print("Usage: python esi_oauth.py <command>")
-        print("Commands: authorize, refresh <char_id>, list")
+        print("Commands: authorize, authorize_all, refresh <char_id>, list")
         sys.exit(1)
 
     command = sys.argv[1]
 
     if command == 'authorize':
         authorize_character()
+    elif command == 'authorize_all':
+        authorize_all_characters()
     elif command == 'refresh' and len(sys.argv) > 2:
         refresh_token(sys.argv[2])
     elif command == 'list':

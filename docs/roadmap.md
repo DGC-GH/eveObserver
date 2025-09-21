@@ -1,6 +1,22 @@
 # EVE Observer Project Plan
+### Phase 1: Setup and Core Infrastructure (1-2 weeks)
 
-## Overview
+- **Goal**: Establish the foundation for API integration and basic dashboard.
+- **Steps**:
+1. Set up WordPress site with ACF plugin; create custom post types (e.g., "Character", "Blueprint", "Planet"). ✅ Completed: WordPress site set up with free ACF plugin, plugin installed.
+2. Implement ESI OAuth flow in a Python script (handle multi-character tokens). ✅ Completed: Script written, tested for syntax.
+3. Create a basic data fetcher script to pull character lists and store in WP database via REST API. ✅ Completed: Script written, function order fixed, tested for syntax.
+4. Build a login-protected dashboard page in WP to display aggregated character data. ⏳ In Progress: Plugin includes dashboard code, needs testing with live data.
+- **Milestones**: Successful API auth for all 9 characters; basic WP page showing character names/skills.
+- **Features**:
+  - User auth in WP tied to ESI (optional: simple WP users for now).
+  - Cron script on Mac Mini to refresh data daily.
+- **Debugging Results (September 2025)**:
+  - Fixed function definition order in fetch_data.py (get_wp_auth called before definition).
+  - Dependencies installed (requests, requests-oauthlib, python-dotenv).
+  - Scripts run without syntax errors.
+  - .env file exists with credentials (needs real ESI app registration if not done).
+  - Next: Register ESI app, authorize characters, set up WordPress site with plugin, test data fetching.
 
 EVE Observer is a custom web-based dashboard built on WordPress with Advanced Custom Fields (ACF) plugin, integrated with backend scripts for pulling and analyzing data from the EVE Online ESI API. The goal is to streamline passive income activities like BPO research, T2 Planetary Interaction (PI), and related industrial tasks across multiple characters and accounts. This tool provides analytical advantages through data visualization, alerts, and optimization without automating in-game actions, ensuring compliance with CCP’s policies.
 
@@ -109,4 +125,13 @@ The project is divided into phases for manageable implementation. Each phase bui
 - **Risks/Mitigations**: Rate limit API calls (ESI has limits); handle errors gracefully. Always manual in-game actions.
 - **Resources**: Reference ESI docs (https://esi.evetech.net/ui/), WP ACF guides, and awesome-eve GitHub list for inspiration.
 
-This plan can be updated in the repo as development progresses. Start with Phase 1 to build momentum!
+## Current Status (September 2025)
+
+- **Code Development**: All core scripts and WordPress plugin written and debugged.
+- **Setup Progress**: WordPress site with free ACF plugin set up, ESI OAuth and data fetcher scripts ready.
+- **Authorization**: ESI application registered, characters authorized.
+- **Issues Fixed**: Function order in fetch_data.py, dependencies installed.
+- **Next Steps**: 
+  - Test data fetching and dashboard display with live data.
+  - Set up cron job for daily data refresh.
+- **Progress**: Phase 1 setup complete, ready for live testing.
