@@ -23,6 +23,7 @@ WP_PER_PAGE = int(os.getenv('WP_PER_PAGE', 100))
 # Cache Configuration
 CACHE_DIR = os.getenv('CACHE_DIR', 'cache')
 BLUEPRINT_CACHE_FILE = os.path.join(CACHE_DIR, 'blueprint_names.json')
+BLUEPRINT_TYPE_CACHE_FILE = os.path.join(CACHE_DIR, 'blueprint_types.json')
 LOCATION_CACHE_FILE = os.path.join(CACHE_DIR, 'location_names.json')
 STRUCTURE_CACHE_FILE = os.path.join(CACHE_DIR, 'structure_names.json')
 FAILED_STRUCTURES_FILE = os.path.join(CACHE_DIR, 'failed_structures.json')

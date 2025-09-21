@@ -67,6 +67,14 @@ def save_blueprint_cache(cache):
     """Save blueprint name cache."""
     save_cache(BLUEPRINT_CACHE_FILE, cache)
 
+def load_blueprint_type_cache():
+    """Load blueprint type cache."""
+    return load_cache(BLUEPRINT_TYPE_CACHE_FILE)
+
+def save_blueprint_type_cache(cache):
+    """Save blueprint type cache."""
+    save_cache(BLUEPRINT_TYPE_CACHE_FILE, cache)
+
 def load_location_cache():
     """Load location name cache."""
     return load_cache(LOCATION_CACHE_FILE)
@@ -587,17 +595,12 @@ def update_blueprint_in_wp(blueprint_data, wp_post_id_cache, char_id, access_tok
         }
     }
 
-    # Add featured image from type icon
-    type_id = blueprint_data.get('type_id')
-    if type_id:
-        image_url = fetch_type_icon(type_id, size=512)
-        # Check if type icon changed before updating
-        existing_image_url = existing_post.get('meta', {}).get('_thumbnail_external_url') if existing_post else None
-        if existing_image_url != image_url:
+    # Add featured image from type icon (only for new blueprints)
+    if not existing_post:
+        type_id = blueprint_data.get('type_id')
+        if type_id:
+            image_url = fetch_type_icon(type_id, size=512)
             post_data['meta']['_thumbnail_external_url'] = image_url
-            logger.info(f"Updated type icon for blueprint: {type_name}")
-        else:
-            logger.info(f"Type icon unchanged for blueprint: {type_name}")
 
     if existing_post:
         # Check if data has changed before updating
@@ -673,6 +676,7 @@ def fetch_corporation_industry_jobs(corp_id, access_token):
 
 def extract_blueprints_from_assets(assets_data, owner_type, owner_id, access_token, track_bpcs=False):
     """Extract blueprint information from assets data."""
+    blueprint_type_cache = load_blueprint_type_cache()
     blueprints = []
     total_assets = len(assets_data) if assets_data else 0
     processed_count = 0
@@ -691,9 +695,16 @@ def extract_blueprints_from_assets(assets_data, owner_type, owner_id, access_tok
             # Check if this is a blueprint (type_id corresponds to a blueprint)
             type_id = item.get('type_id')
             if type_id:
-                # Get type information to check if it's a blueprint
-                type_data = fetch_public_esi(f"/universe/types/{type_id}")
-                if type_data and 'Blueprint' in type_data.get('name', ''):
+                type_id_str = str(type_id)
+                if type_id_str in blueprint_type_cache:
+                    is_blueprint = blueprint_type_cache[type_id_str]
+                else:
+                    type_data = fetch_public_esi(f"/universe/types/{type_id}")
+                    is_blueprint = type_data and 'Blueprint' in type_data.get('name', '')
+                    blueprint_type_cache[type_id_str] = is_blueprint
+                    save_blueprint_type_cache(blueprint_type_cache)
+                
+                if is_blueprint:
                     # Check if we should track this blueprint
                     quantity = item.get('quantity', 1)
                     is_bpo = quantity == -1
@@ -750,6 +761,7 @@ def extract_blueprints_from_industry_jobs(jobs_data, owner_type, owner_id):
 
 def extract_blueprints_from_contracts(contracts_data, owner_type, owner_id):
     """Extract blueprint information from contracts."""
+    blueprint_type_cache = load_blueprint_type_cache()
     blueprints = []
     
     for contract in contracts_data:
@@ -757,9 +769,16 @@ def extract_blueprints_from_contracts(contracts_data, owner_type, owner_id):
             for item in contract['items']:
                 type_id = item.get('type_id')
                 if type_id:
-                    # Get type information to check if it's a blueprint
-                    type_data = fetch_public_esi(f"/universe/types/{type_id}")
-                    if type_data and 'Blueprint' in type_data.get('name', ''):
+                    type_id_str = str(type_id)
+                    if type_id_str in blueprint_type_cache:
+                        is_blueprint = blueprint_type_cache[type_id_str]
+                    else:
+                        type_data = fetch_public_esi(f"/universe/types/{type_id}")
+                        is_blueprint = type_data and 'Blueprint' in type_data.get('name', '')
+                        blueprint_type_cache[type_id_str] = is_blueprint
+                        save_blueprint_type_cache(blueprint_type_cache)
+                    
+                    if is_blueprint:
                         quantity = item.get('quantity', 1)
                         is_bpo = quantity == -1
                         
@@ -1123,9 +1142,8 @@ def update_contract_in_wp(contract_id, contract_data, for_corp=False, entity_id=
         if not thumbnail_url:
             thumbnail_url = "https://via.placeholder.com/512x512/e74c3c/ffffff?text=Contract"
         
-        # Check if thumbnail changed before updating
-        existing_thumbnail = existing_post.get('meta', {}).get('_thumbnail_external_url') if existing_post else None
-        if existing_thumbnail != thumbnail_url:
+        # Set thumbnail for new contracts
+        if not existing_post:
             post_data['meta']['_thumbnail_external_url'] = thumbnail_url
 
     if existing_post:
@@ -1283,9 +1301,6 @@ def main():
     failed_structures = load_failed_structures()
     wp_post_id_cache = load_wp_post_id_cache()
 
-    # Clean up old posts first
-    cleanup_old_posts()
-
     tokens = load_tokens()
     if not tokens:
         logger.error("No authorized characters found. Run 'python esi_oauth.py authorize' first.")
@@ -1293,6 +1308,17 @@ def main():
 
     # Collect all corporations and their member characters
     corp_members = collect_corporation_members(tokens)
+
+    # Define allowed corporations and issuers for contract filtering
+    allowed_corp_ids = {98092220}  # No Mercy Incorporated
+    allowed_issuer_ids = set()
+    for corp_id, members in corp_members.items():
+        if corp_id == 98092220:  # No Mercy Incorporated
+            for char_id, access_token, char_name in members:
+                allowed_issuer_ids.add(char_id)
+
+    # Clean up old posts with filtering
+    cleanup_old_posts(allowed_corp_ids, allowed_issuer_ids)
 
     # Process each corporation with any available member token
     processed_corps = set()
@@ -1473,24 +1499,7 @@ def process_corporation_contracts(corp_id, access_token, corp_data):
         for contract in corp_contracts:
             contract_status = contract.get('status', '')
             if contract_status in ['finished', 'deleted']:
-                # Skip old finished/deleted contracts (older than 30 days) to improve performance
-                date_completed = contract.get('date_completed')
-                if date_completed:
-                    try:
-                        completed_date = datetime.fromisoformat(date_completed.replace('Z', '+00:00'))
-                        if datetime.now(timezone.utc) - completed_date > timedelta(days=30):
-                            continue  # Skip old contracts
-                    except (ValueError, TypeError):
-                        pass  # If date parsing fails, process anyway
-                
-                logger.info(f"Deleting finished/deleted corporation contract: {contract['contract_id']}")
-                # Find and delete the WordPress post
-                slug = f"contract-{contract['contract_id']}"
-                response = requests.get(f"{WP_BASE_URL}/wp-json/wp/v2/eve_contract?slug={slug}", auth=get_wp_auth())
-                if response.status_code == 200:
-                    posts = response.json()
-                    if posts:
-                        delete_wp_post('eve_contract', posts[0]['id'])
+                # Skip finished/deleted contracts to improve performance
                 continue
             elif contract_status == 'expired':
                 logger.info(f"EXPIRED CORPORATION CONTRACT TO DELETE MANUALLY: {contract['contract_id']}")
@@ -1654,24 +1663,7 @@ def process_character_contracts(char_id, access_token, char_name, wp_post_id_cac
         for contract in char_contracts:
             contract_status = contract.get('status', '')
             if contract_status in ['finished', 'deleted']:
-                # Skip old finished/deleted contracts (older than 30 days) to improve performance
-                date_completed = contract.get('date_completed')
-                if date_completed:
-                    try:
-                        completed_date = datetime.fromisoformat(date_completed.replace('Z', '+00:00'))
-                        if datetime.now(timezone.utc) - completed_date > timedelta(days=30):
-                            continue  # Skip old contracts
-                    except (ValueError, TypeError):
-                        pass  # If date parsing fails, process anyway
-                
-                logger.info(f"Deleting finished/deleted character contract: {contract['contract_id']}")
-                # Find and delete the WordPress post
-                slug = f"contract-{contract['contract_id']}"
-                response = requests.get(f"{WP_BASE_URL}/wp-json/wp/v2/eve_contract?slug={slug}", auth=get_wp_auth())
-                if response.status_code == 200:
-                    posts = response.json()
-                    if posts:
-                        delete_wp_post('eve_contract', posts[0]['id'])
+                # Skip finished/deleted contracts to improve performance
                 continue
             elif contract_status == 'expired':
                 logger.info(f"EXPIRED CHARACTER CONTRACT TO DELETE MANUALLY: {contract['contract_id']}")
@@ -1734,17 +1726,11 @@ def update_corporation_in_wp(corp_id, corp_data):
         if value is not None:
             post_data['meta'][key] = value
 
-    # Add featured image from corporation logo
-    logo_data = fetch_corporation_logo(corp_id)
-    if logo_data and 'px256x256' in logo_data:
-        new_logo_url = logo_data['px256x256']
-        # Check if logo changed before updating
-        existing_logo_url = existing_post.get('meta', {}).get('_thumbnail_external_url') if existing_post else None
-        if existing_logo_url != new_logo_url:
-            post_data['meta']['_thumbnail_external_url'] = new_logo_url
-            logger.info(f"Updated logo for corporation: {corp_data['name']}")
-        else:
-            logger.info(f"Logo unchanged for corporation: {corp_data['name']}")
+    # Add featured image from corporation logo (only for new corporations)
+    if not existing_post:
+        logo_data = fetch_corporation_logo(corp_id)
+        if logo_data and 'px256x256' in logo_data:
+            post_data['meta']['_thumbnail_external_url'] = logo_data['px256x256']
 
     if existing_post:
         # Update existing
@@ -1799,17 +1785,12 @@ def update_planet_in_wp(planet_id, planet_data, char_id):
     if 'links' in planet_data:
         post_data['meta']['_eve_planet_links'] = json.dumps(planet_data['links'])
 
-    # Add featured image from planet type icon
-    type_id = planet_data.get('type_id')
-    if type_id:
-        image_url = fetch_type_icon(type_id, size=512)
-        # Check if image changed before updating
-        existing_image_url = existing_post.get('meta', {}).get('_thumbnail_external_url') if existing_post else None
-        if existing_image_url != image_url:
+    # Add featured image from planet type icon (only for new planets)
+    if not existing_post:
+        type_id = planet_data.get('type_id')
+        if type_id:
+            image_url = fetch_type_icon(type_id, size=512)
             post_data['meta']['_thumbnail_external_url'] = image_url
-            logger.info(f"Updated image for planet: {planet_name}")
-        else:
-            logger.info(f"Image unchanged for planet: {planet_name}")
 
     if existing_post:
         # Update existing
@@ -1830,25 +1811,32 @@ def save_failed_structures(failed_structures):
     """Save failed structures cache."""
     save_cache(FAILED_STRUCTURES_FILE, failed_structures)
 
-def cleanup_old_posts():
+def cleanup_old_posts(allowed_corp_ids, allowed_issuer_ids):
     """Clean up posts that don't match our criteria."""
     logger.info("Starting cleanup of old posts...")
 
-    # Clean up contract posts (delete finished/deleted contracts)
+    # Clean up contract posts (delete finished/deleted contracts and those not from allowed corps/issuers)
     response = requests.get(f"{WP_BASE_URL}/wp-json/wp/v2/eve_contract", auth=get_wp_auth(), params={'per_page': WP_PER_PAGE})
     if response.status_code == 200:
         contracts = response.json()
         for contract in contracts:
-            status = contract.get('meta', {}).get('_eve_contract_status')
-            if status in ['finished', 'deleted']:
-                contract_id = contract.get('meta', {}).get('_eve_contract_id')
-                logger.info(f"Deleting finished/deleted contract: {contract_id}")
-                delete_wp_post('eve_contract', contract['id'])
+            meta = contract.get('meta', {})
+            status = meta.get('_eve_contract_status')
+            issuer_corp_id = meta.get('_eve_contract_issuer_corp_id')
+            issuer_id = meta.get('_eve_contract_issuer_id')
+            contract_id = meta.get('_eve_contract_id')
+            
+            should_delete = False
+            if issuer_corp_id and int(issuer_corp_id) not in allowed_corp_ids and issuer_id and int(issuer_id) not in allowed_issuer_ids:
+                should_delete = True
+                logger.info(f"Deleting contract from unauthorized issuer: {contract_id}")
             elif status == 'expired':
                 # List expired contracts for manual deletion
-                contract_id = contract.get('meta', {}).get('_eve_contract_id')
                 title = contract.get('title', {}).get('rendered', f'Contract {contract_id}')
                 logger.info(f"EXPIRED CONTRACT TO DELETE MANUALLY: {title} (ID: {contract_id})")
+            
+            if should_delete:
+                delete_wp_post('eve_contract', contract['id'])
 
     # Clean up blueprint posts (only keep those from No Mercy incorporated or characters)
     response = requests.get(f"{WP_BASE_URL}/wp-json/wp/v2/eve_blueprint", auth=get_wp_auth(), params={'per_page': WP_PER_PAGE})
