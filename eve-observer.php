@@ -1137,17 +1137,17 @@ class EVE_Observer {
             
             // Make status always clickable for clipboard copy if we have contract data
             if (!empty($eve_link)) {
-                echo "<span style='color: " . esc_attr($color) . "; font-weight: bold; cursor: pointer;' onclick='copyToClipboard(\"" . esc_js($eve_link) . "\")' title='Click to copy EVE chat link'>" . esc_html($icon . ' ' . $status_text) . "</span>";
+                echo "<span style='color: " . esc_attr($color) . "; font-weight: bold; cursor: pointer;' onclick='copyToClipboard(" . json_encode($eve_link) . ")' title='Click to copy EVE chat link'>" . esc_html($icon . ' ' . $status_text) . "</span>";
             } elseif (!empty($contract_id)) {
                 // Fallback: copy just the contract ID if we can't make a proper link
-                echo "<span style='color: " . esc_attr($color) . "; font-weight: bold; cursor: pointer;' onclick='copyToClipboard(\"" . esc_js($contract_id) . "\")' title='Click to copy contract ID'>" . esc_html($icon . ' ' . $status_text) . "</span>";
+                echo "<span style='color: " . esc_attr($color) . "; font-weight: bold; cursor: pointer;' onclick='copyToClipboard(" . json_encode($contract_id) . ")' title='Click to copy contract ID'>" . esc_html($icon . ' ' . $status_text) . "</span>";
             } else {
                 echo "<span style='color: " . esc_attr($color) . "; font-weight: bold;'>" . esc_html($icon . ' ' . $status_text) . "</span>";
             }
             
             if ($is_outbid && !empty($market_price) && is_numeric($market_price)) {
                 $formatted_price = number_format((float)$market_price, 2);
-                echo "<span style='color: #666; font-size: 12px; cursor: pointer;' onclick='copyToClipboard(\"" . esc_js($formatted_price) . "\")' title='Click to copy suggested price'>Suggested: " . esc_html($formatted_price) . " ISK</span>";
+                echo "<span style='color: #666; font-size: 12px; cursor: pointer;' onclick='copyToClipboard(" . json_encode($formatted_price) . ")' title='Click to copy suggested price'>Suggested: " . esc_html($formatted_price) . " ISK</span>";
             }
             
             echo "</div>";
