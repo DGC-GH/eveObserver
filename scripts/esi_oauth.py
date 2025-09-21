@@ -9,6 +9,7 @@ import json
 import secrets
 import webbrowser
 from urllib.parse import urlencode, parse_qs
+from datetime import datetime, timedelta, timezone
 import requests
 from requests_oauthlib import OAuth2Session
 from dotenv import load_dotenv
@@ -27,8 +28,6 @@ SCOPES = [
     'esi-planets.manage_planets.v1',
     'esi-markets.read_character_orders.v1',
     'esi-contracts.read_character_contracts.v1',
-    'esi-contracts.read_corporation_contracts.v1',
-    'esi-assets.read_corporation_assets.v1',
     'esi-skills.read_skills.v1',
 ]
 
@@ -142,29 +141,28 @@ def refresh_token(char_id):
         print(f"No token found for character ID {char_id}")
         return
 
-    refresh_token = tokens[char_id]['refresh_token']
+    refresh_token_str = tokens[char_id]['refresh_token']
 
-    # Create session with refresh token
-    oauth = OAuth2Session(client_id=CLIENT_ID)
+    # Use Basic auth as per ESI docs
+    data = {
+        'grant_type': 'refresh_token',
+        'refresh_token': refresh_token_str
+    }
+    response = requests.post(TOKEN_URL, data=data, auth=(CLIENT_ID, CLIENT_SECRET))
+    if response.status_code == 200:
+        token_data = response.json()
+        # Update stored token
+        tokens[char_id].update({
+            'access_token': token_data['access_token'],
+            'refresh_token': token_data.get('refresh_token', refresh_token_str),
+            'expires_at': datetime.now(timezone.utc) + timedelta(seconds=token_data['expires_in']),
+            'token_type': token_data['token_type']
+        })
+        save_tokens(tokens)
 
-    # Refresh token
-    new_token = oauth.refresh_token(
-        TOKEN_URL,
-        refresh_token=refresh_token,
-        client_id=CLIENT_ID,
-        client_secret=CLIENT_SECRET
-    )
-
-    # Update stored token
-    tokens[char_id].update({
-        'access_token': new_token['access_token'],
-        'refresh_token': new_token.get('refresh_token', refresh_token),
-        'expires_at': new_token['expires_at'],
-        'token_type': new_token['token_type']
-    })
-    save_tokens(tokens)
-
-    print(f"Refreshed token for character: {tokens[char_id]['name']}")
+        print(f"Refreshed token for character: {tokens[char_id]['name']}")
+    else:
+        print(f"Failed to refresh token: {response.status_code} - {response.text}")
 
 def authorize_all_characters():
     """Authorize all characters in sequence."""

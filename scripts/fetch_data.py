@@ -12,7 +12,7 @@ from dotenv import load_dotenv
 import smtplib
 from email.mime.text import MIMEText
 
-load_dotenv('scripts/.env')
+load_dotenv()
 
 # Configuration
 WP_BASE_URL = os.getenv('WP_URL', 'https://your-wordpress-site.com')
@@ -240,11 +240,11 @@ def refresh_token(refresh_token):
     """Refresh an access token."""
     data = {
         'grant_type': 'refresh_token',
-        'refresh_token': refresh_token,
-        'client_id': os.getenv('ESI_CLIENT_ID'),
-        'client_secret': os.getenv('ESI_CLIENT_SECRET')
+        'refresh_token': refresh_token
     }
-    response = requests.post('https://login.eveonline.com/v2/oauth/token', data=data)
+    client_id = os.getenv('ESI_CLIENT_ID')
+    client_secret = os.getenv('ESI_CLIENT_SECRET')
+    response = requests.post('https://login.eveonline.com/v2/oauth/token', data=data, auth=(client_id, client_secret))
     if response.status_code == 200:
         token_data = response.json()
         expires_at = datetime.now(timezone.utc) + timedelta(seconds=token_data['expires_in'])
@@ -360,19 +360,19 @@ def main():
                 update_planet_in_wp(planet_id, planet, char_id)
 
         # Fetch corporation data if available
-        corp_id = char_data.get('corporation_id') if char_data else None
-        if corp_id:
-            print(f"Fetching corporation data for corp ID: {corp_id}")
+        # corp_id = char_data.get('corporation_id') if char_data else None
+        # if corp_id:
+        #     print(f"Fetching corporation data for corp ID: {corp_id}")
 
-            # Fetch corp contracts
-            corp_contracts = fetch_corporation_contracts(corp_id, access_token)
-            if corp_contracts:
-                print(f"Corporation contracts: {len(corp_contracts)} items")
+        #     # Fetch corp contracts
+        #     corp_contracts = fetch_corporation_contracts(corp_id, access_token)
+        #     if corp_contracts:
+        #         print(f"Corporation contracts: {len(corp_contracts)} items")
 
-            # Fetch corp assets
-            corp_assets = fetch_corporation_assets(corp_id, access_token)
-            if corp_assets:
-                print(f"Corporation assets: {len(corp_assets)} items")
+        #     # Fetch corp assets
+        #     corp_assets = fetch_corporation_assets(corp_id, access_token)
+        #     if corp_assets:
+        #         print(f"Corporation assets: {len(corp_assets)} items")
 
     # Fetch sample market data
     print("Fetching sample market data...")
