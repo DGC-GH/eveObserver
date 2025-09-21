@@ -9363,3 +9363,42 @@
 2025-09-21 23:25:25,929 - ERROR - Failed to send email: Connection unexpectedly closed
 2025-09-21 23:25:26,255 - INFO - Updated contract: 222641777 - Capital Antimatter Reactor Unit BPC - Contract 222641777
 2025-09-21 23:25:28,343 - WARNING - Contract 222641803 is outbid by market price: 15000000.0
+2025-09-21 23:29:03,101 - INFO - Starting contract outbid status check...
+2025-09-21 23:29:03,804 - INFO - Checking corporation contracts for corp 98092220 using Dr FiLiN's token
+2025-09-21 23:29:04,010 - INFO - Checking 105 corporation contracts for outbid status
+2025-09-21 23:29:28,712 - INFO - Starting contract outbid status check...
+2025-09-21 23:29:34,694 - INFO - Starting contract outbid status check...
+2025-09-21 23:29:34,902 - ERROR - ESI request failed for char 90020513: 404 Client Error: Not Found for url: https://esi.evetech.net/latest/latest/characters/90020513/
+2025-09-21 23:29:34,935 - ERROR - ESI request failed for char 90045731: 404 Client Error: Not Found for url: https://esi.evetech.net/latest/latest/characters/90045731/
+2025-09-21 23:29:34,982 - ERROR - ESI request failed for char 90522765: 404 Client Error: Not Found for url: https://esi.evetech.net/latest/latest/characters/90522765/
+2025-09-21 23:29:35,015 - ERROR - ESI request failed for char 90162477: 404 Client Error: Not Found for url: https://esi.evetech.net/latest/latest/characters/90162477/
+2025-09-21 23:29:35,062 - ERROR - ESI request failed for char 95937458: 404 Client Error: Not Found for url: https://esi.evetech.net/latest/latest/characters/95937458/
+2025-09-21 23:29:35,097 - ERROR - ESI request failed for char 95985116: 404 Client Error: Not Found for url: https://esi.evetech.net/latest/latest/characters/95985116/
+2025-09-21 23:29:35,130 - ERROR - ESI request failed for char 1316070855: 404 Client Error: Not Found for url: https://esi.evetech.net/latest/latest/characters/1316070855/
+2025-09-21 23:29:35,163 - ERROR - ESI request failed for char 91594850: 404 Client Error: Not Found for url: https://esi.evetech.net/latest/latest/characters/91594850/
+2025-09-21 23:29:35,196 - ERROR - ESI request failed for char 90483242: 404 Client Error: Not Found for url: https://esi.evetech.net/latest/latest/characters/90483242/
+2025-09-21 23:29:35,196 - INFO - Contract outbid status check completed.
+2025-09-21 23:29:55,358 - INFO - Starting contract outbid status check...
+2025-09-21 23:30:01,257 - INFO - Starting contract outbid status check...
+2025-09-21 23:30:01,902 - INFO - Checking corporation contracts for corp 98092220 using Dr FiLiN's token
+2025-09-21 23:30:02,040 - INFO - Checking 105 corporation contracts for outbid status
+2025-09-21 23:30:29,567 - INFO - Updated contract 222641803: now outbid
+2025-09-21 23:30:29,567 - WARNING - Contract 222641803 is outbid by market price: 15000000.0
+2025-09-21 23:30:30,600 - INFO - Updated contract 222641814: now outbid
+2025-09-21 23:30:30,601 - WARNING - Contract 222641814 is outbid by market price: 15000000.0
+2025-09-21 23:30:31,758 - INFO - Updated contract 222641822: now outbid
+2025-09-21 23:30:31,758 - WARNING - Contract 222641822 is outbid by market price: 15000000.0
+2025-09-21 23:30:32,744 - INFO - Updated contract 222641828: now outbid
+2025-09-21 23:30:32,744 - WARNING - Contract 222641828 is outbid by market price: 15000000.0
+2025-09-21 23:30:33,737 - INFO - Updated contract 222641837: now outbid
+2025-09-21 23:30:33,737 - WARNING - Contract 222641837 is outbid by market price: 15000000.0
+2025-09-21 23:30:34,527 - INFO - Updated contract 222641849: now outbid
+2025-09-21 23:30:34,528 - WARNING - Contract 222641849 is outbid by market price: 15000000.0
+2025-09-21 23:30:35,284 - INFO - Updated contract 222641864: now outbid
+2025-09-21 23:30:35,284 - WARNING - Contract 222641864 is outbid by market price: 15000000.0
+2025-09-21 23:30:36,053 - INFO - Updated contract 222641882: now outbid
+2025-09-21 23:30:36,053 - WARNING - Contract 222641882 is outbid by market price: 15000000.0
+2025-09-21 23:30:37,434 - INFO - Updated contract 222641897: now outbid
+2025-09-21 23:30:37,434 - WARNING - Contract 222641897 is outbid by market price: 15000000.0
+2025-09-21 23:30:38,442 - INFO - Updated contract 222641914: now outbid
+2025-09-21 23:30:38,442 - WARNING - Contract 222641914 is outbid by market price: 15000000.0

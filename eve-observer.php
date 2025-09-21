@@ -153,6 +153,12 @@ class EVE_Observer {
         add_filter('manage_eve_contract_posts_columns', array($this, 'add_thumbnail_column'));
         add_action('manage_eve_contract_posts_custom_column', array($this, 'display_thumbnail_column'), 10, 2);
 
+        // Add outbid column to contracts
+        add_filter('manage_eve_contract_posts_columns', array($this, 'add_outbid_column'));
+        add_action('manage_eve_contract_posts_custom_column', array($this, 'display_outbid_column'), 10, 2);
+        add_filter('manage_edit-eve_contract_sortable_columns', array($this, 'make_outbid_column_sortable'));
+        add_action('pre_get_posts', array($this, 'sort_outbid_column'));
+
         // Register custom post types
         $this->register_custom_post_types();
     }
@@ -1019,6 +1025,68 @@ class EVE_Observer {
             } else {
                 echo '<div style="width: 50px; height: 50px; background: #f0f0f0; border: 1px solid #ddd; border-radius: 4px; display: flex; align-items: center; justify-content: center; color: #999; font-size: 20px;">📷</div>';
             }
+        }
+    }
+
+    public function add_outbid_column($columns) {
+        $new_columns = array();
+        
+        // Insert outbid column after title
+        foreach ($columns as $key => $value) {
+            $new_columns[$key] = $value;
+            if ($key === 'title') {
+                $new_columns['outbid'] = __('Outbid', 'eve-observer');
+            }
+        }
+        
+        return $new_columns;
+    }
+
+    public function display_outbid_column($column, $post_id) {
+        if ($column === 'outbid') {
+            $is_outbid = get_post_meta($post_id, '_eve_contract_outbid', true) === 'true';
+            $contract_id = get_post_meta($post_id, '_eve_contract_id', true);
+            $market_price = get_post_meta($post_id, '_eve_contract_market_price', true);
+            
+            if ($is_outbid) {
+                $status_text = 'Outbid';
+                $color = '#dc3545'; // Red
+                $icon = '⚠️';
+            } else {
+                $status_text = 'OK';
+                $color = '#28a745'; // Green
+                $icon = '✅';
+            }
+            
+            // Make contract ID clickable to open in EVE client
+            $eve_client_url = "eve://app/contract/{$contract_id}";
+            $clickable_id = "<a href='{$eve_client_url}' target='_blank' style='color: #0073aa; text-decoration: none;' title='Open in EVE Client'>{$contract_id}</a>";
+            
+            echo "<div style='display: flex; align-items: center; gap: 8px;'>";
+            echo "<span style='color: {$color}; font-weight: bold;'>{$icon} {$status_text}</span>";
+            if ($is_outbid && $market_price) {
+                echo "<span style='color: #666; font-size: 12px;'>Market: " . number_format(float($market_price), 2) . " ISK</span>";
+            }
+            echo "<span style='color: #666; font-size: 12px;'>ID: {$clickable_id}</span>";
+            echo "</div>";
+        }
+    }
+
+    public function make_outbid_column_sortable($columns) {
+        $columns['outbid'] = 'outbid';
+        return $columns;
+    }
+
+    public function sort_outbid_column($query) {
+        if (!is_admin() || !$query->is_main_query()) {
+            return;
+        }
+        
+        if ($query->get('orderby') === 'outbid') {
+            $query->set('meta_key', '_eve_contract_outbid');
+            $query->set('orderby', 'meta_value');
+            // Sort 'true' before 'false' (outbid contracts first)
+            $query->set('meta_type', 'CHAR');
         }
     }
 }

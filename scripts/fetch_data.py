@@ -1144,27 +1144,7 @@ def update_contract_in_wp(contract_id, contract_data, for_corp=False, entity_id=
                 # Send alert if this is newly outbid
                 was_outbid = existing_meta.get('_eve_contract_outbid') == 'true'
                 if not was_outbid:
-                    # Get item name for alert
-                    item_name = "Unknown Item"
-                    if contract_items and len(contract_items) == 1:
-                        item = contract_items[0]
-                        type_id = item.get('type_id')
-                        if type_id:
-                            type_data = fetch_public_esi(f"/universe/types/{type_id}")
-                            if type_data:
-                                item_name = type_data.get('name', f"Item {type_id}")
-                    
-                    contract_price = contract_data.get('price', 0)
-                    quantity = contract_items[0].get('quantity', 1) if contract_items else 1
-                    price_per_item = contract_price / quantity
-                    
-                    subject = f"EVE Alert: Contract {contract_id} outbid by market"
-                    body = f"Your sell contract {contract_id} for {item_name} (x{quantity}) is being outbid.\n\n"
-                    body += f"Contract price: {price_per_item:.2f} ISK each\n"
-                    body += f"Market price: {market_price:.2f} ISK each\n"
-                    body += f"Difference: {price_per_item - market_price:.2f} ISK\n\n"
-                    body += f"Consider adjusting your contract price to remain competitive."
-                    send_email(subject, body)
+                    logger.warning(f"Contract {contract_id} is outbid by market price: {market_price}")
             else:
                 post_data['meta']['_eve_contract_outbid'] = 'false'
                 if '_eve_contract_market_price' in post_data['meta']:
