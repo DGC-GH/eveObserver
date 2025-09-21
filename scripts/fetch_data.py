@@ -87,14 +87,11 @@ def get_wp_auth():
 
 def update_character_in_wp(char_id, char_data):
     """Update or create character post in WordPress."""
-    # Check if post exists
-    response = requests.get(f"{WP_BASE_URL}/wp-json/wp/v2/eve_character", auth=get_wp_auth())
+    slug = f"character-{char_id}"
+    # Check if post exists by slug
+    response = requests.get(f"{WP_BASE_URL}/wp-json/wp/v2/eve_character?slug={slug}", auth=get_wp_auth())
     existing_posts = response.json() if response.status_code == 200 else []
-    existing_post = None
-    for post in existing_posts:
-        if post['meta'].get('_eve_char_id') == char_id:
-            existing_post = post
-            break
+    existing_post = existing_posts[0] if existing_posts else None
 
     post_data = {
         'title': char_data['name'],
@@ -154,25 +151,43 @@ def fetch_character_blueprints(char_id, access_token):
 
 def update_blueprint_in_wp(item_id, blueprint_data, char_id):
     """Update or create blueprint post in WordPress."""
-    # Check if post exists
-    response = requests.get(f"{WP_BASE_URL}/wp-json/wp/v2/eve_blueprint", auth=get_wp_auth())
+    slug = f"blueprint-{item_id}"
+    # Check if post exists by slug
+    response = requests.get(f"{WP_BASE_URL}/wp-json/wp/v2/eve_blueprint?slug={slug}", auth=get_wp_auth())
     existing_posts = response.json() if response.status_code == 200 else []
-    existing_post = None
-    for post in existing_posts:
-        if post['meta'].get('_eve_bp_item_id') == item_id:
-            existing_post = post
-            break
+    existing_post = existing_posts[0] if existing_posts else None
 
-    # Get blueprint name
+    # Get blueprint name and details
     type_id = blueprint_data.get('type_id')
+    me = blueprint_data.get('material_efficiency', 0)
+    te = blueprint_data.get('time_efficiency', 0)
+    location_id = blueprint_data.get('location_id')
+    quantity = blueprint_data.get('quantity', -1)
+    
     if type_id:
         type_data = fetch_public_esi(f"/universe/types/{type_id}")
         if type_data:
-            title = type_data.get('name', f"Blueprint {item_id}")
+            type_name = type_data.get('name', f"Blueprint {item_id}").replace(" Blueprint", "").strip()
         else:
-            title = f"Blueprint {item_id}"
+            type_name = f"Blueprint {item_id}".replace(" Blueprint", "").strip()
     else:
-        title = f"Blueprint {item_id}"
+        type_name = f"Blueprint {item_id}".replace(" Blueprint", "").strip()
+    
+    # Determine BPO or BPC
+    bp_type = "BPO" if quantity == -1 else "BPC"
+    
+    # Get location name
+    if location_id:
+        if location_id >= 1000000000000:  # Structures (citadels, etc.) - require auth, so use generic name
+            location_name = f"Citadel {location_id}"
+        else:  # Stations - public
+            loc_data = fetch_public_esi(f"/universe/stations/{location_id}")
+            location_name = loc_data.get('name', f"Station {location_id}") if loc_data else f"Station {location_id}"
+    else:
+        location_name = "Unknown Location"
+    
+    # Construct title
+    title = f"{type_name} {bp_type} {me}/{te} ({location_name}) – ID: {item_id}"
 
     post_data = {
         'title': title,
@@ -233,14 +248,11 @@ def fetch_planet_details(char_id, planet_id, access_token):
 
 def update_planet_in_wp(planet_id, planet_data, char_id):
     """Update or create planet post in WordPress."""
-    # Check if post exists
-    response = requests.get(f"{WP_BASE_URL}/wp-json/wp/v2/eve_planet", auth=get_wp_auth())
+    slug = f"planet-{planet_id}"
+    # Check if post exists by slug
+    response = requests.get(f"{WP_BASE_URL}/wp-json/wp/v2/eve_planet?slug={slug}", auth=get_wp_auth())
     existing_posts = response.json() if response.status_code == 200 else []
-    existing_post = None
-    for post in existing_posts:
-        if post['meta'].get('_eve_planet_id') == planet_id:
-            existing_post = post
-            break
+    existing_post = existing_posts[0] if existing_posts else None
 
     # Get planet name
     planet_info = fetch_public_esi(f"/universe/planets/{planet_id}")
