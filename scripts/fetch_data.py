@@ -252,6 +252,185 @@ def update_blueprint_in_wp(item_id, blueprint_data, char_id, access_token):
     else:
         print(f"Failed to update blueprint {item_id}: {response.status_code} - {response.text}")
 
+def fetch_character_assets(char_id, access_token):
+    """Fetch character assets."""
+    endpoint = f"/characters/{char_id}/assets/"
+    return fetch_esi(endpoint, char_id, access_token)
+
+def fetch_corporation_blueprints(corp_id, access_token):
+    """Fetch corporation blueprints."""
+    endpoint = f"/corporations/{corp_id}/blueprints/"
+    return fetch_esi(endpoint, corp_id, access_token)
+
+def fetch_corporation_industry_jobs(corp_id, access_token):
+    """Fetch corporation industry jobs."""
+    endpoint = f"/corporations/{corp_id}/industry/jobs/"
+    return fetch_esi(endpoint, corp_id, access_token)
+
+def extract_blueprints_from_assets(assets_data, owner_type, owner_id, access_token):
+    """Extract blueprint information from assets data."""
+    blueprints = []
+    
+    def process_items(items, location_id):
+        for item in items:
+            # Check if this is a blueprint (type_id corresponds to a blueprint)
+            type_id = item.get('type_id')
+            if type_id:
+                # Get type information to check if it's a blueprint
+                type_data = fetch_public_esi(f"/universe/types/{type_id}")
+                if type_data and 'Blueprint' in type_data.get('name', ''):
+                    # This is a blueprint
+                    blueprint_info = {
+                        'item_id': item.get('item_id'),
+                        'type_id': type_id,
+                        'location_id': location_id,
+                        'quantity': item.get('quantity', 1),
+                        'material_efficiency': 0,  # Assets don't provide ME/TE info
+                        'time_efficiency': 0,
+                        'runs': -1,  # Assume BPO unless we can determine otherwise
+                        'source': f"{owner_type}_assets",
+                        'owner_id': owner_id
+                    }
+                    blueprints.append(blueprint_info)
+            
+            # Recursively process containers
+            if 'items' in item:
+                process_items(item['items'], item.get('location_id', location_id))
+    
+    if assets_data:
+        process_items(assets_data, None)
+    
+    return blueprints
+
+def extract_blueprints_from_industry_jobs(jobs_data, owner_type, owner_id):
+    """Extract blueprint information from industry jobs."""
+    blueprints = []
+    
+    for job in jobs_data:
+        blueprint_id = job.get('blueprint_id')
+        blueprint_type_id = job.get('blueprint_type_id')
+        if blueprint_id and blueprint_type_id:
+            blueprint_info = {
+                'item_id': blueprint_id,
+                'type_id': blueprint_type_id,
+                'location_id': job.get('station_id'),
+                'quantity': -1,  # Jobs use BPOs
+                'material_efficiency': job.get('material_efficiency', 0),
+                'time_efficiency': job.get('time_efficiency', 0),
+                'runs': job.get('runs', -1),
+                'source': f"{owner_type}_industry_job",
+                'owner_id': owner_id
+            }
+            blueprints.append(blueprint_info)
+    
+    return blueprints
+
+def extract_blueprints_from_contracts(contracts_data, owner_type, owner_id):
+    """Extract blueprint information from contracts."""
+    blueprints = []
+    
+    for contract in contracts_data:
+        if 'items' in contract:
+            for item in contract['items']:
+                type_id = item.get('type_id')
+                if type_id:
+                    # Get type information to check if it's a blueprint
+                    type_data = fetch_public_esi(f"/universe/types/{type_id}")
+                    if type_data and 'Blueprint' in type_data.get('name', ''):
+                        blueprint_info = {
+                            'item_id': item.get('item_id', type_id),  # Contracts may not have item_id
+                            'type_id': type_id,
+                            'location_id': None,  # Contracts don't specify location
+                            'quantity': item.get('quantity', 1),
+                            'material_efficiency': 0,  # Contract items don't provide ME/TE
+                            'time_efficiency': 0,
+                            'runs': -1,
+                            'source': f"{owner_type}_contract_{contract.get('contract_id')}",
+                            'owner_id': owner_id
+                        }
+                        blueprints.append(blueprint_info)
+    
+    return blueprints
+
+def update_blueprint_from_asset_in_wp(blueprint_data, access_token):
+    """Update or create blueprint post from asset/industry/contract data."""
+    item_id = blueprint_data['item_id']
+    owner_id = blueprint_data['owner_id']
+    source = blueprint_data['source']
+    
+    slug = f"blueprint-{item_id}"
+    # Check if post exists by slug
+    response = requests.get(f"{WP_BASE_URL}/wp-json/wp/v2/eve_blueprint?slug={slug}", auth=get_wp_auth())
+    existing_posts = response.json() if response.status_code == 200 else []
+    existing_post = existing_posts[0] if existing_posts else None
+
+    # Get blueprint name and details
+    type_id = blueprint_data.get('type_id')
+    me = blueprint_data.get('material_efficiency', 0)
+    te = blueprint_data.get('time_efficiency', 0)
+    location_id = blueprint_data.get('location_id')
+    quantity = blueprint_data.get('quantity', -1)
+    
+    if type_id:
+        type_data = fetch_public_esi(f"/universe/types/{type_id}")
+        if type_data:
+            type_name = type_data.get('name', f"Blueprint {item_id}").replace(" Blueprint", "").strip()
+        else:
+            type_name = f"Blueprint {item_id}".replace(" Blueprint", "").strip()
+    else:
+        type_name = f"Blueprint {item_id}".replace(" Blueprint", "").strip()
+    
+    # Determine BPO or BPC
+    bp_type = "BPO" if quantity == -1 else "BPC"
+    
+    # Get location name
+    if location_id:
+        if location_id >= 1000000000000:  # Structures (citadels, etc.) - try auth fetch
+            struct_data = fetch_esi(f"/universe/structures/{location_id}", owner_id if source.startswith('char') else None, access_token)
+            location_name = struct_data.get('name', f"Citadel {location_id}") if struct_data else f"Citadel {location_id}"
+        else:  # Stations - public
+            loc_data = fetch_public_esi(f"/universe/stations/{location_id}")
+            location_name = loc_data.get('name', f"Station {location_id}") if loc_data else f"Station {location_id}"
+    else:
+        location_name = f"From {source.replace('_', ' ').title()}"
+    
+    # Construct title
+    title = f"{type_name} {bp_type} {me}/{te} ({location_name}) – ID: {item_id}"
+
+    post_data = {
+        'title': title,
+        'slug': f"blueprint-{item_id}",
+        'status': 'publish',
+        'meta': {
+            '_eve_bp_item_id': item_id,
+            '_eve_bp_type_id': blueprint_data.get('type_id'),
+            '_eve_bp_location_id': blueprint_data.get('location_id'),
+            '_eve_bp_location_name': location_name,
+            '_eve_bp_quantity': blueprint_data.get('quantity', -1),
+            '_eve_bp_me': blueprint_data.get('material_efficiency', 0),
+            '_eve_bp_te': blueprint_data.get('time_efficiency', 0),
+            '_eve_bp_runs': blueprint_data.get('runs', -1),
+            '_eve_bp_source': source,
+            '_eve_bp_owner_id': owner_id,
+            '_eve_last_updated': datetime.now(timezone.utc).isoformat()
+        }
+    }
+
+    if existing_post:
+        # Update existing
+        post_id = existing_post['id']
+        url = f"{WP_BASE_URL}/wp-json/wp/v2/eve_blueprint/{post_id}"
+        response = requests.put(url, json=post_data, auth=get_wp_auth())
+    else:
+        # Create new
+        url = f"{WP_BASE_URL}/wp-json/wp/v2/eve_blueprint"
+        response = requests.post(url, json=post_data, auth=get_wp_auth())
+
+    if response.status_code in [200, 201]:
+        print(f"Updated blueprint from {source}: {item_id}")
+    else:
+        print(f"Failed to update blueprint {item_id} from {source}: {response.status_code} - {response.text}")
+
 def fetch_character_industry_jobs(char_id, access_token):
     """Fetch character industry jobs."""
     endpoint = f"/characters/{char_id}/industry/jobs/"
@@ -544,10 +723,44 @@ def main():
             update_corporation_in_wp(corp_id, corp_data)
             processed_corps.add(corp_id)
 
-            # Fetch corporation contracts using the successful token
+            # Fetch corporation blueprints from various sources
+            print(f"Fetching corporation blueprints for {corp_data.get('name', corp_id)}...")
+            
+            # From corporation blueprints endpoint
+            corp_blueprints = fetch_corporation_blueprints(corp_id, successful_token)
+            if corp_blueprints:
+                print(f"Corporation blueprints: {len(corp_blueprints)} items")
+                for bp in corp_blueprints:
+                    update_blueprint_in_wp(bp['item_id'], bp, successful_char_name, successful_token)
+            
+            # From corporation assets
+            corp_assets = fetch_corporation_assets(corp_id, successful_token)
+            if corp_assets:
+                asset_blueprints = extract_blueprints_from_assets(corp_assets, 'corp', corp_id, successful_token)
+                if asset_blueprints:
+                    print(f"Corporation asset blueprints: {len(asset_blueprints)} items")
+                    for bp in asset_blueprints:
+                        update_blueprint_from_asset_in_wp(bp, successful_token)
+            
+            # From corporation industry jobs
+            corp_industry_jobs = fetch_corporation_industry_jobs(corp_id, successful_token)
+            if corp_industry_jobs:
+                job_blueprints = extract_blueprints_from_industry_jobs(corp_industry_jobs, 'corp', corp_id)
+                if job_blueprints:
+                    print(f"Corporation industry job blueprints: {len(job_blueprints)} items")
+                    for bp in job_blueprints:
+                        update_blueprint_from_asset_in_wp(bp, successful_token)
+            
+            # From corporation contracts (blueprints already processed above)
             corp_contracts = fetch_corporation_contracts(corp_id, successful_token)
             if corp_contracts:
                 print(f"Corporation contracts for {corp_data.get('name', corp_id)}: {len(corp_contracts)} items")
+                contract_blueprints = extract_blueprints_from_contracts(corp_contracts, 'corp', corp_id)
+                if contract_blueprints:
+                    print(f"Corporation contract blueprints: {len(contract_blueprints)} items")
+                    for bp in contract_blueprints:
+                        update_blueprint_from_asset_in_wp(bp, successful_token)
+                
                 for contract in corp_contracts:
                     update_contract_in_wp(contract['contract_id'], contract, for_corp=True, entity_id=corp_id)
 
@@ -565,17 +778,35 @@ def main():
             update_character_skills_in_wp(char_id, skills)
             print(f"Skills for {char_name}: {skills['total_sp']} SP")
 
-        # Fetch blueprints
+        # Fetch blueprints from all sources
+        print(f"Fetching blueprints for {char_name}...")
+        
+        # From character blueprints endpoint
         blueprints = fetch_character_blueprints(char_id, access_token)
         if blueprints:
-            print(f"Blueprints for {char_name}: {len(blueprints)} items")
+            print(f"Character blueprints: {len(blueprints)} items")
             for bp in blueprints:
                 update_blueprint_in_wp(bp['item_id'], bp, char_id, access_token)
-
-        # Fetch industry jobs
+        
+        # From character assets
+        char_assets = fetch_character_assets(char_id, access_token)
+        if char_assets:
+            asset_blueprints = extract_blueprints_from_assets(char_assets, 'char', char_id, access_token)
+            if asset_blueprints:
+                print(f"Character asset blueprints: {len(asset_blueprints)} items")
+                for bp in asset_blueprints:
+                    update_blueprint_from_asset_in_wp(bp, access_token)
+        
+        # From character industry jobs (blueprints already processed above)
         jobs = fetch_character_industry_jobs(char_id, access_token)
         if jobs:
             print(f"Industry jobs for {char_name}: {len(jobs)} active")
+            job_blueprints = extract_blueprints_from_industry_jobs(jobs, 'char', char_id)
+            if job_blueprints:
+                print(f"Character industry job blueprints: {len(job_blueprints)} items")
+                for bp in job_blueprints:
+                    update_blueprint_from_asset_in_wp(bp, access_token)
+            
             # Check for job completions
             now = datetime.now(timezone.utc)
             upcoming_completions = []
@@ -618,10 +849,16 @@ def main():
                         send_email(subject, body)
                 update_planet_in_wp(planet_id, planet, char_id)
 
-        # Fetch character contracts
+        # Fetch character contracts (blueprints already processed above)
         char_contracts = fetch_character_contracts(char_id, access_token)
         if char_contracts:
             print(f"Character contracts for {char_name}: {len(char_contracts)} items")
+            contract_blueprints = extract_blueprints_from_contracts(char_contracts, 'char', char_id)
+            if contract_blueprints:
+                print(f"Character contract blueprints: {len(contract_blueprints)} items")
+                for bp in contract_blueprints:
+                    update_blueprint_from_asset_in_wp(bp, access_token)
+            
             for contract in char_contracts:
                 update_contract_in_wp(contract['contract_id'], contract, for_corp=False, entity_id=char_id)
 
