@@ -108,29 +108,50 @@ def set_cached_wp_post_id(cache, post_type, item_id, post_id):
 
 def process_blueprints_parallel(blueprints, update_func, wp_post_id_cache, *args, **kwargs):
     """Process blueprints in parallel while respecting rate limits."""
-    from concurrent.futures import ThreadPoolExecutor, as_completed
+    from concurrent.futures import ThreadPoolExecutor, as_completed, TimeoutError
     import time
+    import logging
 
     max_workers = ESI_MAX_WORKERS  # Limit concurrent requests to avoid rate limiting
     results = []
+    processed_count = 0
+    total_blueprints = len(blueprints)
+
+    logger.info(f"Starting parallel processing of {total_blueprints} blueprints with {max_workers} workers")
 
     with ThreadPoolExecutor(max_workers=max_workers) as executor:
         # Submit all blueprint update tasks
         future_to_bp = {
-            executor.submit(update_func, bp, wp_post_id_cache, *args, **kwargs): bp 
+            executor.submit(update_func, bp, wp_post_id_cache, *args, **kwargs): bp
             for bp in blueprints
         }
 
         for future in as_completed(future_to_bp):
             bp = future_to_bp[future]
+            item_id = bp.get("item_id", "unknown")
+            processed_count += 1
+
             try:
-                result = future.result()
+                # Add timeout to prevent hanging
+                result = future.result(timeout=300)  # 5 minute timeout per blueprint
                 results.append(result)
+                logger.info(f"Processed blueprint {processed_count}/{total_blueprints}: {item_id}")
+
                 # Small delay between requests to be rate limit friendly
                 time.sleep(0.1)
-            except Exception as exc:
-                logger.warning(f'Blueprint {bp.get("item_id", "unknown")} generated an exception: {exc}')
 
+            except TimeoutError:
+                logger.error(f"Blueprint {item_id} timed out after 5 minutes - skipping")
+                # Cancel the future if possible
+                if not future.cancelled():
+                    future.cancel()
+
+            except Exception as exc:
+                logger.error(f'Blueprint {item_id} generated an exception: {exc}')
+                logger.error(f'Blueprint data: {bp}')
+                # Continue processing other blueprints
+
+    logger.info(f"Completed parallel processing: {len(results)}/{total_blueprints} blueprints processed successfully")
     return results
 
 def send_email(subject, body):
@@ -320,6 +341,15 @@ def fetch_esi(endpoint, char_id, access_token, max_retries=ESI_MAX_RETRIES):
 def get_wp_auth():
     """Get WordPress authentication tuple."""
     return (WP_USERNAME, WP_APP_PASSWORD)
+
+def delete_wp_post(post_type, post_id):
+    """Delete a WordPress post."""
+    url = f"{WP_BASE_URL}/wp-json/wp/v2/{post_type}/{post_id}"
+    response = requests.delete(url, auth=get_wp_auth())
+    if response.status_code == 200:
+        logger.info(f"Deleted {post_type} post: {post_id}")
+    else:
+        logger.error(f"Failed to delete {post_type} post {post_id}: {response.status_code} - {response.text}")
 
 def update_character_in_wp(char_id, char_data):
     """Update or create character post in WordPress."""
@@ -616,6 +646,11 @@ def fetch_character_contracts(char_id, access_token):
     endpoint = f"/characters/{char_id}/contracts/"
     return fetch_esi(endpoint, char_id, access_token)
 
+def fetch_character_contract_items(char_id, contract_id, access_token):
+    """Fetch items in a specific character contract."""
+    endpoint = f"/characters/{char_id}/contracts/{contract_id}/items/"
+    return fetch_esi(endpoint, char_id, access_token)
+
 def fetch_corporation_blueprints(corp_id, access_token):
     """Fetch corporation blueprints."""
     endpoint = f"/corporations/{corp_id}/blueprints/"
@@ -626,6 +661,11 @@ def fetch_corporation_contracts(corp_id, access_token):
     endpoint = f"/corporations/{corp_id}/contracts/"
     return fetch_esi(endpoint, None, access_token)  # Corp contracts don't need char_id
 
+def fetch_corporation_contract_items(corp_id, contract_id, access_token):
+    """Fetch items in a specific corporation contract."""
+    endpoint = f"/corporations/{corp_id}/contracts/{contract_id}/items/"
+    return fetch_esi(endpoint, None, access_token)  # Corp endpoint doesn't need char_id
+
 def fetch_corporation_industry_jobs(corp_id, access_token):
     """Fetch corporation industry jobs."""
     endpoint = f"/corporations/{corp_id}/industry/jobs/"
@@ -634,9 +674,20 @@ def fetch_corporation_industry_jobs(corp_id, access_token):
 def extract_blueprints_from_assets(assets_data, owner_type, owner_id, access_token, track_bpcs=False):
     """Extract blueprint information from assets data."""
     blueprints = []
+    total_assets = len(assets_data) if assets_data else 0
+    processed_count = 0
+    
+    logger.info(f"Processing {total_assets} {owner_type} assets for blueprint extraction...")
     
     def process_items(items, location_id):
+        nonlocal processed_count
         for item in items:
+            processed_count += 1
+            
+            # Log progress every 1000 items
+            if processed_count % 1000 == 0:
+                logger.info(f"Processed {processed_count}/{total_assets} assets...")
+            
             # Check if this is a blueprint (type_id corresponds to a blueprint)
             type_id = item.get('type_id')
             if type_id:
@@ -670,6 +721,7 @@ def extract_blueprints_from_assets(assets_data, owner_type, owner_id, access_tok
     if assets_data:
         process_items(assets_data, None)
     
+    logger.info(f"Completed asset processing: found {len(blueprints)} blueprints in {total_assets} assets")
     return blueprints
 
 def extract_blueprints_from_industry_jobs(jobs_data, owner_type, owner_id):
@@ -812,8 +864,7 @@ def update_blueprint_from_asset_in_wp(blueprint_data, wp_post_id_cache, char_id,
                 location_name = structure_cache[location_id_str]
             else:
                 # For corporation structures, we need a valid character ID for auth
-                # Use None for now - this will likely fail but won't crash
-                struct_data = fetch_esi(f"/universe/structures/{location_id}", None, access_token)
+                struct_data = fetch_esi(f"/universe/structures/{location_id}", char_id, access_token)
                 if struct_data:
                     location_name = struct_data.get('name', f"Citadel {location_id}")
                     structure_cache[location_id_str] = location_name
@@ -854,17 +905,12 @@ def update_blueprint_from_asset_in_wp(blueprint_data, wp_post_id_cache, char_id,
         }
     }
 
-    # Add featured image from type icon
-    type_id = blueprint_data.get('type_id')
-    if type_id:
-        image_url = fetch_type_icon(type_id, size=512)
-        # Check if type icon changed before updating
-        existing_image_url = existing_post.get('meta', {}).get('_thumbnail_external_url') if existing_post else None
-        if existing_image_url != image_url:
+    # Add featured image from type icon (only for new blueprints)
+    if not existing_post:
+        type_id = blueprint_data.get('type_id')
+        if type_id:
+            image_url = fetch_type_icon(type_id, size=512)
             post_data['meta']['_thumbnail_external_url'] = image_url
-            logger.info(f"Updated type icon for blueprint: {type_name}")
-        else:
-            logger.info(f"Type icon unchanged for blueprint: {type_name}")
 
     if existing_post:
         # Check if data has changed before updating
@@ -1048,7 +1094,7 @@ def update_contract_in_wp(contract_id, contract_data, for_corp=False, entity_id=
             '_eve_contract_days_to_complete': contract_data.get('days_to_complete'),
             '_eve_contract_title': contract_data.get('title'),
             '_eve_contract_for_corp': str(for_corp).lower(),
-            '_eve_contract_entity_id': entity_id,
+            '_eve_contract_entity_id': str(entity_id),
             '_eve_last_updated': datetime.now(timezone.utc).isoformat()
         }
     }
@@ -1354,23 +1400,32 @@ def process_corporation_blueprints(corp_id, access_token, char_id, wp_post_id_ca
         )
 
     # From corporation assets
-    corp_assets = fetch_corporation_assets(corp_id, access_token)
-    if corp_assets:
-        asset_blueprints = extract_blueprints_from_assets(corp_assets, 'corp', corp_id, access_token)
-        if asset_blueprints:
-            logger.info(f"Corporation asset blueprints: {len(asset_blueprints)} items")
-            # Process blueprints in parallel
-            process_blueprints_parallel(
-                asset_blueprints,
-                update_blueprint_from_asset_in_wp,
-                wp_post_id_cache,
-                char_id,
-                access_token,
-                blueprint_cache,
-                location_cache,
-                structure_cache,
-                failed_structures
-            )
+    logger.info(f"Fetching corporation assets for {corp_id}...")
+    if SKIP_CORPORATION_ASSETS:
+        logger.info("Skipping corporation assets processing (SKIP_CORPORATION_ASSETS=true)")
+    else:
+        corp_assets = fetch_corporation_assets(corp_id, access_token)
+        if corp_assets:
+            logger.info(f"Fetched {len(corp_assets)} corporation assets")
+            asset_blueprints = extract_blueprints_from_assets(corp_assets, 'corp', corp_id, access_token)
+            if asset_blueprints:
+                logger.info(f"Corporation asset blueprints: {len(asset_blueprints)} items")
+                # Process blueprints in parallel
+                process_blueprints_parallel(
+                    asset_blueprints,
+                    update_blueprint_from_asset_in_wp,
+                    wp_post_id_cache,
+                    char_id,
+                    access_token,
+                    blueprint_cache,
+                    location_cache,
+                    structure_cache,
+                    failed_structures
+                )
+            else:
+                logger.info("No blueprints found in corporation assets")
+        else:
+            logger.info("No corporation assets found or access denied")
 
     # From corporation industry jobs
     corp_industry_jobs = fetch_corporation_industry_jobs(corp_id, access_token)
@@ -1695,8 +1750,12 @@ def update_planet_in_wp(planet_id, planet_data, char_id):
     existing_post = existing_posts[0] if existing_posts else None
 
     # Get planet name from ESI
-    planet_type_data = fetch_public_esi(f"/universe/types/{planet_data.get('type_id')}")
-    planet_name = planet_type_data.get('name', f"Planet {planet_id}") if planet_type_data else f"Planet {planet_id}"
+    type_id = planet_data.get('type_id')
+    if type_id:
+        planet_type_data = fetch_public_esi(f"/universe/types/{type_id}")
+        planet_name = planet_type_data.get('name', f"Planet {planet_id}") if planet_type_data else f"Planet {planet_id}"
+    else:
+        planet_name = f"Planet {planet_id}"
 
     post_data = {
         'title': f"{planet_name} - {char_id}",

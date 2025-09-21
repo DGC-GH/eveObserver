@@ -44,5 +44,8 @@ LOG_FILE = os.getenv('LOG_FILE', 'eve_observer.log')
 # Corporation Filter
 ALLOWED_CORPORATIONS = ['no mercy incorporated']  # Case insensitive
 
+# Processing Options
+SKIP_CORPORATION_ASSETS = os.getenv('SKIP_CORPORATION_ASSETS', 'false').lower() == 'true'
+
 # Rate Limiting
 RATE_LIMIT_BUFFER = 1  # seconds to add as buffer for rate limits
