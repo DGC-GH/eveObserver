@@ -29,6 +29,7 @@ SCOPES = [
     'esi-markets.read_character_orders.v1',
     'esi-contracts.read_character_contracts.v1',
     'esi-skills.read_skills.v1',
+    'esi-universe.read_structures.v1',
 ]
 
 # Load config from .env or set defaults

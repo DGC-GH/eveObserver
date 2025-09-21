@@ -149,7 +149,7 @@ def fetch_character_blueprints(char_id, access_token):
     endpoint = f"/characters/{char_id}/blueprints/"
     return fetch_esi(endpoint, char_id, access_token)
 
-def update_blueprint_in_wp(item_id, blueprint_data, char_id):
+def update_blueprint_in_wp(item_id, blueprint_data, char_id, access_token):
     """Update or create blueprint post in WordPress."""
     slug = f"blueprint-{item_id}"
     # Check if post exists by slug
@@ -178,8 +178,9 @@ def update_blueprint_in_wp(item_id, blueprint_data, char_id):
     
     # Get location name
     if location_id:
-        if location_id >= 1000000000000:  # Structures (citadels, etc.) - require auth, so use generic name
-            location_name = f"Citadel {location_id}"
+        if location_id >= 1000000000000:  # Structures (citadels, etc.) - try auth fetch
+            struct_data = fetch_esi(f"/universe/structures/{location_id}", char_id, access_token)
+            location_name = struct_data.get('name', f"Citadel {location_id}") if struct_data else f"Citadel {location_id}"
         else:  # Stations - public
             loc_data = fetch_public_esi(f"/universe/stations/{location_id}")
             location_name = loc_data.get('name', f"Station {location_id}") if loc_data else f"Station {location_id}"
@@ -241,10 +242,54 @@ def fetch_corporation_assets(corp_id, access_token):
     endpoint = f"/corporations/{corp_id}/assets/"
     return fetch_esi(endpoint, corp_id, access_token)
 
+def update_corporation_in_wp(corp_id, corp_data):
+    """Update or create corporation post in WordPress."""
+    slug = f"corporation-{corp_id}"
+    # Check if post exists by slug
+    response = requests.get(f"{WP_BASE_URL}/wp-json/wp/v2/eve_corporation?slug={slug}", auth=get_wp_auth())
+    existing_posts = response.json() if response.status_code == 200 else []
+    existing_post = existing_posts[0] if existing_posts else None
+
+    post_data = {
+        'title': corp_data.get('name', f"Corporation {corp_id}"),
+        'slug': slug,
+        'status': 'publish',
+        'meta': {
+            '_eve_corp_id': corp_id,
+            '_eve_corp_name': corp_data.get('name'),
+            '_eve_corp_ticker': corp_data.get('ticker'),
+            '_eve_corp_member_count': corp_data.get('member_count'),
+            '_eve_corp_ceo_id': corp_data.get('ceo_id'),
+            '_eve_corp_alliance_id': corp_data.get('alliance_id'),
+            '_eve_corp_tax_rate': corp_data.get('tax_rate'),
+            '_eve_last_updated': datetime.now(timezone.utc).isoformat()
+        }
+    }
+
+    if existing_post:
+        # Update existing
+        post_id = existing_post['id']
+        url = f"{WP_BASE_URL}/wp-json/wp/v2/eve_corporation/{post_id}"
+        response = requests.put(url, json=post_data, auth=get_wp_auth())
+    else:
+        # Create new
+        url = f"{WP_BASE_URL}/wp-json/wp/v2/eve_corporation"
+        response = requests.post(url, json=post_data, auth=get_wp_auth())
+
+    if response.status_code in [200, 201]:
+        print(f"Updated corporation: {corp_data.get('name', corp_id)}")
+    else:
+        print(f"Failed to update corporation {corp_id}: {response.status_code} - {response.text}")
+
 def fetch_planet_details(char_id, planet_id, access_token):
     """Fetch detailed planet information including pins."""
     endpoint = f"/characters/{char_id}/planets/{planet_id}/"
     return fetch_esi(endpoint, char_id, access_token)
+
+def fetch_corporation_data(corp_id, access_token):
+    """Fetch corporation data from ESI."""
+    endpoint = f"/corporations/{corp_id}/"
+    return fetch_esi(endpoint, None, access_token)  # No char_id needed for corp data
 
 def update_planet_in_wp(planet_id, planet_data, char_id):
     """Update or create planet post in WordPress."""
@@ -338,6 +383,8 @@ def main():
         print("No authorized characters found. Run 'python esi_oauth.py authorize' first.")
         return
 
+    processed_corps = set()
+
     for char_id, token_data in tokens.items():
         try:
             expired = datetime.now(timezone.utc) > datetime.fromisoformat(token_data.get('expires_at', '2000-01-01T00:00:00+00:00'))
@@ -362,6 +409,14 @@ def main():
         if char_data:
             update_character_in_wp(char_id, char_data)
 
+            # Fetch corporation data if not already processed
+            corp_id = char_data.get('corporation_id')
+            if corp_id and corp_id not in processed_corps:
+                corp_data = fetch_corporation_data(corp_id, access_token)
+                if corp_data:
+                    update_corporation_in_wp(corp_id, corp_data)
+                    processed_corps.add(corp_id)
+
         # Fetch skills
         skills = fetch_character_skills(char_id, access_token)
         if skills:
@@ -373,7 +428,7 @@ def main():
         if blueprints:
             print(f"Blueprints for {char_name}: {len(blueprints)} items")
             for bp in blueprints:
-                update_blueprint_in_wp(bp['item_id'], bp, char_id)
+                update_blueprint_in_wp(bp['item_id'], bp, char_id, access_token)
 
         # Fetch industry jobs
         jobs = fetch_character_industry_jobs(char_id, access_token)

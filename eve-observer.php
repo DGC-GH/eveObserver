@@ -85,6 +85,21 @@ class EVE_Observer {
             ));
         }
 
+        // Corporation meta fields
+        $corp_meta_fields = array(
+            '_eve_corp_id', '_eve_corp_name', '_eve_corp_ticker', '_eve_corp_member_count',
+            '_eve_corp_ceo_id', '_eve_corp_alliance_id', '_eve_corp_tax_rate', '_eve_last_updated'
+        );
+        $numeric_corp_fields = array('_eve_corp_id', '_eve_corp_member_count', '_eve_corp_ceo_id', '_eve_corp_alliance_id', '_eve_corp_tax_rate');
+        foreach ($corp_meta_fields as $field) {
+            register_meta('post', $field, array(
+                'show_in_rest' => true,
+                'single' => true,
+                'type' => in_array($field, $numeric_corp_fields) ? 'number' : 'string',
+                'auth_callback' => '__return_true'
+            ));
+        }
+
         // Register custom post types
         $this->register_custom_post_types();
     }
@@ -105,6 +120,7 @@ class EVE_Observer {
         add_submenu_page('eve-observer', 'Characters', 'Characters', 'manage_options', 'edit.php?post_type=eve_character');
         add_submenu_page('eve-observer', 'Blueprints', 'Blueprints', 'manage_options', 'edit.php?post_type=eve_blueprint');
         add_submenu_page('eve-observer', 'Planets', 'Planets', 'manage_options', 'edit.php?post_type=eve_planet');
+        add_submenu_page('eve-observer', 'Corporations', 'Corporations', 'manage_options', 'edit.php?post_type=eve_corporation');
     }
 
     public function enqueue_admin_scripts($hook) {
@@ -181,6 +197,24 @@ class EVE_Observer {
                 echo '<p>No planet data available.</p>';
             }
             ?>
+
+            <!-- Corporations -->
+            <h2><?php _e('Corporations', 'eve-observer'); ?></h2>
+            <?php
+            $corporations = get_posts(array('post_type' => 'eve_corporation', 'numberposts' => -1));
+            if ($corporations) {
+                echo '<p>Total Corporations: ' . count($corporations) . '</p>';
+                echo '<ul>';
+                foreach ($corporations as $corp) {
+                    $corp_id = get_post_meta($corp->ID, '_eve_corp_id', true);
+                    $ticker = get_post_meta($corp->ID, '_eve_corp_ticker', true);
+                    echo '<li>' . esc_html($corp->post_title) . ' [' . esc_html($ticker) . '] (ID: ' . esc_html($corp_id) . ')</li>';
+                }
+                echo '</ul>';
+            } else {
+                echo '<p>No corporation data available.</p>';
+            }
+            ?>
         </div>
         <?php
     }
@@ -227,6 +261,18 @@ class EVE_Observer {
             'labels' => array(
                 'name' => __('Planets', 'eve-observer'),
                 'singular_name' => __('Planet', 'eve-observer'),
+            ),
+            'public' => true,
+            'supports' => array('title', 'editor', 'custom-fields'),
+            'show_in_rest' => true,
+            'show_in_menu' => false,
+        ));
+
+        // Corporation CPT
+        register_post_type('eve_corporation', array(
+            'labels' => array(
+                'name' => __('Corporations', 'eve-observer'),
+                'singular_name' => __('Corporation', 'eve-observer'),
             ),
             'public' => true,
             'supports' => array('title', 'editor', 'custom-fields'),
@@ -409,6 +455,73 @@ class EVE_Observer {
                         'param' => 'post_type',
                         'operator' => '==',
                         'value' => 'eve_planet',
+                    ),
+                ),
+            ),
+        ));
+
+        // Corporation Fields
+        acf_add_local_field_group(array(
+            'key' => 'group_eve_corporation',
+            'title' => 'Corporation Information',
+            'fields' => array(
+                array(
+                    'key' => 'field_corp_id',
+                    'label' => 'Corporation ID',
+                    'name' => '_eve_corp_id',
+                    'type' => 'text',
+                    'show_in_rest' => true,
+                ),
+                array(
+                    'key' => 'field_corp_name',
+                    'label' => 'Corporation Name',
+                    'name' => '_eve_corp_name',
+                    'type' => 'text',
+                    'show_in_rest' => true,
+                ),
+                array(
+                    'key' => 'field_corp_ticker',
+                    'label' => 'Ticker',
+                    'name' => '_eve_corp_ticker',
+                    'type' => 'text',
+                    'show_in_rest' => true,
+                ),
+                array(
+                    'key' => 'field_corp_member_count',
+                    'label' => 'Member Count',
+                    'name' => '_eve_corp_member_count',
+                    'type' => 'number',
+                    'show_in_rest' => true,
+                ),
+                array(
+                    'key' => 'field_corp_ceo_id',
+                    'label' => 'CEO ID',
+                    'name' => '_eve_corp_ceo_id',
+                    'type' => 'text',
+                    'show_in_rest' => true,
+                ),
+                array(
+                    'key' => 'field_corp_alliance_id',
+                    'label' => 'Alliance ID',
+                    'name' => '_eve_corp_alliance_id',
+                    'type' => 'text',
+                    'show_in_rest' => true,
+                ),
+                array(
+                    'key' => 'field_corp_tax_rate',
+                    'label' => 'Tax Rate',
+                    'name' => '_eve_corp_tax_rate',
+                    'type' => 'number',
+                    'step' => 0.01,
+                    'show_in_rest' => true,
+                ),
+            ),
+            'location' => array(
+                array(
+                    array(
+                        'param' => 'post_type',
+                        'operator' => '==',
+                        'value' => 'eve_corporation',
                     ),
                 ),
             ),
