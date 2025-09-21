@@ -1134,18 +1134,14 @@ class EVE_Observer {
             
             // Build EVE chat link for clipboard copying
             $eve_chat_link = '';
-            if ($is_outbid && !empty($contract_id) && !empty($start_location_id) && !empty($contract_title)) {
+            if (!empty($contract_id) && !empty($start_location_id) && !empty($contract_title)) {
                 $eve_chat_link = "<a href=\"contract:{$start_location_id}//{$contract_id}\">" . esc_html($contract_title) . "</a>";
             }
             
-            // Make contract ID clickable to open in EVE client
-            $eve_client_url = "eve://app/contract/{$contract_id}";
-            $clickable_id = "<a href='" . esc_url($eve_client_url) . "' target='_blank' style='color: #0073aa; text-decoration: none;' title='Open in EVE Client'>" . esc_html($contract_id) . "</a>";
-            
             echo "<div style='display: flex; align-items: center; gap: 8px;'>";
             
-            // Make status clickable for clipboard copy if outbid
-            if ($is_outbid && !empty($eve_chat_link)) {
+            // Make status always clickable for clipboard copy
+            if (!empty($eve_chat_link)) {
                 echo "<span style='color: " . esc_attr($color) . "; font-weight: bold; cursor: pointer;' onclick='copyToClipboard(\"" . esc_js($eve_chat_link) . "\")' title='Click to copy EVE chat link'>" . esc_html($icon . ' ' . $status_text) . "</span>";
             } else {
                 echo "<span style='color: " . esc_attr($color) . "; font-weight: bold;'>" . esc_html($icon . ' ' . $status_text) . "</span>";
@@ -1155,7 +1151,12 @@ class EVE_Observer {
                 $formatted_price = number_format((float)$market_price, 2);
                 echo "<span style='color: #666; font-size: 12px;'>Market: " . esc_html($formatted_price) . " ISK</span>";
             }
-            echo "<span style='color: #666; font-size: 12px;'>ID: " . $clickable_id . "</span>";
+            
+            // Replace ID link with copy to clipboard button
+            if (!empty($contract_id)) {
+                echo "<span style='color: #666; font-size: 12px; cursor: pointer;' onclick='copyToClipboard(\"" . esc_js($contract_id) . "\")' title='Click to copy contract ID'>📋 " . esc_html($contract_id) . "</span>";
+            }
+            
             echo "</div>";
         }
     }
@@ -1165,16 +1166,10 @@ class EVE_Observer {
         return $columns;
     }
 
-    public function sort_outbid_column($query) {
-        if (!is_admin() || !$query->is_main_query()) {
-            return;
-        }
-        
-        if ($query->get('orderby') === 'outbid') {
-            $query->set('meta_key', '_eve_contract_outbid');
-            $query->set('orderby', 'meta_value');
-            // Sort 'true' before 'false' (outbid contracts first)
-            $query->set('meta_type', 'CHAR');
+    public function enqueue_admin_scripts($hook) {
+        // Only load on edit.php for contracts post type
+        if ($hook === 'edit.php' && isset($_GET['post_type']) && $_GET['post_type'] === 'contracts') {
+            wp_enqueue_script('eve-observer-admin', plugin_dir_url(__FILE__) . 'js/admin-scripts.js', array('jquery'), '1.0.0', true);
         }
     }
 }
