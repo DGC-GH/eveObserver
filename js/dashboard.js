@@ -3,54 +3,74 @@ document.addEventListener('DOMContentLoaded', function() {
     loadDashboardData();
 });
 
+// Global variables for pagination
+let currentPage = {
+    blueprints: 1,
+    planets: 1
+};
+const itemsPerPage = 10;
+let isInitialLoad = true;
+
 function loadDashboardData() {
     Promise.all([
-        fetch('/wp-json/wp/v2/eve_character').then(r => r.json()),
-        fetch('/wp-json/wp/v2/eve_blueprint').then(r => r.json()),
-        fetch('/wp-json/wp/v2/eve_planet').then(r => r.json())
+        fetch('/wp-json/wp/v2/eve_character?per_page=100').then(r => r.json()),
+        fetch(`/wp-json/wp/v2/eve_blueprint?per_page=${itemsPerPage}&page=${currentPage.blueprints}`).then(r => r.json()),
+        fetch(`/wp-json/wp/v2/eve_planet?per_page=${itemsPerPage}&page=${currentPage.planets}`).then(r => r.json())
     ]).then(([characters, blueprints, planets]) => {
-        displayChart(characters.length, blueprints.length, planets.length);
+        if (isInitialLoad) {
+            displayChart(characters.length, blueprints.length, planets.length);
+            isInitialLoad = false;
+        }
         loadPIDashboard(planets);
+        loadBlueprintDashboard(blueprints);
     }).catch(error => {
         console.error('Error loading data:', error);
     });
 }
 
-function displayChart(charCount, bpCount, planetCount) {
-    const ctx = document.getElementById('eveChart').getContext('2d');
-    const eveChart = new Chart(ctx, {
-        type: 'bar',
-        data: {
-            labels: ['Characters', 'Blueprints', 'Planets'],
-            datasets: [{
-                label: 'Count',
-                data: [charCount, bpCount, planetCount],
-                backgroundColor: [
-                    'rgba(255, 99, 132, 0.2)',
-                    'rgba(54, 162, 235, 0.2)',
-                    'rgba(255, 206, 86, 0.2)'
-                ],
-                borderColor: [
-                    'rgba(255, 99, 132, 1)',
-                    'rgba(54, 162, 235, 1)',
-                    'rgba(255, 206, 86, 1)'
-                ],
-                borderWidth: 1
-            }]
-        },
-        options: {
-            scales: {
-                y: {
-                    beginAtZero: true
-                }
-            }
-        }
+function loadBlueprintDashboard(blueprints) {
+    let container = document.getElementById('blueprint-dashboard');
+    if (!container) {
+        container = document.createElement('div');
+        container.id = 'blueprint-dashboard';
+        document.querySelector('.wrap').appendChild(container);
+    }
+    container.innerHTML = '<h3>Blueprint Dashboard</h3>';
+
+    if (blueprints.length === 0) {
+        container.innerHTML += '<p>No blueprint data available.</p>';
+        return;
+    }
+
+    // Create blueprint list
+    const blueprintList = document.createElement('div');
+    blueprintList.id = 'blueprint-list';
+
+    blueprints.forEach(blueprint => {
+        const bpDiv = document.createElement('div');
+        bpDiv.className = 'blueprint-item';
+        bpDiv.innerHTML = `<h4>${blueprint.title.rendered}</h4>
+                           <p>Type ID: ${blueprint.meta._eve_blueprint_type_id || 'Unknown'}</p>
+                           <p>Location: ${blueprint.meta._eve_blueprint_location || 'Unknown'}</p>
+                           <p>Material Efficiency: ${blueprint.meta._eve_blueprint_me || 'N/A'}%</p>
+                           <p>Time Efficiency: ${blueprint.meta._eve_blueprint_te || 'N/A'}%</p>`;
+        blueprintList.appendChild(bpDiv);
     });
+
+    container.appendChild(blueprintList);
+
+    // Add pagination controls
+    const paginationControls = createPaginationControls('blueprints', blueprints.length === itemsPerPage);
+    container.appendChild(paginationControls);
 }
 
 function loadPIDashboard(planets) {
-    const container = document.createElement('div');
-    container.id = 'pi-dashboard';
+    let container = document.getElementById('pi-dashboard');
+    if (!container) {
+        container = document.createElement('div');
+        container.id = 'pi-dashboard';
+        document.querySelector('.wrap').appendChild(container);
+    }
     container.innerHTML = '<h3>Planet Interaction Dashboard</h3>';
 
     if (planets.length === 0) {
@@ -91,7 +111,9 @@ function loadPIDashboard(planets) {
         container.appendChild(planetDiv);
     });
 
-    document.querySelector('.wrap').appendChild(container);
+    // Add pagination controls
+    const paginationControls = createPaginationControls('planets', planets.length === itemsPerPage);
+    container.appendChild(paginationControls);
 }
 
 function startTimer(expiryTime, elementId) {
@@ -117,4 +139,31 @@ function startTimer(expiryTime, elementId) {
 
     updateTimer();
     setInterval(updateTimer, 1000);
+}
+
+function createPaginationControls(dataType, hasNextPage) {
+    const controls = document.createElement('div');
+    controls.className = 'pagination-controls';
+    controls.innerHTML = `
+        <button id="prev-${dataType}" ${currentPage[dataType] === 1 ? 'disabled' : ''}>Previous</button>
+        <span>Page ${currentPage[dataType]}</span>
+        <button id="next-${dataType}" ${!hasNextPage ? 'disabled' : ''}>Next</button>
+    `;
+
+    // Add event listeners
+    controls.querySelector(`#prev-${dataType}`).addEventListener('click', () => {
+        if (currentPage[dataType] > 1) {
+            currentPage[dataType]--;
+            loadDashboardData();
+        }
+    });
+
+    controls.querySelector(`#next-${dataType}`).addEventListener('click', () => {
+        if (hasNextPage) {
+            currentPage[dataType]++;
+            loadDashboardData();
+        }
+    });
+
+    return controls;
 }

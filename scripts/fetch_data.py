@@ -12,42 +12,20 @@ from dotenv import load_dotenv
 import smtplib
 from email.mime.text import MIMEText
 import logging
+from config import *
 
 load_dotenv()
 
 # Configure logging
 logging.basicConfig(
-    level=logging.INFO,
+    level=getattr(logging, LOG_LEVEL),
     format='%(asctime)s - %(levelname)s - %(message)s',
     handlers=[
-        logging.FileHandler('eve_observer.log'),
+        logging.FileHandler(LOG_FILE),
         logging.StreamHandler()
     ]
 )
 logger = logging.getLogger(__name__)
-
-# Configuration
-WP_BASE_URL = os.getenv('WP_URL', 'https://your-wordpress-site.com')
-WP_USERNAME = os.getenv('WP_USERNAME')
-WP_APP_PASSWORD = os.getenv('WP_APP_PASSWORD')
-
-# Email configuration
-EMAIL_SMTP_SERVER = os.getenv('EMAIL_SMTP_SERVER')
-EMAIL_SMTP_PORT = int(os.getenv('EMAIL_SMTP_PORT', 587))
-EMAIL_USERNAME = os.getenv('EMAIL_USERNAME')
-EMAIL_PASSWORD = os.getenv('EMAIL_PASSWORD')
-EMAIL_FROM = os.getenv('EMAIL_FROM')
-EMAIL_TO = os.getenv('EMAIL_TO')
-
-ESI_BASE_URL = 'https://esi.evetech.net/latest'
-
-# Files
-TOKENS_FILE = 'esi_tokens.json'
-CACHE_DIR = 'cache'
-BLUEPRINT_CACHE_FILE = os.path.join(CACHE_DIR, 'blueprint_names.json')
-LOCATION_CACHE_FILE = os.path.join(CACHE_DIR, 'location_names.json')
-STRUCTURE_CACHE_FILE = os.path.join(CACHE_DIR, 'structure_names.json')
-FAILED_STRUCTURES_FILE = os.path.join(CACHE_DIR, 'failed_structures.json')
 # WordPress post ID cache
 WP_POST_ID_CACHE_FILE = os.path.join(CACHE_DIR, 'wp_post_ids.json')
 
@@ -132,7 +110,7 @@ def process_blueprints_parallel(blueprints, update_func, wp_post_id_cache, *args
     from concurrent.futures import ThreadPoolExecutor, as_completed
     import time
 
-    max_workers = 3  # Limit concurrent requests to avoid rate limiting
+    max_workers = ESI_MAX_WORKERS  # Limit concurrent requests to avoid rate limiting
     results = []
 
     with ThreadPoolExecutor(max_workers=max_workers) as executor:
@@ -175,7 +153,7 @@ def send_email(subject, body):
     except Exception as e:
         logger.error(f"Failed to send email: {e}")
 
-def fetch_public_esi(endpoint, max_retries=3):
+def fetch_public_esi(endpoint, max_retries=ESI_MAX_RETRIES):
     """Fetch data from ESI API (public endpoints, no auth) with rate limiting and error handling."""
     import time
 
@@ -183,7 +161,7 @@ def fetch_public_esi(endpoint, max_retries=3):
 
     for attempt in range(max_retries):
         try:
-            response = requests.get(url, timeout=30)
+            response = requests.get(url, timeout=ESI_TIMEOUT)
 
             if response.status_code == 200:
                 return response.json()
@@ -253,7 +231,7 @@ def fetch_public_esi(endpoint, max_retries=3):
 
     return None
 
-def fetch_esi(endpoint, char_id, access_token, max_retries=3):
+def fetch_esi(endpoint, char_id, access_token, max_retries=ESI_MAX_RETRIES):
     """Fetch data from ESI API with rate limiting and error handling."""
     import time
 
@@ -262,7 +240,7 @@ def fetch_esi(endpoint, char_id, access_token, max_retries=3):
 
     for attempt in range(max_retries):
         try:
-            response = requests.get(url, headers=headers, timeout=30)
+            response = requests.get(url, headers=headers, timeout=ESI_TIMEOUT)
 
             if response.status_code == 200:
                 return response.json()
@@ -1074,7 +1052,7 @@ def cleanup_old_posts():
     logger.info("Starting cleanup of old posts...")
 
     # Clean up contract posts (delete finished/deleted contracts)
-    response = requests.get(f"{WP_BASE_URL}/wp-json/wp/v2/eve_contract", auth=get_wp_auth(), params={'per_page': 100})
+    response = requests.get(f"{WP_BASE_URL}/wp-json/wp/v2/eve_contract", auth=get_wp_auth(), params={'per_page': WP_PER_PAGE})
     if response.status_code == 200:
         contracts = response.json()
         for contract in contracts:
@@ -1090,7 +1068,7 @@ def cleanup_old_posts():
                 logger.info(f"EXPIRED CONTRACT TO DELETE MANUALLY: {title} (ID: {contract_id})")
 
     # Clean up blueprint posts (only keep those from No Mercy incorporated or characters)
-    response = requests.get(f"{WP_BASE_URL}/wp-json/wp/v2/eve_blueprint", auth=get_wp_auth(), params={'per_page': 100})
+    response = requests.get(f"{WP_BASE_URL}/wp-json/wp/v2/eve_blueprint", auth=get_wp_auth(), params={'per_page': WP_PER_PAGE})
     if response.status_code == 200:
         blueprints = response.json()
         for bp in blueprints:
@@ -1197,25 +1175,8 @@ def fetch_market_orders(region_id, type_id):
             logger.error(f"ESI API error for market orders: {response.status_code} - {response.text}")
             return None
 
-def main():
-    """Main data fetching routine."""
-    # Load caches at the beginning
-    blueprint_cache = load_blueprint_cache()
-    location_cache = load_location_cache()
-    structure_cache = load_structure_cache()
-    failed_structures = load_failed_structures()
-    wp_post_id_cache = load_wp_post_id_cache()
-    wp_post_id_cache = load_wp_post_id_cache()
-
-    # Clean up old posts first
-    cleanup_old_posts()
-
-    tokens = load_tokens()
-    if not tokens:
-        logger.error("No authorized characters found. Run 'python esi_oauth.py authorize' first.")
-        return
-
-    # Collect all corporations and their member characters
+def collect_corporation_members(tokens):
+    """Collect all corporations and their member characters from authorized tokens."""
     corp_members = {}
     for char_id, token_data in tokens.items():
         try:
@@ -1244,277 +1205,342 @@ def main():
                     corp_members[corp_id] = []
                 corp_members[corp_id].append((char_id, access_token, char_name))
 
+    return corp_members
+
+def main():
+    """Main data fetching routine."""
+    # Load caches at the beginning
+    blueprint_cache = load_blueprint_cache()
+    location_cache = load_location_cache()
+    structure_cache = load_structure_cache()
+    failed_structures = load_failed_structures()
+    wp_post_id_cache = load_wp_post_id_cache()
+
+    # Clean up old posts first
+    cleanup_old_posts()
+
+    tokens = load_tokens()
+    if not tokens:
+        logger.error("No authorized characters found. Run 'python esi_oauth.py authorize' first.")
+        return
+
+    # Collect all corporations and their member characters
+    corp_members = collect_corporation_members(tokens)
+
     # Process each corporation with any available member token
     processed_corps = set()
     for corp_id, members in corp_members.items():
         if corp_id in processed_corps:
             continue
 
-        # Try each member until we successfully fetch corp data
-        corp_data = None
-        successful_token = None
-        successful_char_name = None
-        successful_char_id = None
+        # Process data for the corporation and its members
+        process_corporation_data(corp_id, members, wp_post_id_cache, blueprint_cache, location_cache, structure_cache, failed_structures)
 
-        for char_id, access_token, char_name in members:
-            logger.info(f"Trying to fetch corporation data for corp {corp_id} using {char_name}'s token...")
-            corp_data = fetch_corporation_data(corp_id, access_token)
-            if corp_data:
-                successful_token = access_token
-                successful_char_name = char_name
-                successful_char_id = char_id
-                logger.info(f"Successfully fetched corporation data using {char_name}'s token")
-                break
-            else:
-                logger.warning(f"Failed to fetch corporation data using {char_name}'s token (likely no access)")
-
-        if corp_data:
-            corp_name = corp_data.get('name', '')
-            if corp_name.lower() != 'no mercy incorporated':
-                logger.info(f"Skipping corporation: {corp_name} (only processing No Mercy incorporated)")
-                continue
-
-            update_corporation_in_wp(corp_id, corp_data)
-            processed_corps.add(corp_id)
-
-            # Fetch corporation blueprints from various sources
-            logger.info(f"Fetching corporation blueprints for {corp_data.get('name', corp_id)}...")
-            
-            # From corporation blueprints endpoint
-            corp_blueprints = fetch_corporation_blueprints(corp_id, successful_token)
-            if corp_blueprints:
-                logger.info(f"Corporation blueprints: {len(corp_blueprints)} items")
-                # Process blueprints in parallel
-                process_blueprints_parallel(
-                    corp_blueprints, 
-                    update_blueprint_in_wp, 
-                    wp_post_id_cache,
-                    successful_char_id, 
-                    successful_token,
-                    blueprint_cache,
-                    location_cache,
-                    structure_cache,
-                    failed_structures
-                )
-            
-            # From corporation assets
-            corp_assets = fetch_corporation_assets(corp_id, successful_token)
-            if corp_assets:
-                asset_blueprints = extract_blueprints_from_assets(corp_assets, 'corp', corp_id, successful_token)
-                if asset_blueprints:
-                    logger.info(f"Corporation asset blueprints: {len(asset_blueprints)} items")
-                    # Process blueprints in parallel
-                    process_blueprints_parallel(
-                        asset_blueprints,
-                        update_blueprint_from_asset_in_wp,
-                        wp_post_id_cache,
-                        successful_token,
-                        blueprint_cache,
-                        location_cache,
-                        structure_cache,
-                        failed_structures
-                    )
-            
-            # From corporation industry jobs
-            corp_industry_jobs = fetch_corporation_industry_jobs(corp_id, successful_token)
-            if corp_industry_jobs:
-                job_blueprints = extract_blueprints_from_industry_jobs(corp_industry_jobs, 'corp', corp_id)
-                if job_blueprints:
-                    logger.info(f"Corporation industry job blueprints: {len(job_blueprints)} items")
-                    # Process blueprints in parallel
-                    process_blueprints_parallel(
-                        job_blueprints,
-                        update_blueprint_from_asset_in_wp,
-                        wp_post_id_cache,
-                        successful_token,
-                        blueprint_cache,
-                        location_cache,
-                        structure_cache,
-                        failed_structures
-                    )
-            
-            # From corporation contracts (blueprints already processed above)
-            corp_contracts = fetch_corporation_contracts(corp_id, successful_token)
-            if corp_contracts:
-                logger.info(f"Corporation contracts for {corp_data.get('name', corp_id)}: {len(corp_contracts)} items")
-                contract_blueprints = extract_blueprints_from_contracts(corp_contracts, 'corp', corp_id)
-                if contract_blueprints:
-                    logger.info(f"Corporation contract blueprints: {len(contract_blueprints)} items")
-                    # Process blueprints in parallel
-                    process_blueprints_parallel(
-                        contract_blueprints,
-                        update_blueprint_from_asset_in_wp,
-                        wp_post_id_cache,
-                        successful_token,
-                        blueprint_cache,
-                        location_cache,
-                        structure_cache,
-                        failed_structures
-                    )
-                
-                for contract in corp_contracts:
-                    contract_status = contract.get('status', '')
-                    if contract_status in ['finished', 'deleted']:
-                        logger.info(f"Deleting finished/deleted corporation contract: {contract['contract_id']}")
-                        # Find and delete the WordPress post
-                        slug = f"contract-{contract['contract_id']}"
-                        response = requests.get(f"{WP_BASE_URL}/wp-json/wp/v2/eve_contract?slug={slug}", auth=get_wp_auth())
-                        if response.status_code == 200:
-                            posts = response.json()
-                            if posts:
-                                delete_wp_post('eve_contract', posts[0]['id'])
-                        continue
-                    elif contract_status == 'expired':
-                        logger.info(f"EXPIRED CORPORATION CONTRACT TO DELETE MANUALLY: {contract['contract_id']}")
-                    update_contract_in_wp(contract['contract_id'], contract, for_corp=True, entity_id=corp_id)
+        processed_corps.add(corp_id)
 
     # Now process individual character data (skills, blueprints, etc.)
     for char_id, token_data in tokens.items():
-        access_token = token_data['access_token']
-        char_name = token_data['name']
+        process_character_data(char_id, token_data, wp_post_id_cache, blueprint_cache, location_cache, structure_cache, failed_structures)
 
-        logger.info(f"Fetching additional data for {char_name}...")
+def process_corporation_data(corp_id, members, wp_post_id_cache, blueprint_cache, location_cache, structure_cache, failed_structures):
+    """Process data for a single corporation and its members."""
+    # Try each member until we successfully fetch corp data
+    corp_data = None
+    successful_token = None
+    successful_char_name = None
+    successful_char_id = None
 
-        # Fetch skills
-        skills = fetch_character_skills(char_id, access_token)
-        if skills:
-            # Update character with skills data
-            update_character_skills_in_wp(char_id, skills)
-            logger.info(f"Skills for {char_name}: {skills['total_sp']} SP")
+    for char_id, access_token, char_name in members:
+        logger.info(f"Trying to fetch corporation data for corp {corp_id} using {char_name}'s token...")
+        corp_data = fetch_corporation_data(corp_id, access_token)
+        if corp_data:
+            successful_token = access_token
+            successful_char_name = char_name
+            successful_char_id = char_id
+            logger.info(f"Successfully fetched corporation data using {char_name}'s token")
+            break
+        else:
+            logger.warning(f"Failed to fetch corporation data using {char_name}'s token (likely no access)")
 
-        # Fetch blueprints from all sources
-        logger.info(f"Fetching blueprints for {char_name}...")
-        
-        # From character blueprints endpoint
-        blueprints = fetch_character_blueprints(char_id, access_token)
-        if blueprints:
-            logger.info(f"Character blueprints: {len(blueprints)} items")
+    if not corp_data:
+        return
+
+    corp_name = corp_data.get('name', '')
+    if corp_name.lower() not in ALLOWED_CORPORATIONS:
+        logger.info(f"Skipping corporation: {corp_name} (only processing {ALLOWED_CORPORATIONS})")
+        return
+
+    update_corporation_in_wp(corp_id, corp_data)
+
+    # Process corporation blueprints from various sources
+    process_corporation_blueprints(corp_id, successful_token, successful_char_id, wp_post_id_cache, blueprint_cache, location_cache, structure_cache, failed_structures)
+
+    # Process corporation contracts
+    process_corporation_contracts(corp_id, successful_token, corp_data)
+
+def process_corporation_blueprints(corp_id, access_token, char_id, wp_post_id_cache, blueprint_cache, location_cache, structure_cache, failed_structures):
+    """Process all blueprint sources for a corporation."""
+    logger.info(f"Fetching corporation blueprints for {corp_id}...")
+
+    # From corporation blueprints endpoint
+    corp_blueprints = fetch_corporation_blueprints(corp_id, access_token)
+    if corp_blueprints:
+        logger.info(f"Corporation blueprints: {len(corp_blueprints)} items")
+        # Process blueprints in parallel
+        process_blueprints_parallel(
+            corp_blueprints,
+            update_blueprint_in_wp,
+            wp_post_id_cache,
+            char_id,
+            access_token,
+            blueprint_cache,
+            location_cache,
+            structure_cache,
+            failed_structures
+        )
+
+    # From corporation assets
+    corp_assets = fetch_corporation_assets(corp_id, access_token)
+    if corp_assets:
+        asset_blueprints = extract_blueprints_from_assets(corp_assets, 'corp', corp_id, access_token)
+        if asset_blueprints:
+            logger.info(f"Corporation asset blueprints: {len(asset_blueprints)} items")
             # Process blueprints in parallel
             process_blueprints_parallel(
-                blueprints,
-                update_blueprint_in_wp,
+                asset_blueprints,
+                update_blueprint_from_asset_in_wp,
                 wp_post_id_cache,
-                char_id,
                 access_token,
                 blueprint_cache,
                 location_cache,
                 structure_cache,
                 failed_structures
             )
-        
-        # From character assets
-        char_assets = fetch_character_assets(char_id, access_token)
-        if char_assets:
-            asset_blueprints = extract_blueprints_from_assets(char_assets, 'char', char_id, access_token)
-            if asset_blueprints:
-                logger.info(f"Character asset blueprints: {len(asset_blueprints)} items")
-                # Process blueprints in parallel
-                process_blueprints_parallel(
-                    asset_blueprints,
-                    update_blueprint_from_asset_in_wp,
-                    wp_post_id_cache,
-                    access_token,
-                    blueprint_cache,
-                    location_cache,
-                    structure_cache,
-                    failed_structures
-                )
-        
-        # From character industry jobs (blueprints already processed above)
-        jobs = fetch_character_industry_jobs(char_id, access_token)
-        if jobs:
-            logger.info(f"Industry jobs for {char_name}: {len(jobs)} active")
-            job_blueprints = extract_blueprints_from_industry_jobs(jobs, 'char', char_id)
-            if job_blueprints:
-                logger.info(f"Character industry job blueprints: {len(job_blueprints)} items")
-                # Process blueprints in parallel
-                process_blueprints_parallel(
-                    job_blueprints,
-                    update_blueprint_from_asset_in_wp,
-                    wp_post_id_cache,
-                    access_token,
-                    blueprint_cache,
-                    location_cache,
-                    structure_cache,
-                    failed_structures
-                )
-            
-            # Check for job completions
-            now = datetime.now(timezone.utc)
-            upcoming_completions = []
-            for job in jobs:
-                if 'end_date' in job:
-                    end_date = datetime.fromisoformat(job['end_date'].replace('Z', '+00:00'))
-                    if now <= end_date <= now + timedelta(hours=24):
-                        upcoming_completions.append(job)
 
-            if upcoming_completions:
-                subject = f"EVE Alert: {len(upcoming_completions)} industry jobs ending soon for {char_name}"
-                body = f"The following jobs will complete within 24 hours:\n\n"
-                for job in upcoming_completions:
-                    body += f"- Job ID {job['job_id']}: {job.get('activity_id', 'Unknown')} ending {job['end_date']}\n"
-                send_email(subject, body)
+    # From corporation industry jobs
+    corp_industry_jobs = fetch_corporation_industry_jobs(corp_id, access_token)
+    if corp_industry_jobs:
+        job_blueprints = extract_blueprints_from_industry_jobs(corp_industry_jobs, 'corp', corp_id)
+        if job_blueprints:
+            logger.info(f"Corporation industry job blueprints: {len(job_blueprints)} items")
+            # Process blueprints in parallel
+            process_blueprints_parallel(
+                job_blueprints,
+                update_blueprint_from_asset_in_wp,
+                wp_post_id_cache,
+                access_token,
+                blueprint_cache,
+                location_cache,
+                structure_cache,
+                failed_structures
+            )
 
-        # Fetch planets
-        planets = fetch_character_planets(char_id, access_token)
-        if planets:
-            logger.info(f"Planets for {char_name}: {len(planets)} colonies")
-            for planet in planets:
-                planet_id = planet['planet_id']
-                # Fetch details
-                details = fetch_planet_details(char_id, planet_id, access_token)
-                if details:
-                    planet.update(details)
-                    # Check for extraction completions
-                    now = datetime.now(timezone.utc)
-                    upcoming_extractions = []
-                    for pin in details.get('pins', []):
-                        if 'expiry_time' in pin:
-                            expiry = datetime.fromisoformat(pin['expiry_time'].replace('Z', '+00:00'))
-                            if now <= expiry <= now + timedelta(hours=24):
-                                upcoming_extractions.append(pin)
-                    if upcoming_extractions:
-                        subject = f"EVE Alert: {len(upcoming_extractions)} PI extractions ending soon for {char_name}"
-                        body = f"The following extractions will complete within 24 hours:\n\n"
-                        for pin in upcoming_extractions:
-                            body += f"- Pin {pin['pin_id']}: Type {pin.get('type_id', 'Unknown')} ending {pin['expiry_time']}\n"
-                        send_email(subject, body)
-                update_planet_in_wp(planet_id, planet, char_id)
+    # From corporation contracts (blueprints already processed above)
+    corp_contracts = fetch_corporation_contracts(corp_id, access_token)
+    if corp_contracts:
+        contract_blueprints = extract_blueprints_from_contracts(corp_contracts, 'corp', corp_id)
+        if contract_blueprints:
+            logger.info(f"Corporation contract blueprints: {len(contract_blueprints)} items")
+            # Process blueprints in parallel
+            process_blueprints_parallel(
+                contract_blueprints,
+                update_blueprint_from_asset_in_wp,
+                wp_post_id_cache,
+                access_token,
+                blueprint_cache,
+                location_cache,
+                structure_cache,
+                failed_structures
+            )
 
-        # Fetch character contracts (blueprints already processed above)
-        char_contracts = fetch_character_contracts(char_id, access_token)
-        if char_contracts:
-            logger.info(f"Character contracts for {char_name}: {len(char_contracts)} items")
-            contract_blueprints = extract_blueprints_from_contracts(char_contracts, 'char', char_id)
-            if contract_blueprints:
-                logger.info(f"Character contract blueprints: {len(contract_blueprints)} items")
-                # Process blueprints in parallel
-                process_blueprints_parallel(
-                    contract_blueprints,
-                    update_blueprint_from_asset_in_wp,
-                    wp_post_id_cache,
-                    access_token,
-                    blueprint_cache,
-                    location_cache,
-                    structure_cache,
-                    failed_structures
-                )
-            
-            for contract in char_contracts:
-                contract_status = contract.get('status', '')
-                if contract_status in ['finished', 'deleted']:
-                    logger.info(f"Deleting finished/deleted character contract: {contract['contract_id']}")
-                    # Find and delete the WordPress post
-                    slug = f"contract-{contract['contract_id']}"
-                    response = requests.get(f"{WP_BASE_URL}/wp-json/wp/v2/eve_contract?slug={slug}", auth=get_wp_auth())
-                    if response.status_code == 200:
-                        posts = response.json()
-                        if posts:
-                            delete_wp_post('eve_contract', posts[0]['id'])
-                    continue
-                elif contract_status == 'expired':
-                    logger.info(f"EXPIRED CHARACTER CONTRACT TO DELETE MANUALLY: {contract['contract_id']}")
-                update_contract_in_wp(contract['contract_id'], contract, for_corp=False, entity_id=char_id)
+def process_corporation_contracts(corp_id, access_token, corp_data):
+    """Process contracts for a corporation."""
+    corp_contracts = fetch_corporation_contracts(corp_id, access_token)
+    if corp_contracts:
+        logger.info(f"Corporation contracts for {corp_data.get('name', corp_id)}: {len(corp_contracts)} items")
+        for contract in corp_contracts:
+            contract_status = contract.get('status', '')
+            if contract_status in ['finished', 'deleted']:
+                logger.info(f"Deleting finished/deleted corporation contract: {contract['contract_id']}")
+                # Find and delete the WordPress post
+                slug = f"contract-{contract['contract_id']}"
+                response = requests.get(f"{WP_BASE_URL}/wp-json/wp/v2/eve_contract?slug={slug}", auth=get_wp_auth())
+                if response.status_code == 200:
+                    posts = response.json()
+                    if posts:
+                        delete_wp_post('eve_contract', posts[0]['id'])
+                continue
+            elif contract_status == 'expired':
+                logger.info(f"EXPIRED CORPORATION CONTRACT TO DELETE MANUALLY: {contract['contract_id']}")
+            update_contract_in_wp(contract['contract_id'], contract, for_corp=True, entity_id=corp_id)
+
+def process_character_data(char_id, token_data, wp_post_id_cache, blueprint_cache, location_cache, structure_cache, failed_structures):
+    """Process data for a single character."""
+    access_token = token_data['access_token']
+    char_name = token_data['name']
+
+    logger.info(f"Fetching additional data for {char_name}...")
+
+    # Fetch skills
+    skills = fetch_character_skills(char_id, access_token)
+    if skills:
+        # Update character with skills data
+        update_character_skills_in_wp(char_id, skills)
+        logger.info(f"Skills for {char_name}: {skills['total_sp']} SP")
+
+    # Process character blueprints from all sources
+    process_character_blueprints(char_id, access_token, char_name, wp_post_id_cache, blueprint_cache, location_cache, structure_cache, failed_structures)
+
+    # Process character planets
+    process_character_planets(char_id, access_token, char_name)
+
+    # Process character contracts
+    process_character_contracts(char_id, access_token, char_name, wp_post_id_cache, blueprint_cache, location_cache, structure_cache, failed_structures)
+
+def process_character_blueprints(char_id, access_token, char_name, wp_post_id_cache, blueprint_cache, location_cache, structure_cache, failed_structures):
+    """Process all blueprint sources for a character."""
+    logger.info(f"Fetching blueprints for {char_name}...")
+
+    # From character blueprints endpoint
+    blueprints = fetch_character_blueprints(char_id, access_token)
+    if blueprints:
+        logger.info(f"Character blueprints: {len(blueprints)} items")
+        # Process blueprints in parallel
+        process_blueprints_parallel(
+            blueprints,
+            update_blueprint_in_wp,
+            wp_post_id_cache,
+            char_id,
+            access_token,
+            blueprint_cache,
+            location_cache,
+            structure_cache,
+            failed_structures
+        )
+
+    # From character assets
+    char_assets = fetch_character_assets(char_id, access_token)
+    if char_assets:
+        asset_blueprints = extract_blueprints_from_assets(char_assets, 'char', char_id, access_token)
+        if asset_blueprints:
+            logger.info(f"Character asset blueprints: {len(asset_blueprints)} items")
+            # Process blueprints in parallel
+            process_blueprints_parallel(
+                asset_blueprints,
+                update_blueprint_from_asset_in_wp,
+                wp_post_id_cache,
+                access_token,
+                blueprint_cache,
+                location_cache,
+                structure_cache,
+                failed_structures
+            )
+
+    # From character industry jobs (blueprints already processed above)
+    jobs = fetch_character_industry_jobs(char_id, access_token)
+    if jobs:
+        logger.info(f"Industry jobs for {char_name}: {len(jobs)} active")
+        job_blueprints = extract_blueprints_from_industry_jobs(jobs, 'char', char_id)
+        if job_blueprints:
+            logger.info(f"Character industry job blueprints: {len(job_blueprints)} items")
+            # Process blueprints in parallel
+            process_blueprints_parallel(
+                job_blueprints,
+                update_blueprint_from_asset_in_wp,
+                wp_post_id_cache,
+                access_token,
+                blueprint_cache,
+                location_cache,
+                structure_cache,
+                failed_structures
+            )
+
+        # Check for job completions and send alerts
+        check_industry_job_completions(jobs, char_name)
+
+def check_industry_job_completions(jobs, char_name):
+    """Check for upcoming industry job completions and send alerts."""
+    now = datetime.now(timezone.utc)
+    upcoming_completions = []
+    for job in jobs:
+        if 'end_date' in job:
+            end_date = datetime.fromisoformat(job['end_date'].replace('Z', '+00:00'))
+            if now <= end_date <= now + timedelta(hours=24):
+                upcoming_completions.append(job)
+
+    if upcoming_completions:
+        subject = f"EVE Alert: {len(upcoming_completions)} industry jobs ending soon for {char_name}"
+        body = f"The following jobs will complete within 24 hours:\n\n"
+        for job in upcoming_completions:
+            body += f"- Job ID {job['job_id']}: {job.get('activity_id', 'Unknown')} ending {job['end_date']}\n"
+        send_email(subject, body)
+
+def process_character_planets(char_id, access_token, char_name):
+    """Process planets for a character."""
+    planets = fetch_character_planets(char_id, access_token)
+    if planets:
+        logger.info(f"Planets for {char_name}: {len(planets)} colonies")
+        for planet in planets:
+            planet_id = planet['planet_id']
+            # Fetch details
+            details = fetch_planet_details(char_id, planet_id, access_token)
+            if details:
+                planet.update(details)
+                # Check for extraction completions
+                check_planet_extraction_completions(details, char_name)
+            update_planet_in_wp(planet_id, planet, char_id)
+
+def check_planet_extraction_completions(planet_details, char_name):
+    """Check for upcoming planet extraction completions and send alerts."""
+    now = datetime.now(timezone.utc)
+    upcoming_extractions = []
+    for pin in planet_details.get('pins', []):
+        if 'expiry_time' in pin:
+            expiry = datetime.fromisoformat(pin['expiry_time'].replace('Z', '+00:00'))
+            if now <= expiry <= now + timedelta(hours=24):
+                upcoming_extractions.append(pin)
+    if upcoming_extractions:
+        subject = f"EVE Alert: {len(upcoming_extractions)} PI extractions ending soon for {char_name}"
+        body = f"The following extractions will complete within 24 hours:\n\n"
+        for pin in upcoming_extractions:
+            body += f"- Pin {pin['pin_id']}: Type {pin.get('type_id', 'Unknown')} ending {pin['expiry_time']}\n"
+        send_email(subject, body)
+
+def process_character_contracts(char_id, access_token, char_name, wp_post_id_cache, blueprint_cache, location_cache, structure_cache, failed_structures):
+    """Process contracts for a character."""
+    char_contracts = fetch_character_contracts(char_id, access_token)
+    if char_contracts:
+        logger.info(f"Character contracts for {char_name}: {len(char_contracts)} items")
+        contract_blueprints = extract_blueprints_from_contracts(char_contracts, 'char', char_id)
+        if contract_blueprints:
+            logger.info(f"Character contract blueprints: {len(contract_blueprints)} items")
+            # Process blueprints in parallel
+            process_blueprints_parallel(
+                contract_blueprints,
+                update_blueprint_from_asset_in_wp,
+                wp_post_id_cache,
+                access_token,
+                blueprint_cache,
+                location_cache,
+                structure_cache,
+                failed_structures
+            )
+
+        for contract in char_contracts:
+            contract_status = contract.get('status', '')
+            if contract_status in ['finished', 'deleted']:
+                logger.info(f"Deleting finished/deleted character contract: {contract['contract_id']}")
+                # Find and delete the WordPress post
+                slug = f"contract-{contract['contract_id']}"
+                response = requests.get(f"{WP_BASE_URL}/wp-json/wp/v2/eve_contract?slug={slug}", auth=get_wp_auth())
+                if response.status_code == 200:
+                    posts = response.json()
+                    if posts:
+                        delete_wp_post('eve_contract', posts[0]['id'])
+                continue
+            elif contract_status == 'expired':
+                logger.info(f"EXPIRED CHARACTER CONTRACT TO DELETE MANUALLY: {contract['contract_id']}")
+            update_contract_in_wp(contract['contract_id'], contract, for_corp=False, entity_id=char_id)
 
 if __name__ == '__main__':
     main()

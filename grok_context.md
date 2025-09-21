@@ -1,16 +1,136 @@
-# EVE Observer Project Plan
-### Phase 1: Setup and Core Infrastructure (1-2 weeks)
+# EVE Observer - Grok Development Context
 
-- **Goal**: Establish the foundation for API integration and basic dashboard.
-- **Steps**:
-1. Set up WordPress site with ACF plugin; create custom post types (e.g., "Character", "Blueprint", "Planet"). ✅ Completed: WordPress site set up with free ACF plugin, plugin installed.
-2. Implement ESI OAuth flow in a Python script (handle multi-character tokens). ✅ Completed: Script written, tested for syntax.
-3. Create a basic data fetcher script to pull character lists and store in WP database via REST API. ✅ Completed: Script written, function order fixed, tested for syntax.
-4. Build a login-protected dashboard page in WP to display aggregated character data. ⏳ In Progress: Plugin includes dashboard code, needs testing with live data.
-- **Milestones**: Successful API auth for all 9 characters; basic WP page showing character names/skills.
-- **Features**:
-  - User auth in WP tied to ESI (optional: simple WP users for now).
-  - Cron script on Mac Mini to refresh data daily.
+**This file provides context for future Grok code conversations to build upon previous work and improve the EVE Observer project.**
+
+## Project Status (September 2025)
+
+EVE Observer is a fully functional EVE Online industrial dashboard with the following completed enhancements:
+
+### ✅ **Completed Enhancements**
+1. **Configuration Management**: Centralized config.py with environment variable support
+2. **Code Organization**: Refactored main() function into focused helper functions
+3. **Dashboard Pagination**: JavaScript pagination for large datasets (10 items/page)
+4. **Documentation**: Comprehensive README with setup/troubleshooting guides
+5. **Testing Framework**: Pytest suite with 9 passing tests
+
+### ✅ **Core Features Implemented**
+- **Blueprint Management**: BPO/BPC tracking from multiple sources with ME/TE display
+- **Industry Job Monitoring**: Real-time job tracking with 24h completion alerts
+- **Planetary Interaction**: Colony management with extraction timer alerts
+- **Multi-Character Support**: OAuth authentication for multiple characters
+- **WordPress Integration**: ACF-powered custom post types for data storage
+- **Automated Updates**: Cron-based daily data refreshes
+
+## Technical Architecture
+
+### Backend Structure
+```
+scripts/
+├── config.py              # Centralized configuration
+├── fetch_data.py          # Main data fetching (refactored)
+├── esi_oauth.py           # OAuth authentication
+├── tests/                 # Pytest test suite
+│   ├── test_config.py     # Configuration tests
+│   └── test_fetch_data.py # Core function tests
+└── requirements.txt       # Dependencies + pytest
+```
+
+### Key Functions (Post-Refactoring)
+- `collect_corporation_members()` - Token management and grouping
+- `process_corporation_data()` - Corporation data processing
+- `process_character_data()` - Individual character processing
+- `check_industry_job_completions()` - Job completion alerts
+- `check_planet_extraction_completions()` - PI extraction alerts
+
+### Frontend Structure
+```
+js/dashboard.js           # Paginated dashboard with Chart.js
+docs/                     # User documentation
+├── README.md            # Comprehensive setup guide
+└── (other docs)
+```
+
+## Recent Development Patterns
+
+### Code Organization Approach
+- Break down monolithic functions into focused helpers
+- Use descriptive function names with clear responsibilities
+- Add comprehensive error handling and logging
+- Implement proper separation of concerns
+
+### Testing Strategy
+- Unit tests for configuration loading
+- Mock external API calls for reliable testing
+- Test edge cases and error conditions
+- Maintain high test coverage for core functions
+
+### UI/UX Improvements
+- Implement pagination for large datasets
+- Add real-time timers and alerts
+- Ensure responsive design
+- Optimize performance with intelligent caching
+
+## Future Enhancement Opportunities
+
+### Potential Areas for Improvement
+1. **Performance Optimization**
+   - Parallel processing improvements
+   - Advanced caching strategies
+   - Database query optimization
+
+2. **Feature Expansion**
+   - Market data integration
+   - Profitability calculators
+   - Advanced analytics and reporting
+
+3. **User Experience**
+   - Enhanced visualizations
+   - Mobile app companion
+   - Notification system improvements
+
+4. **Infrastructure**
+   - Containerization (Docker)
+   - CI/CD pipeline
+   - Monitoring and logging improvements
+
+### Development Guidelines for Future Work
+- Maintain modular code structure
+- Add tests for new features
+- Update documentation
+- Follow existing patterns and conventions
+- Ensure backward compatibility
+
+## Key Files to Reference
+
+### Core Scripts
+- `scripts/fetch_data.py` - Main data processing logic
+- `scripts/config.py` - Configuration management
+- `scripts/esi_oauth.py` - Authentication handling
+
+### Tests
+- `scripts/tests/test_config.py` - Configuration testing
+- `scripts/tests/test_fetch_data.py` - Core function testing
+
+### Documentation
+- `scripts/README.md` - User setup and troubleshooting
+- `grok_context.md` - This development context file
+
+## Conversation Continuity Notes
+
+When continuing development:
+- Reference completed enhancements to avoid duplication
+- Build upon existing helper functions and patterns
+- Maintain consistency with current architecture
+- Update this context file with new developments
+- Ensure all changes include appropriate tests
+
+## Compliance & Ethics
+
+Remember: EVE Observer must remain compliant with CCP policies:
+- Read-only ESI API usage only
+- No in-game automation
+- Manual player actions required
+- Out-of-game analysis and optimization only
 - **Debugging Results (September 2025)**:
   - Fixed function definition order in fetch_data.py (get_wp_auth called before definition).
   - Dependencies installed (requests, requests-oauthlib, python-dotenv).
