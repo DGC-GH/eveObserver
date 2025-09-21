@@ -1099,8 +1099,10 @@ def update_contract_in_wp(contract_id, contract_data, for_corp=False, entity_id=
             '_eve_contract_status': contract_data.get('status'),
             '_eve_contract_issuer_id': str(contract_data.get('issuer_id')) if contract_data.get('issuer_id') is not None else None,
             '_eve_contract_issuer_corp_id': str(contract_data.get('issuer_corporation_id')) if contract_data.get('issuer_corporation_id') is not None else None,
-            '_eve_contract_assignee_id': str(contract_data.get('assignee_id')) if contract_data.get('assignee_id') is not None else None,
-            '_eve_contract_acceptor_id': str(contract_data.get('acceptor_id')) if contract_data.get('acceptor_id') is not None else None,
+            '_eve_contract_assignee_id': str(contract_data.get('assignee_id')) if contract_data.get('assignee_id') else None,
+            '_eve_contract_acceptor_id': str(contract_data.get('acceptor_id')) if contract_data.get('acceptor_id') else None,
+            '_eve_contract_start_location_id': str(contract_data.get('start_location_id')) if contract_data.get('start_location_id') else None,
+            '_eve_contract_end_location_id': str(contract_data.get('end_location_id')) if contract_data.get('end_location_id') else None,
             '_eve_contract_date_issued': contract_data.get('date_issued'),
             '_eve_contract_date_expired': contract_data.get('date_expired'),
             '_eve_contract_date_accepted': contract_data.get('date_accepted'),
@@ -1120,6 +1122,12 @@ def update_contract_in_wp(contract_id, contract_data, for_corp=False, entity_id=
 
     # Remove null values from meta to avoid WordPress validation errors
     post_data['meta'] = {k: v for k, v in post_data['meta'].items() if v is not None}
+
+    # Check if post exists by slug
+    response = requests.get(f"{WP_BASE_URL}/wp-json/wp/v2/eve_contract?slug={slug}", auth=get_wp_auth())
+    existing_posts = response.json() if response.status_code == 200 else []
+    existing_post = existing_posts[0] if existing_posts else None
+    existing_meta = existing_post.get('meta', {}) if existing_post else {}
 
     # Add items data if available
     if contract_items:
@@ -1166,36 +1174,6 @@ def update_contract_in_wp(contract_id, contract_data, for_corp=False, entity_id=
             post_data['meta']['_eve_contract_outbid'] = 'false'
             if '_eve_contract_market_price' in post_data['meta']:
                 del post_data['meta']['_eve_contract_market_price']
-        
-        # Set thumbnail based on blueprint items in contract
-        thumbnail_url = None
-        for item in contract_items:
-            type_id = item.get('type_id')
-            if type_id:
-                # Check if this is a blueprint
-                blueprint_type_cache = load_blueprint_type_cache()
-                type_id_str = str(type_id)
-                if type_id_str in blueprint_type_cache:
-                    is_blueprint = blueprint_type_cache[type_id_str]
-                else:
-                    type_data = fetch_public_esi(f"/universe/types/{type_id}")
-                    is_blueprint = type_data and 'Blueprint' in type_data.get('name', '')
-                    blueprint_type_cache[type_id_str] = is_blueprint
-                    save_blueprint_type_cache(blueprint_type_cache)
-                
-                if is_blueprint:
-                    # Use the improved fetch_type_icon function
-                    thumbnail_url = fetch_type_icon(type_id, size=512)
-                    if thumbnail_url and not thumbnail_url.startswith('https://via.placeholder.com'):
-                        break
-        
-        # If no blueprint icon found, use contract placeholder
-        if not thumbnail_url:
-            thumbnail_url = "https://via.placeholder.com/512x512/e74c3c/ffffff?text=Contract"
-        
-        # Set thumbnail for new contracts
-        if not existing_post:
-            post_data['meta']['_thumbnail_external_url'] = thumbnail_url
     else:
         # No contract items - ensure outbid is set to false
         post_data['meta']['_eve_contract_outbid'] = 'false'
@@ -1205,7 +1183,6 @@ def update_contract_in_wp(contract_id, contract_data, for_corp=False, entity_id=
     if existing_post:
         # Check if title changed before updating
         existing_title = existing_post.get('title', {}).get('rendered', '')
-        existing_meta = existing_post.get('meta', {})
         
         # Compare key fields to see if update is needed
         needs_update = (
@@ -1232,6 +1209,11 @@ def update_contract_in_wp(contract_id, contract_data, for_corp=False, entity_id=
         logger.info(f"Updated contract: {contract_id} - {title}")
     else:
         logger.error(f"Failed to update contract {contract_id}: {response.status_code} - {response.text}")
+
+def fetch_market_orders(region_id, type_id):
+    """Fetch market orders for a specific region and type."""
+    endpoint = f"/markets/{region_id}/orders/?type_id={type_id}"
+    return fetch_public_esi(endpoint)
 
 def fetch_character_portrait(char_id):
     """Fetch character portrait URLs from ESI."""
@@ -1290,6 +1272,7 @@ def check_contract_market_competition(contract_data, contract_items):
     # Get contract location
     start_location_id = contract_data.get('start_location_id')
     if not start_location_id:
+        logger.warning(f"Contract {contract_data.get('contract_id')} missing start_location_id, skipping market check")
         return False, None
     
     # Get region_id from location
