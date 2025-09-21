@@ -109,6 +109,16 @@ def fetch_character_planets(char_id, access_token):
     endpoint = f"/characters/{char_id}/planets/"
     return fetch_esi(endpoint, char_id, access_token)
 
+def fetch_corporation_contracts(corp_id, access_token):
+    """Fetch corporation contracts."""
+    endpoint = f"/corporations/{corp_id}/contracts/"
+    return fetch_esi(endpoint, corp_id, access_token)
+
+def fetch_corporation_assets(corp_id, access_token):
+    """Fetch corporation assets."""
+    endpoint = f"/corporations/{corp_id}/assets/"
+    return fetch_esi(endpoint, corp_id, access_token)
+
 def main():
     """Main data fetching routine."""
     tokens = load_tokens()
@@ -147,6 +157,21 @@ def main():
         planets = fetch_character_planets(char_id, access_token)
         if planets:
             print(f"Planets for {char_name}: {len(planets)} colonies")
+
+        # Fetch corporation data if available
+        corp_id = char_data.get('corporation_id')
+        if corp_id:
+            print(f"Fetching corporation data for corp ID: {corp_id}")
+
+            # Fetch corp contracts
+            corp_contracts = fetch_corporation_contracts(corp_id, access_token)
+            if corp_contracts:
+                print(f"Corporation contracts: {len(corp_contracts)} items")
+
+            # Fetch corp assets
+            corp_assets = fetch_corporation_assets(corp_id, access_token)
+            if corp_assets:
+                print(f"Corporation assets: {len(corp_assets)} items")
 
     print("Data fetch complete.")
 

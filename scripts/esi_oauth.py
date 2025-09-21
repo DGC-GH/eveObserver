@@ -28,6 +28,7 @@ SCOPES = [
     'esi-markets.read_character_orders.v1',
     'esi-contracts.read_character_contracts.v1',
     'esi-contracts.read_corporation_contracts.v1',
+    'esi-assets.read_corporation_assets.v1',
     'esi-skills.read_skills.v1',
 ]
 
@@ -98,21 +99,27 @@ def authorize_character(character_name=None):
         return
 
     # Exchange code for tokens
-    token = oauth.fetch_token(
-        TOKEN_URL,
-        code=code,
-        client_secret=CLIENT_SECRET
-    )
+    try:
+        token = oauth.fetch_token(
+            TOKEN_URL,
+            code=code,
+            client_secret=CLIENT_SECRET
+        )
+        print("Token obtained successfully")
+    except Exception as e:
+        print(f"Failed to obtain token: {e}")
+        return
 
     # Get character info
     headers = {'Authorization': f'Bearer {token["access_token"]}'}
-    response = requests.get('https://esi.evetech.net/latest/characters/me/', headers=headers)
+    response = requests.get('https://login.eveonline.com/oauth/verify', headers=headers)
+    print(f"Character info response: {response.status_code}")
     if response.status_code == 200:
         char_info = response.json()
         char_id = str(char_info['CharacterID'])
         char_name = char_info['CharacterName']
     else:
-        print("Failed to get character info")
+        print(f"Failed to get character info: {response.status_code} - {response.text}")
         return
 
     # Store token
