@@ -189,7 +189,6 @@ class EVE_Observer {
             function copyToClipboard(text) {
                 if (navigator.clipboard && window.isSecureContext) {
                     navigator.clipboard.writeText(text).then(function() {
-                        // Show success feedback
                         showCopyFeedback("Link copied to clipboard!");
                     }).catch(function(err) {
                         console.error("Failed to copy: ", err);
@@ -222,32 +221,18 @@ class EVE_Observer {
                 document.body.removeChild(textArea);
             }
             
-            function showCopyFeedback(message, isError = false) {
-                // Remove existing feedback
+            function showCopyFeedback(message, isError) {
                 var existing = document.querySelector(".copy-feedback");
                 if (existing) {
                     existing.remove();
                 }
                 
-                // Create feedback element
                 var feedback = document.createElement("div");
                 feedback.className = "copy-feedback";
                 feedback.innerHTML = message;
-                feedback.style.cssText = "
-                    position: fixed;
-                    top: 20px;
-                    right: 20px;
-                    background: " + (isError ? "#dc3545" : "#28a745") + ";
-                    color: white;
-                    padding: 10px 15px;
-                    border-radius: 4px;
-                    z-index: 9999;
-                    font-weight: bold;
-                    box-shadow: 0 2px 10px rgba(0,0,0,0.2);
-                ";
+                feedback.style.cssText = "position:fixed;top:20px;right:20px;background:" + (isError ? "#dc3545" : "#28a745") + ";color:white;padding:10px 15px;border-radius:4px;z-index:9999;font-weight:bold;box-shadow:0 2px 10px rgba(0,0,0,0.2);";
                 document.body.appendChild(feedback);
                 
-                // Remove after 3 seconds
                 setTimeout(function() {
                     if (feedback.parentNode) {
                         feedback.parentNode.removeChild(feedback);
@@ -256,11 +241,11 @@ class EVE_Observer {
             }
         ');
 
-        if ($hook !== 'toplevel_page_eve-observer-dashboard') {
-            return;
+        // Dashboard-specific scripts
+        if ($hook === 'toplevel_page_eve-observer-dashboard') {
+            wp_enqueue_script('chart-js', 'https://cdn.jsdelivr.net/npm/chart.js', array(), '4.4.0', true);
+            wp_enqueue_script('eve-observer-dashboard', plugin_dir_url(__FILE__) . 'js/dashboard.js', array('chart-js'), '1.0.0', true);
         }
-        wp_enqueue_script('chart-js', 'https://cdn.jsdelivr.net/npm/chart.js', array(), '4.4.0', true);
-        wp_enqueue_script('eve-observer-dashboard', plugin_dir_url(__FILE__) . 'js/dashboard.js', array('chart-js'), '1.0.0', true);
         
         // Add CSS for thumbnail column width
         wp_add_inline_style('wp-admin', '
@@ -1135,7 +1120,7 @@ class EVE_Observer {
             // Build EVE chat link for clipboard copying
             $eve_chat_link = '';
             if (!empty($contract_id) && !empty($start_location_id) && !empty($contract_title)) {
-                $eve_chat_link = "<a href=\"contract:{$start_location_id}//{$contract_id}\">" . esc_html($contract_title) . "</a>";
+                $eve_chat_link = "contract:{$start_location_id}//{$contract_id}";
             }
             
             echo "<div style='display: flex; align-items: center; gap: 8px;'>";
