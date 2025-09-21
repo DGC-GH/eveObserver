@@ -98,7 +98,8 @@ class EVE_Observer {
         );
 
         // Add submenus for CPTs
-        add_submenu_page('eve-observer', 'Dashboard', 'Dashboard', 'manage_options', 'edit.php?post_type=eve_character');
+        add_submenu_page('eve-observer', 'Dashboard', 'Dashboard', 'manage_options', 'eve-observer');
+        add_submenu_page('eve-observer', 'Characters', 'Characters', 'manage_options', 'edit.php?post_type=eve_character');
         add_submenu_page('eve-observer', 'Blueprints', 'Blueprints', 'manage_options', 'edit.php?post_type=eve_blueprint');
         add_submenu_page('eve-observer', 'Planets', 'Planets', 'manage_options', 'edit.php?post_type=eve_planet');
     }
