@@ -727,6 +727,9 @@ def extract_blueprints_from_assets(assets_data, owner_type, owner_id, access_tok
                             'owner_id': owner_id
                         }
                         blueprints.append(blueprint_info)
+                    else:
+                        # Skip BPCs - only track BPOs
+                        logger.debug(f"Skipping BPC (quantity={quantity}) for item_id: {item.get('item_id')}")
             
             # Recursively process containers
             if 'items' in item:
@@ -735,7 +738,7 @@ def extract_blueprints_from_assets(assets_data, owner_type, owner_id, access_tok
     if assets_data:
         process_items(assets_data, None)
     
-    logger.info(f"Completed asset processing: found {len(blueprints)} blueprints in {total_assets} assets")
+    logger.info(f"Completed asset processing: found {len(blueprints)} BPO blueprints in {total_assets} assets")
     return blueprints
 
 def extract_blueprints_from_industry_jobs(jobs_data, owner_type, owner_id):
@@ -1089,11 +1092,22 @@ def update_contract_in_wp(contract_id, contract_data, for_corp=False, entity_id=
         elif not for_corp and entity_id:
             contract_items = fetch_character_contract_items(entity_id, contract_id, access_token)
 
+    # Check if contract contains BPOs - only track contracts with BPOs
+    has_bpo = False
+    if contract_items:
+        for item in contract_items:
+            type_id = item.get('type_id')
+            quantity = item.get('quantity', 1)
+            if type_id and quantity == -1:  # BPO
+                has_bpo = True
+                break
+    
+    if not has_bpo:
+        logger.debug(f"Contract {contract_id} contains no BPOs, skipping")
+        return
+
     # Generate descriptive title
     title = generate_contract_title(contract_data, contract_items, blueprint_cache)
-
-    # Get region_id from start_location_id
-    region_id = get_region_from_location(contract_data.get('start_location_id'))
 
     post_data = {
         'title': title,
@@ -1122,7 +1136,6 @@ def update_contract_in_wp(contract_id, contract_data, for_corp=False, entity_id=
             '_eve_contract_title': contract_data.get('title'),
             '_eve_contract_for_corp': str(for_corp).lower(),
             '_eve_contract_entity_id': str(entity_id),
-            '_eve_contract_region_id': str(region_id) if region_id else None,
             '_eve_last_updated': datetime.now(timezone.utc).isoformat()
         }
     }
@@ -1188,7 +1201,13 @@ def update_contract_in_wp(contract_id, contract_data, for_corp=False, entity_id=
         url = f"{WP_BASE_URL}/wp-json/wp/v2/eve_contract/{post_id}"
         response = requests.put(url, json=post_data, auth=get_wp_auth())
     else:
-        # Create new
+        # Create new (without region_id to avoid ACF protection issues)
+        # Add thumbnail from first contract item
+        if contract_items and len(contract_items) > 0:
+            first_item_type_id = contract_items[0].get('type_id')
+            if first_item_type_id:
+                image_url = fetch_type_icon(first_item_type_id, size=512)
+                post_data['meta']['_thumbnail_external_url'] = image_url
         url = f"{WP_BASE_URL}/wp-json/wp/v2/eve_contract"
         response = requests.post(url, json=post_data, auth=get_wp_auth())
 
@@ -1265,6 +1284,11 @@ def refresh_token(refresh_token):
     else:
         logger.error(f"Failed to refresh token: {response.status_code} - {response.text}")
         return None
+
+def fetch_market_orders(region_id, type_id):
+    """Fetch market orders for a specific region and type."""
+    endpoint = f"/markets/{region_id}/orders/?type_id={type_id}"
+    return fetch_public_esi(endpoint)
 
 def check_contract_market_competition(contract_data, contract_items):
     """Check if a sell contract has been outbid by cheaper market orders in the same location."""
@@ -1470,19 +1494,22 @@ def process_corporation_blueprints(corp_id, access_token, char_id, wp_post_id_ca
     # From corporation blueprints endpoint
     corp_blueprints = fetch_corporation_blueprints(corp_id, access_token)
     if corp_blueprints:
-        logger.info(f"Corporation blueprints: {len(corp_blueprints)} items")
-        # Process blueprints in parallel
-        process_blueprints_parallel(
-            corp_blueprints,
-            update_blueprint_in_wp,
-            wp_post_id_cache,
-            char_id,
-            access_token,
-            blueprint_cache,
-            location_cache,
-            structure_cache,
-            failed_structures
-        )
+        # Filter to only BPOs (quantity == -1)
+        bpo_blueprints = [bp for bp in corp_blueprints if bp.get('quantity', 1) == -1]
+        logger.info(f"Corporation blueprints: {len(corp_blueprints)} total, {len(bpo_blueprints)} BPOs")
+        if bpo_blueprints:
+            # Process blueprints in parallel
+            process_blueprints_parallel(
+                bpo_blueprints,
+                update_blueprint_in_wp,
+                wp_post_id_cache,
+                char_id,
+                access_token,
+                blueprint_cache,
+                location_cache,
+                structure_cache,
+                failed_structures
+            )
 
     # From corporation assets
     logger.info(f"Fetching corporation assets for {corp_id}...")
@@ -1599,19 +1626,22 @@ def process_character_blueprints(char_id, access_token, char_name, wp_post_id_ca
     # From character blueprints endpoint
     blueprints = fetch_character_blueprints(char_id, access_token)
     if blueprints:
-        logger.info(f"Character blueprints: {len(blueprints)} items")
-        # Process blueprints in parallel
-        process_blueprints_parallel(
-            blueprints,
-            update_blueprint_in_wp,
-            wp_post_id_cache,
-            char_id,
-            access_token,
-            blueprint_cache,
-            location_cache,
-            structure_cache,
-            failed_structures
-        )
+        # Filter to only BPOs (quantity == -1)
+        bpo_blueprints = [bp for bp in blueprints if bp.get('quantity', 1) == -1]
+        logger.info(f"Character blueprints: {len(blueprints)} total, {len(bpo_blueprints)} BPOs")
+        if bpo_blueprints:
+            # Process blueprints in parallel
+            process_blueprints_parallel(
+                bpo_blueprints,
+                update_blueprint_in_wp,
+                wp_post_id_cache,
+                char_id,
+                access_token,
+                blueprint_cache,
+                location_cache,
+                structure_cache,
+                failed_structures
+            )
 
     # From character assets
     char_assets = fetch_character_assets(char_id, access_token)

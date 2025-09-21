@@ -108,14 +108,15 @@ class EVE_Observer {
         // Contract meta fields
         $contract_meta_fields = array(
             '_eve_contract_id', '_eve_contract_type', '_eve_contract_status', '_eve_contract_title',
-            '_eve_contract_for_corp', '_eve_contract_issuer_id', '_eve_contract_issuer_corp_id',
-            '_eve_contract_assignee_id', '_eve_contract_acceptor_id', '_eve_contract_start_location_id', '_eve_contract_end_location_id', '_eve_contract_date_issued',
+            '_eve_contract_for_corporation', '_eve_contract_availability', '_eve_contract_issuer_id', '_eve_contract_issuer_name',
+            '_eve_contract_issuer_corporation_id', '_eve_contract_issuer_corporation_name', '_eve_contract_assignee_id', '_eve_contract_assignee_name',
+            '_eve_contract_location_id', '_eve_contract_location_name', '_eve_contract_date_issued',
             '_eve_contract_date_expired', '_eve_contract_date_accepted', '_eve_contract_date_completed',
             '_eve_contract_price', '_eve_contract_reward', '_eve_contract_collateral', '_eve_contract_buyout',
-            '_eve_contract_volume', '_eve_contract_days_to_complete', '_eve_contract_entity_id', '_eve_contract_items', '_eve_last_updated',
-            '_eve_contract_outbid', '_eve_contract_market_price', '_eve_contract_region_id'
+            '_eve_contract_volume', '_eve_contract_days_to_complete', '_eve_contract_items', '_eve_last_updated',
+            '_eve_contract_outbid', '_eve_contract_market_price'
         );
-        $numeric_contract_fields = array('_eve_contract_id', '_eve_contract_issuer_id', '_eve_contract_issuer_corp_id', '_eve_contract_assignee_id', '_eve_contract_acceptor_id', '_eve_contract_price', '_eve_contract_reward', '_eve_contract_collateral', '_eve_contract_buyout', '_eve_contract_volume', '_eve_contract_days_to_complete', '_eve_contract_market_price');
+        $numeric_contract_fields = array('_eve_contract_id', '_eve_contract_issuer_id', '_eve_contract_issuer_corporation_id', '_eve_contract_assignee_id', '_eve_contract_price', '_eve_contract_reward', '_eve_contract_collateral', '_eve_contract_buyout', '_eve_contract_volume', '_eve_contract_days_to_complete', '_eve_contract_market_price');
         foreach ($contract_meta_fields as $field) {
             register_meta('post', $field, array(
                 'show_in_rest' => true,
@@ -984,9 +985,22 @@ class EVE_Observer {
                     'show_in_rest' => true,
                 ),
                 array(
-                    'key' => 'field_contract_for_corp',
+                    'key' => 'field_contract_availability',
+                    'label' => 'Availability',
+                    'name' => '_eve_contract_availability',
+                    'type' => 'select',
+                    'choices' => array(
+                        'public' => 'Public',
+                        'personal' => 'Personal',
+                        'corporation' => 'Corporation',
+                        'alliance' => 'Alliance',
+                    ),
+                    'show_in_rest' => true,
+                ),
+                array(
+                    'key' => 'field_contract_for_corporation',
                     'label' => 'For Corporation',
-                    'name' => '_eve_contract_for_corp',
+                    'name' => '_eve_contract_for_corporation',
                     'type' => 'true_false',
                     'show_in_rest' => true,
                 ),
@@ -994,13 +1008,27 @@ class EVE_Observer {
                     'key' => 'field_contract_issuer_id',
                     'label' => 'Issuer ID',
                     'name' => '_eve_contract_issuer_id',
+                    'type' => 'number',
+                    'show_in_rest' => true,
+                ),
+                array(
+                    'key' => 'field_contract_issuer_name',
+                    'label' => 'Issuer Name',
+                    'name' => '_eve_contract_issuer_name',
                     'type' => 'text',
                     'show_in_rest' => true,
                 ),
                 array(
-                    'key' => 'field_contract_issuer_corp_id',
+                    'key' => 'field_contract_issuer_corporation_id',
                     'label' => 'Issuer Corporation ID',
-                    'name' => '_eve_contract_issuer_corp_id',
+                    'name' => '_eve_contract_issuer_corporation_id',
+                    'type' => 'number',
+                    'show_in_rest' => true,
+                ),
+                array(
+                    'key' => 'field_contract_issuer_corporation_name',
+                    'label' => 'Issuer Corporation Name',
+                    'name' => '_eve_contract_issuer_corporation_name',
                     'type' => 'text',
                     'show_in_rest' => true,
                 ),
@@ -1008,27 +1036,27 @@ class EVE_Observer {
                     'key' => 'field_contract_assignee_id',
                     'label' => 'Assignee ID',
                     'name' => '_eve_contract_assignee_id',
+                    'type' => 'number',
+                    'show_in_rest' => true,
+                ),
+                array(
+                    'key' => 'field_contract_assignee_name',
+                    'label' => 'Assignee Name',
+                    'name' => '_eve_contract_assignee_name',
                     'type' => 'text',
                     'show_in_rest' => true,
                 ),
                 array(
-                    'key' => 'field_contract_acceptor_id',
-                    'label' => 'Acceptor ID',
-                    'name' => '_eve_contract_acceptor_id',
-                    'type' => 'text',
+                    'key' => 'field_contract_location_id',
+                    'label' => 'Location ID',
+                    'name' => '_eve_contract_location_id',
+                    'type' => 'number',
                     'show_in_rest' => true,
                 ),
                 array(
-                    'key' => 'field_contract_start_location_id',
-                    'label' => 'Start Location ID',
-                    'name' => '_eve_contract_start_location_id',
-                    'type' => 'text',
-                    'show_in_rest' => true,
-                ),
-                array(
-                    'key' => 'field_contract_end_location_id',
-                    'label' => 'End Location ID',
-                    'name' => '_eve_contract_end_location_id',
+                    'key' => 'field_contract_location_name',
+                    'label' => 'Location Name',
+                    'name' => '_eve_contract_location_name',
                     'type' => 'text',
                     'show_in_rest' => true,
                 ),
@@ -1037,6 +1065,8 @@ class EVE_Observer {
                     'label' => 'Date Issued',
                     'name' => '_eve_contract_date_issued',
                     'type' => 'date_time_picker',
+                    'display_format' => 'Y-m-d H:i:s',
+                    'return_format' => 'Y-m-d H:i:s',
                     'show_in_rest' => true,
                 ),
                 array(
@@ -1044,6 +1074,8 @@ class EVE_Observer {
                     'label' => 'Date Expired',
                     'name' => '_eve_contract_date_expired',
                     'type' => 'date_time_picker',
+                    'display_format' => 'Y-m-d H:i:s',
+                    'return_format' => 'Y-m-d H:i:s',
                     'show_in_rest' => true,
                 ),
                 array(
@@ -1051,6 +1083,8 @@ class EVE_Observer {
                     'label' => 'Date Accepted',
                     'name' => '_eve_contract_date_accepted',
                     'type' => 'date_time_picker',
+                    'display_format' => 'Y-m-d H:i:s',
+                    'return_format' => 'Y-m-d H:i:s',
                     'show_in_rest' => true,
                 ),
                 array(
@@ -1058,11 +1092,13 @@ class EVE_Observer {
                     'label' => 'Date Completed',
                     'name' => '_eve_contract_date_completed',
                     'type' => 'date_time_picker',
+                    'display_format' => 'Y-m-d H:i:s',
+                    'return_format' => 'Y-m-d H:i:s',
                     'show_in_rest' => true,
                 ),
                 array(
                     'key' => 'field_contract_price',
-                    'label' => 'Price',
+                    'label' => 'Price (ISK)',
                     'name' => '_eve_contract_price',
                     'type' => 'number',
                     'step' => 0.01,
@@ -1070,7 +1106,7 @@ class EVE_Observer {
                 ),
                 array(
                     'key' => 'field_contract_reward',
-                    'label' => 'Reward',
+                    'label' => 'Reward (ISK)',
                     'name' => '_eve_contract_reward',
                     'type' => 'number',
                     'step' => 0.01,
@@ -1078,7 +1114,7 @@ class EVE_Observer {
                 ),
                 array(
                     'key' => 'field_contract_collateral',
-                    'label' => 'Collateral',
+                    'label' => 'Collateral (ISK)',
                     'name' => '_eve_contract_collateral',
                     'type' => 'number',
                     'step' => 0.01,
@@ -1086,8 +1122,24 @@ class EVE_Observer {
                 ),
                 array(
                     'key' => 'field_contract_buyout',
-                    'label' => 'Buyout',
+                    'label' => 'Buyout (ISK)',
                     'name' => '_eve_contract_buyout',
+                    'type' => 'number',
+                    'step' => 0.01,
+                    'show_in_rest' => true,
+                ),
+                array(
+                    'key' => 'field_contract_market_price',
+                    'label' => 'Market Price (ISK)',
+                    'name' => '_eve_contract_market_price',
+                    'type' => 'number',
+                    'step' => 0.01,
+                    'show_in_rest' => true,
+                ),
+                array(
+                    'key' => 'field_contract_volume',
+                    'label' => 'Volume (m³)',
+                    'name' => '_eve_contract_volume',
                     'type' => 'number',
                     'step' => 0.01,
                     'show_in_rest' => true,
@@ -1100,32 +1152,11 @@ class EVE_Observer {
                     'show_in_rest' => true,
                 ),
                 array(
-                    'key' => 'field_contract_entity_id',
-                    'label' => 'Entity ID',
-                    'name' => '_eve_contract_entity_id',
-                    'type' => 'text',
-                    'show_in_rest' => true,
-                ),
-                array(
                     'key' => 'field_contract_outbid',
                     'label' => 'Outbid',
                     'name' => '_eve_contract_outbid',
                     'type' => 'true_false',
-                    'show_in_rest' => true,
-                ),
-                array(
-                    'key' => 'field_contract_market_price',
-                    'label' => 'Market Price',
-                    'name' => '_eve_contract_market_price',
-                    'type' => 'number',
-                    'step' => 0.01,
-                    'show_in_rest' => true,
-                ),
-                array(
-                    'key' => 'field_contract_region_id',
-                    'label' => 'Region ID',
-                    'name' => '_eve_contract_region_id',
-                    'type' => 'text',
+                    'message' => 'This contract has been outbid',
                     'show_in_rest' => true,
                 ),
                 array(
@@ -1133,11 +1164,19 @@ class EVE_Observer {
                     'label' => 'Contract Items (JSON)',
                     'name' => '_eve_contract_items',
                     'type' => 'textarea',
+                    'rows' => 10,
                     'show_in_rest' => true,
                 ),
             ),
-        ));
-
+            'location' => array(
+                array(
+                    array(
+                        'param' => 'post_type',
+                        'operator' => '==',
+                        'value' => 'eve_contract',
+                    ),
+                ),
+            ),
         // Register meta fields for contracts
         register_meta('post', '_eve_contract_region_id', array(
             'type' => 'string',
@@ -1226,7 +1265,7 @@ class EVE_Observer {
             $is_outbid = get_post_meta($post_id, '_eve_contract_outbid', true) === '1';
             $contract_id = get_post_meta($post_id, '_eve_contract_id', true);
             $contract_title = get_post_meta($post_id, '_eve_contract_title', true);
-            $start_location_id = get_post_meta($post_id, '_eve_contract_start_location_id', true);
+            $start_location_id = get_post_meta($post_id, '_eve_contract_location_id', true);
             $market_price = get_post_meta($post_id, '_eve_contract_market_price', true);
             
             if ($is_outbid) {
