@@ -1119,8 +1119,8 @@ class EVE_Observer {
             
             // Build EVE chat link for clipboard copying
             $eve_chat_link = '';
-            if (!empty($contract_id) && !empty($start_location_id)) {
-                $eve_chat_link = "contract:{$start_location_id}//{$contract_id}";
+            if (!empty($contract_id) && !empty($start_location_id) && !empty($contract_title)) {
+                $eve_chat_link = '<a href="contract:' . $start_location_id . '//' . $contract_id . '">' . esc_html($contract_title) . '</a>';
             }
             
             echo "<div style='display: flex; align-items: center; gap: 8px;'>";
