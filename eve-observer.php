@@ -124,6 +124,17 @@ class EVE_Observer {
             ));
         }
 
+        // Register meta for REST API
+        register_meta('post', '_thumbnail_external_url', array(
+            'show_in_rest' => true,
+            'single' => true,
+            'type' => 'string',
+            'auth_callback' => '__return_true'
+        ));
+
+        // Hook to handle external featured images
+        add_filter('post_thumbnail_html', array($this, 'post_thumbnail_external_url'), 10, 5);
+
         // Register custom post types
         $this->register_custom_post_types();
     }
@@ -450,6 +461,13 @@ class EVE_Observer {
                     'type' => 'textarea',
                     'show_in_rest' => true,
                 ),
+                array(
+                    'key' => 'field_thumbnail_external_url',
+                    'label' => 'External Thumbnail URL',
+                    'name' => '_thumbnail_external_url',
+                    'type' => 'url',
+                    'show_in_rest' => true,
+                ),
             ),
             'location' => array(
                 array(
@@ -523,6 +541,13 @@ class EVE_Observer {
                     'type' => 'number',
                     'show_in_rest' => true,
                 ),
+                array(
+                    'key' => 'field_bp_thumbnail_external_url',
+                    'label' => 'External Thumbnail URL',
+                    'name' => '_thumbnail_external_url',
+                    'type' => 'url',
+                    'show_in_rest' => true,
+                ),
             ),
             'location' => array(
                 array(
@@ -566,6 +591,13 @@ class EVE_Observer {
                     'label' => 'Upgrade Level',
                     'name' => '_eve_planet_upgrade_level',
                     'type' => 'number',
+                    'show_in_rest' => true,
+                ),
+                array(
+                    'key' => 'field_planet_thumbnail_external_url',
+                    'label' => 'External Thumbnail URL',
+                    'name' => '_thumbnail_external_url',
+                    'type' => 'url',
                     'show_in_rest' => true,
                 ),
             ),
@@ -676,6 +708,13 @@ class EVE_Observer {
                     'label' => 'Structures Data (JSON)',
                     'name' => '_eve_corp_structures_data',
                     'type' => 'textarea',
+                    'show_in_rest' => true,
+                ),
+                array(
+                    'key' => 'field_corp_thumbnail_external_url',
+                    'label' => 'External Thumbnail URL',
+                    'name' => '_thumbnail_external_url',
+                    'type' => 'url',
                     'show_in_rest' => true,
                 ),
             ),
@@ -855,6 +894,28 @@ class EVE_Observer {
                 ),
             ),
         ));
+    }
+
+    public function post_thumbnail_external_url($html, $post_id, $post_thumbnail_id, $size, $attr) {
+        $external_url = get_post_meta($post_id, '_thumbnail_external_url', true);
+        
+        if (!empty($external_url)) {
+            $alt = get_the_title($post_id);
+            $class = isset($attr['class']) ? $attr['class'] : 'wp-post-image';
+            $width = isset($attr['width']) ? $attr['width'] : '';
+            $height = isset($attr['height']) ? $attr['height'] : '';
+            
+            $html = sprintf(
+                '<img src="%s" alt="%s" class="%s" width="%s" height="%s" />',
+                esc_url($external_url),
+                esc_attr($alt),
+                esc_attr($class),
+                esc_attr($width),
+                esc_attr($height)
+            );
+        }
+        
+        return $html;
     }
 }
 

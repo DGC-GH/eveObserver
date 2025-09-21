@@ -27,6 +27,7 @@ LOCATION_CACHE_FILE = os.path.join(CACHE_DIR, 'location_names.json')
 STRUCTURE_CACHE_FILE = os.path.join(CACHE_DIR, 'structure_names.json')
 FAILED_STRUCTURES_FILE = os.path.join(CACHE_DIR, 'failed_structures.json')
 WP_POST_ID_CACHE_FILE = os.path.join(CACHE_DIR, 'wp_post_ids.json')
+TOKENS_FILE = os.path.join(os.path.dirname(__file__), 'esi_tokens.json')
 
 # Email Configuration
 EMAIL_SMTP_SERVER = os.getenv('EMAIL_SMTP_SERVER')

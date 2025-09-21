@@ -354,6 +354,18 @@ def update_character_in_wp(char_id, char_data):
         if value is not None:
             post_data['meta'][key] = value
 
+    # Add featured image from character portrait
+    portrait_data = fetch_character_portrait(char_id)
+    if portrait_data and 'px64x64' in portrait_data:
+        image_url = portrait_data['px64x64']
+        # Only set if not already set or if it changed
+        current_external_url = existing_post.get('meta', {}).get('_thumbnail_external_url') if existing_post else None
+        if current_external_url != image_url:
+            post_data['meta']['_thumbnail_external_url'] = image_url
+            logger.info(f"Set portrait URL for character: {char_data['name']}")
+        else:
+            logger.info(f"Portrait URL unchanged for character: {char_data['name']}")
+
     if existing_post:
         # Update existing
         post_id = existing_post['id']
@@ -413,7 +425,12 @@ def fetch_character_planets(char_id, access_token):
     endpoint = f"/characters/{char_id}/planets/"
     return fetch_esi(endpoint, char_id, access_token)
 
-def update_blueprint_in_wp(item_id, blueprint_data, char_id, access_token, blueprint_cache=None, location_cache=None, structure_cache=None, failed_structures=None, wp_post_id_cache=None):
+def fetch_corporation_data(corp_id, access_token):
+    """Fetch corporation data from ESI."""
+    endpoint = f"/corporations/{corp_id}/"
+    return fetch_esi(endpoint, None, access_token)  # No char_id needed for corp data
+
+def update_blueprint_in_wp(blueprint_data, wp_post_id_cache, char_id, access_token, blueprint_cache=None, location_cache=None, structure_cache=None, failed_structures=None):
     """Update or create blueprint post in WordPress."""
     if blueprint_cache is None:
         blueprint_cache = load_blueprint_cache()
@@ -425,6 +442,17 @@ def update_blueprint_in_wp(item_id, blueprint_data, char_id, access_token, bluep
         failed_structures = load_failed_structures()
     if wp_post_id_cache is None:
         wp_post_id_cache = load_wp_post_id_cache()
+
+    item_id = blueprint_data.get('item_id')
+    if not item_id:
+        logger.error(f"Blueprint data missing item_id: {blueprint_data}")
+        return
+
+    # Skip BPCs - only track BPOs
+    quantity = blueprint_data.get('quantity', -1)
+    if quantity != -1:
+        logger.info(f"Skipping BPC (quantity={quantity}) for item_id: {item_id}")
+        return
 
     slug = f"blueprint-{item_id}"
     
@@ -527,6 +555,18 @@ def update_blueprint_in_wp(item_id, blueprint_data, char_id, access_token, bluep
             '_eve_last_updated': datetime.now(timezone.utc).isoformat()
         }
     }
+
+    # Add featured image from type icon
+    type_id = blueprint_data.get('type_id')
+    if type_id:
+        image_url = fetch_type_icon(type_id, size=128)
+        # Only set if not already set or if it changed
+        current_external_url = existing_post.get('meta', {}).get('_thumbnail_external_url') if existing_post else None
+        if current_external_url != image_url:
+            post_data['meta']['_thumbnail_external_url'] = image_url
+            logger.info(f"Set type icon URL for blueprint: {type_name}")
+        else:
+            logger.info(f"Type icon URL unchanged for blueprint: {type_name}")
 
     if existing_post:
         # Check if data has changed before updating
@@ -677,7 +717,7 @@ def extract_blueprints_from_contracts(contracts_data, owner_type, owner_id):
     
     return blueprints
 
-def update_blueprint_from_asset_in_wp(blueprint_data, access_token, blueprint_cache=None, location_cache=None, structure_cache=None, failed_structures=None, wp_post_id_cache=None):
+def update_blueprint_from_asset_in_wp(blueprint_data, wp_post_id_cache, access_token, blueprint_cache=None, location_cache=None, structure_cache=None, failed_structures=None):
     """Update or create blueprint post from asset/industry/contract data."""
     if blueprint_cache is None:
         blueprint_cache = load_blueprint_cache()
@@ -691,6 +731,12 @@ def update_blueprint_from_asset_in_wp(blueprint_data, access_token, blueprint_ca
         wp_post_id_cache = load_wp_post_id_cache()
 
     item_id = blueprint_data['item_id']
+    
+    # Skip BPCs - only track BPOs
+    quantity = blueprint_data.get('quantity', -1)
+    if quantity != -1:
+        logger.info(f"Skipping BPC (quantity={quantity}) for item_id: {item_id}")
+        return
     owner_id = blueprint_data['owner_id']
     source = blueprint_data['source']
     
@@ -798,6 +844,18 @@ def update_blueprint_from_asset_in_wp(blueprint_data, access_token, blueprint_ca
         }
     }
 
+    # Add featured image from type icon
+    type_id = blueprint_data.get('type_id')
+    if type_id:
+        image_url = fetch_type_icon(type_id, size=128)
+        # Only set if not already set or if it changed
+        current_external_url = existing_post.get('meta', {}).get('_thumbnail_external_url') if existing_post else None
+        if current_external_url != image_url:
+            post_data['meta']['_thumbnail_external_url'] = image_url
+            logger.info(f"Set type icon URL for blueprint from {source}: {type_name}")
+        else:
+            logger.info(f"Type icon URL unchanged for blueprint from {source}: {type_name}")
+
     if existing_post:
         # Check if data has changed before updating
         existing_meta = existing_post.get('meta', {})
@@ -880,6 +938,17 @@ def update_corporation_in_wp(corp_id, corp_data):
         }
     }
 
+    # Add featured image from corporation logo
+    logo_url = fetch_corporation_logo(corp_id)
+    if logo_url:
+        # Only set if not already set or if it changed
+        current_external_url = existing_post.get('meta', {}).get('_thumbnail_external_url') if existing_post else None
+        if current_external_url != logo_url:
+            post_data['meta']['_thumbnail_external_url'] = logo_url
+            logger.info(f"Set logo URL for corporation: {corp_data.get('name', corp_id)}")
+        else:
+            logger.info(f"Logo URL unchanged for corporation: {corp_data.get('name', corp_id)}")
+
     if existing_post:
         # Update existing
         post_id = existing_post['id']
@@ -900,10 +969,62 @@ def fetch_planet_details(char_id, planet_id, access_token):
     endpoint = f"/characters/{char_id}/planets/{planet_id}/"
     return fetch_esi(endpoint, char_id, access_token)
 
-def fetch_corporation_data(corp_id, access_token):
-    """Fetch corporation data from ESI."""
-    endpoint = f"/corporations/{corp_id}/"
-    return fetch_esi(endpoint, None, access_token)  # No char_id needed for corp data
+def fetch_character_portrait(char_id):
+    """Fetch character portrait URLs from ESI."""
+    endpoint = f"/characters/{char_id}/portrait/"
+    return fetch_public_esi(endpoint)
+
+def fetch_corporation_logo(corp_id):
+    """Fetch corporation logo URL from images service."""
+    # Use images.evetech.net service directly
+    return f"https://images.evetech.net/corporations/{corp_id}/logo?size=128"
+
+def fetch_alliance_logo(alliance_id):
+    """Fetch alliance logo URLs from ESI."""
+    endpoint = f"/alliances/{alliance_id}/logos/"
+    return fetch_public_esi(endpoint)
+
+def fetch_type_icon(type_id, size=64):
+    """Fetch type render URL from ESI."""
+    # ESI provides render URLs for types (3D images)
+    return f"https://images.evetech.net/types/{type_id}/render?size={size}"
+
+def fetch_planet_image(planet_type_id, size=512):
+    """Fetch planet image URL from ESI."""
+    return f"https://images.evetech.net/types/{planet_type_id}/render?size={size}"
+
+def upload_image_to_wordpress(image_url, filename, alt_text=""):
+    """Upload an image to WordPress media library and return the media ID."""
+    try:
+        # Download the image
+        response = requests.get(image_url, timeout=30)
+        if response.status_code != 200:
+            logger.warning(f"Failed to download image from {image_url}")
+            return None
+
+        # Prepare the file for upload
+        files = {
+            'file': (filename, response.content, response.headers.get('content-type', 'image/png'))
+        }
+        data = {
+            'alt_text': alt_text,
+            'caption': alt_text
+        }
+
+        # Upload to WordPress
+        upload_url = f"{WP_BASE_URL}/wp-json/wp/v2/media"
+        upload_response = requests.post(upload_url, files=files, data=data, auth=get_wp_auth())
+
+        if upload_response.status_code in [200, 201]:
+            media_data = upload_response.json()
+            return media_data['id']
+        else:
+            logger.warning(f"Failed to upload image to WordPress: {upload_response.status_code} - {upload_response.text}")
+            return None
+
+    except Exception as e:
+        logger.error(f"Error uploading image {image_url}: {e}")
+        return None
 
 def update_planet_in_wp(planet_id, planet_data, char_id):
     """Update or create planet post in WordPress."""
@@ -933,6 +1054,18 @@ def update_planet_in_wp(planet_id, planet_data, char_id):
             '_eve_last_updated': datetime.now(timezone.utc).isoformat()
         }
     }
+
+    # Add featured image from planet render
+    planet_type_id = planet_data.get('planet_type')
+    if planet_type_id:
+        image_url = fetch_planet_image(planet_type_id, size=512)
+        # Only set if not already set or if it changed
+        current_external_url = existing_post.get('meta', {}).get('_thumbnail_external_url') if existing_post else None
+        if current_external_url != image_url:
+            post_data['meta']['_thumbnail_external_url'] = image_url
+            logger.info(f"Set planet render URL for: {title}")
+        else:
+            logger.info(f"Planet render URL unchanged for: {title}")
 
     if 'pins' in planet_data:
         post_data['meta']['_eve_planet_pins_data'] = json.dumps(planet_data['pins'])
