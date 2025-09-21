@@ -84,21 +84,29 @@ def update_character_in_wp(char_id, char_data):
 
     post_data = {
         'title': char_data['name'],
+        'slug': f"character-{char_id}",
         'status': 'publish',
         'meta': {
             '_eve_char_id': char_id,
             '_eve_char_name': char_data['name'],
-            '_eve_corporation_id': char_data.get('corporation_id'),
-            '_eve_alliance_id': char_data.get('alliance_id'),
-            '_eve_birthday': char_data.get('birthday'),
-            '_eve_gender': char_data.get('gender'),
-            '_eve_race_id': char_data.get('race_id'),
-            '_eve_bloodline_id': char_data.get('bloodline_id'),
-            '_eve_ancestry_id': char_data.get('ancestry_id'),
-            '_eve_security_status': char_data.get('security_status'),
             '_eve_last_updated': datetime.utcnow().isoformat()
         }
     }
+
+    # Add optional fields if they exist
+    optional_fields = {
+        '_eve_corporation_id': char_data.get('corporation_id'),
+        '_eve_alliance_id': char_data.get('alliance_id'),
+        '_eve_birthday': char_data.get('birthday'),
+        '_eve_gender': char_data.get('gender'),
+        '_eve_race_id': char_data.get('race_id'),
+        '_eve_bloodline_id': char_data.get('bloodline_id'),
+        '_eve_ancestry_id': char_data.get('ancestry_id'),
+        '_eve_security_status': char_data.get('security_status')
+    }
+    for key, value in optional_fields.items():
+        if value is not None:
+            post_data['meta'][key] = value
 
     if existing_posts:
         # Update existing
@@ -139,6 +147,7 @@ def update_blueprint_in_wp(item_id, blueprint_data, char_id):
 
     post_data = {
         'title': f"Blueprint {item_id}",
+        'slug': f"blueprint-{item_id}",
         'status': 'publish',
         'meta': {
             '_eve_bp_item_id': item_id,
@@ -202,6 +211,7 @@ def update_planet_in_wp(planet_id, planet_data, char_id):
 
     post_data = {
         'title': f"Planet {planet_id}",
+        'slug': f"planet-{planet_id}",
         'status': 'publish',
         'meta': {
             '_eve_planet_id': planet_id,

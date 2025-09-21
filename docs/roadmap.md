@@ -17,6 +17,11 @@
   - Scripts run without syntax errors.
   - .env file exists with credentials (needs real ESI app registration if not done).
   - Next: Register ESI app, authorize characters, set up WordPress site with plugin, test data fetching.
+  - Fixed token refresh failures (401 errors due to unapproved corporation scopes); reduced to character-only scopes.
+  - Updated refresh_token method to use Basic auth instead of Bearer.
+  - Fixed null meta values causing post update failures; filtered out nulls.
+  - Ensured unique WordPress posts by adding ID-based slugs (character-{id}, blueprint-{item_id}, planet-{planet_id}).
+  - Set up daily cron job at 2 AM for automated data fetching.
 
 EVE Observer is a custom web-based dashboard built on WordPress with Advanced Custom Fields (ACF) plugin, integrated with backend scripts for pulling and analyzing data from the EVE Online ESI API. The goal is to streamline passive income activities like BPO research, T2 Planetary Interaction (PI), and related industrial tasks across multiple characters and accounts. This tool provides analytical advantages through data visualization, alerts, and optimization without automating in-game actions, ensuring compliance with CCP’s policies.
 
@@ -130,8 +135,9 @@ The project is divided into phases for manageable implementation. Each phase bui
 - **Code Development**: All core scripts and WordPress plugin written and debugged.
 - **Setup Progress**: WordPress site with free ACF plugin set up, ESI OAuth and data fetcher scripts ready.
 - **Authorization**: ESI application registered, characters authorized.
-- **Issues Fixed**: Function order in fetch_data.py, dependencies installed.
+- **Issues Fixed**: Function order in fetch_data.py, dependencies installed, token refresh, null meta handling, unique post slugs, cron automation.
 - **Next Steps**: 
-  - Test data fetching and dashboard display with live data.
-  - Set up cron job for daily data refresh.
-- **Progress**: Phase 1 setup complete, ready for live testing.
+  - Test dashboard display with live data.
+  - Monitor automated data refreshes.
+  - Begin Phase 2: BPO Research Module.
+- **Progress**: Phase 1 complete, data fetching automated, ready for feature expansion.
