@@ -1075,23 +1075,23 @@ def update_contract_in_wp(contract_id, contract_data, for_corp=False, entity_id=
         'slug': slug,
         'status': 'publish',
         'meta': {
-            '_eve_contract_id': contract_id,
+            '_eve_contract_id': str(contract_id),
             '_eve_contract_type': contract_data.get('type'),
             '_eve_contract_status': contract_data.get('status'),
-            '_eve_contract_issuer_id': contract_data.get('issuer_id'),
-            '_eve_contract_issuer_corp_id': contract_data.get('issuer_corporation_id'),
-            '_eve_contract_assignee_id': contract_data.get('assignee_id'),
-            '_eve_contract_acceptor_id': contract_data.get('acceptor_id'),
+            '_eve_contract_issuer_id': str(contract_data.get('issuer_id')) if contract_data.get('issuer_id') is not None else None,
+            '_eve_contract_issuer_corp_id': str(contract_data.get('issuer_corporation_id')) if contract_data.get('issuer_corporation_id') is not None else None,
+            '_eve_contract_assignee_id': str(contract_data.get('assignee_id')) if contract_data.get('assignee_id') is not None else None,
+            '_eve_contract_acceptor_id': str(contract_data.get('acceptor_id')) if contract_data.get('acceptor_id') is not None else None,
             '_eve_contract_date_issued': contract_data.get('date_issued'),
             '_eve_contract_date_expired': contract_data.get('date_expired'),
             '_eve_contract_date_accepted': contract_data.get('date_accepted'),
             '_eve_contract_date_completed': contract_data.get('date_completed'),
-            '_eve_contract_price': contract_data.get('price'),
-            '_eve_contract_reward': contract_data.get('reward'),
-            '_eve_contract_collateral': contract_data.get('collateral'),
-            '_eve_contract_buyout': contract_data.get('buyout'),
-            '_eve_contract_volume': contract_data.get('volume'),
-            '_eve_contract_days_to_complete': contract_data.get('days_to_complete'),
+            '_eve_contract_price': str(contract_data.get('price')) if contract_data.get('price') is not None else None,
+            '_eve_contract_reward': str(contract_data.get('reward')) if contract_data.get('reward') is not None else None,
+            '_eve_contract_collateral': str(contract_data.get('collateral')) if contract_data.get('collateral') is not None else None,
+            '_eve_contract_buyout': str(contract_data.get('buyout')) if contract_data.get('buyout') is not None else None,
+            '_eve_contract_volume': str(contract_data.get('volume')) if contract_data.get('volume') is not None else None,
+            '_eve_contract_days_to_complete': str(contract_data.get('days_to_complete')) if contract_data.get('days_to_complete') is not None else None,
             '_eve_contract_title': contract_data.get('title'),
             '_eve_contract_for_corp': str(for_corp).lower(),
             '_eve_contract_entity_id': str(entity_id),
@@ -1473,6 +1473,16 @@ def process_corporation_contracts(corp_id, access_token, corp_data):
         for contract in corp_contracts:
             contract_status = contract.get('status', '')
             if contract_status in ['finished', 'deleted']:
+                # Skip old finished/deleted contracts (older than 30 days) to improve performance
+                date_completed = contract.get('date_completed')
+                if date_completed:
+                    try:
+                        completed_date = datetime.fromisoformat(date_completed.replace('Z', '+00:00'))
+                        if datetime.now(timezone.utc) - completed_date > timedelta(days=30):
+                            continue  # Skip old contracts
+                    except (ValueError, TypeError):
+                        pass  # If date parsing fails, process anyway
+                
                 logger.info(f"Deleting finished/deleted corporation contract: {contract['contract_id']}")
                 # Find and delete the WordPress post
                 slug = f"contract-{contract['contract_id']}"
@@ -1644,6 +1654,16 @@ def process_character_contracts(char_id, access_token, char_name, wp_post_id_cac
         for contract in char_contracts:
             contract_status = contract.get('status', '')
             if contract_status in ['finished', 'deleted']:
+                # Skip old finished/deleted contracts (older than 30 days) to improve performance
+                date_completed = contract.get('date_completed')
+                if date_completed:
+                    try:
+                        completed_date = datetime.fromisoformat(date_completed.replace('Z', '+00:00'))
+                        if datetime.now(timezone.utc) - completed_date > timedelta(days=30):
+                            continue  # Skip old contracts
+                    except (ValueError, TypeError):
+                        pass  # If date parsing fails, process anyway
+                
                 logger.info(f"Deleting finished/deleted character contract: {contract['contract_id']}")
                 # Find and delete the WordPress post
                 slug = f"contract-{contract['contract_id']}"
