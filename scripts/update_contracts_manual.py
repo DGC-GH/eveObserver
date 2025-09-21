@@ -386,16 +386,38 @@ def update_existing_contract(contract_post, tokens):
     # Find a valid access token for this entity
     access_token = None
     if for_corp:
-        # For corporation contracts, find any character token that can access this corp
-        for char_id, token_data in tokens.items():
-            # Try to use this character's token to fetch corp contract items
-            try:
-                expired = datetime.now(timezone.utc) > datetime.fromisoformat(token_data.get('expires_at', '2000-01-01T00:00:00+00:00'))
-                if not expired:
-                    access_token = token_data['access_token']
-                    break
-            except:
-                continue
+        # For corporation contracts, try to find a token that can access corp contract items
+        # Prioritize Dr FiLiN's token for No Mercy Incorporated
+        if str(entity_id) == '98092220':  # No Mercy Incorporated
+            # Find Dr FiLiN's token
+            for char_id, token_data in tokens.items():
+                try:
+                    expired = datetime.now(timezone.utc) > datetime.fromisoformat(token_data.get('expires_at', '2000-01-01T00:00:00+00:00'))
+                    if not expired and token_data.get('name') == 'Dr FiLiN':
+                        # Test if this token can access corporation contract items
+                        test_items = fetch_corporation_contract_items(entity_id, contract_id, token_data['access_token'])
+                        if test_items is not None:  # Could be empty list, but not None (which means error)
+                            access_token = token_data['access_token']
+                            logger.info(f"Using Dr FiLiN's CEO token for No Mercy Incorporated contract {contract_id}")
+                            break
+                except:
+                    continue
+        
+        # If Dr FiLiN's token didn't work or this isn't No Mercy, try other tokens
+        if not access_token:
+            for char_id, token_data in tokens.items():
+                try:
+                    expired = datetime.now(timezone.utc) > datetime.fromisoformat(token_data.get('expires_at', '2000-01-01T00:00:00+00:00'))
+                    if not expired:
+                        # Test if this token can access corporation contract items
+                        test_items = fetch_corporation_contract_items(entity_id, contract_id, token_data['access_token'])
+                        if test_items is not None:  # Could be empty list, but not None (which means error)
+                            access_token = token_data['access_token']
+                            char_name = token_data.get('name', f'Character {char_id}')
+                            logger.info(f"Using {char_name}'s token for corporation contract {contract_id}")
+                            break
+                except:
+                    continue
     else:
         # For character contracts, use the character's token directly
         if str(entity_id) in tokens:

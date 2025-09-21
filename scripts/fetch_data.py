@@ -13,6 +13,7 @@ import smtplib
 from email.mime.text import MIMEText
 import logging
 from config import *
+from esi_oauth import save_tokens
 
 load_dotenv()
 
@@ -610,10 +611,20 @@ def fetch_character_assets(char_id, access_token):
     endpoint = f"/characters/{char_id}/assets/"
     return fetch_esi(endpoint, char_id, access_token)
 
+def fetch_character_contracts(char_id, access_token):
+    """Fetch character contracts."""
+    endpoint = f"/characters/{char_id}/contracts/"
+    return fetch_esi(endpoint, char_id, access_token)
+
 def fetch_corporation_blueprints(corp_id, access_token):
     """Fetch corporation blueprints."""
     endpoint = f"/corporations/{corp_id}/blueprints/"
     return fetch_esi(endpoint, corp_id, access_token)
+
+def fetch_corporation_contracts(corp_id, access_token):
+    """Fetch corporation contracts."""
+    endpoint = f"/corporations/{corp_id}/contracts/"
+    return fetch_esi(endpoint, None, access_token)  # Corp contracts don't need char_id
 
 def fetch_corporation_industry_jobs(corp_id, access_token):
     """Fetch corporation industry jobs."""
@@ -717,7 +728,7 @@ def extract_blueprints_from_contracts(contracts_data, owner_type, owner_id):
     
     return blueprints
 
-def update_blueprint_from_asset_in_wp(blueprint_data, wp_post_id_cache, access_token, blueprint_cache=None, location_cache=None, structure_cache=None, failed_structures=None):
+def update_blueprint_from_asset_in_wp(blueprint_data, wp_post_id_cache, char_id, access_token, blueprint_cache=None, location_cache=None, structure_cache=None, failed_structures=None):
     """Update or create blueprint post from asset/industry/contract data."""
     if blueprint_cache is None:
         blueprint_cache = load_blueprint_cache()
@@ -1254,23 +1265,56 @@ def main():
 
 def process_corporation_data(corp_id, members, wp_post_id_cache, blueprint_cache, location_cache, structure_cache, failed_structures):
     """Process data for a single corporation and its members."""
-    # Try each member until we successfully fetch corp data
-    corp_data = None
-    successful_token = None
-    successful_char_name = None
-    successful_char_id = None
-
-    for char_id, access_token, char_name in members:
-        logger.info(f"Trying to fetch corporation data for corp {corp_id} using {char_name}'s token...")
-        corp_data = fetch_corporation_data(corp_id, access_token)
-        if corp_data:
-            successful_token = access_token
-            successful_char_name = char_name
-            successful_char_id = char_id
-            logger.info(f"Successfully fetched corporation data using {char_name}'s token")
-            break
+    # For No Mercy Incorporated, prioritize Dr FiLiN's token (CEO)
+    if corp_id == 98092220:  # No Mercy Incorporated
+        # Find Dr FiLiN's token
+        dr_filin_token = None
+        dr_filin_char_id = None
+        dr_filin_name = None
+        for char_id, access_token, char_name in members:
+            if char_name == 'Dr FiLiN':
+                dr_filin_token = access_token
+                dr_filin_char_id = char_id
+                dr_filin_name = char_name
+                break
+        
+        if dr_filin_token:
+            logger.info(f"Using Dr FiLiN's CEO token for No Mercy Incorporated")
+            corp_data = fetch_corporation_data(corp_id, dr_filin_token)
+            if corp_data:
+                successful_token = dr_filin_token
+                successful_char_name = dr_filin_name
+                successful_char_id = dr_filin_char_id
+            else:
+                logger.warning(f"Dr FiLiN's token failed for corporation {corp_id}, falling back to other members")
+                successful_token = None
         else:
-            logger.warning(f"Failed to fetch corporation data using {char_name}'s token (likely no access)")
+            logger.warning(f"Dr FiLiN's token not found for No Mercy Incorporated")
+            successful_token = None
+    else:
+        successful_token = None
+    
+    # If we don't have a successful token yet (not No Mercy or Dr FiLiN failed), try each member
+    if not successful_token:
+        corp_data = None
+        successful_char_name = None
+        successful_char_id = None
+
+        for char_id, access_token, char_name in members:
+            # Skip Dr FiLiN if we already tried them for No Mercy
+            if corp_id == 98092220 and char_name == 'Dr FiLiN':
+                continue
+                
+            logger.info(f"Trying to fetch corporation data for corp {corp_id} using {char_name}'s token...")
+            corp_data = fetch_corporation_data(corp_id, access_token)
+            if corp_data:
+                successful_token = access_token
+                successful_char_name = char_name
+                successful_char_id = char_id
+                logger.info(f"Successfully fetched corporation data using {char_name}'s token")
+                break
+            else:
+                logger.warning(f"Failed to fetch corporation data using {char_name}'s token (likely no access)")
 
     if not corp_data:
         return
@@ -1320,6 +1364,7 @@ def process_corporation_blueprints(corp_id, access_token, char_id, wp_post_id_ca
                 asset_blueprints,
                 update_blueprint_from_asset_in_wp,
                 wp_post_id_cache,
+                char_id,
                 access_token,
                 blueprint_cache,
                 location_cache,
@@ -1338,6 +1383,7 @@ def process_corporation_blueprints(corp_id, access_token, char_id, wp_post_id_ca
                 job_blueprints,
                 update_blueprint_from_asset_in_wp,
                 wp_post_id_cache,
+                char_id,
                 access_token,
                 blueprint_cache,
                 location_cache,
@@ -1356,6 +1402,7 @@ def process_corporation_blueprints(corp_id, access_token, char_id, wp_post_id_ca
                 contract_blueprints,
                 update_blueprint_from_asset_in_wp,
                 wp_post_id_cache,
+                char_id,
                 access_token,
                 blueprint_cache,
                 location_cache,
@@ -1439,6 +1486,7 @@ def process_character_blueprints(char_id, access_token, char_name, wp_post_id_ca
                 asset_blueprints,
                 update_blueprint_from_asset_in_wp,
                 wp_post_id_cache,
+                char_id,
                 access_token,
                 blueprint_cache,
                 location_cache,
@@ -1458,6 +1506,7 @@ def process_character_blueprints(char_id, access_token, char_name, wp_post_id_ca
                 job_blueprints,
                 update_blueprint_from_asset_in_wp,
                 wp_post_id_cache,
+                char_id,
                 access_token,
                 blueprint_cache,
                 location_cache,
@@ -1529,6 +1578,7 @@ def process_character_contracts(char_id, access_token, char_name, wp_post_id_cac
                 contract_blueprints,
                 update_blueprint_from_asset_in_wp,
                 wp_post_id_cache,
+                char_id,
                 access_token,
                 blueprint_cache,
                 location_cache,
@@ -1762,3 +1812,6 @@ def cleanup_old_posts():
                 pass
 
     logger.info("Cleanup completed.")
+
+if __name__ == "__main__":
+    main()
