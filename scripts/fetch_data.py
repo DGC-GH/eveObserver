@@ -1125,14 +1125,65 @@ def update_contract_in_wp(contract_id, contract_data, for_corp=False, entity_id=
     if contract_items:
         post_data['meta']['_eve_contract_items'] = json.dumps(contract_items)
         
+        # Check for market competition on outstanding sell contracts
+        if contract_data.get('status') == 'outstanding' and contract_data.get('type') == 'item_exchange':
+            is_outbid, market_price = check_contract_market_competition(contract_data, contract_items)
+            if is_outbid:
+                post_data['meta']['_eve_contract_outbid'] = 'true'
+                post_data['meta']['_eve_contract_market_price'] = str(market_price)
+                logger.warning(f"Contract {contract_id} is outbid by market price: {market_price}")
+                
+                # Send alert if this is newly outbid
+                was_outbid = existing_meta.get('_eve_contract_outbid') == 'true'
+                if not was_outbid:
+                    # Get item name for alert
+                    item_name = "Unknown Item"
+                    if contract_items and len(contract_items) == 1:
+                        item = contract_items[0]
+                        type_id = item.get('type_id')
+                        if type_id:
+                            type_data = fetch_public_esi(f"/universe/types/{type_id}")
+                            if type_data:
+                                item_name = type_data.get('name', f"Item {type_id}")
+                    
+                    contract_price = contract_data.get('price', 0)
+                    quantity = contract_items[0].get('quantity', 1) if contract_items else 1
+                    price_per_item = contract_price / quantity
+                    
+                    subject = f"EVE Alert: Contract {contract_id} outbid by market"
+                    body = f"Your sell contract {contract_id} for {item_name} (x{quantity}) is being outbid.\n\n"
+                    body += f"Contract price: {price_per_item:.2f} ISK each\n"
+                    body += f"Market price: {market_price:.2f} ISK each\n"
+                    body += f"Difference: {price_per_item - market_price:.2f} ISK\n\n"
+                    body += f"Consider adjusting your contract price to remain competitive."
+                    send_email(subject, body)
+            else:
+                post_data['meta']['_eve_contract_outbid'] = 'false'
+                if '_eve_contract_market_price' in post_data['meta']:
+                    del post_data['meta']['_eve_contract_market_price']
+        else:
+            # Not a sell contract or not outstanding - ensure outbid is false
+            post_data['meta']['_eve_contract_outbid'] = 'false'
+            if '_eve_contract_market_price' in post_data['meta']:
+                del post_data['meta']['_eve_contract_market_price']
+        
         # Set thumbnail based on blueprint items in contract
         thumbnail_url = None
         for item in contract_items:
             type_id = item.get('type_id')
             if type_id:
                 # Check if this is a blueprint
-                type_data = fetch_public_esi(f"/universe/types/{type_id}")
-                if type_data and 'Blueprint' in type_data.get('name', ''):
+                blueprint_type_cache = load_blueprint_type_cache()
+                type_id_str = str(type_id)
+                if type_id_str in blueprint_type_cache:
+                    is_blueprint = blueprint_type_cache[type_id_str]
+                else:
+                    type_data = fetch_public_esi(f"/universe/types/{type_id}")
+                    is_blueprint = type_data and 'Blueprint' in type_data.get('name', '')
+                    blueprint_type_cache[type_id_str] = is_blueprint
+                    save_blueprint_type_cache(blueprint_type_cache)
+                
+                if is_blueprint:
                     # Use the improved fetch_type_icon function
                     thumbnail_url = fetch_type_icon(type_id, size=512)
                     if thumbnail_url and not thumbnail_url.startswith('https://via.placeholder.com'):
@@ -1145,6 +1196,11 @@ def update_contract_in_wp(contract_id, contract_data, for_corp=False, entity_id=
         # Set thumbnail for new contracts
         if not existing_post:
             post_data['meta']['_thumbnail_external_url'] = thumbnail_url
+    else:
+        # No contract items - ensure outbid is set to false
+        post_data['meta']['_eve_contract_outbid'] = 'false'
+        if '_eve_contract_market_price' in post_data['meta']:
+            del post_data['meta']['_eve_contract_market_price']
 
     if existing_post:
         # Check if title changed before updating
@@ -1155,7 +1211,8 @@ def update_contract_in_wp(contract_id, contract_data, for_corp=False, entity_id=
         needs_update = (
             existing_title != title or
             str(existing_meta.get('_eve_contract_status', '')) != str(contract_data.get('status', '')) or
-            str(existing_meta.get('_eve_contract_items', '')) != str(json.dumps(contract_items) if contract_items else '')
+            str(existing_meta.get('_eve_contract_items', '')) != str(json.dumps(contract_items) if contract_items else '') or
+            str(existing_meta.get('_eve_contract_outbid', 'false')) != str(post_data['meta'].get('_eve_contract_outbid', 'false'))
         )
         
         if not needs_update:
@@ -1211,54 +1268,82 @@ def refresh_token(refresh_token):
         logger.error(f"Failed to refresh token: {response.status_code} - {response.text}")
         return None
 
-def fetch_market_orders(region_id, type_id):
-    """Fetch market orders for a type in a region with rate limiting."""
-    import time
-
-    endpoint = f"/markets/{region_id}/orders/?type_id={type_id}"
-    # Note: market orders don't require auth, but rate limited
-    url = f"{ESI_BASE_URL}{endpoint}"
-
-    while True:  # Retry loop for rate limiting
-        response = requests.get(url)
-
-        if response.status_code == 200:
-            return response.json()
-        elif response.status_code == 429:  # Rate limited
-            # Check for X-ESI-Error-Limit-Remain header
-            error_limit_remain = response.headers.get('X-ESI-Error-Limit-Remain')
-            error_limit_reset = response.headers.get('X-ESI-Error-Limit-Reset')
-
-            if error_limit_reset:
-                wait_time = int(error_limit_reset) + 1  # Add 1 second buffer
-                logger.info(f"Rate limited on market orders. Waiting {wait_time} seconds...")
-                time.sleep(wait_time)
-                continue
-            else:
-                # Fallback: wait 60 seconds if no reset header
-                logger.info("Rate limited on market orders. Waiting 60 seconds...")
-                time.sleep(60)
-                continue
-        elif response.status_code == 420:  # Error limited
-            error_limit_remain = response.headers.get('X-ESI-Error-Limit-Remain')
-            error_limit_reset = response.headers.get('X-ESI-Error-Limit-Reset')
-
-            if error_limit_reset:
-                wait_time = int(error_limit_reset) + 1
-                logger.info(f"Error limited on market orders. Waiting {wait_time} seconds...")
-                time.sleep(wait_time)
-                continue
-            else:
-                logger.info("Error limited on market orders. Waiting 60 seconds...")
-                time.sleep(60)
-                continue
-        elif response.status_code >= 500:
-            logger.warning(f"SERVER ERROR {response.status_code} on market orders: {response.text}")
-            time.sleep(5)  # Wait before retrying
-            continue
-        else:
-            logger.error(f"Unexpected error fetching market orders: {response.status_code} - {response.text}")
-            return None
+def check_contract_market_competition(contract_data, contract_items):
+    """Check if a sell contract has been outbid by cheaper market orders in the same location."""
+    if not contract_items or len(contract_items) != 1:
+        return False, None  # Only check single item contracts
+    
+    contract_type = contract_data.get('type')
+    if contract_type != 'item_exchange':
+        return False, None  # Only check sell orders
+    
+    item = contract_items[0]
+    type_id = item.get('type_id')
+    quantity = item.get('quantity', 1)
+    contract_price = contract_data.get('price', 0)
+    
+    if not type_id or quantity <= 0 or contract_price <= 0:
+        return False, None
+    
+    price_per_item = contract_price / quantity
+    
+    # Get contract location
+    start_location_id = contract_data.get('start_location_id')
+    if not start_location_id:
+        return False, None
+    
+    # Get region_id from location
+    region_id = None
+    if start_location_id >= 1000000000000:  # Structure
+        # For structures, we need to fetch structure info to get solar_system_id, then region
+        struct_data = fetch_public_esi(f"/universe/structures/{start_location_id}")
+        if struct_data:
+            solar_system_id = struct_data.get('solar_system_id')
+            if solar_system_id:
+                system_data = fetch_public_esi(f"/universe/systems/{solar_system_id}")
+                if system_data:
+                    region_id = system_data.get('constellation_id')
+                    if region_id:
+                        constellation_data = fetch_public_esi(f"/universe/constellations/{region_id}")
+                        if constellation_data:
+                            region_id = constellation_data.get('region_id')
+    else:  # Station
+        station_data = fetch_public_esi(f"/universe/stations/{start_location_id}")
+        if station_data:
+            system_id = station_data.get('system_id')
+            if system_id:
+                system_data = fetch_public_esi(f"/universe/systems/{system_id}")
+                if system_data:
+                    constellation_id = system_data.get('constellation_id')
+                    if constellation_id:
+                        constellation_data = fetch_public_esi(f"/universe/constellations/{constellation_id}")
+                        if constellation_data:
+                            region_id = constellation_data.get('region_id')
+    
+    if not region_id:
+        return False, None
+    
+    # Fetch market orders for this type in the region
+    market_orders = fetch_market_orders(region_id, type_id)
+    if not market_orders:
+        return False, None
+    
+    # Filter to sell orders in the same location
+    competing_orders = [
+        order for order in market_orders
+        if order.get('is_buy_order') == False and order.get('location_id') == start_location_id
+    ]
+    
+    if not competing_orders:
+        return False, None
+    
+    # Find the lowest sell price
+    lowest_market_price = min(order.get('price', float('inf')) for order in competing_orders)
+    
+    if lowest_market_price < price_per_item:
+        return True, lowest_market_price
+    
+    return False, None
 
 def collect_corporation_members(tokens):
     """Collect all corporations and their member characters from authorized tokens."""
