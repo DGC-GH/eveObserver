@@ -124,6 +124,13 @@ class EVE_Observer {
 
         // Register ACF field groups if ACF is active
         $this->register_acf_field_groups();
+
+        // Register meta for REST API
+        register_meta('post', '_eve_planet_pins_data', array(
+            'show_in_rest' => true,
+            'single' => true,
+            'type' => 'string',
+        ));
     }
 
     private function register_acf_field_groups() {
@@ -141,24 +148,28 @@ class EVE_Observer {
                     'label' => 'Character ID',
                     'name' => '_eve_char_id',
                     'type' => 'text',
+                    'show_in_rest' => true,
                 ),
                 array(
                     'key' => 'field_corp_id',
                     'label' => 'Corporation ID',
                     'name' => '_eve_corporation_id',
                     'type' => 'text',
+                    'show_in_rest' => true,
                 ),
                 array(
                     'key' => 'field_alliance_id',
                     'label' => 'Alliance ID',
                     'name' => '_eve_alliance_id',
                     'type' => 'text',
+                    'show_in_rest' => true,
                 ),
                 array(
                     'key' => 'field_birthday',
                     'label' => 'Birthday',
                     'name' => '_eve_birthday',
                     'type' => 'date_time_picker',
+                    'show_in_rest' => true,
                 ),
                 array(
                     'key' => 'field_security_status',
@@ -166,12 +177,14 @@ class EVE_Observer {
                     'name' => '_eve_security_status',
                     'type' => 'number',
                     'step' => 0.01,
+                    'show_in_rest' => true,
                 ),
                 array(
                     'key' => 'field_total_sp',
                     'label' => 'Total Skill Points',
                     'name' => '_eve_total_sp',
                     'type' => 'number',
+                    'show_in_rest' => true,
                 ),
             ),
             'location' => array(
@@ -244,22 +257,32 @@ class EVE_Observer {
             'title' => 'Planet Information',
             'fields' => array(
                 array(
+                    'key' => 'field_planet_id',
+                    'label' => 'Planet ID',
+                    'name' => '_eve_planet_id',
+                    'type' => 'text',
+                    'show_in_rest' => true,
+                ),
+                array(
                     'key' => 'field_planet_type',
                     'label' => 'Planet Type',
                     'name' => '_eve_planet_type',
                     'type' => 'text',
+                    'show_in_rest' => true,
                 ),
                 array(
                     'key' => 'field_planet_solar_system_id',
                     'label' => 'Solar System ID',
                     'name' => '_eve_planet_solar_system_id',
                     'type' => 'text',
+                    'show_in_rest' => true,
                 ),
                 array(
                     'key' => 'field_planet_upgrade_level',
                     'label' => 'Upgrade Level',
                     'name' => '_eve_planet_upgrade_level',
                     'type' => 'number',
+                    'show_in_rest' => true,
                 ),
                 array(
                     'key' => 'field_planet_pins',
@@ -280,6 +303,7 @@ class EVE_Observer {
                             'type' => 'date_time_picker',
                         ),
                     ),
+                    'show_in_rest' => true,
                 ),
             ),
             'location' => array(

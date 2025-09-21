@@ -7,12 +7,12 @@ Fetches data from EVE ESI API and stores in WordPress database via REST API.
 import os
 import json
 import requests
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 from dotenv import load_dotenv
 import smtplib
 from email.mime.text import MIMEText
 
-load_dotenv()
+load_dotenv('scripts/.env')
 
 # Configuration
 WP_BASE_URL = os.getenv('WP_URL', 'https://your-wordpress-site.com')
@@ -141,6 +141,84 @@ def fetch_corporation_contracts(corp_id, access_token):
     endpoint = f"/corporations/{corp_id}/contracts/"
     return fetch_esi(endpoint, corp_id, access_token)
 
+def fetch_corporation_assets(corp_id, access_token):
+    """Fetch corporation assets."""
+    endpoint = f"/corporations/{corp_id}/assets/"
+    return fetch_esi(endpoint, corp_id, access_token)
+
+def fetch_planet_details(char_id, planet_id, access_token):
+    """Fetch detailed planet information including pins."""
+    endpoint = f"/characters/{char_id}/planets/{planet_id}/"
+    return fetch_esi(endpoint, char_id, access_token)
+
+def update_planet_in_wp(planet_id, planet_data, char_id):
+    """Update or create planet post in WordPress."""
+    # Check if post exists
+    search_url = f"{WP_BASE_URL}/wp-json/wp/v2/eve_planet?meta_key=_eve_planet_id&meta_value={planet_id}"
+    response = requests.get(search_url, auth=get_wp_auth())
+    existing_posts = response.json() if response.status_code == 200 else []
+
+    post_data = {
+        'title': f"Planet {planet_id}",
+        'status': 'publish',
+        'meta': {
+            '_eve_planet_id': planet_id,
+            '_eve_planet_type': planet_data.get('planet_type'),
+            '_eve_planet_solar_system_id': planet_data.get('solar_system_id'),
+            '_eve_planet_upgrade_level': planet_data.get('upgrade_level'),
+            '_eve_char_id': char_id,
+            '_eve_last_updated': datetime.now(timezone.utc).isoformat()
+        }
+    }
+
+    if 'pins' in planet_data:
+        post_data['meta']['_eve_planet_pins_data'] = json.dumps(planet_data['pins'])
+
+    if existing_posts:
+        # Update existing
+        post_id = existing_posts[0]['id']
+        url = f"{WP_BASE_URL}/wp-json/wp/v2/eve_planet/{post_id}"
+        response = requests.post(url, json=post_data, auth=get_wp_auth())
+    else:
+        # Create new
+        url = f"{WP_BASE_URL}/wp-json/wp/v2/eve_planet"
+        response = requests.post(url, json=post_data, auth=get_wp_auth())
+
+    if response.status_code in [200, 201]:
+        print(f"Updated planet: {planet_id}")
+    else:
+        print(f"Failed to update planet {planet_id}: {response.status_code} - {response.text}")
+
+def save_tokens(tokens):
+    """Save tokens to file."""
+    with open(TOKENS_FILE, 'w') as f:
+        json.dump(tokens, f)
+
+def refresh_token(refresh_token):
+    """Refresh an access token."""
+    data = {
+        'grant_type': 'refresh_token',
+        'refresh_token': refresh_token,
+        'client_id': os.getenv('ESI_CLIENT_ID'),
+        'client_secret': os.getenv('ESI_CLIENT_SECRET')
+    }
+    response = requests.post('https://login.eveonline.com/v2/oauth/token', data=data)
+    if response.status_code == 200:
+        token_data = response.json()
+        expires_at = datetime.now(timezone.utc) + timedelta(seconds=token_data['expires_in'])
+        return {
+            'access_token': token_data['access_token'],
+            'refresh_token': token_data.get('refresh_token', refresh_token),
+            'expires_at': expires_at.isoformat()
+        }
+    else:
+        print(f"Failed to refresh token: {response.status_code} - {response.text}")
+        return None
+
+def get_wp_auth():
+    """Get WordPress authentication tuple."""
+    return (WP_USERNAME, WP_APP_PASSWORD)
+
 def fetch_market_orders(region_id, type_id):
     """Fetch market orders for a type in a region."""
     endpoint = f"/markets/{region_id}/orders/?type_id={type_id}"
@@ -161,6 +239,19 @@ def main():
         return
 
     for char_id, token_data in tokens.items():
+        try:
+            expired = datetime.now(timezone.utc) > datetime.fromisoformat(token_data.get('expires_at', '2000-01-01T00:00:00+00:00'))
+        except:
+            expired = True
+        if expired:
+            new_token = refresh_token(token_data['refresh_token'])
+            if new_token:
+                token_data.update(new_token)
+                save_tokens(tokens)
+            else:
+                print(f"Failed to refresh token for {token_data['name']}")
+                continue
+
         access_token = token_data['access_token']
         char_name = token_data['name']
 
@@ -187,7 +278,7 @@ def main():
         if jobs:
             print(f"Industry jobs for {char_name}: {len(jobs)} active")
             # Check for job completions
-            now = datetime.utcnow()
+            now = datetime.now(timezone.utc)
             upcoming_completions = []
             for job in jobs:
                 if 'end_date' in job:
@@ -206,9 +297,30 @@ def main():
         planets = fetch_character_planets(char_id, access_token)
         if planets:
             print(f"Planets for {char_name}: {len(planets)} colonies")
+            for planet in planets:
+                planet_id = planet['planet_id']
+                # Fetch details
+                details = fetch_planet_details(char_id, planet_id, access_token)
+                if details:
+                    planet.update(details)
+                    # Check for extraction completions
+                    now = datetime.now(timezone.utc)
+                    upcoming_extractions = []
+                    for pin in details.get('pins', []):
+                        if 'expiry_time' in pin:
+                            expiry = datetime.fromisoformat(pin['expiry_time'].replace('Z', '+00:00'))
+                            if now <= expiry <= now + timedelta(hours=24):
+                                upcoming_extractions.append(pin)
+                    if upcoming_extractions:
+                        subject = f"EVE Alert: {len(upcoming_extractions)} PI extractions ending soon for {char_name}"
+                        body = f"The following extractions will complete within 24 hours:\n\n"
+                        for pin in upcoming_extractions:
+                            body += f"- Pin {pin['pin_id']}: Type {pin.get('type_id', 'Unknown')} ending {pin['expiry_time']}\n"
+                        send_email(subject, body)
+                update_planet_in_wp(planet_id, planet, char_id)
 
         # Fetch corporation data if available
-        corp_id = char_data.get('corporation_id')
+        corp_id = char_data.get('corporation_id') if char_data else None
         if corp_id:
             print(f"Fetching corporation data for corp ID: {corp_id}")
 
