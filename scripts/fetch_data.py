@@ -1140,6 +1140,33 @@ def update_contract_in_wp(contract_id, contract_data, for_corp=False, entity_id=
     # Add items data if available
     if 'items' in contract_data:
         post_data['meta']['_eve_contract_items'] = json.dumps(contract_data['items'])
+        
+        # Set thumbnail based on blueprint items in contract
+        thumbnail_url = None
+        for item in contract_data['items']:
+            type_id = item.get('type_id')
+            if type_id:
+                # Check if this is a blueprint
+                type_data = fetch_public_esi(f"/universe/types/{type_id}")
+                if type_data and 'Blueprint' in type_data.get('name', ''):
+                    # Try to get the blueprint icon
+                    icon_url = f"https://images.evetech.net/types/{type_id}/icon?size=64"
+                    try:
+                        icon_response = requests.head(icon_url, timeout=5)
+                        if icon_response.status_code == 200:
+                            thumbnail_url = icon_url
+                            break
+                    except:
+                        pass
+        
+        # If no blueprint icon found, use contract placeholder
+        if not thumbnail_url:
+            thumbnail_url = "https://via.placeholder.com/64x64/e74c3c/ffffff?text=Contract"
+        
+        # Check if thumbnail changed before updating
+        existing_thumbnail = existing_post.get('meta', {}).get('_thumbnail_external_url') if existing_post else None
+        if existing_thumbnail != thumbnail_url:
+            post_data['meta']['_thumbnail_external_url'] = thumbnail_url
 
     if existing_post:
         # Update existing

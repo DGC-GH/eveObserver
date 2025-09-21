@@ -148,6 +148,9 @@ class EVE_Observer {
         
         add_filter('manage_eve_corporation_posts_columns', array($this, 'add_thumbnail_column'));
         add_action('manage_eve_corporation_posts_custom_column', array($this, 'display_thumbnail_column'), 10, 2);
+        
+        add_filter('manage_eve_contract_posts_columns', array($this, 'add_thumbnail_column'));
+        add_action('manage_eve_contract_posts_custom_column', array($this, 'display_thumbnail_column'), 10, 2);
 
         // Register custom post types
         $this->register_custom_post_types();
@@ -179,6 +182,12 @@ class EVE_Observer {
         }
         wp_enqueue_script('chart-js', 'https://cdn.jsdelivr.net/npm/chart.js', array(), '4.4.0', true);
         wp_enqueue_script('eve-observer-dashboard', plugin_dir_url(__FILE__) . 'js/dashboard.js', array('chart-js'), '1.0.0', true);
+        
+        // Add CSS for thumbnail column width
+        wp_add_inline_style('wp-admin', '
+            .column-thumbnail { width: 60px; text-align: center; }
+            .column-thumbnail img { max-width: 50px; max-height: 50px; }
+        ');
     }
 
     public function display_dashboard() {
