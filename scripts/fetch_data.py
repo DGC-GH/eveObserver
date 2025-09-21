@@ -78,9 +78,13 @@ def get_wp_auth():
 def update_character_in_wp(char_id, char_data):
     """Update or create character post in WordPress."""
     # Check if post exists
-    search_url = f"{WP_BASE_URL}/wp-json/wp/v2/eve_character?meta_key=_eve_char_id&meta_value={char_id}"
-    response = requests.get(search_url, auth=get_wp_auth())
+    response = requests.get(f"{WP_BASE_URL}/wp-json/wp/v2/eve_character", auth=get_wp_auth())
     existing_posts = response.json() if response.status_code == 200 else []
+    existing_post = None
+    for post in existing_posts:
+        if post['meta'].get('_eve_char_id') == char_id:
+            existing_post = post
+            break
 
     post_data = {
         'title': char_data['name'],
@@ -89,7 +93,7 @@ def update_character_in_wp(char_id, char_data):
         'meta': {
             '_eve_char_id': char_id,
             '_eve_char_name': char_data['name'],
-            '_eve_last_updated': datetime.utcnow().isoformat()
+            '_eve_last_updated': datetime.now(timezone.utc).isoformat()
         }
     }
 
@@ -108,9 +112,9 @@ def update_character_in_wp(char_id, char_data):
         if value is not None:
             post_data['meta'][key] = value
 
-    if existing_posts:
+    if existing_post:
         # Update existing
-        post_id = existing_posts[0]['id']
+        post_id = existing_post['id']
         url = f"{WP_BASE_URL}/wp-json/wp/v2/eve_character/{post_id}"
         response = requests.put(url, json=post_data, auth=get_wp_auth())
     else:
@@ -141,9 +145,13 @@ def fetch_character_blueprints(char_id, access_token):
 def update_blueprint_in_wp(item_id, blueprint_data, char_id):
     """Update or create blueprint post in WordPress."""
     # Check if post exists
-    search_url = f"{WP_BASE_URL}/wp-json/wp/v2/eve_blueprint?meta_key=_eve_bp_item_id&meta_value={item_id}"
-    response = requests.get(search_url, auth=get_wp_auth())
+    response = requests.get(f"{WP_BASE_URL}/wp-json/wp/v2/eve_blueprint", auth=get_wp_auth())
     existing_posts = response.json() if response.status_code == 200 else []
+    existing_post = None
+    for post in existing_posts:
+        if post['meta'].get('_eve_bp_item_id') == item_id:
+            existing_post = post
+            break
 
     post_data = {
         'title': f"Blueprint {item_id}",
@@ -162,9 +170,9 @@ def update_blueprint_in_wp(item_id, blueprint_data, char_id):
         }
     }
 
-    if existing_posts:
+    if existing_post:
         # Update existing
-        post_id = existing_posts[0]['id']
+        post_id = existing_post['id']
         url = f"{WP_BASE_URL}/wp-json/wp/v2/eve_blueprint/{post_id}"
         response = requests.put(url, json=post_data, auth=get_wp_auth())
     else:
@@ -205,9 +213,13 @@ def fetch_planet_details(char_id, planet_id, access_token):
 def update_planet_in_wp(planet_id, planet_data, char_id):
     """Update or create planet post in WordPress."""
     # Check if post exists
-    search_url = f"{WP_BASE_URL}/wp-json/wp/v2/eve_planet?meta_key=_eve_planet_id&meta_value={planet_id}"
-    response = requests.get(search_url, auth=get_wp_auth())
+    response = requests.get(f"{WP_BASE_URL}/wp-json/wp/v2/eve_planet", auth=get_wp_auth())
     existing_posts = response.json() if response.status_code == 200 else []
+    existing_post = None
+    for post in existing_posts:
+        if post['meta'].get('_eve_planet_id') == planet_id:
+            existing_post = post
+            break
 
     post_data = {
         'title': f"Planet {planet_id}",
@@ -226,9 +238,9 @@ def update_planet_in_wp(planet_id, planet_data, char_id):
     if 'pins' in planet_data:
         post_data['meta']['_eve_planet_pins_data'] = json.dumps(planet_data['pins'])
 
-    if existing_posts:
+    if existing_post:
         # Update existing
-        post_id = existing_posts[0]['id']
+        post_id = existing_post['id']
         url = f"{WP_BASE_URL}/wp-json/wp/v2/eve_planet/{post_id}"
         response = requests.put(url, json=post_data, auth=get_wp_auth())
     else:
