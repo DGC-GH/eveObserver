@@ -31,6 +31,16 @@ class EVE_Observer {
     }
 
     public function init() {
+        // Register meta for REST API
+        register_meta('post', '_eve_planet_pins_data', array(
+            'show_in_rest' => true,
+            'single' => true,
+            'type' => 'string',
+            'auth_callback' => function( $allowed, $meta_key, $object_id, $user_id ) {
+                return current_user_can( 'edit_post', $object_id );
+            }
+        ));
+
         // Register custom post types
         $this->register_custom_post_types();
     }
@@ -176,13 +186,6 @@ class EVE_Observer {
 
         // Register ACF field groups if ACF is active
         $this->register_acf_field_groups();
-
-        // Register meta for REST API
-        register_meta('post', '_eve_planet_pins_data', array(
-            'show_in_rest' => true,
-            'single' => true,
-            'type' => 'string',
-        ));
     }
 
     private function register_acf_field_groups() {
