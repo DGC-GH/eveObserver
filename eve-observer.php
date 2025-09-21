@@ -1119,16 +1119,24 @@ class EVE_Observer {
             
             // Build EVE chat link for clipboard copying
             $eve_chat_link = '';
-            if (!empty($contract_id) && !empty($start_location_id)) {
+            if (!empty($contract_id)) {
                 $link_title = !empty($contract_title) ? esc_html($contract_title) : 'Contract';
-                $eve_chat_link = '<a href="contract:' . $start_location_id . '//' . $contract_id . '">' . $link_title . '</a>';
+                if (!empty($start_location_id)) {
+                    $eve_chat_link = '<a href="contract:' . $start_location_id . '//' . $contract_id . '">' . $link_title . '</a>';
+                } else {
+                    // Fallback: create link without location (might still work in some cases)
+                    $eve_chat_link = '<a href="contract://' . $contract_id . '">' . $link_title . '</a>';
+                }
             }
             
             echo "<div style='display: flex; align-items: center; gap: 8px;'>";
             
-            // Make status clickable for clipboard copy if we have the data
+            // Make status always clickable for clipboard copy if we have contract data
             if (!empty($eve_chat_link)) {
                 echo "<span style='color: " . esc_attr($color) . "; font-weight: bold; cursor: pointer;' onclick='copyToClipboard(\"" . esc_js($eve_chat_link) . "\")' title='Click to copy EVE chat link'>" . esc_html($icon . ' ' . $status_text) . "</span>";
+            } elseif (!empty($contract_id)) {
+                // Fallback: copy just the contract ID if we can't make a proper link
+                echo "<span style='color: " . esc_attr($color) . "; font-weight: bold; cursor: pointer;' onclick='copyToClipboard(\"" . esc_js($contract_id) . "\")' title='Click to copy contract ID'>" . esc_html($icon . ' ' . $status_text) . "</span>";
             } else {
                 echo "<span style='color: " . esc_attr($color) . "; font-weight: bold;'>" . esc_html($icon . ' ' . $status_text) . "</span>";
             }
