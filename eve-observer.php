@@ -1165,13 +1165,6 @@ class EVE_Observer {
         $columns['outbid'] = 'outbid';
         return $columns;
     }
-
-    public function enqueue_admin_scripts($hook) {
-        // Only load on edit.php for contracts post type
-        if ($hook === 'edit.php' && isset($_GET['post_type']) && $_GET['post_type'] === 'contracts') {
-            wp_enqueue_script('eve-observer-admin', plugin_dir_url(__FILE__) . 'js/admin-scripts.js', array('jquery'), '1.0.0', true);
-        }
-    }
 }
 
 // Initialize the plugin
