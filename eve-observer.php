@@ -241,8 +241,9 @@ class EVE_Observer {
             }
         ');
 
-        // Dashboard-specific scripts
-        if ($hook === 'toplevel_page_eve-observer-dashboard') {
+        // Dashboard-specific scripts and styles
+        if ($hook === 'toplevel_page_eve-observer') {
+            wp_enqueue_style('eve-observer-dashboard', plugin_dir_url(__FILE__) . 'css/dashboard.css', array(), '1.0.0');
             wp_enqueue_script('chart-js', 'https://cdn.jsdelivr.net/npm/chart.js', array(), '4.4.0', true);
             wp_enqueue_script('eve-observer-dashboard', plugin_dir_url(__FILE__) . 'js/dashboard.js', array('chart-js'), '1.0.0', true);
         }
@@ -258,105 +259,217 @@ class EVE_Observer {
         if (!current_user_can('manage_options')) {
             wp_die(__('You do not have sufficient permissions to access this page.'));
         }
-        ?>
-        <div class="wrap">
-            <h1><?php _e('EVE Observer Dashboard', 'eve-observer'); ?></h1>
-            <p><?php _e('Welcome to the EVE Observer dashboard. Here you can view aggregated data from your EVE Online characters.', 'eve-observer'); ?></p>
 
-            <!-- Chart Container -->
-            <div style="width: 80%; margin: 20px auto;">
-                <canvas id="eveChart"></canvas>
+        // Get data counts
+        $character_count = wp_count_posts('eve_character')->publish;
+        $blueprint_count = wp_count_posts('eve_blueprint')->publish;
+        $planet_count = wp_count_posts('eve_planet')->publish;
+        $corporation_count = wp_count_posts('eve_corporation')->publish;
+        $contract_count = wp_count_posts('eve_contract')->publish;
+
+        ?>
+        <div class="eve-dashboard">
+            <div class="eve-dashboard-header">
+                <h1><?php _e('EVE Observer Dashboard', 'eve-observer'); ?></h1>
+                <p><?php _e('Monitor your EVE Online assets and activities with real-time insights.', 'eve-observer'); ?></p>
             </div>
 
-            <!-- Characters -->
-            <h2><?php _e('Characters', 'eve-observer'); ?></h2>
-            <?php
-            $characters = get_posts(array('post_type' => 'eve_character', 'numberposts' => -1));
-            if ($characters) {
-                echo '<ul>';
-                foreach ($characters as $char) {
-                    $char_id = get_post_meta($char->ID, '_eve_char_id', true);
-                    $corp_id = get_post_meta($char->ID, '_eve_corporation_id', true);
-                    echo '<li>' . esc_html($char->post_title) . ' (ID: ' . esc_html($char_id) . ', Corp: ' . esc_html($corp_id) . ')</li>';
-                }
-                echo '</ul>';
-            } else {
-                echo '<p>No character data available.</p>';
-            }
-            ?>
+            <!-- Overview Cards -->
+            <div class="eve-overview-grid">
+                <div class="eve-card eve-card-clickable" data-section="characters">
+                    <div class="eve-card-header">
+                        <div class="eve-card-icon" style="background: rgba(0, 122, 255, 0.1); color: var(--primary-color);">👤</div>
+                        <h3 class="eve-card-title"><?php _e('Characters', 'eve-observer'); ?></h3>
+                    </div>
+                    <p class="eve-card-value"><?php echo esc_html($character_count); ?></p>
+                </div>
 
-            <!-- Blueprints -->
-            <h2><?php _e('Blueprints', 'eve-observer'); ?></h2>
-            <?php
-            $blueprints = get_posts(array('post_type' => 'eve_blueprint', 'numberposts' => -1));
-            if ($blueprints) {
-                echo '<p>Total Blueprints: ' . count($blueprints) . '</p>';
-                echo '<ul>';
-                foreach ($blueprints as $bp) {
-                    $type_id = get_post_meta($bp->ID, '_eve_bp_type_id', true);
-                    $me = get_post_meta($bp->ID, '_eve_bp_me', true);
-                    $te = get_post_meta($bp->ID, '_eve_bp_te', true);
-                    echo '<li>Blueprint ' . esc_html($type_id) . ' (ME: ' . esc_html($me) . ', TE: ' . esc_html($te) . ')</li>';
-                }
-                echo '</ul>';
-            } else {
-                echo '<p>No blueprint data available.</p>';
-            }
-            ?>
+                <div class="eve-card eve-card-clickable" data-section="blueprints">
+                    <div class="eve-card-header">
+                        <div class="eve-card-icon" style="background: rgba(255, 149, 0, 0.1); color: var(--warning-color);">📋</div>
+                        <h3 class="eve-card-title"><?php _e('Blueprints', 'eve-observer'); ?></h3>
+                    </div>
+                    <p class="eve-card-value"><?php echo esc_html($blueprint_count); ?></p>
+                </div>
 
-            <!-- Planets -->
-            <h2><?php _e('Planets', 'eve-observer'); ?></h2>
-            <?php
-            $planets = get_posts(array('post_type' => 'eve_planet', 'numberposts' => -1));
-            if ($planets) {
-                echo '<p>Total Planets: ' . count($planets) . '</p>';
-                echo '<ul>';
-                foreach ($planets as $planet) {
-                    $planet_type = get_post_meta($planet->ID, '_eve_planet_type', true);
-                    echo '<li>' . esc_html($planet->post_title) . ' (Type: ' . esc_html($planet_type) . ')</li>';
-                }
-                echo '</ul>';
-            } else {
-                echo '<p>No planet data available.</p>';
-            }
-            ?>
+                <div class="eve-card eve-card-clickable" data-section="planets">
+                    <div class="eve-card-header">
+                        <div class="eve-card-icon" style="background: rgba(52, 199, 89, 0.1); color: var(--success-color);">🌍</div>
+                        <h3 class="eve-card-title"><?php _e('Planets', 'eve-observer'); ?></h3>
+                    </div>
+                    <p class="eve-card-value"><?php echo esc_html($planet_count); ?></p>
+                </div>
 
-            <!-- Corporations -->
-            <h2><?php _e('Corporations', 'eve-observer'); ?></h2>
-            <?php
-            $corporations = get_posts(array('post_type' => 'eve_corporation', 'numberposts' => -1));
-            if ($corporations) {
-                echo '<p>Total Corporations: ' . count($corporations) . '</p>';
-                echo '<ul>';
-                foreach ($corporations as $corp) {
-                    $corp_id = get_post_meta($corp->ID, '_eve_corp_id', true);
-                    $ticker = get_post_meta($corp->ID, '_eve_corp_ticker', true);
-                    echo '<li>' . esc_html($corp->post_title) . ' [' . esc_html($ticker) . '] (ID: ' . esc_html($corp_id) . ')</li>';
-                }
-                echo '</ul>';
-            } else {
-                echo '<p>No corporation data available.</p>';
-            }
-            ?>
+                <div class="eve-card eve-card-clickable" data-section="corporations">
+                    <div class="eve-card-header">
+                        <div class="eve-card-icon" style="background: rgba(255, 59, 48, 0.1); color: var(--danger-color);">🏢</div>
+                        <h3 class="eve-card-title"><?php _e('Corporations', 'eve-observer'); ?></h3>
+                    </div>
+                    <p class="eve-card-value"><?php echo esc_html($corporation_count); ?></p>
+                </div>
 
-            <!-- Contracts -->
-            <h2><?php _e('Contracts', 'eve-observer'); ?></h2>
-            <?php
-            $contracts = get_posts(array('post_type' => 'eve_contract', 'numberposts' => -1));
-            if ($contracts) {
-                echo '<p>Total Contracts: ' . count($contracts) . '</p>';
-                echo '<ul>';
-                foreach ($contracts as $contract) {
-                    $contract_id = get_post_meta($contract->ID, '_eve_contract_id', true);
-                    $type = get_post_meta($contract->ID, '_eve_contract_type', true);
-                    $status = get_post_meta($contract->ID, '_eve_contract_status', true);
-                    echo '<li>' . esc_html($contract->post_title) . ' (' . esc_html($type) . ' - ' . esc_html($status) . ') (ID: ' . esc_html($contract_id) . ')</li>';
-                }
-                echo '</ul>';
-            } else {
-                echo '<p>No contract data available.</p>';
-            }
-            ?>
+                <div class="eve-card eve-card-clickable" data-section="contracts">
+                    <div class="eve-card-header">
+                        <div class="eve-card-icon" style="background: rgba(142, 142, 147, 0.1); color: #8e8e93;">📄</div>
+                        <h3 class="eve-card-title"><?php _e('Contracts', 'eve-observer'); ?></h3>
+                    </div>
+                    <p class="eve-card-value"><?php echo esc_html($contract_count); ?></p>
+                </div>
+            </div>
+
+            <!-- Chart Section -->
+            <div class="eve-chart-section">
+                <div class="eve-chart-container">
+                    <h2><?php _e('Asset Distribution', 'eve-observer'); ?></h2>
+                    <div style="position: relative; height: 400px;">
+                        <canvas id="eveChart"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Characters Section -->
+            <div class="eve-data-section" id="characters-section">
+                <h2><?php _e('Characters', 'eve-observer'); ?></h2>
+                <div class="eve-loading" id="characters-loading">
+                    <div class="eve-loading-spinner"></div>
+                    <span>Loading characters...</span>
+                </div>
+                <div id="characters-content" style="display: none;">
+                    <div class="eve-search-container">
+                        <input type="text" class="eve-search-input" id="characters-search" placeholder="Search characters...">
+                    </div>
+                    <table class="eve-data-table" id="characters-table">
+                        <thead>
+                            <tr>
+                                <th><?php _e('Name', 'eve-observer'); ?></th>
+                                <th><?php _e('Corporation', 'eve-observer'); ?></th>
+                                <th><?php _e('Alliance', 'eve-observer'); ?></th>
+                                <th><?php _e('Security Status', 'eve-observer'); ?></th>
+                                <th><?php _e('Location', 'eve-observer'); ?></th>
+                            </tr>
+                        </thead>
+                        <tbody id="characters-tbody">
+                            <!-- Characters will be loaded here -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Blueprints Section -->
+            <div class="eve-data-section" id="blueprints-section">
+                <h2><?php _e('Blueprints', 'eve-observer'); ?></h2>
+                <div class="eve-loading" id="blueprints-loading">
+                    <div class="eve-loading-spinner"></div>
+                    <span>Loading blueprints...</span>
+                </div>
+                <div id="blueprints-content" style="display: none;">
+                    <div class="eve-search-container">
+                        <input type="text" class="eve-search-input" id="blueprints-search" placeholder="Search blueprints...">
+                    </div>
+                    <table class="eve-data-table" id="blueprints-table">
+                        <thead>
+                            <tr>
+                                <th><?php _e('Name', 'eve-observer'); ?></th>
+                                <th><?php _e('Type ID', 'eve-observer'); ?></th>
+                                <th><?php _e('Location', 'eve-observer'); ?></th>
+                                <th><?php _e('ME', 'eve-observer'); ?></th>
+                                <th><?php _e('TE', 'eve-observer'); ?></th>
+                                <th><?php _e('Runs', 'eve-observer'); ?></th>
+                            </tr>
+                        </thead>
+                        <tbody id="blueprints-tbody">
+                            <!-- Blueprints will be loaded here -->
+                        </tbody>
+                    </table>
+                    <div class="eve-pagination" id="blueprints-pagination"></div>
+                </div>
+            </div>
+
+            <!-- Planets Section -->
+            <div class="eve-data-section" id="planets-section">
+                <h2><?php _e('Planets', 'eve-observer'); ?></h2>
+                <div class="eve-loading" id="planets-loading">
+                    <div class="eve-loading-spinner"></div>
+                    <span>Loading planets...</span>
+                </div>
+                <div id="planets-content" style="display: none;">
+                    <div class="eve-search-container">
+                        <input type="text" class="eve-search-input" id="planets-search" placeholder="Search planets...">
+                    </div>
+                    <table class="eve-data-table" id="planets-table">
+                        <thead>
+                            <tr>
+                                <th><?php _e('Name', 'eve-observer'); ?></th>
+                                <th><?php _e('Type', 'eve-observer'); ?></th>
+                                <th><?php _e('Upgrade Level', 'eve-observer'); ?></th>
+                                <th><?php _e('Solar System', 'eve-observer'); ?></th>
+                                <th><?php _e('Active Pins', 'eve-observer'); ?></th>
+                            </tr>
+                        </thead>
+                        <tbody id="planets-tbody">
+                            <!-- Planets will be loaded here -->
+                        </tbody>
+                    </table>
+                    <div class="eve-pagination" id="planets-pagination"></div>
+                </div>
+            </div>
+
+            <!-- Corporations Section -->
+            <div class="eve-data-section" id="corporations-section">
+                <h2><?php _e('Corporations', 'eve-observer'); ?></h2>
+                <div class="eve-loading" id="corporations-loading">
+                    <div class="eve-loading-spinner"></div>
+                    <span>Loading corporations...</span>
+                </div>
+                <div id="corporations-content" style="display: none;">
+                    <div class="eve-search-container">
+                        <input type="text" class="eve-search-input" id="corporations-search" placeholder="Search corporations...">
+                    </div>
+                    <table class="eve-data-table" id="corporations-table">
+                        <thead>
+                            <tr>
+                                <th><?php _e('Name', 'eve-observer'); ?></th>
+                                <th><?php _e('Ticker', 'eve-observer'); ?></th>
+                                <th><?php _e('Member Count', 'eve-observer'); ?></th>
+                                <th><?php _e('Tax Rate', 'eve-observer'); ?></th>
+                                <th><?php _e('Wallet Balance', 'eve-observer'); ?></th>
+                            </tr>
+                        </thead>
+                        <tbody id="corporations-tbody">
+                            <!-- Corporations will be loaded here -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Contracts Section -->
+            <div class="eve-data-section" id="contracts-section">
+                <h2><?php _e('Contracts', 'eve-observer'); ?></h2>
+                <div class="eve-loading" id="contracts-loading">
+                    <div class="eve-loading-spinner"></div>
+                    <span>Loading contracts...</span>
+                </div>
+                <div id="contracts-content" style="display: none;">
+                    <div class="eve-search-container">
+                        <input type="text" class="eve-search-input" id="contracts-search" placeholder="Search contracts...">
+                    </div>
+                    <table class="eve-data-table" id="contracts-table">
+                        <thead>
+                            <tr>
+                                <th><?php _e('Title', 'eve-observer'); ?></th>
+                                <th><?php _e('Type', 'eve-observer'); ?></th>
+                                <th><?php _e('Status', 'eve-observer'); ?></th>
+                                <th><?php _e('Price', 'eve-observer'); ?></th>
+                                <th><?php _e('Issuer', 'eve-observer'); ?></th>
+                                <th><?php _e('Outbid', 'eve-observer'); ?></th>
+                            </tr>
+                        </thead>
+                        <tbody id="contracts-tbody">
+                            <!-- Contracts will be loaded here -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
         </div>
         <?php
     }
