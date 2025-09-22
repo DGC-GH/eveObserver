@@ -204,7 +204,7 @@ class EVEDashboard {
             const title = contract.title?.rendered || `Contract ${contractId}`;
             
             if (regionId && contractId) {
-                return `<font size="14" color="#bfffffff"><br></font><font size="14" color="#ffd98d00"><a href="contract:${regionId}//${contractId}">[Contract ${contractId}]</a></font>`;
+                return `<font size="14" color="#bfffffff"></font><font size="14" color="#ffd98d00"><a href="contract:${regionId}//${contractId}">[Contract ${contractId}]</a></font>`;
             }
             return '';
         }).filter(link => link);
@@ -438,9 +438,9 @@ class EVEDashboard {
                 `;
 
             case 'contracts':
-                const isOutbid = item.meta?._eve_contract_outbid === 'true';
+                const isOutbid = item.meta?._eve_contract_outbid === '1';
                 const statusClass = isOutbid ? 'eve-status-error' : 'eve-status-ok';
-                const statusText = isOutbid ? 'Outbid' : 'OK';
+                const statusText = isOutbid ? 'Warning' : 'OK';
                 const statusIcon = isOutbid ? '⚠️' : '✅';
 
                 return `

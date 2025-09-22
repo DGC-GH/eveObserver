@@ -356,7 +356,7 @@ def get_wp_auth():
 def delete_wp_post(post_type, post_id):
     """Delete a WordPress post."""
     url = f"{WP_BASE_URL}/wp-json/wp/v2/{post_type}/{post_id}"
-    response = requests.delete(url, auth=get_wp_auth())
+    response = requests.delete(url, auth=get_wp_auth(), params={'force': 'true'})
     if response.status_code == 200:
         logger.info(f"Deleted {post_type} post: {post_id}")
     else:
