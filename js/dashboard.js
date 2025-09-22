@@ -432,7 +432,7 @@ class EVEDashboard {
         switch (section) {
             case 'characters':
                 return `
-                    <td>${this.escapeHtml(item.title?.rendered || 'Unknown')}</td>
+                    <td>${this.decodeHtml(item.title?.rendered || 'Unknown')}</td>
                     <td>${this.escapeHtml(item.meta?._eve_corporation_name || item.meta?._eve_corporation_id || 'N/A')}</td>
                     <td>${this.escapeHtml(item.meta?._eve_alliance_name || item.meta?._eve_alliance_id || 'N/A')}</td>
                     <td>${this.formatSecurityStatus(item.meta?._eve_security_status)}</td>
@@ -441,7 +441,7 @@ class EVEDashboard {
 
             case 'blueprints':
                 return `
-                    <td>${this.escapeHtml(item.title?.rendered || 'Unknown')}</td>
+                    <td>${this.decodeHtml(item.title?.rendered || 'Unknown')}</td>
                     <td>${this.escapeHtml(item.meta?._eve_bp_type_id || 'N/A')}</td>
                     <td>${this.escapeHtml(item.meta?._eve_bp_location_name || 'Unknown')}</td>
                     <td>${this.escapeHtml(item.meta?._eve_bp_me || 'N/A')}%</td>
@@ -452,7 +452,7 @@ class EVEDashboard {
             case 'planets':
                 const pinsCount = this.getPinsCount(item.meta?._eve_planet_pins_data);
                 return `
-                    <td>${this.escapeHtml(item.title?.rendered || 'Unknown')}</td>
+                    <td>${this.decodeHtml(item.title?.rendered || 'Unknown')}</td>
                     <td>${this.escapeHtml(item.meta?._eve_planet_type || 'Unknown')}</td>
                     <td>${this.escapeHtml(item.meta?._eve_planet_upgrade_level || 'N/A')}</td>
                     <td>${this.escapeHtml(item.meta?._eve_planet_solar_system_name || 'Unknown')}</td>
@@ -461,7 +461,7 @@ class EVEDashboard {
 
             case 'corporations':
                 return `
-                    <td>${this.escapeHtml(item.title?.rendered || 'Unknown')}</td>
+                    <td>${this.decodeHtml(item.title?.rendered || 'Unknown')}</td>
                     <td>${this.escapeHtml(item.meta?._eve_corp_ticker || 'N/A')}</td>
                     <td>${this.escapeHtml(item.meta?._eve_corp_member_count || 'N/A')}</td>
                     <td>${this.formatNumber(item.meta?._eve_corp_tax_rate)}%</td>
