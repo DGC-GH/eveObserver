@@ -15,6 +15,13 @@ class EVEDashboard {
         };
         this.filteredData = { ...this.data };
         this.searchTimeouts = {};
+        this.postTypeMap = {
+            characters: 'eve_character',
+            blueprints: 'eve_blueprint',
+            planets: 'eve_planet',
+            corporations: 'eve_corporation',
+            contracts: 'eve_contract'
+        };
 
         this.init();
     }
@@ -32,7 +39,7 @@ class EVEDashboard {
         
         for (const section of sections) {
             try {
-                const url = `/wp-json/wp/v2/eve_${section}?per_page=100&_embed`;
+                const url = `/wp-json/wp/v2/${this.postTypeMap[section]}?per_page=100&_embed`;
                 const response = await fetch(url);
                 if (!response.ok) throw new Error(`HTTP ${response.status}`);
                 const data = await response.json();
@@ -556,7 +563,7 @@ class EVEDashboard {
 
         // Reload data for this section
         try {
-            const url = `/wp-json/wp/v2/eve_${section}?per_page=${this.itemsPerPage}&page=${newPage}&_embed`;
+            const url = `/wp-json/wp/v2/${this.postTypeMap[section]}?per_page=${this.itemsPerPage}&page=${newPage}&_embed`;
             const response = await fetch(url);
             if (!response.ok) throw new Error(`HTTP ${response.status}`);
             const data = await response.json();
