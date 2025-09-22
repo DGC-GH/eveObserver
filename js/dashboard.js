@@ -20,6 +20,7 @@ class EVEDashboard {
     }
 
     async init() {
+        console.log('EVEDashboard init called');
         await this.loadAllData();
         this.setupSearch();
         this.setupCardClicks();
@@ -189,10 +190,13 @@ class EVEDashboard {
     }
 
     setupCardClicks() {
+        console.log('setupCardClicks called');
         const cards = document.querySelectorAll('.eve-card-clickable');
+        console.log('Found cards:', cards.length);
         cards.forEach(card => {
             card.addEventListener('click', () => {
                 const section = card.getAttribute('data-section');
+                console.log('Card clicked, section:', section);
                 this.scrollToSection(section);
             });
         });
@@ -280,7 +284,7 @@ class EVEDashboard {
             Object.entries(counts).map(([key, value]) => [key, total > 0 ? (value / total * 100) : 0])
         );
 
-        new Chart(ctx, {
+        this.chart = new Chart(ctx, {
             type: 'doughnut',
             data: {
                 labels: Object.keys(counts).map(key => `${key} (${counts[key]})`),
