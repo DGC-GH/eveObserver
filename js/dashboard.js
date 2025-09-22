@@ -598,8 +598,12 @@ class EVEDashboard {
     decodeHtml(text) {
         if (!text) return text;
         
-        // Replace HTML entity and character for en dash with hyphen
-        return text.replace(/&#8211;/g, '-').replace(/–/g, '-');
+        const temp = document.createElement('div');
+        temp.innerHTML = text;
+        const decoded = temp.textContent || temp.innerText || text;
+        
+        // Replace en dash with hyphen
+        return decoded.replace(/–/g, '-');
     }
 }
 
