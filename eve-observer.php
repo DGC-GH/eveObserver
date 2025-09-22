@@ -185,68 +185,68 @@ class EVE_Observer {
     }
 
     public function enqueue_admin_scripts($hook) {
-        // Add clipboard functionality for all admin pages
-        wp_add_inline_script('jquery', '
-            function copyToClipboard(text) {
-                if (navigator.clipboard && window.isSecureContext) {
-                    navigator.clipboard.writeText(text).then(function() {
-                        showCopyFeedback("Link copied to clipboard!");
-                    }).catch(function(err) {
-                        console.error("Failed to copy: ", err);
-                        fallbackCopyTextToClipboard(text);
-                    });
-                } else {
-                    fallbackCopyTextToClipboard(text);
-                }
-            }
-            
-            function fallbackCopyTextToClipboard(text) {
-                var textArea = document.createElement("textarea");
-                textArea.value = text;
-                textArea.style.position = "fixed";
-                textArea.style.left = "-999999px";
-                textArea.style.top = "-999999px";
-                document.body.appendChild(textArea);
-                textArea.focus();
-                textArea.select();
-                try {
-                    var successful = document.execCommand("copy");
-                    if (successful) {
-                        showCopyFeedback("Link copied to clipboard!");
-                    } else {
-                        showCopyFeedback("Copy failed", true);
-                    }
-                } catch (err) {
-                    showCopyFeedback("Copy failed: " + err, true);
-                }
-                document.body.removeChild(textArea);
-            }
-            
-            function showCopyFeedback(message, isError) {
-                var existing = document.querySelector(".copy-feedback");
-                if (existing) {
-                    existing.remove();
-                }
-                
-                var feedback = document.createElement("div");
-                feedback.className = "copy-feedback";
-                feedback.innerHTML = message;
-                feedback.style.cssText = "position:fixed;top:20px;right:20px;background:" + (isError ? "#dc3545" : "#28a745") + ";color:white;padding:10px 15px;border-radius:4px;z-index:9999;font-weight:bold;box-shadow:0 2px 10px rgba(0,0,0,0.2);";
-                document.body.appendChild(feedback);
-                
-                setTimeout(function() {
-                    if (feedback.parentNode) {
-                        feedback.parentNode.removeChild(feedback);
-                    }
-                }, 3000);
-            }
-        ');
-
         // Dashboard-specific scripts and styles
         if ($hook === 'toplevel_page_eve-observer') {
             wp_enqueue_style('eve-observer-dashboard', plugin_dir_url(__FILE__) . 'css/dashboard.css', array(), '1.0.0');
             wp_enqueue_script('chart-js', 'https://cdn.jsdelivr.net/npm/chart.js', array(), '4.4.0', true);
             wp_enqueue_script('eve-observer-dashboard', plugin_dir_url(__FILE__) . 'js/dashboard.js', array('chart-js'), '1.0.0', true);
+
+            // Add clipboard functionality for dashboard
+            wp_add_inline_script('eve-observer-dashboard', '
+                function copyToClipboard(text) {
+                    if (navigator.clipboard && window.isSecureContext) {
+                        navigator.clipboard.writeText(text).then(function() {
+                            showCopyFeedback("Link copied to clipboard!");
+                        }).catch(function(err) {
+                            console.error("Failed to copy: ", err);
+                            fallbackCopyTextToClipboard(text);
+                        });
+                    } else {
+                        fallbackCopyTextToClipboard(text);
+                    }
+                }
+                
+                function fallbackCopyTextToClipboard(text) {
+                    var textArea = document.createElement("textarea");
+                    textArea.value = text;
+                    textArea.style.position = "fixed";
+                    textArea.style.left = "-999999px";
+                    textArea.style.top = "-999999px";
+                    document.body.appendChild(textArea);
+                    textArea.focus();
+                    textArea.select();
+                    try {
+                        var successful = document.execCommand("copy");
+                        if (successful) {
+                            showCopyFeedback("Link copied to clipboard!");
+                        } else {
+                            showCopyFeedback("Copy failed", true);
+                        }
+                    } catch (err) {
+                        showCopyFeedback("Copy failed: " + err, true);
+                    }
+                    document.body.removeChild(textArea);
+                }
+                
+                function showCopyFeedback(message, isError) {
+                    var existing = document.querySelector(".copy-feedback");
+                    if (existing) {
+                        existing.remove();
+                    }
+                    
+                    var feedback = document.createElement("div");
+                    feedback.className = "copy-feedback";
+                    feedback.innerHTML = message;
+                    feedback.style.cssText = "position:fixed;top:20px;right:20px;background:" + (isError ? "#dc3545" : "#28a745") + ";color:white;padding:10px 15px;border-radius:4px;z-index:9999;font-weight:bold;box-shadow:0 2px 10px rgba(0,0,0,0.2);";
+                    document.body.appendChild(feedback);
+                    
+                    setTimeout(function() {
+                        if (feedback.parentNode) {
+                            feedback.parentNode.removeChild(feedback);
+                        }
+                    }, 3000);
+                }
+            ');
         }
         
         // Add CSS for thumbnail column width
