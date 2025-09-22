@@ -1330,7 +1330,7 @@ class EVE_Observer {
             
             if ($is_outbid && !empty($market_price) && is_numeric($market_price)) {
                 $formatted_price = number_format((float)$market_price, 2);
-                echo "<span style='color: #666; font-size: 12px; cursor: pointer;' onclick='copyToClipboard(" . json_encode($formatted_price) . ")' title='Click to copy suggested price'>Suggested: " . esc_html($formatted_price) . " ISK</span>";
+                echo "<span style='color: #666; font-size: 12px; cursor: pointer;' onclick='copyToClipboard(" . json_encode($formatted_price) . ")' title='Click to copy competing price'>Competing: " . esc_html($formatted_price) . " ISK</span>";
             }
             
             echo "</div>";

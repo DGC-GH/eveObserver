@@ -138,13 +138,18 @@ def save_tokens(tokens):
     with open(TOKENS_FILE, 'w') as f:
         json.dump(tokens, f, indent=2)
 
-def fetch_market_orders(region_id, type_id):
-    """Fetch market orders for a specific region and type."""
-    endpoint = f"/markets/{region_id}/orders/?type_id={type_id}"
+def fetch_public_contracts(region_id):
+    """Fetch public contracts for a specific region."""
+    endpoint = f"/contracts/public/{region_id}/"
     return fetch_public_esi(endpoint)
 
-def check_contract_market_competition(contract_data, contract_items):
-    """Check if a sell contract has been outbid by cheaper market orders in the same location."""
+def fetch_public_contract_items(contract_id):
+    """Fetch items for a public contract."""
+    endpoint = f"/contracts/public/items/{contract_id}/"
+    return fetch_public_esi(endpoint)
+
+def check_contract_competition(contract_data, contract_items):
+    """Check if a sell contract has been outbid by cheaper competing contracts in the same region."""
     if not contract_items or len(contract_items) != 1:
         return False, None  # Only check single item contracts
 
@@ -156,19 +161,19 @@ def check_contract_market_competition(contract_data, contract_items):
     type_id = item.get('type_id')
     quantity = item.get('quantity', 1)
     contract_price = contract_data.get('price', 0)
+    contract_id = contract_data.get('contract_id')
 
     if not type_id or quantity <= 0 or contract_price <= 0:
         return False, None
 
     price_per_item = contract_price / quantity
 
-    # Get contract location
+    # Get contract region from start_location_id
     start_location_id = contract_data.get('start_location_id')
     if not start_location_id:
-        logger.warning(f"Contract {contract_data.get('contract_id')} missing start_location_id, skipping market check")
+        logger.warning(f"Contract {contract_id} missing start_location_id, skipping contract competition check")
         return False, None
 
-    # Get region_id from location
     region_id = None
     if start_location_id >= 1000000000000:  # Structure
         # For structures, we need to fetch structure info to get solar_system_id, then region
@@ -178,9 +183,9 @@ def check_contract_market_competition(contract_data, contract_items):
             if solar_system_id:
                 system_data = fetch_public_esi(f"/universe/systems/{solar_system_id}")
                 if system_data:
-                    region_id = system_data.get('constellation_id')
-                    if region_id:
-                        constellation_data = fetch_public_esi(f"/universe/constellations/{region_id}")
+                    constellation_id = system_data.get('constellation_id')
+                    if constellation_id:
+                        constellation_data = fetch_public_esi(f"/universe/constellations/{constellation_id}")
                         if constellation_data:
                             region_id = constellation_data.get('region_id')
     else:  # Station
@@ -199,30 +204,47 @@ def check_contract_market_competition(contract_data, contract_items):
     if not region_id:
         return False, None
 
-    # Fetch market orders for this type in the region
-    market_orders = fetch_market_orders(region_id, type_id)
-    if not market_orders:
+    # Fetch all public contracts in the region
+    region_contracts = fetch_public_contracts(region_id)
+    if not region_contracts:
         return False, None
 
-    # Filter to sell orders in the same location
-    competing_orders = [
-        order for order in market_orders
-        if order.get('is_buy_order') == False and order.get('location_id') == start_location_id
+    # Filter to outstanding item exchange contracts
+    competing_contracts = [
+        c for c in region_contracts
+        if c.get('type') == 'item_exchange' and c.get('status') == 'outstanding' and c.get('contract_id') != contract_id
     ]
 
-    if not competing_orders:
+    if not competing_contracts:
         return False, None
 
-    # Find the lowest sell price
-    lowest_market_price = min(order.get('price', float('inf')) for order in competing_orders)
+    # Collect prices for contracts with the same item
+    competing_prices = []
+    for comp_contract in competing_contracts:
+        comp_contract_id = comp_contract.get('contract_id')
+        comp_items = fetch_public_contract_items(comp_contract_id)
+        if comp_items and len(comp_items) == 1:
+            comp_item = comp_items[0]
+            if comp_item.get('type_id') == type_id:
+                comp_quantity = comp_item.get('quantity', 1)
+                comp_price = comp_contract.get('price', 0)
+                if comp_quantity > 0 and comp_price > 0:
+                    comp_price_per_item = comp_price / comp_quantity
+                    competing_prices.append(comp_price_per_item)
 
-    if lowest_market_price < price_per_item:
-        return True, lowest_market_price
+    if not competing_prices:
+        return False, None
+
+    # Find the lowest competing price
+    lowest_competing_price = min(competing_prices)
+
+    if lowest_competing_price < price_per_item:
+        return True, lowest_competing_price
 
     return False, None
 
-def update_contract_outbid_status(contract_id, is_outbid, market_price=None):
-    """Update only the outbid status and market price of a contract."""
+def update_contract_outbid_status(contract_id, is_outbid, competing_price=None):
+    """Update only the outbid status and competing price of a contract."""
     slug = f"contract-{contract_id}"
 
     # Check if post exists by slug
@@ -250,24 +272,12 @@ def update_contract_outbid_status(contract_id, is_outbid, market_price=None):
         }
     }
 
-    if is_outbid and market_price:
-        post_data['meta']['_eve_contract_market_price'] = str(market_price)
+    if is_outbid and competing_price:
+        post_data['meta']['_eve_contract_market_price'] = str(competing_price)
+        logger.warning(f"Contract {contract_id} is outbid by competing contract price: {competing_price}")
     elif not is_outbid:
-        # Remove market price if no longer outbid
+        # Remove competing price if no longer outbid
         post_data['meta']['_eve_contract_market_price'] = None
-
-    # Update existing post
-    post_id = existing_post['id']
-    url = f"{WP_BASE_URL}/wp-json/wp/v2/eve_contract/{post_id}"
-    response = requests.put(url, json=post_data, auth=get_wp_auth())
-
-    if response.status_code in [200, 201]:
-        status_text = "now outbid" if is_outbid else "no longer outbid"
-        logger.info(f"Updated contract {contract_id}: {status_text}")
-        if is_outbid and market_price:
-            logger.warning(f"Contract {contract_id} is outbid by market price: {market_price}")
-    else:
-        logger.error(f"Failed to update contract {contract_id}: {response.status_code} - {response.text}")
 
 def collect_corporation_members(tokens):
     """Collect all corporations and their member characters from authorized tokens."""
@@ -329,9 +339,9 @@ def check_contract_outbid_status(contract, for_corp, entity_id, access_token):
     if not items:
         return
 
-    # Check market competition
-    is_outbid, market_price = check_contract_market_competition(contract, items)
-    update_contract_outbid_status(contract_id, is_outbid, market_price)
+    # Check contract competition
+    is_outbid, competing_price = check_contract_competition(contract, items)
+    update_contract_outbid_status(contract_id, is_outbid, competing_price)
 
 def main():
     """Main outbid checking routine."""
