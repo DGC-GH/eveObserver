@@ -503,6 +503,7 @@ class EVE_Observer {
             'public' => true,
             'supports' => array('title', 'editor', 'custom-fields'),
             'show_in_rest' => true,
+            'rest_base' => 'eve_characters',
             'show_in_menu' => false,
         ));
 
@@ -515,6 +516,7 @@ class EVE_Observer {
             'public' => true,
             'supports' => array('title', 'editor', 'custom-fields'),
             'show_in_rest' => true,
+            'rest_base' => 'eve_blueprints',
             'show_in_menu' => false,
         ));
 
@@ -527,6 +529,7 @@ class EVE_Observer {
             'public' => true,
             'supports' => array('title', 'editor', 'custom-fields'),
             'show_in_rest' => true,
+            'rest_base' => 'eve_planets',
             'show_in_menu' => false,
         ));
 
@@ -539,6 +542,7 @@ class EVE_Observer {
             'public' => true,
             'supports' => array('title', 'editor', 'custom-fields'),
             'show_in_rest' => true,
+            'rest_base' => 'eve_corporations',
             'show_in_menu' => false,
         ));
 
@@ -551,6 +555,7 @@ class EVE_Observer {
             'public' => true,
             'supports' => array('title', 'editor', 'custom-fields'),
             'show_in_rest' => true,
+            'rest_base' => 'eve_contracts',
             'show_in_menu' => false,
         ));
 

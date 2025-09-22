@@ -16,11 +16,11 @@ class EVEDashboard {
         this.filteredData = { ...this.data };
         this.searchTimeouts = {};
         this.postTypeMap = {
-            characters: 'eve_character',
-            blueprints: 'eve_blueprint',
-            planets: 'eve_planet',
-            corporations: 'eve_corporation',
-            contracts: 'eve_contract'
+            characters: 'eve_characters',
+            blueprints: 'eve_blueprints',
+            planets: 'eve_planets',
+            corporations: 'eve_corporations',
+            contracts: 'eve_contracts'
         };
 
         this.init();
