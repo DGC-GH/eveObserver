@@ -1170,6 +1170,14 @@ class EVE_Observer {
                     'show_in_rest' => true,
                 ),
                 array(
+                    'key' => 'field_contract_competing_price',
+                    'label' => 'Competing Price (ISK)',
+                    'name' => '_eve_contract_competing_price',
+                    'type' => 'number',
+                    'step' => 0.01,
+                    'show_in_rest' => true,
+                ),
+                array(
                     'key' => 'field_contract_items',
                     'label' => 'Contract Items (JSON)',
                     'name' => '_eve_contract_items',
