@@ -188,6 +188,16 @@ class EVEDashboard {
         }
     }
 
+    setupCardClicks() {
+        const cards = document.querySelectorAll('.eve-card-clickable');
+        cards.forEach(card => {
+            card.addEventListener('click', () => {
+                const section = card.getAttribute('data-section');
+                this.scrollToSection(section);
+            });
+        });
+    }
+
     copyOutbidContracts() {
         const outbidContracts = this.data.contracts.filter(contract => 
             contract.meta && contract.meta._eve_contract_outbid === '1'
