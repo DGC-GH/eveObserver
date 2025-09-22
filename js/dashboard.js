@@ -465,7 +465,7 @@ class EVEDashboard {
                 const statusIcon = isOutbid ? '⚠️' : '✅';
 
                 return `
-                    <td>${this.escapeHtml(item.title?.rendered || 'Unknown')}</td>
+                    <td>${this.decodeHtml(item.title?.rendered || 'Unknown')}</td>
                     <td>${this.formatContractType(item.meta?._eve_contract_type)}</td>
                     <td>${this.formatContractStatus(item.meta?._eve_contract_status)}</td>
                     <td>${this.formatISK(item.meta?._eve_contract_price)}</td>
@@ -582,6 +582,12 @@ class EVEDashboard {
         const div = document.createElement('div');
         div.textContent = text;
         return div.innerHTML;
+    }
+
+    decodeHtml(text) {
+        const div = document.createElement('div');
+        div.innerHTML = text;
+        return div.textContent;
     }
 }
 
