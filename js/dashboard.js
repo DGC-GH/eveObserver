@@ -590,7 +590,7 @@ class EVEDashboard {
         // Use DOMParser to properly decode HTML entities
         const parser = new DOMParser();
         const decoded = parser.parseFromString(text, 'text/html');
-        return decoded.documentElement.textContent;
+        return decoded.documentElement.textContent.replace(/–/g, '-');
     }
 }
 
