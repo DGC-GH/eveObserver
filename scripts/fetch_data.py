@@ -1961,10 +1961,11 @@ def cleanup_old_posts(allowed_corp_ids, allowed_issuer_ids):
             assignee_id = meta.get('_eve_contract_assignee_id')
             
             should_delete = False
-            if assignee_id is not None:
-                # Delete private contracts
+            # Don't delete private contracts - they may still be visible to authorized characters
+            # Only delete contracts from unauthorized issuers or finished/deleted contracts
+            if status in ['finished', 'deleted']:
                 should_delete = True
-                logger.info(f"Deleting private contract: {contract_id}")
+                logger.info(f"Deleting {status} contract: {contract_id}")
             elif issuer_corp_id and int(issuer_corp_id) not in allowed_corp_ids and issuer_id and int(issuer_id) not in allowed_issuer_ids:
                 should_delete = True
                 logger.info(f"Deleting contract from unauthorized issuer: {contract_id}")
