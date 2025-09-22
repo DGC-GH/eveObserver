@@ -585,9 +585,12 @@ class EVEDashboard {
     }
 
     decodeHtml(text) {
-        const div = document.createElement('div');
-        div.innerHTML = text;
-        return div.textContent;
+        if (!text) return text;
+        
+        // Use DOMParser to properly decode HTML entities
+        const parser = new DOMParser();
+        const decoded = parser.parseFromString(text, 'text/html');
+        return decoded.documentElement.textContent;
     }
 }
 
