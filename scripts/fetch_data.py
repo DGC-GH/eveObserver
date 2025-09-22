@@ -1926,6 +1926,23 @@ def update_planet_in_wp(planet_id, planet_data, char_id):
             post_data['meta']['_thumbnail_external_url'] = image_url
 
     if existing_post:
+        # Check if data has changed before updating
+        existing_meta = existing_post.get('meta', {})
+        
+        # Compare planet data fields (not title since it includes char_id)
+        needs_update = (
+            str(existing_meta.get('_eve_planet_type_id', '')) != str(planet_data.get('type_id', '')) or
+            str(existing_meta.get('_eve_planet_name', '')) != str(planet_name) or
+            str(existing_meta.get('_eve_planet_solar_system_id', '')) != str(planet_data.get('solar_system_id', '')) or
+            str(existing_meta.get('_eve_planet_pins', '')) != str(json.dumps(planet_data.get('pins', []))) or
+            str(existing_meta.get('_eve_planet_routes', '')) != str(json.dumps(planet_data.get('routes', []))) or
+            str(existing_meta.get('_eve_planet_links', '')) != str(json.dumps(planet_data.get('links', [])))
+        )
+        
+        if not needs_update:
+            logger.info(f"Planet {planet_id} unchanged, skipping update")
+            return
+        
         # Update existing
         post_id = existing_post['id']
         url = f"{WP_BASE_URL}/wp-json/wp/v2/eve_planet/{post_id}"
