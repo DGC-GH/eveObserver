@@ -1092,18 +1092,17 @@ def update_contract_in_wp(contract_id, contract_data, for_corp=False, entity_id=
         elif not for_corp and entity_id:
             contract_items = fetch_character_contract_items(entity_id, contract_id, access_token)
 
-    # Check if contract contains BPOs - only track contracts with BPOs
-    has_bpo = False
+    # Check if contract contains blueprints - only track contracts with blueprints
+    has_blueprint = False
     if contract_items:
         for item in contract_items:
             type_id = item.get('type_id')
-            quantity = item.get('quantity', 1)
-            if type_id and quantity == -1:  # BPO
-                has_bpo = True
+            if type_id and type_id in blueprint_cache:
+                has_blueprint = True
                 break
     
-    if not has_bpo:
-        logger.debug(f"Contract {contract_id} contains no BPOs, skipping")
+    if not has_blueprint:
+        logger.debug(f"Contract {contract_id} contains no blueprints, skipping")
         return
 
     # Generate descriptive title
@@ -1485,7 +1484,7 @@ def process_corporation_data(corp_id, members, wp_post_id_cache, blueprint_cache
     process_corporation_blueprints(corp_id, successful_token, successful_char_id, wp_post_id_cache, blueprint_cache, location_cache, structure_cache, failed_structures)
 
     # Process corporation contracts
-    process_corporation_contracts(corp_id, successful_token, corp_data)
+    process_corporation_contracts(corp_id, successful_token, corp_data, blueprint_cache)
 
 def process_corporation_blueprints(corp_id, access_token, char_id, wp_post_id_cache, blueprint_cache, location_cache, structure_cache, failed_structures):
     """Process all blueprint sources for a corporation."""
@@ -1577,24 +1576,19 @@ def process_corporation_blueprints(corp_id, access_token, char_id, wp_post_id_ca
                 failed_structures
             )
 
-def process_corporation_contracts(corp_id, access_token, corp_data):
+def process_corporation_contracts(corp_id, access_token, corp_data, blueprint_cache):
     """Process contracts for a corporation."""
     corp_contracts = fetch_corporation_contracts(corp_id, access_token)
     if corp_contracts:
         logger.info(f"Corporation contracts for {corp_data.get('name', corp_id)}: {len(corp_contracts)} items")
         for contract in corp_contracts:
-            # Skip private contracts (those assigned to specific entities)
-            if contract.get('assignee_id') is not None:
-                logger.info(f"Skipping private contract: {contract['contract_id']}")
-                continue
-            
             contract_status = contract.get('status', '')
             if contract_status in ['finished', 'deleted']:
                 # Skip finished/deleted contracts to improve performance
                 continue
             elif contract_status == 'expired':
                 logger.info(f"EXPIRED CORPORATION CONTRACT TO DELETE MANUALLY: {contract['contract_id']}")
-            update_contract_in_wp(contract['contract_id'], contract, for_corp=True, entity_id=corp_id, access_token=access_token)
+            update_contract_in_wp(contract['contract_id'], contract, for_corp=True, entity_id=corp_id, access_token=access_token, blueprint_cache=blueprint_cache)
 
 def process_character_data(char_id, token_data, wp_post_id_cache, blueprint_cache, location_cache, structure_cache, failed_structures):
     """Process data for a single character."""
@@ -1761,7 +1755,7 @@ def process_character_contracts(char_id, access_token, char_name, wp_post_id_cac
                 continue
             elif contract_status == 'expired':
                 logger.info(f"EXPIRED CHARACTER CONTRACT TO DELETE MANUALLY: {contract['contract_id']}")
-            update_contract_in_wp(contract['contract_id'], contract, for_corp=False, entity_id=char_id, access_token=access_token)
+            update_contract_in_wp(contract['contract_id'], contract, for_corp=False, entity_id=char_id, access_token=access_token, blueprint_cache=blueprint_cache)
 
 def fetch_type_icon(type_id, size=512):
     """Fetch type icon URL from images.evetech.net with fallback."""
