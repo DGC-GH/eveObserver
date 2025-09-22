@@ -114,9 +114,9 @@ class EVE_Observer {
             '_eve_contract_date_expired', '_eve_contract_date_accepted', '_eve_contract_date_completed',
             '_eve_contract_price', '_eve_contract_reward', '_eve_contract_collateral', '_eve_contract_buyout',
             '_eve_contract_volume', '_eve_contract_days_to_complete', '_eve_contract_items', '_eve_last_updated',
-            '_eve_contract_outbid', '_eve_contract_market_price'
+            '_eve_contract_outbid', '_eve_contract_market_price', '_eve_contract_competing_price'
         );
-        $numeric_contract_fields = array('_eve_contract_id', '_eve_contract_issuer_id', '_eve_contract_issuer_corporation_id', '_eve_contract_assignee_id', '_eve_contract_price', '_eve_contract_reward', '_eve_contract_collateral', '_eve_contract_buyout', '_eve_contract_volume', '_eve_contract_days_to_complete', '_eve_contract_market_price');
+        $numeric_contract_fields = array('_eve_contract_id', '_eve_contract_issuer_id', '_eve_contract_issuer_corporation_id', '_eve_contract_assignee_id', '_eve_contract_price', '_eve_contract_reward', '_eve_contract_collateral', '_eve_contract_buyout', '_eve_contract_volume', '_eve_contract_days_to_complete', '_eve_contract_market_price', '_eve_contract_competing_price');
         foreach ($contract_meta_fields as $field) {
             register_meta('post', $field, array(
                 'show_in_rest' => true,
@@ -1287,7 +1287,7 @@ class EVE_Observer {
             $contract_id = get_post_meta($post_id, '_eve_contract_id', true);
             $contract_title = get_post_meta($post_id, '_eve_contract_title', true);
             $start_location_id = get_post_meta($post_id, '_eve_contract_location_id', true);
-            $market_price = get_post_meta($post_id, '_eve_contract_market_price', true);
+            $competing_price = get_post_meta($post_id, '_eve_contract_competing_price', true);
             
             if ($is_outbid) {
                 $status_text = 'Outbid';
@@ -1331,8 +1331,8 @@ class EVE_Observer {
                 echo "<span style='color: " . esc_attr($color) . "; font-weight: bold;'>" . esc_html($icon . ' ' . $status_text) . "</span>";
             }
             
-            if ($is_outbid && !empty($market_price) && is_numeric($market_price)) {
-                $formatted_price = number_format((float)$market_price, 2);
+            if ($is_outbid && !empty($competing_price) && is_numeric($competing_price)) {
+                $formatted_price = number_format((float)$competing_price, 2);
                 echo "<span style='color: #666; font-size: 12px; cursor: pointer;' onclick='copyToClipboard(" . json_encode($formatted_price) . ")' title='Click to copy competing price'>Competing: " . esc_html($formatted_price) . " ISK</span>";
             }
             
