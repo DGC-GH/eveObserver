@@ -1097,12 +1097,12 @@ def update_contract_in_wp(contract_id, contract_data, for_corp=False, entity_id=
     if contract_items:
         for item in contract_items:
             type_id = item.get('type_id')
-            if type_id and type_id in blueprint_cache:
+            if type_id and str(type_id) in blueprint_cache:
                 has_blueprint = True
                 break
     
     if not has_blueprint:
-        logger.debug(f"Contract {contract_id} contains no blueprints, skipping")
+        logger.info(f"Contract {contract_id} contains no blueprints, skipping")
         return
 
     # Generate descriptive title
@@ -1588,6 +1588,11 @@ def process_corporation_contracts(corp_id, access_token, corp_data, blueprint_ca
                 continue
             elif contract_status == 'expired':
                 logger.info(f"EXPIRED CORPORATION CONTRACT TO DELETE MANUALLY: {contract['contract_id']}")
+            
+            # Only process contracts issued by this corporation
+            if contract.get('issuer_corporation_id') != corp_id:
+                continue
+                
             update_contract_in_wp(contract['contract_id'], contract, for_corp=True, entity_id=corp_id, access_token=access_token, blueprint_cache=blueprint_cache)
 
 def process_character_data(char_id, token_data, wp_post_id_cache, blueprint_cache, location_cache, structure_cache, failed_structures):
