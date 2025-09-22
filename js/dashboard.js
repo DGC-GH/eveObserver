@@ -222,8 +222,10 @@ class EVEDashboard {
 
         const links = outbidContracts.map(contract => {
             const contractId = contract.meta._eve_contract_id;
-            const regionId = contract.meta._eve_contract_region_id || contract.meta._eve_contract_start_location_id;
+            const regionId = contract.meta._eve_contract_region_id;
             const title = contract.title?.rendered || `Contract ${contractId}`;
+            
+            console.log('Contract:', contractId, 'Region:', regionId, 'Title:', title);
             
             if (regionId && contractId) {
                 return `<font size="14" color="#bfffffff"></font><font size="14" color="#ffd98d00"><a href="contract:${regionId}//${contractId}">[Contract ${contractId}]</a></font>`;

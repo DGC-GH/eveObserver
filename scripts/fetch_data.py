@@ -985,7 +985,7 @@ def fetch_corporation_assets(corp_id, access_token):
     endpoint = f"/corporations/{corp_id}/assets/"
     return fetch_esi(endpoint, None, access_token)  # Corp endpoint doesn't need char_id
 
-def generate_contract_title(contract_data, contract_items=None, blueprint_cache=None):
+def generate_contract_title(contract_data, for_corp=False, entity_id=None, contract_items=None, blueprint_cache=None):
     """Generate a descriptive contract title based on items."""
     if blueprint_cache is None:
         blueprint_cache = load_blueprint_cache()
@@ -1003,74 +1003,79 @@ def generate_contract_title(contract_data, contract_items=None, blueprint_cache=
             'loan': 'Loan'
         }
         type_name = type_names.get(contract_type, contract_type.title())
-        return f"Contract {contract_id} - {type_name} ({status})"
-    
-    # If we have items, create a more descriptive title
-    if len(contract_items) == 1:
-        # Single item contract
-        item = contract_items[0]
-        type_id = item.get('type_id')
-        quantity = item.get('quantity', 1)
-        
-        if type_id:
-            # Get item name
-            if str(type_id) in blueprint_cache:
-                item_name = blueprint_cache[str(type_id)]
-            else:
-                type_data = fetch_public_esi(f"/universe/types/{type_id}")
-                if type_data:
-                    item_name = type_data.get('name', f"Item {type_id}")
-                    # Only cache if it's actually a blueprint
-                    if 'Blueprint' in item_name:
-                        cleaned_name = item_name.replace(" Blueprint", "").strip()
-                        blueprint_cache[str(type_id)] = cleaned_name
-                        save_blueprint_cache(blueprint_cache)
-                else:
-                    item_name = f"Item {type_id}"
-            
-            # Check if it's a blueprint (quantity -1 indicates BPO, or check if it's in blueprint cache)
-            is_blueprint = str(type_id) in blueprint_cache
-            if not is_blueprint:
-                # Double-check with ESI if not in cache
-                type_data = fetch_public_esi(f"/universe/types/{type_id}")
-                is_blueprint = type_data and 'Blueprint' in type_data.get('name', '')
-            
-            if is_blueprint:
-                return f"{item_name} - Contract {contract_id}"
-            else:
-                # Regular item
-                return f"{item_name} (x{quantity}) - Contract {contract_id}"
-    
+        title = f"Contract {contract_id} - {type_name} ({status})"
     else:
-        # Multiple items contract
-        blueprint_count = 0
-        total_quantity = 0
-        
-        for item in contract_items:
-            quantity = item.get('quantity', 1)
-            total_quantity += abs(quantity)  # Use abs in case of BPOs
-            
-            # Check if it's a blueprint
+        # If we have items, create a more descriptive title
+        if len(contract_items) == 1:
+            # Single item contract
+            item = contract_items[0]
             type_id = item.get('type_id')
+            quantity = item.get('quantity', 1)
+            
             if type_id:
-                # First check if it's in blueprint cache
+                # Get item name
                 if str(type_id) in blueprint_cache:
-                    blueprint_count += 1
+                    item_name = blueprint_cache[str(type_id)]
                 else:
-                    # Check with ESI
                     type_data = fetch_public_esi(f"/universe/types/{type_id}")
-                    if type_data and 'Blueprint' in type_data.get('name', ''):
-                        blueprint_count += 1
+                    if type_data:
+                        item_name = type_data.get('name', f"Item {type_id}")
+                        # Only cache if it's actually a blueprint
+                        if 'Blueprint' in item_name:
+                            cleaned_name = item_name.replace(" Blueprint", "").strip()
+                            blueprint_cache[str(type_id)] = cleaned_name
+                            save_blueprint_cache(blueprint_cache)
+                    else:
+                        item_name = f"Item {type_id}"
+                
+                # Check if it's a blueprint (quantity -1 indicates BPO, or check if it's in blueprint cache)
+                is_blueprint = str(type_id) in blueprint_cache
+                if not is_blueprint:
+                    # Double-check with ESI if not in cache
+                    type_data = fetch_public_esi(f"/universe/types/{type_id}")
+                    is_blueprint = type_data and 'Blueprint' in type_data.get('name', '')
+                
+                if is_blueprint:
+                    title = f"{item_name} - Contract {contract_id}"
+                else:
+                    # Regular item
+                    title = f"{item_name} (x{quantity}) - Contract {contract_id}"
         
-        if blueprint_count == len(contract_items):
-            # All items are blueprints
-            return f"{blueprint_count} Blueprints - Contract {contract_id}"
-        elif blueprint_count > 0:
-            # Mix of blueprints and other items
-            return f"{blueprint_count} Blueprints + {len(contract_items) - blueprint_count} Items - Contract {contract_id}"
         else:
-            # No blueprints, just regular items
-            return f"{len(contract_items)} Items (x{total_quantity}) - Contract {contract_id}"
+            # Multiple items contract
+            blueprint_count = 0
+            total_quantity = 0
+            
+            for item in contract_items:
+                quantity = item.get('quantity', 1)
+                total_quantity += abs(quantity)  # Use abs in case of BPOs
+                
+                # Check if it's a blueprint
+                type_id = item.get('type_id')
+                if type_id:
+                    # First check if it's in blueprint cache
+                    if str(type_id) in blueprint_cache:
+                        blueprint_count += 1
+                    else:
+                        # Check with ESI
+                        type_data = fetch_public_esi(f"/universe/types/{type_id}")
+                        if type_data and 'Blueprint' in type_data.get('name', ''):
+                            blueprint_count += 1
+            
+            if blueprint_count == len(contract_items):
+                # All items are blueprints
+                title = f"{blueprint_count} Blueprints - Contract {contract_id}"
+            elif blueprint_count > 0:
+                # Mix of blueprints and other items
+                title = f"{blueprint_count} Blueprints + {len(contract_items) - blueprint_count} Items - Contract {contract_id}"
+            else:
+                # No blueprints, just regular items
+                title = f"{len(contract_items)} Items (x{total_quantity}) - Contract {contract_id}"
+
+    if for_corp:
+        title = f"[Corp] {title}"
+    
+    return title
 
 def update_contract_in_wp(contract_id, contract_data, for_corp=False, entity_id=None, access_token=None, blueprint_cache=None):
     """Update or create contract post in WordPress."""
@@ -1091,6 +1096,12 @@ def update_contract_in_wp(contract_id, contract_data, for_corp=False, entity_id=
         elif not for_corp and entity_id:
             contract_items = fetch_character_contract_items(entity_id, contract_id, access_token)
 
+    # Get region ID from start location
+    region_id = None
+    start_location_id = contract_data.get('start_location_id')
+    if start_location_id:
+        region_id = get_region_from_location(start_location_id)
+
     # Check if contract contains blueprints - only track contracts with blueprints
     has_blueprint = False
     if contract_items:
@@ -1104,14 +1115,7 @@ def update_contract_in_wp(contract_id, contract_data, for_corp=False, entity_id=
         logger.info(f"Contract {contract_id} contains no blueprints, skipping")
         return
 
-    # Generate descriptive title
-    title = generate_contract_title(contract_data, contract_items, blueprint_cache)
-
-    # Get region ID from start location
-    region_id = None
-    start_location_id = contract_data.get('start_location_id')
-    if start_location_id:
-        region_id = get_region_from_location(start_location_id)
+    title = generate_contract_title(contract_data, for_corp=for_corp, entity_id=entity_id, contract_items=contract_items, blueprint_cache=blueprint_cache)
 
     post_data = {
         'title': title,

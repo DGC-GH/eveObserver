@@ -339,11 +339,39 @@ def save_blueprint_cache(cache):
     """Save blueprint name cache."""
     save_cache(BLUEPRINT_CACHE_FILE, cache)
 
-def save_cache(cache_file, data):
-    """Save cache to file."""
-    ensure_cache_dir()
-    with open(cache_file, 'w') as f:
-        json.dump(data, f)
+def get_region_from_location(location_id):
+    """Get region_id from a location_id (station or structure)."""
+    if not location_id:
+        return None
+    
+    region_id = None
+    if location_id >= 1000000000000:  # Structure
+        # For structures, we need to fetch structure info to get solar_system_id, then region
+        struct_data = fetch_public_esi(f"/universe/structures/{location_id}")
+        if struct_data:
+            solar_system_id = struct_data.get('solar_system_id')
+            if solar_system_id:
+                system_data = fetch_public_esi(f"/universe/systems/{solar_system_id}")
+                if system_data:
+                    constellation_id = system_data.get('constellation_id')
+                    if constellation_id:
+                        constellation_data = fetch_public_esi(f"/universe/constellations/{constellation_id}")
+                        if constellation_data:
+                            region_id = constellation_data.get('region_id')
+    else:  # Station
+        station_data = fetch_public_esi(f"/universe/stations/{location_id}")
+        if station_data:
+            system_id = station_data.get('system_id')
+            if system_id:
+                system_data = fetch_public_esi(f"/universe/systems/{system_id}")
+                if system_data:
+                    constellation_id = system_data.get('constellation_id')
+                    if constellation_id:
+                        constellation_data = fetch_public_esi(f"/universe/constellations/{constellation_id}")
+                        if constellation_data:
+                            region_id = constellation_data.get('region_id')
+    
+    return region_id
 
 def update_existing_contract(contract_post, tokens):
     """Update an existing contract post with proper title and thumbnail."""
@@ -382,6 +410,14 @@ def update_existing_contract(contract_post, tokens):
         'days_to_complete': meta.get('_eve_contract_days_to_complete'),
         'title': meta.get('_eve_contract_title')
     }
+
+    # Get region ID from start location if not already set
+    start_location_id = meta.get('_eve_contract_start_location_id')
+    region_id = meta.get('_eve_contract_region_id')
+    if start_location_id and not region_id:
+        region_id = get_region_from_location(int(start_location_id))
+        if region_id:
+            logger.info(f"Setting region_id {region_id} for contract {contract_id}")
 
     # Find a valid access token for this entity
     access_token = None
@@ -450,6 +486,10 @@ def update_existing_contract(contract_post, tokens):
             '_eve_last_updated': datetime.now(timezone.utc).isoformat()
         }
     }
+
+    # Set region_id if we got it
+    if region_id and not meta.get('_eve_contract_region_id'):
+        update_data['meta']['_eve_contract_region_id'] = str(region_id)
 
     # Add items data if available
     if contract_items:
