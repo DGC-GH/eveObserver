@@ -189,7 +189,7 @@ class EVE_Observer {
         if ($hook === 'toplevel_page_eve-observer') {
             wp_enqueue_style('eve-observer-dashboard', plugin_dir_url(__FILE__) . 'css/dashboard.css', array(), '1.0.0');
             wp_enqueue_script('chart-js', 'https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.js', array(), '4.4.0', true);
-            wp_enqueue_script('eve-observer-dashboard', plugin_dir_url(__FILE__) . 'js/dashboard.js', array('chart-js'), '1.0.4', true);
+            wp_enqueue_script('eve-observer-dashboard', plugin_dir_url(__FILE__) . 'js/dashboard.js', array('chart-js'), '1.0.5', true);
 
             // Add clipboard functionality for dashboard
             wp_add_inline_script('eve-observer-dashboard', '
@@ -467,7 +467,7 @@ class EVE_Observer {
                                 <th><?php _e('Type', 'eve-observer'); ?></th>
                                 <th><?php _e('Status', 'eve-observer'); ?></th>
                                 <th><?php _e('Price', 'eve-observer'); ?></th>
-                                <th><?php _e('Issuer', 'eve-observer'); ?></th>
+                                <th><?php _e('Competing Price', 'eve-observer'); ?></th>
                                 <th><?php _e('Outbid', 'eve-observer'); ?></th>
                             </tr>
                         </thead>

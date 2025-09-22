@@ -142,7 +142,7 @@ class EVEDashboard {
             blueprints: ['title', 'typeId', 'location', 'me', 'te', 'runs'],
             planets: ['title', 'type', 'level', 'system', 'pins'],
             corporations: ['title', 'ticker', 'members', 'tax', 'balance'],
-            contracts: ['title', 'type', 'status', 'price', 'issuer', 'outbid']
+            contracts: ['title', 'type', 'status', 'price', 'competing_price', 'outbid']
         };
         return sortKeys[section]?.[columnIndex] || 'title';
     }
@@ -160,7 +160,7 @@ class EVEDashboard {
         }
 
         // Handle ISK values
-        if (sortKey === 'price' || sortKey === 'balance') {
+        if (sortKey === 'price' || sortKey === 'balance' || sortKey === 'competing_price') {
             return this.parseISK(text);
         }
 
@@ -471,7 +471,7 @@ class EVEDashboard {
             case 'contracts':
                 const isOutbid = item.meta?._eve_contract_outbid === '1';
                 const statusClass = isOutbid ? 'eve-status-error' : 'eve-status-ok';
-                const statusText = isOutbid ? 'Warning' : 'OK';
+                const statusText = isOutbid ? '' : '';
                 const statusIcon = isOutbid ? '⚠️' : '✅';
 
                 return `
@@ -479,7 +479,7 @@ class EVEDashboard {
                     <td>${this.formatContractType(item.meta?._eve_contract_type)}</td>
                     <td>${this.formatContractStatus(item.meta?._eve_contract_status)}</td>
                     <td>${this.formatISK(item.meta?._eve_contract_price)}</td>
-                    <td>${this.escapeHtml(item.meta?._eve_contract_issuer_name || 'Unknown')}</td>
+                    <td>${this.formatISK(item.meta?._eve_contract_competing_price) || 'N/A'}</td>
                     <td><span class="eve-status-indicator ${statusClass}">${statusIcon} ${statusText}</span></td>
                 `;
 
