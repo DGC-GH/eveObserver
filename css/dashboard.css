@@ -248,6 +248,38 @@ body {
     align-items: center;
 }
 
+.button {
+    padding: 8px 16px;
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    background: var(--card-background);
+    color: var(--text-color);
+    cursor: pointer;
+    font-size: 0.875rem;
+    font-weight: 500;
+    transition: var(--transition);
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.button:hover {
+    background: var(--primary-color);
+    color: white;
+    border-color: var(--primary-color);
+}
+
+.button-secondary {
+    background: var(--background-color);
+    border-color: var(--border-color);
+}
+
+.button-secondary:hover {
+    background: var(--primary-color);
+    color: white;
+}
+
 .eve-search-input {
     flex: 1;
     padding: 10px 16px;

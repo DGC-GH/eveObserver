@@ -22,37 +22,33 @@ class EVEDashboard {
     async init() {
         console.log('EVEDashboard init called');
         await this.loadAllData();
-        this.setupSearch();
-        this.setupCardClicks();
         this.setupActionButtons();
-        this.renderChart();
-        this.renderAllTables();
+        this.renderTable('contracts');
         this.hideLoaders();
     }
 
     async loadAllData() {
-        const endpoints = [
-            { key: 'characters', url: '/wp-json/wp/v2/eve_character?per_page=100&_embed' },
-            { key: 'blueprints', url: `/wp-json/wp/v2/eve_blueprint?per_page=${this.itemsPerPage}&page=${this.currentPage.blueprints}&_embed` },
-            { key: 'planets', url: `/wp-json/wp/v2/eve_planet?per_page=${this.itemsPerPage}&page=${this.currentPage.planets}&_embed` },
-            { key: 'corporations', url: '/wp-json/wp/v2/eve_corporation?per_page=100&_embed' },
-            { key: 'contracts', url: '/wp-json/wp/v2/eve_contract?per_page=100&_embed' }
-        ];
-
-        const promises = endpoints.map(async ({ key, url }) => {
+        const sections = ['characters', 'blueprints', 'planets', 'corporations', 'contracts'];
+        
+        for (const section of sections) {
             try {
+                const url = `/wp-json/wp/v2/eve_${section}?per_page=100&_embed`;
                 const response = await fetch(url);
                 if (!response.ok) throw new Error(`HTTP ${response.status}`);
                 const data = await response.json();
-                this.data[key] = Array.isArray(data) ? data : [];
+                
+                this.data[section] = Array.isArray(data) ? data : [];
+                this.filteredData[section] = [...this.data[section]];
+                
+                console.log(`Loaded ${this.data[section].length} ${section}`);
             } catch (error) {
-                console.error(`Error loading ${key}:`, error);
-                this.data[key] = [];
+                console.error(`Error loading ${section}:`, error);
+                this.data[section] = [];
+                this.filteredData[section] = [];
             }
-        });
-
-        await Promise.all(promises);
-        this.filteredData = { ...this.data };
+        }
+        
+        console.log('All data loaded');
     }
 
     setupSearch() {
@@ -574,13 +570,12 @@ class EVEDashboard {
     }
 
     hideLoaders() {
-        ['characters', 'blueprints', 'planets', 'corporations', 'contracts'].forEach(section => {
-            const loader = document.getElementById(`${section}-loading`);
-            const content = document.getElementById(`${section}-content`);
+        // Only hide contracts loader if it exists
+        const contractsLoader = document.getElementById('contracts-loading');
+        const contractsContent = document.getElementById('contracts-content');
 
-            if (loader) loader.style.display = 'none';
-            if (content) content.style.display = 'block';
-        });
+        if (contractsLoader) contractsLoader.style.display = 'none';
+        if (contractsContent) contractsContent.style.display = 'block';
     }
 
     escapeHtml(text) {
