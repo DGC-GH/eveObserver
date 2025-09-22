@@ -183,9 +183,15 @@ class EVEDashboard {
     }
 
     setupActionButtons() {
+        console.log('setupActionButtons called');
         const copyOutbidBtn = document.getElementById('copy-outbid-contracts');
+        console.log('copyOutbidBtn found:', !!copyOutbidBtn);
         if (copyOutbidBtn) {
-            copyOutbidBtn.addEventListener('click', () => this.copyOutbidContracts());
+            console.log('Adding event listener to copy button');
+            copyOutbidBtn.addEventListener('click', () => {
+                console.log('Copy button clicked');
+                this.copyOutbidContracts();
+            });
         }
     }
 
@@ -203,9 +209,11 @@ class EVEDashboard {
     }
 
     copyOutbidContracts() {
+        console.log('copyOutbidContracts called, contracts count:', this.data.contracts.length);
         const outbidContracts = this.data.contracts.filter(contract => 
             contract.meta && contract.meta._eve_contract_outbid === '1'
         );
+        console.log('outbidContracts found:', outbidContracts.length);
 
         if (outbidContracts.length === 0) {
             alert('No outbid contracts found.');
@@ -224,6 +232,7 @@ class EVEDashboard {
         }).filter(link => link);
 
         const fullText = links.join('\n');
+        console.log('Copying text length:', fullText.length);
         copyToClipboard(fullText);
     }
 
