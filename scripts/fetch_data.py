@@ -1412,6 +1412,10 @@ def collect_corporation_members(tokens):
 
 def main():
     """Main data fetching routine."""
+    # Clear the log file at the start of each run
+    with open(LOG_FILE, 'w') as f:
+        f.truncate(0)
+    
     # Load caches at the beginning
     blueprint_cache = load_blueprint_cache()
     location_cache = load_location_cache()
@@ -1519,8 +1523,8 @@ def process_corporation_data(corp_id, members, wp_post_id_cache, blueprint_cache
     # Process corporation blueprints from various sources
     process_corporation_blueprints(corp_id, successful_token, successful_char_id, wp_post_id_cache, blueprint_cache, location_cache, structure_cache, failed_structures)
 
-    # Process corporation contracts
-    process_corporation_contracts(corp_id, successful_token, corp_data, blueprint_cache)
+    # Corporation contracts are processed via character contracts (issued by corp members)
+    # process_corporation_contracts(corp_id, successful_token, corp_data, blueprint_cache)
 
 def process_corporation_blueprints(corp_id, access_token, char_id, wp_post_id_cache, blueprint_cache, location_cache, structure_cache, failed_structures):
     """Process all blueprint sources for a corporation."""
