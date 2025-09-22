@@ -1347,11 +1347,13 @@ def check_contract_competition(contract_data, contract_items):
     
     other_contracts = response.json()
     
-    # Filter out this contract and finished/deleted contracts
+    # Filter out this contract, finished/deleted contracts, and contracts from the same issuer
+    contract_issuer_id = contract_data.get('issuer_id')
     competing_contracts = [
         c for c in other_contracts
         if c.get('meta', {}).get('_eve_contract_id') != str(contract_id) and
-        c.get('meta', {}).get('_eve_contract_status') == 'outstanding'
+        c.get('meta', {}).get('_eve_contract_status') == 'outstanding' and
+        str(c.get('meta', {}).get('_eve_contract_issuer_id')) != str(contract_issuer_id)
     ]
     
     if not competing_contracts:
