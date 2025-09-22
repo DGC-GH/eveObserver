@@ -29,8 +29,11 @@ class EVEDashboard {
     async init() {
         console.log('EVEDashboard init called');
         await this.loadAllData();
+        this.setupSearch();
+        this.setupCardClicks();
+        this.renderChart();
+        this.renderAllTables();
         this.setupActionButtons();
-        this.renderTable('contracts');
         this.hideLoaders();
     }
 
@@ -577,12 +580,13 @@ class EVEDashboard {
     }
 
     hideLoaders() {
-        // Only hide contracts loader if it exists
-        const contractsLoader = document.getElementById('contracts-loading');
-        const contractsContent = document.getElementById('contracts-content');
-
-        if (contractsLoader) contractsLoader.style.display = 'none';
-        if (contractsContent) contractsContent.style.display = 'block';
+        const sections = ['characters', 'blueprints', 'planets', 'corporations', 'contracts'];
+        sections.forEach(section => {
+            const loader = document.getElementById(`${section}-loading`);
+            const content = document.getElementById(`${section}-content`);
+            if (loader) loader.style.display = 'none';
+            if (content) content.style.display = 'block';
+        });
     }
 
     escapeHtml(text) {
