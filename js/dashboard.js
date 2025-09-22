@@ -587,10 +587,8 @@ class EVEDashboard {
     decodeHtml(text) {
         if (!text) return text;
         
-        // Use DOMParser to properly decode HTML entities
-        const parser = new DOMParser();
-        const decoded = parser.parseFromString(text, 'text/html');
-        return decoded.documentElement.textContent.replace(/–/g, '-');
+        // Replace HTML entity and character for en dash with hyphen
+        return text.replace(/&#8211;/g, '-').replace(/–/g, '-');
     }
 }
 
