@@ -110,7 +110,7 @@ class EVE_Observer {
             '_eve_contract_id', '_eve_contract_type', '_eve_contract_status', '_eve_contract_title',
             '_eve_contract_for_corporation', '_eve_contract_availability', '_eve_contract_issuer_id', '_eve_contract_issuer_name',
             '_eve_contract_issuer_corporation_id', '_eve_contract_issuer_corporation_name', '_eve_contract_assignee_id', '_eve_contract_assignee_name',
-            '_eve_contract_location_id', '_eve_contract_location_name', '_eve_contract_date_issued',
+            '_eve_contract_location_id', '_eve_contract_location_name', '_eve_contract_region_id', '_eve_contract_date_issued',
             '_eve_contract_date_expired', '_eve_contract_date_accepted', '_eve_contract_date_completed',
             '_eve_contract_price', '_eve_contract_reward', '_eve_contract_collateral', '_eve_contract_buyout',
             '_eve_contract_volume', '_eve_contract_days_to_complete', '_eve_contract_items', '_eve_last_updated',
@@ -1061,6 +1061,13 @@ class EVE_Observer {
                     'show_in_rest' => true,
                 ),
                 array(
+                    'key' => 'field_contract_region_id',
+                    'label' => 'Region ID',
+                    'name' => '_eve_contract_region_id',
+                    'type' => 'number',
+                    'show_in_rest' => true,
+                ),
+                array(
                     'key' => 'field_contract_date_issued',
                     'label' => 'Date Issued',
                     'name' => '_eve_contract_date_issued',
@@ -1185,6 +1192,7 @@ class EVE_Observer {
             'description' => 'Region ID for the contract',
             'single' => true,
             'show_in_rest' => true,
+            'auth_callback' => '__return_true'
         ));
     }
 
@@ -1284,15 +1292,19 @@ class EVE_Observer {
             $eve_link = '';
             $link_title = !empty($contract_title) ? esc_html($contract_title) : 'Contract';
             if (!empty($contract_id)) {
-                $location_id = $start_location_id;
-                if (empty($location_id)) {
-                    $location_id = get_post_meta($post_id, '_eve_contract_end_location_id', true);
+                $region_id = get_post_meta($post_id, '_eve_contract_region_id', true);
+                if (empty($region_id)) {
+                    // Fallback to location_id if region_id not available
+                    $region_id = $start_location_id;
+                    if (empty($region_id)) {
+                        $region_id = get_post_meta($post_id, '_eve_contract_end_location_id', true);
+                    }
                 }
-                if (!empty($location_id)) {
-                    $eve_link = '<a href="contract:' . $location_id . '//' . $contract_id . '">' . $link_title . '</a>';
+                if (!empty($region_id)) {
+                    $eve_link = '<font size="14" color="#bfffffff"><br></font><font size="14" color="#ffd98d00"><a href="contract:' . $region_id . '//' . $contract_id . '">[Contract ' . $contract_id . ']</a></font>';
                 } else {
                     // Fallback: create link without location (might still work in some cases)
-                    $eve_link = '<a href="contract://' . $contract_id . '">' . $link_title . '</a>';
+                    $eve_link = '<font size="14" color="#bfffffff"><br></font><font size="14" color="#ffd98d00"><a href="contract://' . $contract_id . '">[Contract ' . $contract_id . ']</a></font>';
                 }
             }
             

@@ -190,7 +190,7 @@ class EVEDashboard {
 
     copyOutbidContracts() {
         const outbidContracts = this.data.contracts.filter(contract => 
-            contract.meta && contract.meta._eve_contract_outbid === 'true'
+            contract.meta && contract.meta._eve_contract_outbid === '1'
         );
 
         if (outbidContracts.length === 0) {
@@ -204,7 +204,7 @@ class EVEDashboard {
             const title = contract.title?.rendered || `Contract ${contractId}`;
             
             if (regionId && contractId) {
-                return `<a href="contract:${regionId}//${contractId}">${this.escapeHtml(title)}</a>`;
+                return `<font size="14" color="#bfffffff"><br></font><font size="14" color="#ffd98d00"><a href="contract:${regionId}//${contractId}">[Contract ${contractId}]</a></font>`;
             }
             return '';
         }).filter(link => link);

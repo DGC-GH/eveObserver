@@ -1036,8 +1036,7 @@ def generate_contract_title(contract_data, contract_items=None, blueprint_cache=
                 is_blueprint = type_data and 'Blueprint' in type_data.get('name', '')
             
             if is_blueprint:
-                bp_type = "BPO" if quantity == -1 else "BPC"
-                return f"{item_name} {bp_type} - Contract {contract_id}"
+                return f"{item_name} - Contract {contract_id}"
             else:
                 # Regular item
                 return f"{item_name} (x{quantity}) - Contract {contract_id}"
@@ -1108,6 +1107,12 @@ def update_contract_in_wp(contract_id, contract_data, for_corp=False, entity_id=
     # Generate descriptive title
     title = generate_contract_title(contract_data, contract_items, blueprint_cache)
 
+    # Get region ID from start location
+    region_id = None
+    start_location_id = contract_data.get('start_location_id')
+    if start_location_id:
+        region_id = get_region_from_location(start_location_id)
+
     post_data = {
         'title': title,
         'slug': slug,
@@ -1122,6 +1127,7 @@ def update_contract_in_wp(contract_id, contract_data, for_corp=False, entity_id=
             '_eve_contract_acceptor_id': str(contract_data.get('acceptor_id')) if contract_data.get('acceptor_id') else None,
             '_eve_contract_start_location_id': str(contract_data.get('start_location_id')) if contract_data.get('start_location_id') else None,
             '_eve_contract_end_location_id': str(contract_data.get('end_location_id')) if contract_data.get('end_location_id') else None,
+            '_eve_contract_region_id': str(region_id) if region_id else None,
             '_eve_contract_date_issued': contract_data.get('date_issued'),
             '_eve_contract_date_expired': contract_data.get('date_expired'),
             '_eve_contract_date_accepted': contract_data.get('date_accepted'),
@@ -1156,26 +1162,26 @@ def update_contract_in_wp(contract_id, contract_data, for_corp=False, entity_id=
         if contract_data.get('status') == 'outstanding' and contract_data.get('type') == 'item_exchange':
             is_outbid, market_price = check_contract_market_competition(contract_data, contract_items)
             if is_outbid:
-                post_data['meta']['_eve_contract_outbid'] = 'true'
+                post_data['meta']['_eve_contract_outbid'] = '1'
                 post_data['meta']['_eve_contract_market_price'] = str(market_price)
                 logger.warning(f"Contract {contract_id} is outbid by market price: {market_price}")
                 
                 # Send alert if this is newly outbid
-                was_outbid = existing_meta.get('_eve_contract_outbid') == 'true'
+                was_outbid = existing_meta.get('_eve_contract_outbid') == '1'
                 if not was_outbid:
                     logger.warning(f"Contract {contract_id} is outbid by market price: {market_price}")
             else:
-                post_data['meta']['_eve_contract_outbid'] = 'false'
+                post_data['meta']['_eve_contract_outbid'] = '0'
                 if '_eve_contract_market_price' in post_data['meta']:
                     del post_data['meta']['_eve_contract_market_price']
         else:
             # Not a sell contract or not outstanding - ensure outbid is false
-            post_data['meta']['_eve_contract_outbid'] = 'false'
+            post_data['meta']['_eve_contract_outbid'] = '0'
             if '_eve_contract_market_price' in post_data['meta']:
                 del post_data['meta']['_eve_contract_market_price']
     else:
         # No contract items - ensure outbid is set to false
-        post_data['meta']['_eve_contract_outbid'] = 'false'
+        post_data['meta']['_eve_contract_outbid'] = '0'
         if '_eve_contract_market_price' in post_data['meta']:
             del post_data['meta']['_eve_contract_market_price']
 
@@ -1188,7 +1194,7 @@ def update_contract_in_wp(contract_id, contract_data, for_corp=False, entity_id=
             existing_title != title or
             str(existing_meta.get('_eve_contract_status', '')) != str(contract_data.get('status', '')) or
             str(existing_meta.get('_eve_contract_items', '')) != str(json.dumps(contract_items) if contract_items else '') or
-            str(existing_meta.get('_eve_contract_outbid', 'false')) != str(post_data['meta'].get('_eve_contract_outbid', 'false'))
+            str(existing_meta.get('_eve_contract_outbid', '0')) != str(post_data['meta'].get('_eve_contract_outbid', '0'))
         )
         
         if not needs_update:
