@@ -11,8 +11,159 @@ sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from fetch_data import (
     collect_corporation_members,
     check_industry_job_completions,
-    check_planet_extraction_completions
+    check_planet_extraction_completions,
+    ApiConfig,
+    fetch_public_esi,
+    fetch_esi
 )
+
+
+class TestApiConfig:
+    """Test ApiConfig dataclass functionality."""
+
+    def test_api_config_defaults(self):
+        """Test ApiConfig with default values."""
+        config = ApiConfig()
+        assert config.esi_base_url == 'https://esi.evetech.net/latest'
+        assert config.esi_timeout == 30
+        assert config.esi_max_retries == 3
+        assert config.esi_max_workers == 10
+
+    @patch.dict(os.environ, {
+        'ESI_BASE_URL': 'https://custom.esi.url',
+        'ESI_TIMEOUT': '45',
+        'ESI_MAX_RETRIES': '5',
+        'ESI_MAX_WORKERS': '15'
+    })
+    def test_api_config_from_env_custom_values(self):
+        """Test ApiConfig.from_env with custom environment variables."""
+        config = ApiConfig.from_env()
+        assert config.esi_base_url == 'https://custom.esi.url'
+        assert config.esi_timeout == 45
+        assert config.esi_max_retries == 5
+        assert config.esi_max_workers == 15
+
+    @patch.dict(os.environ, {}, clear=True)
+    def test_api_config_from_env_defaults(self):
+        """Test ApiConfig.from_env with no environment variables set."""
+        config = ApiConfig.from_env()
+        assert config.esi_base_url == 'https://esi.evetech.net/latest'
+        assert config.esi_timeout == 30
+        assert config.esi_max_retries == 3
+        assert config.esi_max_workers == 10
+
+    @patch.dict(os.environ, {
+        'ESI_TIMEOUT': 'invalid',
+        'ESI_MAX_RETRIES': 'not_a_number',
+        'ESI_MAX_WORKERS': 'also_invalid'
+    })
+    def test_api_config_from_env_invalid_values(self):
+        """Test ApiConfig.from_env handles invalid environment variables gracefully."""
+        with pytest.raises(ValueError):
+            ApiConfig.from_env()
+
+
+class TestFetchFunctions:
+    """Test ESI API fetch functions."""
+
+    @patch('fetch_data.session')
+    @patch('fetch_data.api_config')
+    def test_fetch_public_esi_success(self, mock_api_config, mock_session):
+        """Test successful fetch_public_esi call."""
+        # Setup mocks
+        mock_api_config.esi_max_retries = 3
+        mock_api_config.esi_base_url = 'https://esi.evetech.net/latest'
+        mock_api_config.esi_timeout = 30
+        
+        mock_response = MagicMock()
+        mock_response.status_code = 200
+        mock_response.json.return_value = {'test': 'data'}
+        mock_session.get.return_value = mock_response
+
+        result = fetch_public_esi('/test/endpoint')
+
+        assert result == {'test': 'data'}
+        mock_session.get.assert_called_once_with('https://esi.evetech.net/latest/test/endpoint', timeout=30)
+
+    @patch('fetch_data.session')
+    @patch('fetch_data.api_config')
+    def test_fetch_public_esi_404(self, mock_api_config, mock_session):
+        """Test fetch_public_esi with 404 response."""
+        mock_api_config.esi_max_retries = 3
+        mock_api_config.esi_base_url = 'https://esi.evetech.net/latest'
+        mock_api_config.esi_timeout = 30
+        
+        mock_response = MagicMock()
+        mock_response.status_code = 404
+        mock_session.get.return_value = mock_response
+
+        result = fetch_public_esi('/test/endpoint')
+
+        assert result is None
+
+    @patch('time.sleep')
+    @patch('fetch_data.session')
+    @patch('fetch_data.api_config')
+    def test_fetch_public_esi_rate_limit(self, mock_api_config, mock_session, mock_sleep):
+        """Test fetch_public_esi with rate limiting."""
+        mock_api_config.esi_max_retries = 3
+        mock_api_config.esi_base_url = 'https://esi.evetech.net/latest'
+        mock_api_config.esi_timeout = 30
+        
+        # First call returns rate limited, second succeeds
+        mock_response_rate_limited = MagicMock()
+        mock_response_rate_limited.status_code = 429
+        mock_response_rate_limited.headers = {'X-ESI-Error-Limit-Reset': '5'}
+        
+        mock_response_success = MagicMock()
+        mock_response_success.status_code = 200
+        mock_response_success.json.return_value = {'test': 'data'}
+        
+        mock_session.get.side_effect = [mock_response_rate_limited, mock_response_success]
+
+        result = fetch_public_esi('/test/endpoint')
+
+        assert result == {'test': 'data'}
+        assert mock_session.get.call_count == 2
+        mock_sleep.assert_called_once_with(6)  # 5 + 1 buffer
+
+    @patch('fetch_data.session')
+    @patch('fetch_data.api_config')
+    def test_fetch_esi_success(self, mock_api_config, mock_session):
+        """Test successful fetch_esi call."""
+        mock_api_config.esi_max_retries = 3
+        mock_api_config.esi_base_url = 'https://esi.evetech.net/latest'
+        mock_api_config.esi_timeout = 30
+        
+        mock_response = MagicMock()
+        mock_response.status_code = 200
+        mock_response.json.return_value = {'test': 'data'}
+        mock_session.get.return_value = mock_response
+
+        result = fetch_esi('/test/endpoint', 123, 'token123')
+
+        assert result == {'test': 'data'}
+        mock_session.get.assert_called_once_with(
+            'https://esi.evetech.net/latest/test/endpoint',
+            headers={'Authorization': 'Bearer token123'},
+            timeout=30
+        )
+
+    @patch('fetch_data.session')
+    @patch('fetch_data.api_config')
+    def test_fetch_esi_unauthorized(self, mock_api_config, mock_session):
+        """Test fetch_esi with 401 unauthorized."""
+        mock_api_config.esi_max_retries = 3
+        mock_api_config.esi_base_url = 'https://esi.evetech.net/latest'
+        mock_api_config.esi_timeout = 30
+        
+        mock_response = MagicMock()
+        mock_response.status_code = 401
+        mock_session.get.return_value = mock_response
+
+        result = fetch_esi('/test/endpoint', 123, 'invalid_token')
+
+        assert result is None
 
 
 class TestCollectCorporationMembers:
@@ -123,11 +274,8 @@ class TestIndustryJobCompletions:
 
         check_industry_job_completions(jobs, 'Test Char')
 
-        # Should send email for job ending in 20 hours
-        mock_send_email.assert_called_once()
-        subject = mock_send_email.call_args[0][0]
-        assert '1 industry jobs ending soon' in subject
-        assert 'Test Char' in subject
+        # Email functionality is disabled, so send_email should not be called
+        mock_send_email.assert_not_called()
 
     @patch('fetch_data.send_email')
     @patch('fetch_data.datetime')
@@ -179,11 +327,8 @@ class TestPlanetExtractionCompletions:
 
         check_planet_extraction_completions(planet_details, 'Test Char')
 
-        # Should send email for extraction ending in 20 hours
-        mock_send_email.assert_called_once()
-        subject = mock_send_email.call_args[0][0]
-        assert '1 PI extractions ending soon' in subject
-        assert 'Test Char' in subject
+        # Email functionality is disabled, so send_email should not be called
+        mock_send_email.assert_not_called()
 
     @patch('fetch_data.send_email')
     @patch('fetch_data.datetime')

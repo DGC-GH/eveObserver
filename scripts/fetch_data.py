@@ -13,13 +13,52 @@ import smtplib
 from email.mime.text import MIMEText
 import logging
 import argparse
+from typing import Optional, Dict, List, Any, Tuple
+from dataclasses import dataclass
 from config import *
 from esi_oauth import save_tokens
+
+# Custom exceptions for better error handling
+class ESIApiError(Exception):
+    """Base exception for ESI API errors."""
+    pass
+
+class ESIAuthError(ESIApiError):
+    """Exception raised for authentication failures."""
+    pass
+
+class ESIRequestError(ESIApiError):
+    """Exception raised for general ESI request errors."""
+    pass
+
+@dataclass
+class ApiConfig:
+    """Centralized configuration for API settings and limits."""
+    esi_base_url: str = 'https://esi.evetech.net/latest'
+    esi_timeout: int = 30
+    esi_max_retries: int = 3
+    esi_max_workers: int = 10
+    wp_per_page: int = 100
+    rate_limit_buffer: int = 1
+    
+    @classmethod
+    def from_env(cls) -> 'ApiConfig':
+        """Create ApiConfig instance from environment variables."""
+        return cls(
+            esi_base_url=os.getenv('ESI_BASE_URL', 'https://esi.evetech.net/latest'),
+            esi_timeout=int(os.getenv('ESI_TIMEOUT', 30)),
+            esi_max_retries=int(os.getenv('ESI_MAX_RETRIES', 3)),
+            esi_max_workers=int(os.getenv('ESI_MAX_WORKERS', 10)),
+            wp_per_page=int(os.getenv('WP_PER_PAGE', 100)),
+        )
 
 load_dotenv()
 
 # Create a requests session for connection reuse
 session = requests.Session()
+
+# Initialize API configuration
+api_config = ApiConfig.from_env()
 
 # Configure logging
 logging.basicConfig(
@@ -34,19 +73,19 @@ logger = logging.getLogger(__name__)
 # WordPress post ID cache
 WP_POST_ID_CACHE_FILE = os.path.join(CACHE_DIR, 'wp_post_ids.json')
 
-def load_tokens():
+def load_tokens() -> Dict[str, Any]:
     """Load stored tokens."""
     if os.path.exists(TOKENS_FILE):
         with open(TOKENS_FILE, 'r') as f:
             return json.load(f)
     return {}
 
-def ensure_cache_dir():
+def ensure_cache_dir() -> None:
     """Ensure cache directory exists."""
     if not os.path.exists(CACHE_DIR):
         os.makedirs(CACHE_DIR)
 
-def load_cache(cache_file):
+def load_cache(cache_file: str) -> Dict[str, Any]:
     """Load cache from file."""
     ensure_cache_dir()
     if os.path.exists(cache_file):
@@ -57,62 +96,62 @@ def load_cache(cache_file):
             return {}
     return {}
 
-def save_cache(cache_file, data):
+def save_cache(cache_file: str, data: Dict[str, Any]) -> None:
     """Save cache to file."""
     ensure_cache_dir()
     with open(cache_file, 'w') as f:
         json.dump(data, f)
 
-def load_blueprint_cache():
+def load_blueprint_cache() -> Dict[str, Any]:
     """Load blueprint name cache."""
     return load_cache(BLUEPRINT_CACHE_FILE)
 
-def save_blueprint_cache(cache):
+def save_blueprint_cache(cache: Dict[str, Any]) -> None:
     """Save blueprint name cache."""
     save_cache(BLUEPRINT_CACHE_FILE, cache)
 
-def load_blueprint_type_cache():
+def load_blueprint_type_cache() -> Dict[str, Any]:
     """Load blueprint type cache."""
     return load_cache(BLUEPRINT_TYPE_CACHE_FILE)
 
-def save_blueprint_type_cache(cache):
+def save_blueprint_type_cache(cache: Dict[str, Any]) -> None:
     """Save blueprint type cache."""
     save_cache(BLUEPRINT_TYPE_CACHE_FILE, cache)
 
-def load_location_cache():
+def load_location_cache() -> Dict[str, Any]:
     """Load location name cache."""
     return load_cache(LOCATION_CACHE_FILE)
 
-def save_location_cache(cache):
+def save_location_cache(cache: Dict[str, Any]) -> None:
     """Save location name cache."""
     save_cache(LOCATION_CACHE_FILE, cache)
 
-def load_structure_cache():
+def load_structure_cache() -> Dict[str, Any]:
     """Load structure name cache."""
     return load_cache(STRUCTURE_CACHE_FILE)
 
-def save_structure_cache(cache):
+def save_structure_cache(cache: Dict[str, Any]) -> None:
     """Save structure name cache."""
     save_cache(STRUCTURE_CACHE_FILE, cache)
 
-def load_failed_structures():
+def load_failed_structures() -> Dict[str, Any]:
     """Load failed structures cache."""
     return load_cache(FAILED_STRUCTURES_FILE)
 
-def load_wp_post_id_cache():
+def load_wp_post_id_cache() -> Dict[str, Any]:
     """Load WordPress post ID cache."""
     return load_cache(WP_POST_ID_CACHE_FILE)
 
-def save_wp_post_id_cache(cache):
+def save_wp_post_id_cache(cache: Dict[str, Any]) -> None:
     """Save WordPress post ID cache."""
     save_cache(WP_POST_ID_CACHE_FILE, cache)
 
-def get_cached_wp_post_id(cache, post_type, item_id):
+def get_cached_wp_post_id(cache: Dict[str, Any], post_type: str, item_id: int) -> Optional[int]:
     """Get cached WordPress post ID for an item."""
     key = f"{post_type}_{item_id}"
     return cache.get(key)
 
-def set_cached_wp_post_id(cache, post_type, item_id, post_id):
+def set_cached_wp_post_id(cache: Dict[str, Any], post_type: str, item_id: int, post_id: int) -> None:
     """Cache WordPress post ID for an item."""
     key = f"{post_type}_{item_id}"
     cache[key] = post_id
@@ -124,7 +163,7 @@ def process_blueprints_parallel(blueprints, update_func, wp_post_id_cache, *args
     import time
     import logging
 
-    max_workers = ESI_MAX_WORKERS  # Limit concurrent requests to avoid rate limiting
+    max_workers = api_config.esi_max_workers  # Limit concurrent requests to avoid rate limiting
     results = []
     processed_count = 0
     total_blueprints = len(blueprints)
@@ -166,7 +205,7 @@ def process_blueprints_parallel(blueprints, update_func, wp_post_id_cache, *args
     logger.info(f"Completed parallel processing: {len(results)}/{total_blueprints} blueprints processed successfully")
     return results
 
-def send_email(subject, body):
+def send_email(subject: str, body: str) -> None:
     """Send an email alert."""
     if not all([EMAIL_SMTP_SERVER, EMAIL_USERNAME, EMAIL_PASSWORD, EMAIL_FROM, EMAIL_TO]):
         logger.warning("Email configuration incomplete, skipping alert.")
@@ -187,15 +226,18 @@ def send_email(subject, body):
     except Exception as e:
         logger.error(f"Failed to send email: {e}")
 
-def fetch_public_esi(endpoint, max_retries=ESI_MAX_RETRIES):
+def fetch_public_esi(endpoint: str, max_retries: int = None) -> Optional[Dict[str, Any]]:
     """Fetch data from ESI API (public endpoints, no auth) with rate limiting and error handling."""
+    if max_retries is None:
+        max_retries = api_config.esi_max_retries
+    
     import time
 
-    url = f"{ESI_BASE_URL}{endpoint}"
+    url = f"{api_config.esi_base_url}{endpoint}"
 
     for attempt in range(max_retries):
         try:
-            response = session.get(url, timeout=ESI_TIMEOUT)
+            response = session.get(url, timeout=api_config.esi_timeout)
 
             if response.status_code == 200:
                 return response.json()
@@ -265,16 +307,19 @@ def fetch_public_esi(endpoint, max_retries=ESI_MAX_RETRIES):
 
     return None
 
-def fetch_esi(endpoint, char_id, access_token, max_retries=ESI_MAX_RETRIES):
+def fetch_esi(endpoint: str, char_id: Optional[int], access_token: str, max_retries: int = None) -> Optional[Dict[str, Any]]:
     """Fetch data from ESI API with rate limiting and error handling."""
+    if max_retries is None:
+        max_retries = api_config.esi_max_retries
+    
     import time
 
-    url = f"{ESI_BASE_URL}{endpoint}"
+    url = f"{api_config.esi_base_url}{endpoint}"
     headers = {'Authorization': f'Bearer {access_token}'}
 
     for attempt in range(max_retries):
         try:
-            response = session.get(url, headers=headers, timeout=ESI_TIMEOUT)
+            response = session.get(url, headers=headers, timeout=api_config.esi_timeout)
 
             if response.status_code == 200:
                 return response.json()
@@ -350,11 +395,11 @@ def fetch_esi(endpoint, char_id, access_token, max_retries=ESI_MAX_RETRIES):
 
     return None
 
-def get_wp_auth():
+def get_wp_auth() -> Tuple[str, str]:
     """Get WordPress authentication tuple."""
     return (WP_USERNAME, WP_APP_PASSWORD)
 
-def delete_wp_post(post_type, post_id):
+def delete_wp_post(post_type: str, post_id: int) -> None:
     """Delete a WordPress post."""
     url = f"{WP_BASE_URL}/wp-json/wp/v2/{post_type}/{post_id}"
     response = requests.delete(url, auth=get_wp_auth(), params={'force': 'true'})
@@ -363,8 +408,23 @@ def delete_wp_post(post_type, post_id):
     else:
         logger.error(f"Failed to delete {post_type} post {post_id}: {response.status_code} - {response.text}")
 
-def update_character_in_wp(char_id, char_data):
-    """Update or create character post in WordPress."""
+def update_character_in_wp(char_id: int, char_data: Dict[str, Any]) -> None:
+    """
+    Update or create a character post in WordPress.
+
+    Fetches character portrait data and updates the post with basic character information,
+    including optional fields like corporation, alliance, and security status.
+
+    Args:
+        char_id: The EVE character ID.
+        char_data: Dictionary containing character data from ESI API.
+
+    Returns:
+        None
+
+    Raises:
+        No explicit raises; logs errors internally.
+    """
     slug = f"character-{char_id}"
     # Check if post exists by slug
     response = requests.get(f"{WP_BASE_URL}/wp-json/wp/v2/eve_character?slug={slug}", auth=get_wp_auth())
@@ -473,8 +533,30 @@ def fetch_corporation_data(corp_id, access_token):
     endpoint = f"/corporations/{corp_id}/"
     return fetch_esi(endpoint, None, access_token)  # No char_id needed for corp data
 
-def update_blueprint_in_wp(blueprint_data, wp_post_id_cache, char_id, access_token, blueprint_cache=None, location_cache=None, structure_cache=None, failed_structures=None):
-    """Update or create blueprint post in WordPress."""
+def update_blueprint_in_wp(blueprint_data: Dict[str, Any], wp_post_id_cache: Dict[str, Any], char_id: int, access_token: str, blueprint_cache: Optional[Dict[str, Any]] = None, location_cache: Optional[Dict[str, Any]] = None, structure_cache: Optional[Dict[str, Any]] = None, failed_structures: Optional[Dict[str, Any]] = None) -> None:
+    """
+    Update or create a blueprint post in WordPress from direct blueprint endpoint data.
+
+    Processes blueprint information including ME/TE levels, location, and type details.
+    Only tracks BPOs (quantity == -1), skipping BPCs. Caches location and type data
+    for performance.
+
+    Args:
+        blueprint_data: Blueprint data from ESI API.
+        wp_post_id_cache: Cache of WordPress post IDs.
+        char_id: Character ID for auth.
+        access_token: Valid OAuth access token.
+        blueprint_cache: Optional cache for blueprint names.
+        location_cache: Optional cache for location names.
+        structure_cache: Optional cache for structure names.
+        failed_structures: Optional cache for failed structure fetches.
+
+    Returns:
+        None
+
+    Raises:
+        No explicit raises; logs errors internally.
+    """
     if blueprint_cache is None:
         blueprint_cache = load_blueprint_cache()
     if location_cache is None:
@@ -744,27 +826,21 @@ def extract_blueprints_from_assets(assets_data, owner_type, owner_id, access_tok
 
 def extract_blueprints_from_industry_jobs(jobs_data, owner_type, owner_id):
     """Extract blueprint information from industry jobs."""
-    blueprints = []
-    
-    for job in jobs_data:
-        blueprint_id = job.get('blueprint_id')
-        blueprint_type_id = job.get('blueprint_type_id')
-        if blueprint_id and blueprint_type_id:
-            # Industry jobs typically use BPOs (quantity = -1)
-            blueprint_info = {
-                'item_id': blueprint_id,
-                'type_id': blueprint_type_id,
-                'location_id': job.get('station_id'),
-                'quantity': -1,  # Jobs use BPOs
-                'material_efficiency': job.get('material_efficiency', 0),
-                'time_efficiency': job.get('time_efficiency', 0),
-                'runs': job.get('runs', -1),
-                'source': f"{owner_type}_industry_job",
-                'owner_id': owner_id
-            }
-            blueprints.append(blueprint_info)
-    
-    return blueprints
+    return [
+        {
+            'item_id': job.get('blueprint_id'),
+            'type_id': job.get('blueprint_type_id'),
+            'location_id': job.get('station_id'),
+            'quantity': -1,  # Jobs use BPOs
+            'material_efficiency': job.get('material_efficiency', 0),
+            'time_efficiency': job.get('time_efficiency', 0),
+            'runs': job.get('runs', -1),
+            'source': f"{owner_type}_industry_job",
+            'owner_id': owner_id
+        }
+        for job in jobs_data
+        if job.get('blueprint_id') and job.get('blueprint_type_id')
+    ]
 
 def extract_blueprints_from_contracts(contracts_data, owner_type, owner_id):
     """Extract blueprint information from contracts."""
@@ -1045,7 +1121,7 @@ def generate_contract_title(contract_data, for_corp=False, entity_id=None, contr
                     title = f"{item_name} (x{quantity}) - Contract {contract_id}"
         
         else:
-            # Multiple items contract
+            # Multiple items contract - count blueprints and total quantity in single pass
             blueprint_count = 0
             total_quantity = 0
             
@@ -1420,8 +1496,8 @@ def collect_corporation_members(tokens):
 
     return corp_members
 
-def main():
-    """Main data fetching routine."""
+def parse_arguments() -> argparse.Namespace:
+    """Parse command line arguments."""
     parser = argparse.ArgumentParser(description='Fetch EVE Online data from ESI API')
     parser.add_argument('--contracts', action='store_true', help='Fetch contracts data')
     parser.add_argument('--planets', action='store_true', help='Fetch planets data')
@@ -1437,37 +1513,36 @@ def main():
     if not any([args.contracts, args.planets, args.blueprints, args.skills, args.corporations, args.characters]):
         args.all = True
     
-    # Clear the log file at the start of each run
+    return args
+
+def clear_log_file() -> None:
+    """Clear the log file at the start of each run."""
     with open(LOG_FILE, 'w') as f:
         f.truncate(0)
-    
-    # Load caches at the beginning
+
+def initialize_caches() -> Tuple[Dict[str, Any], Dict[str, Any], Dict[str, Any], Dict[str, Any], Dict[str, Any]]:
+    """Load all caches at the beginning."""
     blueprint_cache = load_blueprint_cache()
     location_cache = load_location_cache()
     structure_cache = load_structure_cache()
     failed_structures = load_failed_structures()
     wp_post_id_cache = load_wp_post_id_cache()
+    return blueprint_cache, location_cache, structure_cache, failed_structures, wp_post_id_cache
 
-    tokens = load_tokens()
-    if not tokens:
-        logger.error("No authorized characters found. Run 'python esi_oauth.py authorize' first.")
-        return
-
-    # Collect all corporations and their member characters
-    corp_members = collect_corporation_members(tokens)
-
-    # Define allowed corporations and issuers for contract filtering
+def get_allowed_entities(corp_members: Dict[int, List[Tuple[int, str, str]]]) -> Tuple[set, set]:
+    """Define allowed corporations and issuers for contract filtering."""
     allowed_corp_ids = {98092220}  # No Mercy Incorporated
-    allowed_issuer_ids = set()
-    for corp_id, members in corp_members.items():
-        if corp_id == 98092220:  # No Mercy Incorporated
-            for char_id, access_token, char_name in members:
-                allowed_issuer_ids.add(char_id)
+    allowed_issuer_ids = {
+        char_id for corp_id, members in corp_members.items()
+        if corp_id == 98092220  # No Mercy Incorporated
+        for char_id, access_token, char_name in members
+    }
+    return allowed_corp_ids, allowed_issuer_ids
 
-    # Clean up old posts with filtering (only if doing full fetch or contracts)
-    if args.all or args.contracts:
-        cleanup_old_posts(allowed_corp_ids, allowed_issuer_ids)
-
+def process_all_data(corp_members: Dict[int, List[Tuple[int, str, str]]], caches: Tuple[Dict[str, Any], ...], args: argparse.Namespace, tokens: Dict[str, Any]) -> None:
+    """Process all corporation and character data."""
+    blueprint_cache, location_cache, structure_cache, failed_structures, wp_post_id_cache = caches
+    
     # Process each corporation with any available member token
     processed_corps = set()
     for corp_id, members in corp_members.items():
@@ -1484,6 +1559,26 @@ def main():
     for char_id, token_data in tokens.items():
         if args.all or args.characters or args.skills or args.blueprints or args.planets or args.contracts:
             process_character_data(char_id, token_data, wp_post_id_cache, blueprint_cache, location_cache, structure_cache, failed_structures, args)
+
+def main() -> None:
+    """Main data fetching routine."""
+    args = parse_arguments()
+    clear_log_file()
+    caches = initialize_caches()
+    tokens = load_tokens()
+    if not tokens:
+        logger.error("No authorized characters found. Run 'python esi_oauth.py authorize' first.")
+        return
+
+    # Collect all corporations and their member characters
+    corp_members = collect_corporation_members(tokens)
+    allowed_corp_ids, allowed_issuer_ids = get_allowed_entities(corp_members)
+
+    # Clean up old posts with filtering (only if doing full fetch or contracts)
+    if args.all or args.contracts:
+        cleanup_old_posts(allowed_corp_ids, allowed_issuer_ids)
+
+    process_all_data(corp_members, caches, args, tokens)
 
 def process_corporation_data(corp_id, members, wp_post_id_cache, blueprint_cache, location_cache, structure_cache, failed_structures, args):
     """Process data for a single corporation and its members."""
@@ -1761,12 +1856,11 @@ def process_character_blueprints(char_id, access_token, char_name, wp_post_id_ca
 def check_industry_job_completions(jobs, char_name):
     """Check for upcoming industry job completions and send alerts."""
     now = datetime.now(timezone.utc)
-    upcoming_completions = []
-    for job in jobs:
-        if 'end_date' in job:
-            end_date = datetime.fromisoformat(job['end_date'].replace('Z', '+00:00'))
-            if now <= end_date <= now + timedelta(hours=24):
-                upcoming_completions.append(job)
+    upcoming_completions = [
+        job for job in jobs
+        if 'end_date' in job and 
+        now <= datetime.fromisoformat(job['end_date'].replace('Z', '+00:00')) <= now + timedelta(hours=24)
+    ]
 
     if upcoming_completions:
         subject = f"EVE Alert: {len(upcoming_completions)} industry jobs ending soon for {char_name}"
@@ -1795,12 +1889,12 @@ def process_character_planets(char_id, access_token, char_name):
 def check_planet_extraction_completions(planet_details, char_name):
     """Check for upcoming planet extraction completions and send alerts."""
     now = datetime.now(timezone.utc)
-    upcoming_extractions = []
-    for pin in planet_details.get('pins', []):
-        if 'expiry_time' in pin:
-            expiry = datetime.fromisoformat(pin['expiry_time'].replace('Z', '+00:00'))
-            if now <= expiry <= now + timedelta(hours=24):
-                upcoming_extractions.append(pin)
+    upcoming_extractions = [
+        pin for pin in planet_details.get('pins', [])
+        if 'expiry_time' in pin and 
+        now <= datetime.fromisoformat(pin['expiry_time'].replace('Z', '+00:00')) <= now + timedelta(hours=24)
+    ]
+    
     if upcoming_extractions:
         subject = f"EVE Alert: {len(upcoming_extractions)} PI extractions ending soon for {char_name}"
         body = f"The following extractions will complete within 24 hours:\n\n"
@@ -1893,9 +1987,7 @@ def update_corporation_in_wp(corp_id, corp_data):
         '_eve_corp_war_eligible': corp_data.get('war_eligible'),
         '_eve_corp_faction_id': corp_data.get('faction_id')
     }
-    for key, value in optional_fields.items():
-        if value is not None:
-            post_data['meta'][key] = value
+    post_data['meta'].update({k: v for k, v in optional_fields.items() if v is not None})
 
     # Add featured image from corporation logo (only for new corporations)
     if not existing_post:
