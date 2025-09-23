@@ -523,6 +523,13 @@ class EVEDashboard {
         let canvas = document.getElementById('eveChart');
         if (!canvas) return;
 
+        // Destroy any existing chart on the current canvas before replacing
+        const existingChart = Chart.getChart(canvas);
+        if (existingChart) {
+            console.log('🔄 [CHART] Destroying existing chart before replacement...');
+            existingChart.destroy();
+        }
+
         // Replace the canvas with a fresh one to avoid Chart.js conflicts
         const parent = canvas.parentElement;
         if (parent) {
