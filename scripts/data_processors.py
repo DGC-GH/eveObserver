@@ -1,0 +1,477 @@
+#!/usr/bin/env python3
+"""
+EVE Observer Data Processors
+Handles processing and updating of EVE data in WordPress.
+"""
+
+import os
+import json
+import requests
+from datetime import datetime, timezone
+from typing import Dict, List, Any, Optional, Tuple
+import logging
+from concurrent.futures import ThreadPoolExecutor, as_completed, TimeoutError
+import time
+import time
+
+from config import *
+from api_client import (
+    fetch_public_esi, fetch_esi, wp_request, fetch_type_icon, send_email,
+    ESIApiError, ESIAuthError, ESIRequestError, WordPressApiError, WordPressAuthError, WordPressRequestError,
+    api_config
+)
+from cache_manager import (
+    load_blueprint_cache, save_blueprint_cache, load_blueprint_type_cache, save_blueprint_type_cache,
+    load_location_cache, save_location_cache, load_structure_cache, save_structure_cache,
+    load_failed_structures, save_failed_structures, load_wp_post_id_cache, save_wp_post_id_cache,
+    get_cached_wp_post_id, set_cached_wp_post_id
+)
+
+logger = logging.getLogger(__name__)
+
+def get_wp_auth():
+    """Get WordPress authentication."""
+    return requests.auth.HTTPBasicAuth(WP_USERNAME, WP_APP_PASSWORD)
+
+def process_blueprints_parallel(blueprints, update_func, wp_post_id_cache, *args, **kwargs):
+    """Process blueprints in parallel while respecting rate limits."""
+    start_time = time.time()
+    max_workers = api_config.esi_max_workers  # Limit concurrent requests to avoid rate limiting
+    results = []
+    processed_count = 0
+    total_blueprints = len(blueprints)
+
+    logger.info(f"Starting parallel processing of {total_blueprints} blueprints with {max_workers} workers")
+
+    with ThreadPoolExecutor(max_workers=max_workers) as executor:
+        # Submit all blueprint update tasks
+        future_to_bp = {
+            executor.submit(update_func, bp, wp_post_id_cache, *args, **kwargs): bp
+            for bp in blueprints
+        }
+
+        for future in as_completed(future_to_bp):
+            bp = future_to_bp[future]
+            item_id = bp.get("item_id", "unknown")
+            processed_count += 1
+
+            try:
+                # Add timeout to prevent hanging
+                result = future.result(timeout=300)  # 5 minute timeout per blueprint
+                results.append(result)
+                logger.info(f"Processed blueprint {processed_count}/{total_blueprints}: {item_id}")
+
+                # Small delay between requests to be rate limit friendly
+                time.sleep(0.05)
+
+            except TimeoutError:
+                logger.error(f"Blueprint {item_id} timed out after 5 minutes - skipping")
+                # Cancel the future if possible
+                if not future.cancelled():
+                    future.cancel()
+
+            except Exception as exc:
+                logger.error(f'Blueprint {item_id} generated an exception: {exc}')
+                logger.error(f'Blueprint data: {bp}')
+                # Continue processing other blueprints
+
+    elapsed = time.time() - start_time
+    logger.info(f"Completed parallel processing: {len(results)}/{total_blueprints} blueprints processed successfully in {elapsed:.2f}s")
+    return results
+
+def update_character_in_wp(char_id: int, char_data: Dict[str, Any]) -> None:
+    """
+    Update or create a character post in WordPress.
+
+    Fetches character portrait data and updates the post with basic character information,
+    including optional fields like corporation, alliance, and security status.
+
+    Args:
+        char_id: The EVE character ID.
+        char_data: Dictionary containing character data from ESI API.
+
+    Returns:
+        None
+
+    Raises:
+        No explicit raises; logs errors internally.
+    """
+    slug = f"character-{char_id}"
+    # Check if post exists by slug
+    try:
+        response = requests.get(f"{WP_BASE_URL}/wp-json/wp/v2/eve_character?slug={slug}", auth=get_wp_auth())
+        existing_posts = response.json() if response.status_code == 200 else []
+        existing_post = existing_posts[0] if existing_posts else None
+    except requests.RequestException as e:
+        logger.error(f"Failed to fetch existing character post for {char_id}: {e}")
+        return
+
+    post_data = {
+        'title': char_data['name'],
+        'slug': f"character-{char_id}",
+        'status': 'publish',
+        'meta': {
+            '_eve_char_id': char_id,
+            '_eve_char_name': char_data['name'],
+            '_eve_last_updated': datetime.now(timezone.utc).isoformat()
+        }
+    }
+
+    # Add optional fields if they exist
+    optional_fields = {
+        '_eve_corporation_id': char_data.get('corporation_id'),
+        '_eve_alliance_id': char_data.get('alliance_id'),
+        '_eve_birthday': char_data.get('birthday'),
+        '_eve_gender': char_data.get('gender'),
+        '_eve_race_id': char_data.get('race_id'),
+        '_eve_bloodline_id': char_data.get('bloodline_id'),
+        '_eve_ancestry_id': char_data.get('ancestry_id'),
+        '_eve_security_status': char_data.get('security_status')
+    }
+    for key, value in optional_fields.items():
+        if value is not None:
+            post_data['meta'][key] = value
+
+    # Add featured image from character portrait
+    portrait_data = fetch_character_portrait(char_id)
+    if portrait_data and 'px256x256' in portrait_data:
+        new_portrait_url = portrait_data['px256x256']
+        # Check if portrait changed before updating
+        existing_portrait_url = existing_post.get('meta', {}).get('_thumbnail_external_url') if existing_post else None
+        if existing_portrait_url != new_portrait_url:
+            post_data['meta']['_thumbnail_external_url'] = new_portrait_url
+            logger.info(f"Updated portrait for character: {char_data['name']}")
+        else:
+            logger.info(f"Portrait unchanged for character: {char_data['name']}")
+
+    if existing_post:
+        # Update existing
+        post_id = existing_post['id']
+        url = f"{WP_BASE_URL}/wp-json/wp/v2/eve_character/{post_id}"
+        try:
+            response = requests.put(url, json=post_data, auth=get_wp_auth())
+            if response.status_code in [200, 201]:
+                logger.info(f"Updated character: {char_data['name']}")
+            else:
+                logger.error(f"Failed to update character {char_data['name']}: {response.status_code} - {response.text}")
+        except requests.RequestException as e:
+            logger.error(f"Failed to update character {char_data['name']}: {e}")
+    else:
+        # Create new
+        url = f"{WP_BASE_URL}/wp-json/wp/v2/eve_character"
+        try:
+            response = requests.post(url, json=post_data, auth=get_wp_auth())
+            if response.status_code in [200, 201]:
+                logger.info(f"Created character: {char_data['name']}")
+            else:
+                logger.error(f"Failed to create character {char_data['name']}: {response.status_code} - {response.text}")
+        except requests.RequestException as e:
+            logger.error(f"Failed to create character {char_data['name']}: {e}")
+
+def update_character_skills_in_wp(char_id: int, skills_data: Dict[str, Any]) -> None:
+    """Update character post with skills data."""
+    slug = f"character-{char_id}"
+    # Check if post exists by slug
+    try:
+        response = requests.get(f"{WP_BASE_URL}/wp-json/wp/v2/eve_character?slug={slug}", auth=get_wp_auth())
+        existing_posts = response.json() if response.status_code == 200 else []
+        existing_post = existing_posts[0] if existing_posts else None
+    except requests.RequestException as e:
+        logger.error(f"Failed to fetch character post for skills update {char_id}: {e}")
+        return
+
+    if existing_post:
+        post_id = existing_post['id']
+        # Update with skills data
+        post_data = {
+            'meta': {
+                '_eve_total_sp': skills_data.get('total_sp', 0),
+                '_eve_last_updated': datetime.now(timezone.utc).isoformat()
+            }
+        }
+        url = f"{WP_BASE_URL}/wp-json/wp/v2/eve_character/{post_id}"
+        try:
+            response = requests.put(url, json=post_data, auth=get_wp_auth())
+            if response.status_code in [200, 201]:
+                logger.info(f"Updated skills for character {char_id}")
+            else:
+                logger.error(f"Failed to update skills for character {char_id}: {response.status_code} - {response.text}")
+        except requests.RequestException as e:
+            logger.error(f"Failed to update skills for character {char_id}: {e}")
+
+def fetch_character_data(char_id: int, access_token: str) -> Optional[Dict[str, Any]]:
+    """Fetch basic character data from ESI."""
+    try:
+        endpoint = f"/characters/{char_id}/"
+        return fetch_esi(endpoint, char_id, access_token)
+    except (ESIAuthError, ESIRequestError) as e:
+        logger.error(f"Failed to fetch character data for {char_id}: {e}")
+        return None
+
+def fetch_character_skills(char_id: int, access_token: str) -> Optional[Dict[str, Any]]:
+    """Fetch character skills."""
+    try:
+        endpoint = f"/characters/{char_id}/skills/"
+        return fetch_esi(endpoint, char_id, access_token)
+    except (ESIAuthError, ESIRequestError) as e:
+        logger.error(f"Failed to fetch character skills for {char_id}: {e}")
+        return None
+
+def fetch_character_blueprints(char_id: int, access_token: str) -> Optional[Dict[str, Any]]:
+    """Fetch character blueprints."""
+    try:
+        endpoint = f"/characters/{char_id}/blueprints/"
+        return fetch_esi(endpoint, char_id, access_token)
+    except (ESIAuthError, ESIRequestError) as e:
+        logger.error(f"Failed to fetch character blueprints for {char_id}: {e}")
+        return None
+
+def fetch_character_planets(char_id: int, access_token: str) -> Optional[Dict[str, Any]]:
+    """Fetch character planets."""
+    try:
+        endpoint = f"/characters/{char_id}/planets/"
+        return fetch_esi(endpoint, char_id, access_token)
+    except (ESIAuthError, ESIRequestError) as e:
+        logger.error(f"Failed to fetch character planets for {char_id}: {e}")
+        return None
+
+def fetch_corporation_data(corp_id: int, access_token: str) -> Optional[Dict[str, Any]]:
+    """Fetch corporation data from ESI."""
+    try:
+        endpoint = f"/corporations/{corp_id}/"
+        return fetch_esi(endpoint, None, access_token)  # No char_id needed for corp data
+    except (ESIAuthError, ESIRequestError) as e:
+        logger.error(f"Failed to fetch corporation data for {corp_id}: {e}")
+        return None
+
+def update_blueprint_in_wp(blueprint_data: Dict[str, Any], wp_post_id_cache: Dict[str, Any], char_id: int, access_token: str, blueprint_cache: Optional[Dict[str, Any]] = None, location_cache: Optional[Dict[str, Any]] = None, structure_cache: Optional[Dict[str, Any]] = None, failed_structures: Optional[Dict[str, Any]] = None) -> None:
+    """
+    Update or create a blueprint post in WordPress from direct blueprint endpoint data.
+
+    Processes blueprint information including ME/TE levels, location, and type details.
+    Only tracks BPOs (quantity == -1), skipping BPCs. Caches location and type data
+    for performance.
+
+    Args:
+        blueprint_data: Blueprint data from ESI API.
+        wp_post_id_cache: Cache of WordPress post IDs.
+        char_id: Character ID for auth.
+        access_token: Valid OAuth access token.
+        blueprint_cache: Optional cache for blueprint names.
+        location_cache: Optional cache for location names.
+        structure_cache: Optional cache for structure names.
+        failed_structures: Optional cache for failed structure fetches.
+
+    Returns:
+        None
+
+    Raises:
+        No explicit raises; logs errors internally.
+    """
+    start_time = time.time()
+    if blueprint_cache is None:
+        blueprint_cache = load_blueprint_cache()
+    if location_cache is None:
+        location_cache = load_location_cache()
+    if structure_cache is None:
+        structure_cache = load_structure_cache()
+    if failed_structures is None:
+        failed_structures = load_failed_structures()
+    if wp_post_id_cache is None:
+        wp_post_id_cache = load_wp_post_id_cache()
+
+    item_id = blueprint_data.get('item_id')
+    if not item_id:
+        logger.error(f"Blueprint data missing item_id: {blueprint_data}")
+        return
+
+    # Skip BPCs - only track BPOs (quantity == -1 indicates a BPO)
+    quantity = blueprint_data.get('quantity', -1)
+    if quantity != -1:
+        logger.info(f"Skipping BPC (quantity={quantity}) for item_id: {item_id}")
+        return
+
+    slug = f"blueprint-{item_id}"
+
+    # Try to get post ID from cache first
+    cached_post_id = get_cached_wp_post_id(wp_post_id_cache, 'eve_blueprint', item_id)
+
+    existing_post = None
+    if cached_post_id:
+        # Use direct post ID lookup
+        try:
+            response = requests.get(f"{WP_BASE_URL}/wp-json/wp/v2/eve_blueprint/{cached_post_id}", auth=get_wp_auth())
+            if response.status_code == 200:
+                existing_post = response.json()
+            else:
+                # Cache might be stale, fall back to slug lookup
+                cached_post_id = None
+                existing_post = None
+        except requests.RequestException as e:
+            logger.error(f"Failed to fetch existing blueprint post {cached_post_id}: {e}")
+            cached_post_id = None
+    else:
+        # Fall back to slug lookup
+        try:
+            response = requests.get(f"{WP_BASE_URL}/wp-json/wp/v2/eve_blueprint?slug={slug}", auth=get_wp_auth())
+            existing_posts = response.json() if response.status_code == 200 else []
+            existing_post = existing_posts[0] if existing_posts else None
+
+            # Cache the post ID if found
+            if existing_post:
+                set_cached_wp_post_id(wp_post_id_cache, 'eve_blueprint', item_id, existing_post['id'])
+        except requests.RequestException as e:
+            logger.error(f"Failed to fetch blueprint posts by slug {slug}: {e}")
+            existing_post = None
+
+    # Get blueprint name and details
+    type_id = blueprint_data.get('type_id')
+    me = blueprint_data.get('material_efficiency', 0)
+    te = blueprint_data.get('time_efficiency', 0)
+    location_id = blueprint_data.get('location_id')
+    quantity = blueprint_data.get('quantity', -1)
+
+    # Get blueprint name from cache or API
+    if type_id:
+        if str(type_id) in blueprint_cache:
+            type_name = blueprint_cache[str(type_id)]
+        else:
+            try:
+                type_data = fetch_public_esi(f"/universe/types/{type_id}")
+                if type_data:
+                    type_name = type_data.get('name', f"Blueprint {item_id}").replace(" Blueprint", "").strip()
+                    blueprint_cache[str(type_id)] = type_name
+                    save_blueprint_cache(blueprint_cache)
+                else:
+                    type_name = f"Blueprint {item_id}".replace(" Blueprint", "").strip()
+            except ESIRequestError as e:
+                logger.error(f"Failed to fetch type data for {type_id}: {e}")
+                type_name = f"Blueprint {item_id}".replace(" Blueprint", "").strip()
+    else:
+        type_name = f"Blueprint {item_id}".replace(" Blueprint", "").strip()
+
+    # Determine BPO or BPC
+    bp_type = "BPO" if quantity == -1 else "BPC"
+
+    # Get location name from cache or API
+    # Structures have IDs >= 1000000000000, stations have lower IDs
+    if location_id:
+        location_id_str = str(location_id)
+        if location_id_str in location_cache:
+            location_name = location_cache[location_id_str]
+        elif location_id >= 1000000000000:  # Structures (citadels, etc.)
+            if location_id_str in failed_structures:
+                location_name = f"Citadel {location_id}"
+            elif location_id_str in structure_cache:
+                location_name = structure_cache[location_id_str]
+            else:
+                # Try auth fetch for private structures
+                try:
+                    struct_data = fetch_esi(f"/universe/structures/{location_id}", char_id, access_token)
+                    if struct_data:
+                        location_name = struct_data.get('name', f"Citadel {location_id}")
+                        structure_cache[location_id_str] = location_name
+                        save_structure_cache(structure_cache)
+                    else:
+                        location_name = f"Citadel {location_id}"
+                        failed_structures[location_id_str] = True
+                        save_failed_structures(failed_structures)
+                except (ESIAuthError, ESIRequestError) as e:
+                    logger.error(f"Failed to fetch structure data for {location_id}: {e}")
+                    location_name = f"Citadel {location_id}"
+                    failed_structures[location_id_str] = True
+                    save_failed_structures(failed_structures)
+        else:  # Stations - public data
+            if location_id_str in location_cache:
+                location_name = location_cache[location_id_str]
+            else:
+                try:
+                    loc_data = fetch_public_esi(f"/universe/stations/{location_id}")
+                    location_name = loc_data.get('name', f"Station {location_id}") if loc_data else f"Station {location_id}"
+                    location_cache[location_id_str] = location_name
+                    save_location_cache(location_cache)
+                except ESIRequestError as e:
+                    logger.error(f"Failed to fetch station data for {location_id}: {e}")
+                    location_name = f"Station {location_id}"
+                    location_cache[location_id_str] = location_name
+                    save_location_cache(location_cache)
+    else:
+        location_name = "Unknown Location"
+
+    # Construct title
+    title = f"{type_name} {bp_type} {me}/{te} ({location_name}) – ID: {item_id}"
+
+    post_data = {
+        'title': title,
+        'slug': f"blueprint-{item_id}",
+        'status': 'publish',
+        'meta': {
+            '_eve_bp_item_id': item_id,
+            '_eve_bp_type_id': blueprint_data.get('type_id'),
+            '_eve_bp_location_id': blueprint_data.get('location_id'),
+            '_eve_bp_location_name': location_name,
+            '_eve_bp_quantity': blueprint_data.get('quantity', -1),
+            '_eve_bp_me': blueprint_data.get('material_efficiency', 0),
+            '_eve_bp_te': blueprint_data.get('time_efficiency', 0),
+            '_eve_bp_runs': blueprint_data.get('runs', -1),
+            '_eve_char_id': char_id,
+            '_eve_last_updated': datetime.now(timezone.utc).isoformat()
+        }
+    }
+
+    # Add featured image from type icon (only for new blueprints)
+    if not existing_post:
+        type_id = blueprint_data.get('type_id')
+        if type_id:
+            image_url = fetch_type_icon(type_id, size=512)
+            post_data['meta']['_thumbnail_external_url'] = image_url
+
+    if existing_post:
+        # Check if data has changed before updating
+        existing_meta = existing_post.get('meta', {})
+        existing_title = existing_post.get('title', {}).get('rendered', '')
+
+        # Compare key fields
+        needs_update = (
+            existing_title != title or
+            str(existing_meta.get('_eve_bp_location_name', '')) != str(location_name) or
+            str(existing_meta.get('_eve_bp_me', 0)) != str(me) or
+            str(existing_meta.get('_eve_bp_te', 0)) != str(te) or
+            str(existing_meta.get('_eve_bp_quantity', -1)) != str(quantity)
+        )
+
+        if not needs_update:
+            logger.info(f"Blueprint {item_id} unchanged, skipping update")
+            return
+
+        # Update existing
+        post_id = existing_post['id']
+        url = f"{WP_BASE_URL}/wp-json/wp/v2/eve_blueprint/{post_id}"
+        try:
+            response = requests.put(url, json=post_data, auth=get_wp_auth())
+            if response.status_code in [200, 201]:
+                logger.info(f"Updated blueprint: {item_id}")
+            else:
+                logger.error(f"Failed to update blueprint {item_id}: {response.status_code} - {response.text}")
+        except requests.RequestException as e:
+            logger.error(f"Failed to update blueprint {item_id}: {e}")
+    else:
+        # Create new
+        url = f"{WP_BASE_URL}/wp-json/wp/v2/eve_blueprint"
+        try:
+            response = requests.post(url, json=post_data, auth=get_wp_auth())
+
+            # Cache the new post ID if creation was successful
+            if response.status_code in [200, 201]:
+                new_post = response.json()
+                set_cached_wp_post_id(wp_post_id_cache, 'eve_blueprint', item_id, new_post['id'])
+                logger.info(f"Created new blueprint: {item_id}")
+            else:
+                logger.error(f"Failed to create blueprint {item_id}: {response.status_code} - {response.text}")
+        except requests.RequestException as e:
+            logger.error(f"Failed to create blueprint {item_id}: {e}")
+
+    elapsed = time.time() - start_time
+    logger.info(f"Blueprint processing completed for item {item_id} in {elapsed:.2f}s")
+
+# ...existing code...

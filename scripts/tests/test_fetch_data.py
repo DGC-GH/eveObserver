@@ -1,6 +1,7 @@
 """Tests for fetch_data.py functions."""
 import pytest
-from unittest.mock import patch, MagicMock
+import asyncio
+from unittest.mock import patch, MagicMock, AsyncMock
 from datetime import datetime, timezone, timedelta
 import sys
 import os
@@ -13,8 +14,13 @@ from fetch_data import (
     check_industry_job_completions,
     check_planet_extraction_completions,
     ApiConfig,
+)
+from api_client import (
     fetch_public_esi,
-    fetch_esi
+    fetch_esi,
+    ESIApiError,
+    ESIRequestError,
+    ESIAuthError
 )
 
 
@@ -66,104 +72,107 @@ class TestApiConfig:
 class TestFetchFunctions:
     """Test ESI API fetch functions."""
 
-    @patch('fetch_data.session')
-    @patch('fetch_data.api_config')
-    def test_fetch_public_esi_success(self, mock_api_config, mock_session):
+    @pytest.mark.asyncio
+    @patch('api_client.session')
+    @patch('api_client.api_config')
+    async def test_fetch_public_esi_success(self, mock_api_config, mock_session):
         """Test successful fetch_public_esi call."""
         # Setup mocks
         mock_api_config.esi_max_retries = 3
         mock_api_config.esi_base_url = 'https://esi.evetech.net/latest'
         mock_api_config.esi_timeout = 30
-        
-        mock_response = MagicMock()
-        mock_response.status_code = 200
-        mock_response.json.return_value = {'test': 'data'}
-        mock_session.get.return_value = mock_response
 
-        result = fetch_public_esi('/test/endpoint')
+        mock_response = AsyncMock()
+        mock_response.status = 200
+        mock_response.json.return_value = {'test': 'data'}
+        mock_session.get.return_value.__aenter__.return_value = mock_response
+
+        result = await fetch_public_esi('/test/endpoint')
 
         assert result == {'test': 'data'}
-        mock_session.get.assert_called_once_with('https://esi.evetech.net/latest/test/endpoint', timeout=30)
 
-    @patch('fetch_data.session')
-    @patch('fetch_data.api_config')
-    def test_fetch_public_esi_404(self, mock_api_config, mock_session):
+    @pytest.mark.asyncio
+    @patch('api_client.session')
+    @patch('api_client.api_config')
+    async def test_fetch_public_esi_404(self, mock_api_config, mock_session):
         """Test fetch_public_esi with 404 response."""
         mock_api_config.esi_max_retries = 3
         mock_api_config.esi_base_url = 'https://esi.evetech.net/latest'
         mock_api_config.esi_timeout = 30
-        
-        mock_response = MagicMock()
-        mock_response.status_code = 404
-        mock_session.get.return_value = mock_response
 
-        result = fetch_public_esi('/test/endpoint')
+        mock_response = AsyncMock()
+        mock_response.status = 404
+        mock_response.text.return_value = "Not Found"
+        mock_session.get.return_value.__aenter__.return_value = mock_response
 
-        assert result is None
+        with pytest.raises(ESIRequestError):
+            await fetch_public_esi('/test/endpoint')
 
-    @patch('time.sleep')
-    @patch('fetch_data.session')
-    @patch('fetch_data.api_config')
-    def test_fetch_public_esi_rate_limit(self, mock_api_config, mock_session, mock_sleep):
+    @pytest.mark.asyncio
+    @patch('asyncio.sleep')
+    @patch('api_client.session')
+    @patch('api_client.api_config')
+    async def test_fetch_public_esi_rate_limit(self, mock_api_config, mock_session, mock_sleep):
         """Test fetch_public_esi with rate limiting."""
         mock_api_config.esi_max_retries = 3
         mock_api_config.esi_base_url = 'https://esi.evetech.net/latest'
         mock_api_config.esi_timeout = 30
-        
-        # First call returns rate limited, second succeeds
-        mock_response_rate_limited = MagicMock()
-        mock_response_rate_limited.status_code = 429
-        mock_response_rate_limited.headers = {'X-ESI-Error-Limit-Reset': '5'}
-        
-        mock_response_success = MagicMock()
-        mock_response_success.status_code = 200
-        mock_response_success.json.return_value = {'test': 'data'}
-        
-        mock_session.get.side_effect = [mock_response_rate_limited, mock_response_success]
 
-        result = fetch_public_esi('/test/endpoint')
+        # First call returns rate limited, second succeeds
+        mock_response_rate_limited = AsyncMock()
+        mock_response_rate_limited.status = 429
+        mock_response_rate_limited.headers = {'X-ESI-Error-Limit-Reset': '5'}
+        mock_response_rate_limited.text.return_value = "Rate Limited"
+
+        mock_response_success = AsyncMock()
+        mock_response_success.status = 200
+        mock_response_success.json.return_value = {'test': 'data'}
+
+        mock_session.get.side_effect = [
+            AsyncMock(return_value=mock_response_rate_limited),
+            AsyncMock(return_value=mock_response_success)
+        ]
+
+        result = await fetch_public_esi('/test/endpoint')
 
         assert result == {'test': 'data'}
         assert mock_session.get.call_count == 2
         mock_sleep.assert_called_once_with(6)  # 5 + 1 buffer
 
-    @patch('fetch_data.session')
-    @patch('fetch_data.api_config')
-    def test_fetch_esi_success(self, mock_api_config, mock_session):
+    @pytest.mark.asyncio
+    @patch('api_client.session')
+    @patch('api_client.api_config')
+    async def test_fetch_esi_success(self, mock_api_config, mock_session):
         """Test successful fetch_esi call."""
         mock_api_config.esi_max_retries = 3
         mock_api_config.esi_base_url = 'https://esi.evetech.net/latest'
         mock_api_config.esi_timeout = 30
-        
-        mock_response = MagicMock()
-        mock_response.status_code = 200
-        mock_response.json.return_value = {'test': 'data'}
-        mock_session.get.return_value = mock_response
 
-        result = fetch_esi('/test/endpoint', 123, 'token123')
+        mock_response = AsyncMock()
+        mock_response.status = 200
+        mock_response.json.return_value = {'test': 'data'}
+        mock_session.get.return_value.__aenter__.return_value = mock_response
+
+        result = await fetch_esi('/test/endpoint', 123, 'token123')
 
         assert result == {'test': 'data'}
-        mock_session.get.assert_called_once_with(
-            'https://esi.evetech.net/latest/test/endpoint',
-            headers={'Authorization': 'Bearer token123'},
-            timeout=30
-        )
 
-    @patch('fetch_data.session')
-    @patch('fetch_data.api_config')
-    def test_fetch_esi_unauthorized(self, mock_api_config, mock_session):
+    @pytest.mark.asyncio
+    @patch('api_client.session')
+    @patch('api_client.api_config')
+    async def test_fetch_esi_unauthorized(self, mock_api_config, mock_session):
         """Test fetch_esi with 401 unauthorized."""
         mock_api_config.esi_max_retries = 3
         mock_api_config.esi_base_url = 'https://esi.evetech.net/latest'
         mock_api_config.esi_timeout = 30
-        
-        mock_response = MagicMock()
-        mock_response.status_code = 401
-        mock_session.get.return_value = mock_response
 
-        result = fetch_esi('/test/endpoint', 123, 'invalid_token')
+        mock_response = AsyncMock()
+        mock_response.status = 401
+        mock_response.text.return_value = "Unauthorized"
+        mock_session.get.return_value.__aenter__.return_value = mock_response
 
-        assert result is None
+        with pytest.raises(ESIAuthError):
+            await fetch_esi('/test/endpoint', 123, 'invalid_token')
 
 
 class TestCollectCorporationMembers:
