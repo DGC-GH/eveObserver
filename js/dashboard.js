@@ -520,37 +520,28 @@ class EVEDashboard {
     }
 
     renderChart() {
-        const canvas = document.getElementById('eveChart');
+        let canvas = document.getElementById('eveChart');
         if (!canvas) return;
 
-        // Destroy any existing chart on this canvas
-        const existingChart = Chart.getChart(canvas);
-        if (existingChart) {
-            console.log('🔄 [CHART] Destroying existing chart...');
-            try {
-                existingChart.destroy();
-            } catch (e) {
-                console.warn('🔄 [CHART] Error destroying chart:', e);
-            }
-        }
-
-        // Clear the canvas context and reset dimensions
-        const ctx = canvas.getContext('2d');
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-        // Reset canvas dimensions to force a clean state
-        canvas.width = 0;
-        canvas.height = 0;
-
+        // Replace the canvas with a fresh one to avoid Chart.js conflicts
         const parent = canvas.parentElement;
         if (parent) {
-            const computedStyle = getComputedStyle(parent);
-            const width = parseInt(computedStyle.width);
-            const height = parseInt(computedStyle.height);
-            if (width && height) {
-                canvas.width = width;
-                canvas.height = height;
-            }
+            console.log('🔄 [CHART] Replacing canvas with fresh one...');
+            const newCanvas = document.createElement('canvas');
+            newCanvas.id = 'eveChart';
+            newCanvas.className = canvas.className;
+            newCanvas.style.cssText = canvas.style.cssText;
+            parent.replaceChild(newCanvas, canvas);
+            canvas = newCanvas;
+        }
+
+        // Set canvas dimensions
+        const computedStyle = getComputedStyle(canvas.parentElement);
+        const width = parseInt(computedStyle.width);
+        const height = parseInt(computedStyle.height);
+        if (width && height) {
+            canvas.width = width;
+            canvas.height = height;
         }
 
         const counts = {
@@ -569,7 +560,7 @@ class EVEDashboard {
 
         console.log('🔄 [CHART] Creating new chart with data:', counts);
         try {
-            this.chart = new Chart(ctx, {
+            this.chart = new Chart(canvas.getContext('2d'), {
                 type: 'doughnut',
                 data: {
                     labels: Object.keys(counts).map(key => `${key} (${counts[key]})`),
