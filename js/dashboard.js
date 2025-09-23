@@ -30,15 +30,41 @@ class EVEDashboard {
     }
 
     async init() {
-        console.log('EVEDashboard init called');
-        console.log('DOM ready state:', document.readyState);
-        await this.loadAllData();
-        this.setupSearch();
-        this.setupCardClicks();
-        this.renderChart();
-        this.renderAllTables();
-        this.setupActionButtons();
-        this.hideLoaders();
+        console.log('🔄 [INIT] EVEDashboard init called');
+        console.log('🔄 [INIT] DOM ready state:', document.readyState);
+        try {
+            console.log('🔄 [INIT] Starting loadAllData()...');
+            await this.loadAllData();
+            console.log('✅ [INIT] loadAllData() completed');
+
+            console.log('🔄 [INIT] Starting setupSearch()...');
+            this.setupSearch();
+            console.log('✅ [INIT] setupSearch() completed');
+
+            console.log('🔄 [INIT] Starting setupCardClicks()...');
+            this.setupCardClicks();
+            console.log('✅ [INIT] setupCardClicks() completed');
+
+            console.log('🔄 [INIT] Starting renderChart()...');
+            this.renderChart();
+            console.log('✅ [INIT] renderChart() completed');
+
+            console.log('🔄 [INIT] Starting renderAllTables()...');
+            this.renderAllTables();
+            console.log('✅ [INIT] renderAllTables() completed');
+
+            console.log('🔄 [INIT] Starting setupActionButtons()...');
+            this.setupActionButtons();
+            console.log('✅ [INIT] setupActionButtons() completed');
+
+            console.log('🔄 [INIT] Starting hideLoaders()...');
+            this.hideLoaders();
+            console.log('✅ [INIT] hideLoaders() completed');
+
+            console.log('🎉 [INIT] Dashboard initialization completed successfully!');
+        } catch (error) {
+            console.error('❌ [INIT ERROR] Dashboard initialization failed:', error);
+        }
     }
 
     async loadAllData() {
@@ -193,22 +219,25 @@ class EVEDashboard {
     }
 
     setupActionButtons() {
-        console.log('setupActionButtons called');
+        console.log('🔄 [SETUP] setupActionButtons called');
         const copyOutbidBtn = document.getElementById('copy-outbid-contracts');
-        console.log('copyOutbidBtn found:', !!copyOutbidBtn);
+        console.log('🔄 [SETUP] copyOutbidBtn found:', !!copyOutbidBtn);
         if (copyOutbidBtn) {
-            console.log('Adding event listener to copy button');
+            console.log('🔄 [SETUP] Adding event listener to copy button');
             copyOutbidBtn.addEventListener('click', () => {
-                console.log('Copy button clicked');
+                console.log('🔄 [SETUP] Copy button clicked');
                 this.copyOutbidContracts();
             });
+            console.log('✅ [SETUP] Copy button event listener added');
+        } else {
+            console.log('⚠️ [SETUP] Copy button not found');
         }
     }
 
     setupCardClicks() {
-        console.log('setupCardClicks called');
+        console.log('🔄 [SETUP] setupCardClicks called');
         const cards = document.querySelectorAll('.eve-card-clickable');
-        console.log('Found cards:', cards.length);
+        console.log('🔄 [SETUP] Found cards:', cards.length);
         cards.forEach(card => {
             card.addEventListener('click', (e) => {
                 // Don't trigger card click if sync button was clicked
@@ -216,46 +245,54 @@ class EVEDashboard {
                     return;
                 }
                 const section = card.getAttribute('data-section');
-                console.log('Card clicked, section:', section);
+                console.log('🔄 [SETUP] Card clicked, section:', section);
                 this.scrollToSection(section);
             });
         });
 
         // Setup sync button clicks
+        console.log('🔄 [SETUP] About to call setupSyncButtons()...');
         this.setupSyncButtons();
+        console.log('✅ [SETUP] setupSyncButtons() completed from setupCardClicks');
     }
 
     setupSyncButtons() {
-        console.log('setupSyncButtons called');
+        console.log('🔄 [INIT STEP 1] setupSyncButtons called');
 
         const syncButtons = document.querySelectorAll('.eve-sync-btn');
         const syncAllButton = document.getElementById('eve-sync-all');
 
-        console.log('Found sync buttons:', syncButtons.length);
-        console.log('Sync all button found:', !!syncAllButton);
+        console.log('🔄 [INIT STEP 2] Found sync buttons:', syncButtons.length);
+        console.log('🔄 [INIT STEP 3] Sync all button found:', !!syncAllButton);
 
         if (syncAllButton) {
-            console.log('Sync all button element:', syncAllButton);
-            console.log('Sync all button HTML:', syncAllButton.outerHTML);
+            console.log('🔄 [INIT STEP 4] Sync all button element:', syncAllButton);
+            console.log('🔄 [INIT STEP 5] Sync all button HTML:', syncAllButton.outerHTML);
         } else {
-            console.error('Sync all button not found!');
+            console.error('❌ [INIT ERROR] Sync all button not found!');
         }
 
-        console.log('eveObserverApi available:', typeof eveObserverApi !== 'undefined');
+        console.log('🔄 [INIT STEP 6] Checking eveObserverApi availability...');
+        console.log('🔄 [INIT STEP 7] eveObserverApi available:', typeof eveObserverApi !== 'undefined');
         if (typeof eveObserverApi !== 'undefined') {
-            console.log('eveObserverApi.nonce:', eveObserverApi.nonce ? 'present' : 'missing');
-            console.log('eveObserverApi.restUrl:', eveObserverApi.restUrl);
+            console.log('🔄 [INIT STEP 8] eveObserverApi.nonce:', eveObserverApi.nonce ? 'present' : 'missing');
+            console.log('🔄 [INIT STEP 9] eveObserverApi.restUrl:', eveObserverApi.restUrl);
+        } else {
+            console.error('❌ [INIT ERROR] eveObserverApi is not defined! This will prevent sync from working.');
         }
 
+        console.log('🔄 [INIT STEP 10] Setting up individual sync button event listeners...');
         syncButtons.forEach(button => {
             button.addEventListener('click', (e) => {
                 e.stopPropagation();
                 const section = button.getAttribute('data-section');
-                console.log('Sync button clicked for section:', section);
+                console.log('🔄 [INDIVIDUAL SYNC] Sync button clicked for section:', section);
                 this.syncSection(section, button);
             });
         });
+        console.log('✅ [INIT STEP 11] Individual sync button listeners set up');
 
+        console.log('🔄 [INIT STEP 12] Setting up sync all button event listener...');
         if (syncAllButton) {
             syncAllButton.addEventListener('click', (e) => {
                 console.log('🔄 [STEP 1] Sync All button clicked - event detected!');
@@ -265,8 +302,9 @@ class EVEDashboard {
                 console.log('🔄 [STEP 4] Alert dismissed, proceeding with sync...');
                 this.syncSection('all', syncAllButton);
             });
+            console.log('✅ [INIT STEP 13] Sync all button event listener set up');
         } else {
-            console.error('❌ [ERROR] Sync all button not found!');
+            console.error('❌ [INIT ERROR] Sync all button not found!');
         }
     }
 
