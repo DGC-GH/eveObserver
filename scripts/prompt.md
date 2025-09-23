@@ -28,14 +28,6 @@ Use emojis and format the text for better readebility and output in this exact f
 - **Improvements:** [Numbered list; for each: 1) Brief explanation and rationale, 2) Code snippet or diff (use Git-style diff format if changing existing code), 3) Copilot-friendly suggestion (e.g., “Paste this into VS Code and use Copilot to refactor: [prompt]”), 4) Expected benefits tied to preferences]
 
 **Roadmap:** update the existing roadmap.md file (or create new if it doesnt exis) based on your findings and plan it step by step in an optimal order, keep track of your progress by editing this file.
-**Commit title:** prepare text to copy and paste in the inputfield in VS Code, output it as last thing every step so i can use it when commiting the changes formated in code so i can use built in copy button
+**Commit:** prepare title text to copy and paste in the inputfield in VS Code, output it as last thing every step so i can use it for commiting the changes if i choose to implement your suggestions, formated in a way i can copy it easaly
 **Tests:** each phase, run the test (add new if needed) and fix the issues
-
-
--------------
-competing contracts detection doesnt seem to work, validate and debug it seperetly before implementing a fix and cleaning temp debug files, log examples:
-INFO - Found 0 potential competing contracts in region 10000002
-2025-09-23 10:44:33,143 - INFO - No competing contracts found for contract 222642153
-
-make sure that: you and the code always check if CPT or custom field exists before even considering adding a new one
-
+**Features** update or create features.md to include a list of features used in this code, dont use project specific names or descriptions but describe  it in a general yet specific way that can be used for learnings and inspiration in another project coded with Grok Code Fat 1, note function names in examples for beter code and context inferring

@@ -8,7 +8,7 @@ This roadmap outlines the prioritized improvements for the EVE Observer project,
 
 - Isolated contract comparison logic inconsistencies between fetch_data.py and check_contract_outbid.py
 - Fixed same-issuer contract exclusion bug in check_contract_outbid.py
-- Standardized field names (_eve_contract_competing_price) and boolean values ('1'/'0')
+- Standardized field names (_eve_contract_competing_price) and boolean values
 - Added proper contract_issuer_id filtering to prevent false outbid detections
 
 ### ✅ Fix competing contracts logic - COMPLETED
@@ -59,6 +59,38 @@ This roadmap outlines the prioritized improvements for the EVE Observer project,
 - Break down long functions into smaller units
 - Add performance decorators for monitoring
 - Document scalability improvements
+
+## Phase 5: Code Quality and Architecture Improvements (New)
+
+### Fix failing tests and improve mocking
+
+- Fix aiohttp session mocking issues in test_fetch_data.py
+- Improve test reliability and coverage
+- Add proper async test fixtures
+
+### Refactor long functions and reduce duplication
+
+- Break down `update_blueprint_in_wp` (200+ lines) into smaller functions
+- Extract common patterns in `fetch_esi` and `fetch_public_esi`
+- Create base classes for WordPress post updates
+
+### Optimize caching and reduce API calls
+
+- Implement smarter cache invalidation strategies
+- Add cache compression for large datasets
+- Reduce redundant ESI API calls with better deduplication
+
+### Improve error handling and resilience
+
+- Add circuit breaker pattern for ESI API failures
+- Implement exponential backoff with jitter
+- Add health checks and monitoring endpoints
+
+### Security enhancements
+
+- Add input sanitization for all API responses
+- Implement rate limiting for WordPress API calls
+- Add audit logging for sensitive operations
 
 ## Notes
 
