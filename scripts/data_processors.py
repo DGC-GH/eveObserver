@@ -7,6 +7,7 @@ Handles processing and updating of EVE data in WordPress.
 import os
 import json
 import requests
+import aiohttp
 from datetime import datetime, timezone
 from typing import Dict, List, Any, Optional, Tuple, Callable
 import logging
@@ -16,7 +17,7 @@ import time
 import asyncio
 
 from config import *
-from api_client import fetch_public_esi, fetch_esi, wp_request, send_email, refresh_token, fetch_type_icon, sanitize_string, wp_semaphore, api_requests
+from api_client import fetch_public_esi, fetch_esi, wp_request, send_email, refresh_token, fetch_type_icon, sanitize_string
 from cache_manager import (
     load_blueprint_cache, save_blueprint_cache, load_blueprint_type_cache, save_blueprint_type_cache,
     load_location_cache, save_location_cache, load_structure_cache, save_structure_cache,
@@ -223,8 +224,7 @@ def fetch_corporation_data(corp_id: int, access_token: str) -> Optional[Dict[str
         logger.error(f"Failed to fetch corporation data for {corp_id}: {e}")
         return None
 
-@benchmark
-async def update_blueprint_in_wp(bp_data: dict, session: aiohttp.ClientSession) -> bool:
+# async def update_blueprint_in_wp(bp_data: dict, session: aiohttp.ClientSession) -> bool:
     """
     Update or create a blueprint post in WordPress from direct blueprint endpoint data.
 

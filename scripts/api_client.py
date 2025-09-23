@@ -14,7 +14,7 @@ import smtplib
 from email.mime.text import MIMEText
 import logging
 import requests
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, List, Optional, Callable, Awaitable
 import re
 from dataclasses import dataclass
 from enum import Enum

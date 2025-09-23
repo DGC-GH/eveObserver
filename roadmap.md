@@ -134,6 +134,14 @@ This roadmap outlines the prioritized improvements for the EVE Observer project,
 - Add request/response validation schemas
 - Enhance audit logging and monitoring
 
+### Code Quality Improvements
+
+- Remove code duplication between fetch_data.py and api_client.py
+- Break down long functions into smaller, testable units
+- Remove unused imports (redis, prometheus) from cache_manager.py
+- Add more async processing for I/O operations
+- Fix test failures caused by duplicate function definitions
+
 ## Project Status Summary
 
 ### ✅ **COMPLETED IMPROVEMENTS**
