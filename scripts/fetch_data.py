@@ -990,6 +990,8 @@ def generate_contract_title(contract_data, for_corp=False, entity_id=None, contr
     if blueprint_cache is None:
         blueprint_cache = load_blueprint_cache()
     
+    blueprint_type_cache = load_blueprint_type_cache()
+    
     contract_id = contract_data.get('contract_id')
     contract_type = contract_data.get('type', 'unknown')
     status = contract_data.get('status', 'unknown').title()
@@ -1029,7 +1031,7 @@ def generate_contract_title(contract_data, for_corp=False, entity_id=None, contr
                         item_name = f"Item {type_id}"
                 
                 # Check if it's a blueprint (quantity -1 indicates BPO, or check if it's in blueprint cache)
-                is_blueprint = str(type_id) in blueprint_cache
+                is_blueprint = str(type_id) in blueprint_type_cache and blueprint_type_cache[str(type_id)]
                 if not is_blueprint:
                     # Double-check with ESI if not in cache
                     type_data = fetch_public_esi(f"/universe/types/{type_id}")
@@ -1054,7 +1056,7 @@ def generate_contract_title(contract_data, for_corp=False, entity_id=None, contr
                 type_id = item.get('type_id')
                 if type_id:
                     # First check if it's in blueprint cache
-                    if str(type_id) in blueprint_cache:
+                    if str(type_id) in blueprint_type_cache and blueprint_type_cache[str(type_id)]:
                         blueprint_count += 1
                     else:
                         # Check with ESI
@@ -1082,6 +1084,8 @@ def update_contract_in_wp(contract_id, contract_data, for_corp=False, entity_id=
     if blueprint_cache is None:
         blueprint_cache = load_blueprint_cache()
     
+    blueprint_type_cache = load_blueprint_type_cache()
+    
     slug = f"contract-{contract_id}"
     # Check if post exists by slug
     response = requests.get(f"{WP_BASE_URL}/wp-json/wp/v2/eve_contract?slug={slug}", auth=get_wp_auth())
@@ -1107,7 +1111,7 @@ def update_contract_in_wp(contract_id, contract_data, for_corp=False, entity_id=
     if contract_items:
         for item in contract_items:
             type_id = item.get('type_id')
-            if type_id and str(type_id) in blueprint_cache:
+            if type_id and str(type_id) in blueprint_type_cache and blueprint_type_cache[str(type_id)]:
                 has_blueprint = True
                 break
     
