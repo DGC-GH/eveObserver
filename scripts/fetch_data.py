@@ -20,14 +20,21 @@ from config import *
 from esi_oauth import save_tokens
 from blueprint_processor import (
     update_blueprint_in_wp, extract_blueprints_from_assets, extract_blueprints_from_industry_jobs,
-    extract_blueprints_from_contracts, update_blueprint_from_asset_in_wp
+    extract_blueprints_from_contracts, update_blueprint_from_asset_in_wp, cleanup_blueprint_posts
 )
 from character_processor import update_character_skills_in_wp, check_industry_job_completions, update_planet_in_wp
 from contract_processor import (
     fetch_character_contracts, fetch_corporation_contracts, process_character_contracts, cleanup_contract_posts,
     generate_contract_title, update_contract_in_wp
 )
-from data_processors import fetch_character_data, update_character_in_wp
+from data_processors import fetch_character_data, update_character_in_wp, get_wp_auth
+from cache_manager import (
+    load_blueprint_cache, save_blueprint_cache, load_location_cache, save_location_cache,
+    load_structure_cache, save_structure_cache, load_failed_structures, save_failed_structures,
+    load_wp_post_id_cache, save_wp_post_id_cache, get_cached_wp_post_id, set_cached_wp_post_id
+)
+from api_client import fetch_public_esi, fetch_esi, wp_request, send_email, refresh_token, fetch_type_icon, delete_wp_post
+from utils import get_region_from_location
 class ESIApiError(Exception):
     """Base exception for ESI API errors."""
     pass
@@ -116,220 +123,6 @@ def load_tokens() -> Dict[str, Any]:
         with open(TOKENS_FILE, 'r') as f:
             return json.load(f)
     return {}
-
-def ensure_cache_dir() -> None:
-    """
-    Ensure the cache directory exists, creating it if necessary.
-
-    Creates the configured cache directory and any parent directories
-    needed to store cache files for blueprints, locations, structures, etc.
-    """
-    if not os.path.exists(CACHE_DIR):
-        os.makedirs(CACHE_DIR)
-
-def load_cache(cache_file: str) -> Dict[str, Any]:
-    """
-    Load cached data from a JSON file.
-
-    Attempts to read and parse a JSON cache file. Creates the cache directory
-    if it doesn't exist. Returns empty dict if file doesn't exist or is invalid.
-
-    Args:
-        cache_file: Path to the cache file to load.
-
-    Returns:
-        Dict[str, Any]: Cached data dictionary, or empty dict on error.
-    """
-    ensure_cache_dir()
-    if os.path.exists(cache_file):
-        try:
-            with open(cache_file, 'r') as f:
-                return json.load(f)
-        except:
-            return {}
-    return {}
-
-def save_cache(cache_file: str, data: Dict[str, Any]) -> None:
-    """
-    Save data to a JSON cache file.
-
-    Writes the provided data dictionary to a JSON file, creating the cache
-    directory if needed. Used for persisting blueprint names, location data, etc.
-
-    Args:
-        cache_file: Path to the cache file to save.
-        data: Dictionary data to save as JSON.
-    """
-    ensure_cache_dir()
-    with open(cache_file, 'w') as f:
-        json.dump(data, f)
-
-def load_blueprint_cache() -> Dict[str, Any]:
-    """
-    Load the blueprint name cache.
-
-    Retrieves cached blueprint type names keyed by type_id to avoid
-    repeated ESI API calls for blueprint name resolution.
-
-    Returns:
-        Dict[str, Any]: Blueprint name cache dictionary.
-    """
-    return load_cache(BLUEPRINT_CACHE_FILE)
-
-def save_blueprint_cache(cache: Dict[str, Any]) -> None:
-    """
-    Save the blueprint name cache to disk.
-
-    Persists the blueprint name cache to improve performance on subsequent runs
-    by avoiding repeated API calls for blueprint type name resolution.
-
-    Args:
-        cache: Blueprint name cache dictionary to save.
-    """
-    save_cache(BLUEPRINT_CACHE_FILE, cache)
-
-def load_blueprint_type_cache() -> Dict[str, Any]:
-    """
-    Load the blueprint type classification cache.
-
-    Retrieves cached information about which type_ids represent blueprints
-    vs regular items, used for filtering contract items.
-
-    Returns:
-        Dict[str, Any]: Blueprint type cache dictionary.
-    """
-    return load_cache(BLUEPRINT_TYPE_CACHE_FILE)
-
-def save_blueprint_type_cache(cache: Dict[str, Any]) -> None:
-    """
-    Save the blueprint type classification cache.
-
-    Persists blueprint type information to avoid repeated API calls
-    when determining if items in contracts are blueprints.
-
-    Args:
-        cache: Blueprint type cache dictionary to save.
-    """
-    save_cache(BLUEPRINT_TYPE_CACHE_FILE, cache)
-
-def load_location_cache() -> Dict[str, Any]:
-    """
-    Load the location name cache.
-
-    Retrieves cached station names keyed by location_id to avoid
-    repeated ESI API calls for location name resolution.
-
-    Returns:
-        Dict[str, Any]: Location name cache dictionary.
-    """
-    return load_cache(LOCATION_CACHE_FILE)
-
-def save_location_cache(cache: Dict[str, Any]) -> None:
-    """
-    Save the location name cache to disk.
-
-    Persists location name cache to improve performance by avoiding
-    repeated API calls for station/structure name resolution.
-
-    Args:
-        cache: Location name cache dictionary to save.
-    """
-    save_cache(LOCATION_CACHE_FILE, cache)
-
-def load_structure_cache() -> Dict[str, Any]:
-    """
-    Load the structure name cache.
-
-    Retrieves cached citadel/structure names keyed by location_id.
-    Used for resolving player-owned structure names.
-
-    Returns:
-        Dict[str, Any]: Structure name cache dictionary.
-    """
-    return load_cache(STRUCTURE_CACHE_FILE)
-
-def save_structure_cache(cache: Dict[str, Any]) -> None:
-    """
-    Save the structure name cache to disk.
-
-    Persists structure name cache for citadels and player-owned structures
-    to avoid repeated authenticated API calls.
-
-    Args:
-        cache: Structure name cache dictionary to save.
-    """
-    save_cache(STRUCTURE_CACHE_FILE, cache)
-
-def load_failed_structures() -> Dict[str, Any]:
-    """
-    Load the failed structures cache.
-
-    Retrieves cache of structure IDs that previously failed to resolve,
-    avoiding repeated attempts to fetch inaccessible citadel names.
-
-    Returns:
-        Dict[str, Any]: Failed structures cache dictionary.
-    """
-    return load_cache(FAILED_STRUCTURES_FILE)
-
-def load_wp_post_id_cache() -> Dict[str, Any]:
-    """
-    Load the WordPress post ID cache.
-
-    Retrieves cached WordPress post IDs keyed by post type and item ID
-    to avoid repeated slug lookups when updating existing posts.
-
-    Returns:
-        Dict[str, Any]: WordPress post ID cache dictionary.
-    """
-    return load_cache(WP_POST_ID_CACHE_FILE)
-
-def save_wp_post_id_cache(cache: Dict[str, Any]) -> None:
-    """
-    Save the WordPress post ID cache to disk.
-
-    Persists WordPress post ID mappings to improve update performance
-    by avoiding repeated API calls to find existing posts by slug.
-
-    Args:
-        cache: WordPress post ID cache dictionary to save.
-    """
-    save_cache(WP_POST_ID_CACHE_FILE, cache)
-
-def get_cached_wp_post_id(cache: Dict[str, Any], post_type: str, item_id: int) -> Optional[int]:
-    """
-    Get a cached WordPress post ID for an item.
-
-    Retrieves the WordPress post ID from cache using a composite key
-    of post_type and item_id to avoid API calls when updating posts.
-
-    Args:
-        cache: WordPress post ID cache dictionary.
-        post_type: WordPress custom post type (e.g., 'eve_blueprint').
-        item_id: EVE item/entity ID.
-
-    Returns:
-        Optional[int]: Cached post ID if found, None otherwise.
-    """
-    key = f"{post_type}_{item_id}"
-    return cache.get(key)
-
-def set_cached_wp_post_id(cache: Dict[str, Any], post_type: str, item_id: int, post_id: int) -> None:
-    """
-    Cache a WordPress post ID for an item.
-
-    Stores the WordPress post ID in cache using a composite key for fast
-    lookups when updating existing posts.
-
-    Args:
-        cache: WordPress post ID cache dictionary to update.
-        post_type: WordPress custom post type (e.g., 'eve_blueprint').
-        item_id: EVE item/entity ID.
-        post_id: WordPress post ID to cache.
-    """
-    key = f"{post_type}_{item_id}"
-    cache[key] = post_id
-    save_wp_post_id_cache(cache)
 
 
 

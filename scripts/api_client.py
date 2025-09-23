@@ -925,3 +925,24 @@ def sanitize_api_response(data: Any) -> Any:
     else:
         # Convert unknown types to string and sanitize
         return sanitize_string(str(data))
+
+def delete_wp_post(post_type: str, post_id: int) -> bool:
+    """
+    Delete a WordPress post synchronously.
+
+    Deletes a post from WordPress using the REST API. This is a synchronous
+    wrapper around the async wp_request function.
+
+    Args:
+        post_type: WordPress post type (e.g., 'eve_blueprint', 'eve_contract')
+        post_id: WordPress post ID to delete
+
+    Returns:
+        bool: True if deletion was successful, False otherwise
+
+    Note:
+        Uses asyncio.run() to execute the async wp_request in a synchronous context.
+    """
+    endpoint = f"/wp/v2/{post_type}/{post_id}"
+    result = asyncio.run(wp_request('DELETE', endpoint, {'force': True}))
+    return result is not None and result.get('deleted', False)

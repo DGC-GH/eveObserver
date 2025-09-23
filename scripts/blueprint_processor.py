@@ -9,7 +9,8 @@ import requests
 from datetime import datetime, timezone
 from typing import Dict, List, Any, Optional
 from config import *
-from api_client import fetch_public_esi, fetch_esi, fetch_type_icon, WordPressAuthError, WordPressRequestError
+from api_client import fetch_public_esi, fetch_esi, fetch_type_icon, WordPressAuthError, WordPressRequestError, delete_wp_post
+from data_processors import get_wp_auth
 from cache_manager import (
     load_blueprint_cache, save_blueprint_cache, load_blueprint_type_cache, save_blueprint_type_cache,
     load_location_cache, save_location_cache, load_structure_cache, save_structure_cache,
@@ -571,3 +572,55 @@ def update_blueprint_from_asset_in_wp(blueprint_data: Dict[str, Any], wp_post_id
         logger.info(f"Updated blueprint from {source}: {item_id}")
     else:
         logger.error(f"Failed to update blueprint {item_id} from {source}: {response.status_code} - {response.text}")
+
+def cleanup_blueprint_posts() -> None:
+    """
+    Clean up blueprint posts that don't match filtering criteria.
+
+    Removes BPC posts (only tracks BPOs), blueprints from unauthorized corporations,
+    and orphaned blueprint posts without proper ownership information.
+
+    Note:
+        Preserves blueprints from authenticated sources and allowed corporations.
+        Currently hardcoded to only allow No Mercy Incorporated corporation blueprints.
+    """
+    logger.info("Cleaning up blueprint posts...")
+
+    response = requests.get(f"{WP_BASE_URL}/wp-json/wp/v2/eve_blueprint", auth=get_wp_auth(), params={'per_page': WP_PER_PAGE})
+    if response.status_code == 200:
+        blueprints = response.json()
+        for bp in blueprints:
+            meta = bp.get('meta', {})
+            quantity = meta.get('_eve_bp_quantity', -1)
+            owner_id = meta.get('_eve_bp_owner_id')
+            source = meta.get('_eve_bp_source', '')
+            char_id = meta.get('_eve_char_id')
+
+            # Remove BPCs (we only want to track BPOs now)
+            if quantity != -1:
+                bp_id = meta.get('_eve_bp_item_id')
+                logger.info(f"Deleting BPC (quantity={quantity}): {bp_id}")
+                delete_wp_post('eve_blueprint', bp['id'])
+                continue
+
+            # If it's from a corporation, check if it's No Mercy incorporated
+            if owner_id and source.startswith('corp_'):
+                # We need to check if this corp_id belongs to No Mercy incorporated
+                corp_response = requests.get(f"{WP_BASE_URL}/wp-json/wp/v2/eve_corporation?meta_key=_eve_corp_id&meta_value={owner_id}", auth=get_wp_auth())
+                if corp_response.status_code == 200:
+                    corp_posts = corp_response.json()
+                    if not corp_posts:  # Corporation not found in our records
+                        bp_id = bp.get('meta', {}).get('_eve_bp_item_id')
+                        logger.info(f"Deleting blueprint from unknown corporation: {bp_id}")
+                        delete_wp_post('eve_blueprint', bp['id'])
+                    else:
+                        corp_name = corp_posts[0].get('title', {}).get('rendered', '')
+                        if corp_name.lower() != 'no mercy incorporated':
+                            bp_id = bp.get('meta', {}).get('_eve_bp_item_id')
+                            logger.info(f"Deleting blueprint from {corp_name}: {bp_id}")
+                            delete_wp_post('eve_blueprint', bp['id'])
+            # If it's from character assets/industry jobs and we don't have a char_id, it might be orphaned
+            elif not char_id and not owner_id:
+                # These are from the direct blueprint endpoints - check if they're corporation blueprints
+                # For now, keep them as they come from authenticated sources
+                pass

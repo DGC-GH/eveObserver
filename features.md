@@ -103,6 +103,7 @@ This document describes the general features implemented in this data aggregatio
 - **Async-First Approach**: Use asyncio for I/O-bound operations to maximize concurrency and performance
 - **Configuration Management**: Environment-based config with validation prevents runtime errors
 - **Comprehensive Testing**: Async-aware testing with mocking ensures reliability
+- **Single Responsibility Principle**: Each processor module handles one domain (contracts, blueprints, characters, corporations)
 
 ### Performance Optimizations
 - **Intelligent Caching**: Multi-level caching with compression and TTL reduces API calls
