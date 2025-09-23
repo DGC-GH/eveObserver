@@ -30,7 +30,7 @@ def benchmark(func):
         start = time.perf_counter()
         result = await func(*args, **kwargs)
         elapsed = time.perf_counter() - start
-        logger.info(f"{func.__name__} completed in {elapsed:.3f}s")
+        performance_logger.info(f"{func.__name__} completed in {elapsed:.3f}s")
         return result
     
     @functools.wraps(func)
@@ -38,7 +38,7 @@ def benchmark(func):
         start = time.perf_counter()
         result = func(*args, **kwargs)
         elapsed = time.perf_counter() - start
-        logger.info(f"{func.__name__} completed in {elapsed:.3f}s")
+        performance_logger.info(f"{func.__name__} completed in {elapsed:.3f}s")
         return result
     
     return async_wrapper if asyncio.iscoroutinefunction(func) else sync_wrapper
@@ -274,6 +274,13 @@ logging.basicConfig(
 )
 logger = logging.getLogger(__name__)
 
+# Set up structured JSON logging for performance monitoring
+performance_logger = logging.getLogger('performance')
+performance_logger.setLevel(logging.INFO)
+perf_handler = logging.FileHandler('performance.log')
+perf_handler.setFormatter(logging.Formatter('%(asctime)s - %(levelname)s - %(message)s'))
+performance_logger.addHandler(perf_handler)
+
 # Set up audit logging for sensitive operations
 audit_logger = logging.getLogger('audit')
 audit_logger.setLevel(logging.INFO)
@@ -281,7 +288,7 @@ audit_handler = logging.FileHandler('audit.log')
 audit_handler.setFormatter(logging.Formatter('%(asctime)s - %(levelname)s - %(message)s'))
 audit_logger.addHandler(audit_handler)
 
-def log_audit_event(event: str, user: str, details: dict):
+def log_audit_event(event: str, user: str, details: Dict[str, Any]) -> None:
     """Log audit events for security monitoring."""
     audit_logger.info(f"EVENT: {event} | USER: {user} | DETAILS: {details}")
 

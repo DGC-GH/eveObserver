@@ -12,6 +12,7 @@ import asyncio
 from typing import Any, Dict, List, Optional
 import time
 from datetime import datetime, timezone
+from functools import lru_cache
 from config import CACHE_DIR, BLUEPRINT_CACHE_FILE, BLUEPRINT_TYPE_CACHE_FILE, LOCATION_CACHE_FILE, STRUCTURE_CACHE_FILE, FAILED_STRUCTURES_FILE, WP_POST_ID_CACHE_FILE
 
 logger = logging.getLogger(__name__)
@@ -269,6 +270,18 @@ def get_cached_value_with_stats(cache: Dict[str, Any], key: str) -> Any:
     else:
         _cache_stats['misses'] += 1
         return None
+
+@lru_cache(maxsize=1000)
+def get_cached_blueprint_name(type_id: str) -> Optional[str]:
+    """Get cached blueprint name with LRU caching for performance."""
+    cache = load_blueprint_cache()
+    return get_cached_value_with_stats(cache, type_id)
+
+@lru_cache(maxsize=1000)
+def get_cached_location_name(location_id: str) -> Optional[str]:
+    """Get cached location name with LRU caching for performance."""
+    cache = load_location_cache()
+    return get_cached_value_with_stats(cache, location_id)
 
 def set_cache_value_with_stats(cache: Dict[str, Any], key: str, value: Any, cache_file: str) -> None:
     """Set a value in cache with statistics tracking."""

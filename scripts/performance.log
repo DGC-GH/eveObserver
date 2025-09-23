@@ -1,0 +1,6 @@
+2025-09-23 14:04:27,696 - INFO - _fetch_esi_with_retry completed in 0.000s
+2025-09-23 14:04:27,702 - INFO - _fetch_esi_with_retry completed in 0.000s
+2025-09-23 14:04:27,705 - INFO - _fetch_esi_with_retry completed in 0.000s
+2025-09-23 14:04:27,969 - INFO - fetch_type_icon completed in 0.242s
+2025-09-23 14:04:27,984 - INFO - wp_request completed in 0.001s
+2025-09-23 14:04:27,989 - INFO - wp_request completed in 0.000s

@@ -578,3 +578,153 @@ class TestBlueprintProcessing:
         assert len(results) == 3
         assert isinstance(results[2], Exception)
         assert str(results[2]) == "Test error"
+
+
+class TestWordPressAPIIntegration:
+    """Test WordPress API integration functionality."""
+
+    @pytest.mark.asyncio
+    @patch('api_client.get_session')
+    @patch('api_client._wp_circuit_breaker')
+    @patch('api_client.wp_rate_limiter')
+    async def test_wp_request_get_success(self, mock_rate_limiter, mock_circuit_breaker, mock_get_session):
+        """Test successful WordPress GET request."""
+        from api_client import wp_request
+
+        # Setup mocks
+        mock_rate_limiter.wait_if_needed = AsyncMock()
+        mock_circuit_breaker.call = AsyncMock()
+
+        mock_session = AsyncMock()
+        mock_response = AsyncMock()
+        mock_response.status = 200
+        mock_response.json.return_value = {'id': 123, 'title': {'rendered': 'Test Post'}}
+
+        @asynccontextmanager
+        async def mock_get(*args, **kwargs):
+            yield mock_response
+
+        mock_session.get = mock_get
+        mock_get_session.return_value = mock_session
+
+        # Mock circuit breaker to call the function directly
+        async def mock_call(func):
+            return await func()
+
+        mock_circuit_breaker.call.side_effect = mock_call
+
+        result = await wp_request('GET', '/wp-json/wp/v2/posts/123')
+
+        assert result == {'id': 123, 'title': {'rendered': 'Test Post'}}
+        mock_rate_limiter.wait_if_needed.assert_called_once()
+
+    @pytest.mark.asyncio
+    @patch('api_client.get_session')
+    @patch('api_client._wp_circuit_breaker')
+    @patch('api_client.wp_rate_limiter')
+    async def test_wp_request_post_success(self, mock_rate_limiter, mock_circuit_breaker, mock_get_session):
+        """Test successful WordPress POST request."""
+        from api_client import wp_request
+
+        # Setup mocks
+        mock_rate_limiter.wait_if_needed = AsyncMock()
+        mock_circuit_breaker.call = AsyncMock()
+
+        mock_session = AsyncMock()
+        mock_response = AsyncMock()
+        mock_response.status = 201
+        mock_response.json.return_value = {'id': 124, 'title': {'rendered': 'New Post'}}
+
+        @asynccontextmanager
+        async def mock_post(*args, **kwargs):
+            yield mock_response
+
+        mock_session.post = mock_post
+        mock_get_session.return_value = mock_session
+
+        async def mock_call(func):
+            return await func()
+
+        mock_circuit_breaker.call.side_effect = mock_call
+
+        post_data = {'title': 'New Post', 'status': 'publish'}
+        result = await wp_request('POST', '/wp-json/wp/v2/posts', post_data)
+
+        assert result == {'id': 124, 'title': {'rendered': 'New Post'}}
+        mock_rate_limiter.wait_if_needed.assert_called_once()
+
+    @pytest.mark.asyncio
+    @patch('api_client.get_session')
+    @patch('api_client._wp_circuit_breaker')
+    @patch('api_client.wp_rate_limiter')
+    async def test_wp_request_authentication_error(self, mock_rate_limiter, mock_circuit_breaker, mock_get_session):
+        """Test WordPress request with authentication error."""
+        from api_client import wp_request, WordPressAuthError
+
+        # Setup mocks
+        mock_rate_limiter.wait_if_needed = AsyncMock()
+        mock_circuit_breaker.call = AsyncMock()
+
+        mock_session = AsyncMock()
+        mock_response = AsyncMock()
+        mock_response.status = 401
+        mock_response.text.return_value = "Unauthorized"
+
+        @asynccontextmanager
+        async def mock_get(*args, **kwargs):
+            yield mock_response
+
+        mock_session.get = mock_get
+        mock_get_session.return_value = mock_session
+
+        async def mock_call(func):
+            return await func()
+
+        mock_circuit_breaker.call.side_effect = mock_call
+
+        with pytest.raises(WordPressAuthError):
+            await wp_request('GET', '/wp-json/wp/v2/posts/123')
+
+
+class TestCacheLRUOptimization:
+    """Test LRU cache optimizations."""
+
+    @patch('cache_manager.load_blueprint_cache')
+    @patch('cache_manager.get_cached_value_with_stats')
+    def test_get_cached_blueprint_name_lru(self, mock_get_cached, mock_load_cache):
+        """Test LRU caching for blueprint name lookups."""
+        from cache_manager import get_cached_blueprint_name
+
+        mock_load_cache.return_value = {'1001': 'Test Blueprint'}
+        mock_get_cached.return_value = 'Test Blueprint'
+
+        # First call
+        result1 = get_cached_blueprint_name('1001')
+        assert result1 == 'Test Blueprint'
+
+        # Second call should use LRU cache
+        result2 = get_cached_blueprint_name('1001')
+        assert result2 == 'Test Blueprint'
+
+        # Verify load_cache was only called once due to LRU
+        assert mock_load_cache.call_count == 1
+
+    @patch('cache_manager.load_location_cache')
+    @patch('cache_manager.get_cached_value_with_stats')
+    def test_get_cached_location_name_lru(self, mock_get_cached, mock_load_cache):
+        """Test LRU caching for location name lookups."""
+        from cache_manager import get_cached_location_name
+
+        mock_load_cache.return_value = {'60003760': 'Jita IV - Moon 4 - Caldari Navy Assembly Plant'}
+        mock_get_cached.return_value = 'Jita IV - Moon 4 - Caldari Navy Assembly Plant'
+
+        # First call
+        result1 = get_cached_location_name('60003760')
+        assert result1 == 'Jita IV - Moon 4 - Caldari Navy Assembly Plant'
+
+        # Second call should use LRU cache
+        result2 = get_cached_location_name('60003760')
+        assert result2 == 'Jita IV - Moon 4 - Caldari Navy Assembly Plant'
+
+        # Verify load_cache was only called once due to LRU
+        assert mock_load_cache.call_count == 1

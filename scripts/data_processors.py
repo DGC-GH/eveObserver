@@ -16,7 +16,7 @@ import time
 import asyncio
 
 from config import *
-from api_client import fetch_public_esi, fetch_esi, wp_request, send_email, refresh_token, fetch_type_icon, sanitize_string, WordPressAuthError, WordPressRequestError, ESIAuthError, ESIRequestError, log_audit_event
+from api_client import fetch_public_esi, fetch_esi, wp_request, send_email, refresh_token, fetch_type_icon, sanitize_string, WordPressAuthError, WordPressRequestError, ESIAuthError, ESIRequestError, log_audit_event, benchmark
 from cache_manager import (
     load_blueprint_cache, save_blueprint_cache, load_blueprint_type_cache, save_blueprint_type_cache,
     load_location_cache, save_location_cache, load_structure_cache, save_structure_cache,
@@ -28,17 +28,9 @@ from fetch_data import fetch_character_portrait
 
 logger = logging.getLogger(__name__)
 
-def get_wp_auth():
+def get_wp_auth() -> requests.auth.HTTPBasicAuth:
     """Get WordPress authentication."""
     return requests.auth.HTTPBasicAuth(WP_USERNAME, WP_APP_PASSWORD)
-
-def benchmark(func):
-    async def wrapper(*args, **kwargs):
-        start = time.time()
-        result = await func(*args, **kwargs)
-        logger.info(f"{func.__name__} took {time.time() - start:.2f}s")
-        return result
-    return wrapper
 
 async def process_blueprints_parallel(blueprints: List[Dict[str, Any]], update_func: Callable[..., Any], wp_post_id_cache: Dict[str, Any], *args, **kwargs) -> List[Any]:
     """Process blueprints in parallel using asyncio for better concurrency."""

@@ -11,6 +11,7 @@ from datetime import datetime, timezone
 from dotenv import load_dotenv
 import logging
 from config import *
+from api_client import fetch_public_esi, fetch_esi, fetch_type_icon
 
 load_dotenv()
 
@@ -46,169 +47,6 @@ def fetch_corporation_contract_items(corp_id, contract_id, access_token):
     endpoint = f"/corporations/{corp_id}/contracts/{contract_id}/items/"
     return fetch_esi(endpoint, None, access_token)  # Corp endpoint doesn't need char_id
 
-def fetch_public_esi(endpoint, max_retries=ESI_MAX_RETRIES):
-    """Fetch data from ESI API (public endpoints, no auth) with rate limiting and error handling."""
-    import time
-
-    url = f"{ESI_BASE_URL}{endpoint}"
-
-    for attempt in range(max_retries):
-        try:
-            response = requests.get(url, timeout=ESI_TIMEOUT)
-
-            if response.status_code == 200:
-                return response.json()
-            elif response.status_code == 404:
-                logger.warning(f"Resource not found for public endpoint {endpoint}")
-                return None
-            elif response.status_code == 429:  # Rate limited
-                # Check for X-ESI-Error-Limit-Remain header
-                error_limit_remain = response.headers.get('X-ESI-Error-Limit-Remain')
-                error_limit_reset = response.headers.get('X-ESI-Error-Limit-Reset')
-
-                if error_limit_reset:
-                    wait_time = int(error_limit_reset) + 1  # Add 1 second buffer
-                    logger.info(f"RATE LIMIT: Waiting {wait_time} seconds for public endpoint...")
-                    time.sleep(wait_time)
-                    continue
-                else:
-                    # Fallback: wait 60 seconds if no reset header
-                    logger.info(f"RATE LIMIT: Waiting 60 seconds for public endpoint (no reset header)...")
-                    time.sleep(60)
-                    continue
-            elif response.status_code == 420:  # Error limited
-                error_limit_remain = response.headers.get('X-ESI-Error-Limit-Remain')
-                error_limit_reset = response.headers.get('X-ESI-Error-Limit-Reset')
-
-                if error_limit_reset:
-                    wait_time = int(error_limit_reset) + 1
-                    logger.info(f"ERROR LIMIT: Waiting {wait_time} seconds for public endpoint...")
-                    time.sleep(wait_time)
-                    continue
-                else:
-                    logger.info(f"ERROR LIMIT: Waiting 60 seconds for public endpoint...")
-                    time.sleep(60)
-                    continue
-            elif response.status_code >= 500:
-                # Server error, retry
-                if attempt < max_retries - 1:
-                    wait_time = 2 ** attempt  # Exponential backoff
-                    logger.warning(f"SERVER ERROR {response.status_code}: Retrying in {wait_time} seconds...")
-                    time.sleep(wait_time)
-                    continue
-                else:
-                    logger.error(f"SERVER ERROR {response.status_code}: Max retries exceeded")
-                    return None
-            else:
-                logger.error(f"ESI API error for {endpoint}: {response.status_code} - {response.text}")
-                return None
-
-        except requests.exceptions.Timeout:
-            if attempt < max_retries - 1:
-                wait_time = 2 ** attempt
-                logger.warning(f"TIMEOUT: Retrying in {wait_time} seconds...")
-                time.sleep(wait_time)
-                continue
-            else:
-                logger.error("TIMEOUT: Max retries exceeded")
-                return None
-        except requests.exceptions.RequestException as e:
-            if attempt < max_retries - 1:
-                wait_time = 2 ** attempt
-                logger.warning(f"NETWORK ERROR: {e}. Retrying in {wait_time} seconds...")
-                time.sleep(wait_time)
-                continue
-            else:
-                logger.error(f"NETWORK ERROR: {e}. Max retries exceeded")
-                return None
-
-    return None
-
-def fetch_esi(endpoint, char_id, access_token, max_retries=ESI_MAX_RETRIES):
-    """Fetch data from ESI API with rate limiting and error handling."""
-    import time
-
-    url = f"{ESI_BASE_URL}{endpoint}"
-    headers = {'Authorization': f'Bearer {access_token}'}
-
-    for attempt in range(max_retries):
-        try:
-            response = requests.get(url, headers=headers, timeout=ESI_TIMEOUT)
-
-            if response.status_code == 200:
-                return response.json()
-            elif response.status_code == 401:
-                logger.error(f"Authentication failed for endpoint {endpoint}")
-                return None
-            elif response.status_code == 403:
-                logger.error(f"Access forbidden for endpoint {endpoint}")
-                return None
-            elif response.status_code == 404:
-                logger.warning(f"Resource not found for endpoint {endpoint}")
-                return None
-            elif response.status_code == 429:  # Rate limited
-                # Check for X-ESI-Error-Limit-Remain header
-                error_limit_remain = response.headers.get('X-ESI-Error-Limit-Remain')
-                error_limit_reset = response.headers.get('X-ESI-Error-Limit-Reset')
-
-                if error_limit_reset:
-                    wait_time = int(error_limit_reset) + 1  # Add 1 second buffer
-                    logger.info(f"RATE LIMIT: Waiting {wait_time} seconds...")
-                    time.sleep(wait_time)
-                    continue
-                else:
-                    # Fallback: wait 60 seconds if no reset header
-                    logger.info(f"RATE LIMIT: Waiting 60 seconds (no reset header)...")
-                    time.sleep(60)
-                    continue
-            elif response.status_code == 420:  # Error limited
-                error_limit_remain = response.headers.get('X-ESI-Error-Limit-Remain')
-                error_limit_reset = response.headers.get('X-ESI-Error-Limit-Reset')
-
-                if error_limit_reset:
-                    wait_time = int(error_limit_reset) + 1
-                    logger.info(f"ERROR LIMIT: Waiting {wait_time} seconds...")
-                    time.sleep(wait_time)
-                    continue
-                else:
-                    logger.info(f"ERROR LIMIT: Waiting 60 seconds...")
-                    time.sleep(60)
-                    continue
-            elif response.status_code >= 500:
-                # Server error, retry
-                if attempt < max_retries - 1:
-                    wait_time = 2 ** attempt  # Exponential backoff
-                    logger.warning(f"SERVER ERROR {response.status_code}: Retrying in {wait_time} seconds...")
-                    time.sleep(wait_time)
-                    continue
-                else:
-                    logger.error(f"SERVER ERROR {response.status_code}: Max retries exceeded")
-                    return None
-            else:
-                logger.error(f"ESI API error for {endpoint}: {response.status_code} - {response.text}")
-                return None
-
-        except requests.exceptions.Timeout:
-            if attempt < max_retries - 1:
-                wait_time = 2 ** attempt
-                logger.warning(f"TIMEOUT: Retrying in {wait_time} seconds...")
-                time.sleep(wait_time)
-                continue
-            else:
-                logger.error("TIMEOUT: Max retries exceeded")
-                return None
-        except requests.exceptions.RequestException as e:
-            if attempt < max_retries - 1:
-                wait_time = 2 ** attempt
-                logger.warning(f"NETWORK ERROR: {e}. Retrying in {wait_time} seconds...")
-                time.sleep(wait_time)
-                continue
-            else:
-                logger.error(f"NETWORK ERROR: {e}. Max retries exceeded")
-                return None
-
-    return None
-
 def load_blueprint_cache():
     """Load blueprint name cache."""
     return load_cache(BLUEPRINT_CACHE_FILE)
@@ -228,24 +66,6 @@ def ensure_cache_dir():
     """Ensure cache directory exists."""
     if not os.path.exists(CACHE_DIR):
         os.makedirs(CACHE_DIR)
-
-def fetch_type_icon(type_id, size=512):
-    """Fetch type icon URL from images.evetech.net with fallback."""
-    # Try the 'bp' variation first for blueprints, then fallback to regular icon
-    variations = ['bp', 'icon']
-
-    for variation in variations:
-        icon_url = f"https://images.evetech.net/types/{type_id}/{variation}?size={size}"
-        # Test if the URL exists by making a HEAD request
-        try:
-            response = requests.head(icon_url, timeout=5)
-            if response.status_code == 200:
-                return icon_url
-        except:
-            continue
-
-    # If no icon found, return placeholder
-    return f"https://via.placeholder.com/{size}x{size}/cccccc/000000?text=No+Icon"
 
 def generate_contract_title(contract_data, contract_items=None, blueprint_cache=None):
     """Generate a descriptive contract title based on items."""
