@@ -72,6 +72,7 @@ async def check_contract_competition(
     item = contract_items[0]
     type_id = item.get("type_id")
     quantity = item.get("quantity", 1)
+    is_blueprint_copy = item.get("is_blueprint_copy", False)
     contract_price = contract_data.get("price", 0)
     contract_id = contract_data.get("contract_id")
     contract_issuer_id = contract_data.get("issuer_id")
@@ -151,8 +152,9 @@ async def check_contract_competition(
         comp_item = comp_items[0]
         comp_type_id = comp_item.get("type_id")
         comp_quantity = comp_item.get("quantity", 1)
+        comp_is_blueprint_copy = comp_item.get("is_blueprint_copy", False)
 
-        if comp_type_id == type_id and comp_quantity > 0 and comp_price > 0:
+        if comp_type_id == type_id and comp_quantity > 0 and comp_price > 0 and comp_is_blueprint_copy == is_blueprint_copy:
             comp_price_per_item = comp_price / comp_quantity
             if comp_price_per_item < price_per_item:
                 logger.info(
