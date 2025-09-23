@@ -13,6 +13,7 @@ from typing import Any, Callable, Dict, List, Optional, Tuple
 import requests
 
 from api_client import (
+    ESIApiError,
     ESIAuthError,
     ESIRequestError,
     WordPressAuthError,
@@ -698,7 +699,7 @@ async def get_blueprint_type_name(type_id: Optional[int], item_id: int, blueprin
                     return type_name
                 else:
                     return f"Blueprint {item_id}".replace(" Blueprint", "").strip()
-            except ESIRequestError as e:
+            except ESIApiError as e:
                 logger.error(f"Failed to fetch type data for {type_id}: {e}")
                 return f"Blueprint {item_id}".replace(" Blueprint", "").strip()
     else:
