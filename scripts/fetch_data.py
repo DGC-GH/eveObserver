@@ -15,6 +15,7 @@ from api_client import (
     fetch_esi,
     refresh_token,
     send_email,
+    cleanup_session,
 )
 from blueprint_processor import (
     cleanup_blueprint_posts,
@@ -390,6 +391,8 @@ async def main() -> None:
         await cleanup_old_posts(allowed_corp_ids, allowed_issuer_ids)
 
     await process_all_data(corp_members, caches, args, tokens)
+
+    await cleanup_session()
 
 
 async def cleanup_old_posts(allowed_corp_ids, allowed_issuer_ids):

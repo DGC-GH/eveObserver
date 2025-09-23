@@ -10,7 +10,7 @@ import os
 # Add the scripts directory to the path
 sys.path.insert(0, os.path.dirname(__file__))
 
-from api_client import fetch_public_esi
+from api_client import fetch_public_esi, cleanup_session
 
 async def get_item_name(type_id: int) -> str:
     """Get item name from ESI for a given type_id"""
@@ -30,6 +30,8 @@ async def main():
     for tid in other_type_ids:
         name = await get_item_name(tid)
         print(f"Type ID {tid}: {name}")
+
+    await cleanup_session()
 
 if __name__ == "__main__":
     asyncio.run(main())

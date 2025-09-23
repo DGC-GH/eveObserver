@@ -6630,3 +6630,9 @@
 2025-09-23 23:14:12,397 - INFO - _fetch_esi_with_retry completed in 0.032s
 2025-09-23 23:14:12,833 - INFO - _fetch_esi_with_retry completed in 0.036s
 2025-09-23 23:14:12,869 - INFO - _fetch_esi_with_retry completed in 0.036s
+2025-09-23 23:16:38,347 - INFO - _fetch_esi_with_retry completed in 0.148s
+2025-09-23 23:16:38,442 - INFO - _fetch_esi_with_retry completed in 0.095s
+2025-09-23 23:16:38,474 - INFO - _fetch_esi_with_retry completed in 0.031s
+2025-09-23 23:16:38,515 - INFO - _fetch_esi_with_retry completed in 0.041s
+2025-09-23 23:16:38,548 - INFO - _fetch_esi_with_retry completed in 0.033s
+2025-09-23 23:16:38,581 - INFO - _fetch_esi_with_retry completed in 0.033s

@@ -10,7 +10,7 @@ import os
 # Add the scripts directory to the path
 sys.path.insert(0, os.path.dirname(__file__))
 
-from api_client import fetch_public_contracts_async, fetch_public_contract_items_async
+from api_client import fetch_public_contracts_async, fetch_public_contract_items_async, cleanup_session
 
 async def find_bpo_competitors():
     """Find contracts for the same BPO (type_id 29050) that are cheaper"""
@@ -72,6 +72,8 @@ async def find_bpo_competitors():
         print(f"  Undercut by: {our_price - best_competitor['price_per_item']:,.2f} ISK")
     else:
         print("  No BPO competitors found - your contract is the cheapest BPO!")
+
+    await cleanup_session()
 
 if __name__ == "__main__":
     asyncio.run(find_bpo_competitors())
