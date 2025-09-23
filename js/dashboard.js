@@ -520,20 +520,35 @@ class EVEDashboard {
     }
 
     renderChart() {
-        const ctx = document.getElementById('eveChart');
-        if (!ctx) return;
+        const canvas = document.getElementById('eveChart');
+        if (!canvas) return;
 
         // Destroy existing chart if it exists
         if (this.chart) {
             console.log('🔄 [CHART] Destroying existing chart...');
-            this.chart.destroy();
+            try {
+                this.chart.destroy();
+            } catch (e) {
+                console.warn('🔄 [CHART] Error destroying chart:', e);
+            }
             this.chart = null;
         }
 
-        // Clear the canvas context
-        const canvas = ctx;
-        const context = canvas.getContext('2d');
-        context.clearRect(0, 0, canvas.width, canvas.height);
+        // Clear the canvas context and reset dimensions
+        const ctx = canvas.getContext('2d');
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+        // Reset canvas dimensions to force a clean state
+        const parent = canvas.parentElement;
+        if (parent) {
+            const computedStyle = getComputedStyle(parent);
+            const width = parseInt(computedStyle.width);
+            const height = parseInt(computedStyle.height);
+            if (width && height) {
+                canvas.width = width;
+                canvas.height = height;
+            }
+        }
 
         const counts = {
             Characters: this.data.characters.length,
@@ -550,76 +565,81 @@ class EVEDashboard {
         );
 
         console.log('🔄 [CHART] Creating new chart with data:', counts);
-        this.chart = new Chart(ctx, {
-            type: 'doughnut',
-            data: {
-                labels: Object.keys(counts).map(key => `${key} (${counts[key]})`),
-                datasets: [{
-                    data: Object.values(counts),
-                    backgroundColor: [
-                        'rgba(0, 122, 255, 0.8)',
-                        'rgba(255, 149, 0, 0.8)',
-                        'rgba(52, 199, 89, 0.8)',
-                        'rgba(255, 59, 48, 0.8)',
-                        'rgba(142, 142, 147, 0.8)'
-                    ],
-                    borderColor: [
-                        'rgba(0, 122, 255, 1)',
-                        'rgba(255, 149, 0, 1)',
-                        'rgba(52, 199, 89, 1)',
-                        'rgba(255, 59, 48, 1)',
-                        'rgba(142, 142, 147, 1)'
-                    ],
-                    borderWidth: 2,
-                    hoverOffset: 8,
-                    hoverBorderWidth: 3
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: {
-                    legend: {
-                        position: 'bottom',
-                        labels: {
-                            padding: 20,
-                            usePointStyle: true,
-                            font: {
-                                size: 12,
-                                family: '-apple-system, BlinkMacSystemFont, sans-serif'
+        try {
+            this.chart = new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: Object.keys(counts).map(key => `${key} (${counts[key]})`),
+                    datasets: [{
+                        data: Object.values(counts),
+                        backgroundColor: [
+                            'rgba(0, 122, 255, 0.8)',
+                            'rgba(255, 149, 0, 0.8)',
+                            'rgba(52, 199, 89, 0.8)',
+                            'rgba(255, 59, 48, 0.8)',
+                            'rgba(142, 142, 147, 0.8)'
+                        ],
+                        borderColor: [
+                            'rgba(0, 122, 255, 1)',
+                            'rgba(255, 149, 0, 1)',
+                            'rgba(52, 199, 89, 1)',
+                            'rgba(255, 59, 48, 1)',
+                            'rgba(142, 142, 147, 1)'
+                        ],
+                        borderWidth: 2,
+                        hoverOffset: 8,
+                        hoverBorderWidth: 3
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                            labels: {
+                                padding: 20,
+                                usePointStyle: true,
+                                font: {
+                                    size: 12,
+                                    family: '-apple-system, BlinkMacSystemFont, sans-serif'
+                                }
+                            }
+                        },
+                        tooltip: {
+                            backgroundColor: 'rgba(0, 0, 0, 0.8)',
+                            titleColor: '#fff',
+                            bodyColor: '#fff',
+                            callbacks: {
+                                label: (context) => {
+                                    const label = context.label.split(' (')[0];
+                                    const count = context.parsed;
+                                    const percentage = percentages[label];
+                                    return `${label}: ${count} (${percentage.toFixed(1)}%)`;
+                                }
                             }
                         }
                     },
-                    tooltip: {
-                        backgroundColor: 'rgba(0, 0, 0, 0.8)',
-                        titleColor: '#fff',
-                        bodyColor: '#fff',
-                        callbacks: {
-                            label: (context) => {
-                                const label = context.label.split(' (')[0];
-                                const count = context.parsed;
-                                const percentage = percentages[label];
-                                return `${label}: ${count} (${percentage.toFixed(1)}%)`;
-                            }
+                    animation: {
+                        animateScale: true,
+                        animateRotate: true,
+                        duration: 1000,
+                        easing: 'easeInOutQuart'
+                    },
+                    onClick: (event, elements) => {
+                        if (elements.length > 0) {
+                            const element = elements[0];
+                            const label = this.chart.data.labels[element.index].split(' (')[0].toLowerCase();
+                            this.scrollToSection(label + 's');
                         }
                     }
-                },
-                animation: {
-                    animateScale: true,
-                    animateRotate: true,
-                    duration: 1000,
-                    easing: 'easeInOutQuart'
-                },
-                onClick: (event, elements) => {
-                    if (elements.length > 0) {
-                        const element = elements[0];
-                        const label = this.chart.data.labels[element.index].split(' (')[0].toLowerCase();
-                        this.scrollToSection(label + 's');
-                    }
                 }
-            }
-        });
-        console.log('✅ [CHART] Chart created successfully');
+            });
+            console.log('✅ [CHART] Chart created successfully');
+        } catch (error) {
+            console.error('❌ [CHART] Error creating chart:', error);
+            throw error;
+        }
     }
 
     scrollToSection(sectionId) {
