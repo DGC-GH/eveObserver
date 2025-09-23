@@ -1465,7 +1465,6 @@ def check_contract_competition(contract_data, contract_items):
         # Filter for outstanding item_exchange contracts
         for contract in contracts_page:
             if (contract.get('type') == 'item_exchange' and 
-                contract.get('status') == 'outstanding' and
                 contract.get('contract_id') != contract_id and
                 contract.get('issuer_id') != contract_issuer_id):
                 competing_contracts.append(contract)
