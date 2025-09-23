@@ -96,3 +96,8 @@
 2025-09-23 16:03:38,043 - INFO - _fetch_esi_with_retry completed in 0.000s
 2025-09-23 16:03:38,237 - INFO - wp_request completed in 0.000s
 2025-09-23 16:03:38,240 - INFO - wp_request completed in 0.000s
+2025-09-23 16:05:54,983 - INFO - _fetch_esi_with_retry completed in 0.000s
+2025-09-23 16:05:54,989 - INFO - _fetch_esi_with_retry completed in 0.000s
+2025-09-23 16:05:54,992 - INFO - _fetch_esi_with_retry completed in 0.000s
+2025-09-23 16:05:55,176 - INFO - wp_request completed in 0.000s
+2025-09-23 16:05:55,180 - INFO - wp_request completed in 0.000s
