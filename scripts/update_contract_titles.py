@@ -71,7 +71,7 @@ def update_contract_titles():
         if items_json:
             try:
                 contract_items = json.loads(items_json)
-            except:
+            except (json.JSONDecodeError, ValueError):
                 print(f"Warning: Could not parse items for contract {contract_id}")
 
         # Generate new title
@@ -98,7 +98,8 @@ def update_contract_titles():
                 updated_count += 1
             else:
                 print(
-                    f"  ✗ Failed to update contract {contract_id}: {update_response.status_code} - {update_response.text}"
+                    f"  ✗ Failed to update contract {contract_id}: "
+                    f"{update_response.status_code} - {update_response.text}"
                 )
         else:
             print(f"Contract {contract_id} already has correct title")

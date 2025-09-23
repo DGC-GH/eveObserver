@@ -4,21 +4,21 @@ EVE Observer Character Processor
 Handles processing of character-specific data.
 """
 
+import logging
 from datetime import datetime, timedelta, timezone
 from typing import Any, Dict, List, Optional
 
-import requests
-
-from api_client import fetch_esi, fetch_planet_details, send_email, wp_request
+from api_client import fetch_esi, fetch_planet_details, wp_request
 from blueprint_processor import (
     extract_blueprints_from_assets,
     extract_blueprints_from_industry_jobs,
     update_blueprint_from_asset_in_wp,
     update_blueprint_in_wp,
 )
-from config import *
 from contract_processor import process_character_contracts
 from data_processors import process_blueprints_parallel
+
+logger = logging.getLogger(__name__)
 
 
 async def update_character_skills_in_wp(char_id: int, skills_data: Dict[str, Any]) -> None:
@@ -38,8 +38,6 @@ async def update_character_skills_in_wp(char_id: int, skills_data: Dict[str, Any
         Requires an existing character post to be present in WordPress.
         Logs success/failure of the update operation.
     """
-    from api_client import wp_request
-
     slug = f"character-{char_id}"
     # Check if post exists by slug
     existing_posts = await wp_request("GET", f"/wp/v2/eve_character?slug={slug}")
@@ -88,13 +86,8 @@ def check_industry_job_completions(jobs: List[Dict[str, Any]], char_name: str) -
     ]
 
     if upcoming_completions:
-        subject = f"EVE Alert: {len(upcoming_completions)} industry jobs ending soon for {char_name}"
-        body = f"The following jobs will complete within 24 hours:\n\n"
-        for job in upcoming_completions:
-            body += f"- Job ID {job['job_id']}: {job.get('activity_id', 'Unknown')} ending {job['end_date']}\n"
-        # Email functionality disabled
-        logger.info(f"Email alert disabled: {subject}")
-        # send_email(subject, body)
+        msg = f"EVE Alert: {len(upcoming_completions)} industry jobs ending soon for {char_name}"
+        logger.info(f"Email alert disabled: {msg}")
 
 
 def check_planet_extraction_completions(planet_details: Dict[str, Any], char_name: str) -> None:
@@ -124,13 +117,8 @@ def check_planet_extraction_completions(planet_details: Dict[str, Any], char_nam
     ]
 
     if upcoming_extractions:
-        subject = f"EVE Alert: {len(upcoming_extractions)} planet extractions ending soon for {char_name}"
-        body = f"The following extractions will complete within 24 hours:\n\n"
-        for pin in upcoming_extractions:
-            body += f"- Pin ID {pin['pin_id']}: {pin.get('type_id', 'Unknown')} ending {pin['expiry_time']}\n"
-        # Email functionality disabled
-        logger.info(f"Email alert disabled: {subject}")
-        # send_email(subject, body)
+        msg = f"EVE Alert: {len(upcoming_extractions)} planet extractions ending soon for {char_name}"
+        logger.info(f"Email alert disabled: {msg}")
 
 
 async def update_planet_in_wp(planet_id: int, planet_data: Dict[str, Any], char_id: int) -> None:
@@ -151,8 +139,6 @@ async def update_planet_in_wp(planet_id: int, planet_data: Dict[str, Any], char_
         Stores complete planet details as JSON in post metadata.
         Updates existing posts or creates new ones as needed.
     """
-    from api_client import wp_request
-
     slug = f"planet-{planet_id}"
     # Check if post exists by slug
     existing_posts = await wp_request("GET", f"/wp/v2/eve_planet?slug={slug}")
@@ -380,6 +366,46 @@ async def process_character_data(
             structure_cache,
             failed_structures,
         )
+
+
+async def process_character_blueprints(
+    char_id: int,
+    access_token: str,
+    char_name: str,
+    wp_post_id_cache: Dict[str, Any],
+    blueprint_cache: Dict[str, Any],
+    location_cache: Dict[str, Any],
+    structure_cache: Dict[str, Any],
+    failed_structures: Dict[str, Any],
+) -> None:
+    """
+    Process character blueprints from all sources.
+
+    Calls all blueprint processing functions to handle blueprints from
+    direct endpoint, assets, and industry jobs.
+
+    Args:
+        char_id: Character ID to process blueprints for.
+        access_token: Valid access token for character data.
+        char_name: Character name for logging.
+        wp_post_id_cache: WordPress post ID cache.
+        blueprint_cache: Blueprint name cache.
+        location_cache: Location name cache.
+        structure_cache: Structure name cache.
+        failed_structures: Failed structure fetch cache.
+    """
+    await process_character_blueprints_from_endpoint(
+        char_id, access_token, char_name, wp_post_id_cache, blueprint_cache,
+        location_cache, structure_cache, failed_structures
+    )
+    await process_character_blueprints_from_assets(
+        char_id, access_token, char_name, wp_post_id_cache, blueprint_cache,
+        location_cache, structure_cache, failed_structures
+    )
+    await process_character_blueprints_from_industry_jobs(
+        char_id, access_token, char_name, wp_post_id_cache, blueprint_cache,
+        location_cache, structure_cache, failed_structures
+    )
 
 
 async def process_character_blueprints_from_endpoint(

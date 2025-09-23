@@ -95,7 +95,8 @@ def update_blueprint_thumbnails():
                 skipped_count += 1
 
     print(
-        f"\nCompleted! Updated {updated_count} blueprint posts, skipped {skipped_count} posts (already correct or no type_id)."
+        f"\nCompleted! Updated {updated_count} blueprint posts, "
+        f"skipped {skipped_count} posts (already correct or no type_id)."
     )
 
 

@@ -4,8 +4,7 @@
 import logging
 import os
 import sys
-
-sys.path.append(os.path.dirname(os.path.abspath(__file__)))
+from datetime import datetime, timezone
 
 from fetch_data import (
     fetch_corporation_contract_items,
@@ -13,7 +12,10 @@ from fetch_data import (
     load_blueprint_cache,
     load_tokens,
     refresh_token,
+    save_tokens,
 )
+
+sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 
 # Set up logging
 logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
@@ -41,12 +43,10 @@ def main():
     for char_id, token_data in tokens.items():
         # Refresh token if needed
         try:
-            from datetime import datetime, timezone
-
             expired = datetime.now(timezone.utc) > datetime.fromisoformat(
                 token_data.get("expires_at", "2000-01-01T00:00:00+00:00")
             )
-        except:
+        except (ValueError, TypeError):
             expired = True
 
         if expired:
@@ -55,8 +55,6 @@ def main():
             if new_token:
                 token_data.update(new_token)
                 # Save updated tokens
-                from fetch_data import save_tokens
-
                 save_tokens(tokens)
                 logger.info(f"Refreshed token for {token_data['name']}")
             else:
@@ -134,7 +132,9 @@ def main():
             logger.debug(f"Contract {contract_id} ({status}): No blueprints found")
 
     logger.info(
-        f"Summary: Total contracts checked: {total_contracts_checked}, Contracts with blueprints: {contracts_with_blueprints}, Contracts without blueprints: {total_contracts_checked - contracts_with_blueprints}"
+        f"Summary: Total contracts checked: {total_contracts_checked}, "
+        f"Contracts with blueprints: {contracts_with_blueprints}, "
+        f"Contracts without blueprints: {total_contracts_checked - contracts_with_blueprints}"
     )
 
 

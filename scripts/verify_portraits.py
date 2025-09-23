@@ -9,7 +9,7 @@ import logging
 import requests
 from dotenv import load_dotenv
 
-from config import *
+from config import LOG_FILE, LOG_LEVEL, WP_APP_PASSWORD, WP_BASE_URL, WP_USERNAME
 
 load_dotenv()
 
@@ -89,9 +89,9 @@ def verify_character_featured_images():
             logger.info(f"✅ {title} (ID: {post_id}) - External Thumbnail: {external_thumb}")
         else:
             posts_without_featured += 1
-            logger.warning(f"❌ {title} (ID: {post_id}) - No featured image or external thumbnail")
+            logger.warning("❌ {} (ID: {}) - No featured image or external thumbnail".format(title, post_id))
 
-    logger.info(f"\nSummary:")
+    logger.info("\nSummary:")
     logger.info(f"Posts with featured images: {posts_with_featured}")
     logger.info(f"Posts without featured images: {posts_without_featured}")
     logger.info(f"Total posts: {len(all_posts)}")

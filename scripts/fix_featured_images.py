@@ -11,7 +11,7 @@ from datetime import datetime, timezone
 import requests
 from dotenv import load_dotenv
 
-from config import *
+from config import LOG_FILE, LOG_LEVEL, WP_BASE_URL
 
 load_dotenv()
 
@@ -109,7 +109,8 @@ def fix_featured_images_for_post_type(post_type, post_type_name):
                     logger.info(f"Successfully set featured image for {post_type_name} post {post_id}")
                 else:
                     logger.error(
-                        f"Failed to update {post_type_name} post {post_id}: {update_response.status_code} - {update_response.text}"
+                        f"Failed to update {post_type_name} post {post_id}: "
+                        f"{update_response.status_code} - {update_response.text}"
                     )
             else:
                 logger.warning(f"Failed to upload image for {post_type_name} post {post_id}")
@@ -125,7 +126,8 @@ def fix_featured_images_for_post_type(post_type, post_type_name):
                 logger.info(f"Removed custom field from {post_type_name} post {post_id}")
             else:
                 logger.error(
-                    f"Failed to update {post_type_name} post {post_id}: {update_response.status_code} - {update_response.text}"
+                    f"Failed to update {post_type_name} post {post_id}: "
+                    f"{update_response.status_code} - {update_response.text}"
                 )
 
 

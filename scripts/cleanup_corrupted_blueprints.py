@@ -6,7 +6,6 @@ Standard slugs should be: blueprint-{item_id}
 Corrupted slugs contain all blueprint data encoded in the slug.
 """
 
-import json
 import logging
 import os
 import re
@@ -14,7 +13,7 @@ import re
 import requests
 from dotenv import load_dotenv
 
-from config import *
+from config import LOG_LEVEL, LOG_FILE, WP_BASE_URL
 
 load_dotenv()
 
@@ -105,7 +104,8 @@ def delete_corrupted_blueprint_posts(posts):
                 deleted_count += 1
             else:
                 logger.error(
-                    f"Failed to delete corrupted blueprint post {post_id}: {delete_response.status_code} - {delete_response.text}"
+                    f"Failed to delete corrupted blueprint post {post_id}: "
+                    f"{delete_response.status_code} - {delete_response.text}"
                 )
         else:
             # This is a standard slug, keep it

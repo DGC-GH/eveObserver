@@ -9,9 +9,7 @@ import logging
 from datetime import datetime, timezone
 from typing import Any, Dict, List, Optional, Tuple
 
-import requests
-
-from api_client import WordPressAuthError, WordPressRequestError, fetch_esi, fetch_public_esi, wp_request
+from api_client import fetch_esi, fetch_public_esi, wp_request
 from blueprint_processor import (
     extract_blueprints_from_assets,
     extract_blueprints_from_contracts,
@@ -19,8 +17,8 @@ from blueprint_processor import (
     update_blueprint_from_asset_in_wp,
     update_blueprint_in_wp,
 )
-from config import *
-from data_processors import get_wp_auth, process_blueprints_parallel
+from config import ALLOWED_CORPORATIONS, SKIP_CORPORATION_ASSETS
+from data_processors import process_blueprints_parallel
 
 logger = logging.getLogger(__name__)
 
@@ -558,8 +556,6 @@ async def update_corporation_in_wp(corp_id: int, corp_data: Dict[str, Any]) -> N
         Removes null values from metadata to avoid WordPress validation issues.
         Updates existing posts or creates new ones based on slug lookup.
     """
-    from api_client import wp_request
-
     slug = f"corporation-{corp_id}"
     # Check if post exists by slug
     existing_posts = await wp_request("GET", f"/wp/v2/eve_corporation?slug={slug}")

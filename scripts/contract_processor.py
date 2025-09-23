@@ -1,70 +1,41 @@
-#!/usrimport os
+import os
 import asyncio
 import json
-import time
 from datetime import datetime, timezone
 from typing import Any, Dict, List, Optional, Tuple
 
 import aiohttp
-import requests
 
 from api_client import (
-    WordPressAuthError,
-    WordPressRequestError,
     fetch_esi,
     fetch_public_contract_items_async,
     fetch_public_contracts_async,
     fetch_public_esi,
     fetch_type_icon,
     get_session,
-    sanitize_string,
-    send_email,
     validate_api_response,
     validate_input_params,
     wp_request,
 )
-from config import *
+from blueprint_processor import (
+    extract_blueprints_from_contracts,
+    update_blueprint_from_asset_in_wp,
+)
+from data_processors import process_blueprints_parallel
+from cache_manager import (
+    get_cached_blueprint_name,
+    load_blueprint_cache,
+    load_blueprint_type_cache,
+    save_blueprint_cache,
+)
+from config import ESI_BASE_URL, WP_PER_PAGE
 
 """
 EVE Observer Contract Processor
 Handles fetching and processing of EVE contract data.
 """
 
-import asyncio
-import json
 import logging
-import os
-import time
-from datetime import datetime, timezone
-from typing import Any, Dict, List, Optional, Tuple
-
-import aiohttp
-import requests
-
-from api_client import (
-    WordPressAuthError,
-    WordPressRequestError,
-    fetch_esi,
-    fetch_public_contract_items_async,
-    fetch_public_contracts_async,
-    fetch_public_esi,
-    fetch_type_icon,
-    get_session,
-    sanitize_string,
-    send_email,
-    wp_request,
-)
-from blueprint_processor import extract_blueprints_from_contracts, update_blueprint_from_asset_in_wp
-from cache_manager import (
-    get_cached_blueprint_name,
-    load_blueprint_cache,
-    load_blueprint_type_cache,
-    save_blueprint_cache,
-    save_blueprint_type_cache,
-)
-from config import *
-
-logger = logging.getLogger(__name__)
 
 logger = logging.getLogger(__name__)
 
@@ -117,7 +88,8 @@ async def check_contract_competition(
         return False, None
 
     logger.info(
-        f"Checking competition for contract {contract_id} (type_id: {type_id}, price_per_item: {price_per_item:.2f}) in region {region_id}"
+        f"Checking competition for contract {contract_id} (type_id: {type_id}, "
+        f"price_per_item: {price_per_item:.2f}) in region {region_id}"
     )
 
     # Fetch all public contracts in the region
@@ -173,7 +145,8 @@ async def check_contract_competition(
             comp_price_per_item = comp_price / comp_quantity
             if comp_price_per_item < price_per_item:
                 logger.info(
-                    f"Contract {contract_id} outbid by contract {comp_contract_id} with price_per_item: {comp_price_per_item:.2f}"
+                    f"Contract {contract_id} outbid by contract {comp_contract_id} with "
+                    f"price_per_item: {comp_price_per_item:.2f}"
                 )
                 return True, comp_price_per_item
 
@@ -414,7 +387,8 @@ async def generate_contract_title(
                 title = f"{blueprint_count} Blueprints - Contract {contract_id}"
             elif blueprint_count > 0:
                 # Mix of blueprints and other items
-                title = f"{blueprint_count} Blueprints + {len(contract_items) - blueprint_count} Items - Contract {contract_id}"
+                title = (f"{blueprint_count} Blueprints + "
+                         f"{len(contract_items) - blueprint_count} Items - Contract {contract_id}")
             else:
                 # No blueprints, just regular items
                 title = f"{len(contract_items)} Items (x{total_quantity}) - Contract {contract_id}"
@@ -573,11 +547,6 @@ async def update_contract_in_wp(
                 post_data["meta"]["_eve_contract_outbid"] = "1"
                 post_data["meta"]["_eve_contract_competing_price"] = str(competing_price)
                 logger.warning(f"Contract {contract_id} is outbid by contract price: {competing_price}")
-
-                # Send alert if this is newly outbid
-                was_outbid = existing_meta.get("_eve_contract_outbid") == "1"
-                if not was_outbid:
-                    logger.warning(f"Contract {contract_id} is outbid by contract price: {competing_price}")
             else:
                 post_data["meta"]["_eve_contract_outbid"] = "0"
                 if "_eve_contract_competing_price" in post_data["meta"]:
@@ -594,6 +563,12 @@ async def update_contract_in_wp(
             del post_data["meta"]["_eve_contract_competing_price"]
 
     if existing_post:
+        existing_meta = existing_post.get("meta", {})
+        # Send alert if this is newly outbid
+        was_outbid = existing_meta.get("_eve_contract_outbid") == "1"
+        if not was_outbid and post_data["meta"].get("_eve_contract_outbid") == "1":
+            price = post_data['meta'].get('_eve_contract_competing_price', 'unknown')
+            logger.warning(f"Contract {contract_id} is newly outbid by contract price: {price}")
         # Check if title changed before updating
         existing_title = existing_post.get("title", {}).get("rendered", "")
 

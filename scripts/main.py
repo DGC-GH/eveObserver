@@ -4,18 +4,19 @@ EVE Observer Main Script
 Orchestrates data fetching and processing for EVE Online data.
 """
 
+import argparse
 import json
 import logging
 import os
 import time
 from datetime import datetime, timezone
-from typing import Dict, List, Tuple
+from typing import Any, Dict, List, Tuple
 
 from dotenv import load_dotenv
 
 from api_client import get_session, refresh_token
 from cache_manager import load_wp_post_id_cache
-from config import *
+from config import LOG_FILE, LOG_LEVEL, TOKENS_FILE
 from corporation_processor import process_corporation_data
 from data_processors import (
     cleanup_old_posts,
@@ -158,7 +159,6 @@ async def main() -> None:
 
 
 if __name__ == "__main__":
-    import argparse
     import asyncio
 
     asyncio.run(main())

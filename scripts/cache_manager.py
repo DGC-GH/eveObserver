@@ -13,7 +13,7 @@ import time
 from collections import OrderedDict
 from datetime import datetime, timezone
 from functools import lru_cache
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, Optional
 
 from config import (
     BLUEPRINT_CACHE_FILE,

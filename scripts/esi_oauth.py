@@ -11,7 +11,7 @@ import secrets
 import sys
 import webbrowser
 from datetime import datetime, timedelta, timezone
-from urllib.parse import parse_qs, urlencode
+from urllib.parse import parse_qs
 
 import requests
 from dotenv import load_dotenv

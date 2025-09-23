@@ -6,63 +6,38 @@ Fetches data from EVE ESI API and stores in WordPress database via REST API.
 
 import argparse
 import asyncio
-import json
 import logging
 import os
-import smtplib
-from dataclasses import dataclass
-from datetime import datetime, timedelta, timezone
-from email.mime.text import MIMEText
-from typing import Any, Dict, List, Optional, Tuple
-
-import aiohttp
-import requests
-from dotenv import load_dotenv
+from datetime import datetime, timezone
+from typing import Any, Dict, List, Tuple
 
 from api_client import (
-    delete_wp_post,
     fetch_esi,
-    fetch_public_esi,
-    fetch_type_icon,
     refresh_token,
     send_email,
-    wp_request,
 )
 from blueprint_processor import (
     cleanup_blueprint_posts,
     extract_blueprints_from_assets,
-    extract_blueprints_from_contracts,
     extract_blueprints_from_industry_jobs,
     update_blueprint_from_asset_in_wp,
     update_blueprint_in_wp,
 )
 from cache_manager import (
-    get_cached_wp_post_id,
     load_blueprint_cache,
     load_failed_structures,
     load_location_cache,
     load_structure_cache,
     load_wp_post_id_cache,
-    save_blueprint_cache,
-    save_failed_structures,
-    save_location_cache,
-    save_structure_cache,
-    save_wp_post_id_cache,
-    set_cached_wp_post_id,
 )
-from character_processor import check_industry_job_completions, update_character_skills_in_wp, update_planet_in_wp
-from config import *
+from character_processor import update_character_skills_in_wp, update_planet_in_wp
+from config import CACHE_DIR, LOG_FILE, LOG_LEVEL
 from contract_processor import (
     cleanup_contract_posts,
-    fetch_character_contracts,
-    fetch_corporation_contracts,
-    generate_contract_title,
     process_character_contracts,
-    update_contract_in_wp,
 )
-from data_processors import fetch_character_data, get_wp_auth, update_character_in_wp
+from data_processors import fetch_character_data, update_character_in_wp
 from esi_oauth import load_tokens, save_tokens
-from utils import get_region_from_location
 
 
 async def collect_corporation_members(tokens):
@@ -72,7 +47,7 @@ async def collect_corporation_members(tokens):
             expired = datetime.now(timezone.utc) > datetime.fromisoformat(
                 token_data.get("expires_at", "2000-01-01T00:00:00+00:00")
             )
-        except:
+        except (ValueError, TypeError):
             expired = True
         if expired:
             new_token = refresh_token(token_data["refresh_token"])

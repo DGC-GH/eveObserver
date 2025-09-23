@@ -15,18 +15,12 @@ from requests.adapters import HTTPAdapter
 from urllib3.util.retry import Retry
 
 from api_client import (
-    WordPressAuthError,
-    WordPressRequestError,
     fetch_esi,
     fetch_public_contract_items,
     fetch_public_contracts,
     fetch_public_esi,
-    fetch_type_icon,
-    sanitize_string,
-    send_email,
-    wp_request,
 )
-from config import *
+from config import TOKENS_FILE, WP_USERNAME, WP_APP_PASSWORD, WP_BASE_URL
 
 # Additional configuration
 ESI_VERSION = "latest"
@@ -250,7 +244,7 @@ def collect_corporation_members(tokens):
             expired = datetime.now(timezone.utc) > datetime.fromisoformat(
                 token_data.get("expires_at", "2000-01-01T00:00:00+00:00")
             )
-        except:
+        except (ValueError, TypeError):
             expired = True
         if expired:
             new_token = refresh_token(token_data["refresh_token"])

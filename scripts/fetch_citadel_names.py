@@ -11,7 +11,16 @@ from datetime import datetime, timezone
 import requests
 from dotenv import load_dotenv
 
-from config import *
+from config import (
+    CACHE_DIR,
+    ESI_BASE_URL,
+    ESI_MAX_RETRIES,
+    ESI_TIMEOUT,
+    LOG_FILE,
+    LOG_LEVEL,
+    STRUCTURE_CACHE_FILE,
+    TOKENS_FILE,
+)
 
 load_dotenv()
 
@@ -49,7 +58,7 @@ def load_cache(cache_file):
         try:
             with open(cache_file, "r") as f:
                 return json.load(f)
-        except:
+        except (json.JSONDecodeError, IOError):
             return {}
     return {}
 
@@ -83,7 +92,6 @@ def fetch_public_esi(endpoint, max_retries=ESI_MAX_RETRIES):
                 logger.warning(f"Resource not found for public endpoint {endpoint}")
                 return None
             elif response.status_code == 429:  # Rate limited
-                error_limit_remain = response.headers.get("X-ESI-Error-Limit-Remain")
                 error_limit_reset = response.headers.get("X-ESI-Error-Limit-Reset")
 
                 if error_limit_reset:
@@ -97,7 +105,6 @@ def fetch_public_esi(endpoint, max_retries=ESI_MAX_RETRIES):
                     time.sleep(60)
                     continue
             elif response.status_code == 420:  # Error limited
-                error_limit_remain = response.headers.get("X-ESI-Error-Limit-Remain")
                 error_limit_reset = response.headers.get("X-ESI-Error-Limit-Reset")
 
                 if error_limit_reset:
@@ -168,7 +175,6 @@ def fetch_esi(endpoint, char_id, access_token, max_retries=ESI_MAX_RETRIES):
                 logger.warning(f"Resource not found for endpoint {endpoint}")
                 return None
             elif response.status_code == 429:  # Rate limited
-                error_limit_remain = response.headers.get("X-ESI-Error-Limit-Remain")
                 error_limit_reset = response.headers.get("X-ESI-Error-Limit-Reset")
 
                 if error_limit_reset:
@@ -181,7 +187,6 @@ def fetch_esi(endpoint, char_id, access_token, max_retries=ESI_MAX_RETRIES):
                     time.sleep(60)
                     continue
             elif response.status_code == 420:  # Error limited
-                error_limit_remain = response.headers.get("X-ESI-Error-Limit-Remain")
                 error_limit_reset = response.headers.get("X-ESI-Error-Limit-Reset")
 
                 if error_limit_reset:
@@ -280,7 +285,7 @@ def main():
         expired = datetime.now(timezone.utc) > datetime.fromisoformat(
             token_data.get("expires_at", "2000-01-01T00:00:00+00:00")
         )
-    except:
+    except (ValueError, TypeError):
         expired = True
 
     if expired:
@@ -315,14 +320,14 @@ def main():
 
         # If public access failed, try Sir FiLiN
         if not citadel_name:
-            logger.info(f"Public access failed, trying Sir FiLiN...")
+            logger.info("Public access failed, trying Sir FiLiN...")
 
             # Refresh token if needed
             try:
                 expired = datetime.now(timezone.utc) > datetime.fromisoformat(
                     token_data.get("expires_at", "2000-01-01T00:00:00+00:00")
                 )
-            except:
+            except (ValueError, TypeError):
                 expired = True
 
             if expired:
@@ -348,7 +353,7 @@ def main():
 
         if citadel_name:
             structure_cache[citadel_id] = citadel_name
-            logger.info(f"Added citadel {citadel_id}: {citadel_name}")
+            logger.info("Added citadel {}: {}".format(citadel_id, citadel_name))
         else:
             logger.error(f"Failed to fetch name for citadel {citadel_id} with Sir FiLiN")
 

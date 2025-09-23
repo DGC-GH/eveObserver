@@ -5,15 +5,11 @@ Handles processing and updating of EVE data in WordPress.
 """
 
 import asyncio
-import json
 import logging
-import os
 import time
-from concurrent.futures import ThreadPoolExecutor, TimeoutError, as_completed
 from datetime import datetime, timezone
 from typing import Any, Callable, Dict, List, Optional, Tuple
 
-import aiohttp
 import requests
 
 from api_client import (
@@ -21,38 +17,28 @@ from api_client import (
     ESIRequestError,
     WordPressAuthError,
     WordPressRequestError,
-    benchmark,
     fetch_esi,
     fetch_public_esi,
     fetch_type_icon,
     format_error_message,
     log_audit_event,
-    refresh_token,
-    sanitize_string,
-    send_email,
     wp_request,
 )
 from cache_manager import (
-    flush_pending_saves,
-    get_cache_stats,
     get_cached_value_with_stats,
     get_cached_wp_post_id,
     load_blueprint_cache,
-    load_blueprint_type_cache,
     load_failed_structures,
     load_location_cache,
     load_structure_cache,
     load_wp_post_id_cache,
-    log_cache_performance,
     save_blueprint_cache,
-    save_blueprint_type_cache,
     save_failed_structures,
     save_location_cache,
     save_structure_cache,
-    save_wp_post_id_cache,
     set_cached_wp_post_id,
 )
-from config import *
+from config import WP_APP_PASSWORD, WP_USERNAME
 
 logger = logging.getLogger(__name__)
 
@@ -277,7 +263,6 @@ async def update_character_in_wp(char_id: int, char_data: Dict[str, Any]) -> Non
     if existing_post:
         # Update existing
         post_id = existing_post["id"]
-        url = f"{WP_BASE_URL}/wp-json/wp/v2/eve_character/{post_id}"
         try:
             result = await wp_request("PUT", f"/wp-json/wp/v2/eve_character/{post_id}", post_data)
             if result:

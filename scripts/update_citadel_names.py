@@ -23,7 +23,7 @@ def load_structure_cache():
         try:
             with open(STRUCTURE_CACHE_FILE, "r") as f:
                 return json.load(f)
-        except:
+        except (json.JSONDecodeError, IOError):
             return {}
     return {}
 

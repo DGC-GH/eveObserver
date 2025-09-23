@@ -57,7 +57,6 @@ class TestAPIClientIntegration:
     @patch("api_client._esi_circuit_breaker")
     async def test_fetch_public_esi_circuit_breaker_failure(self, mock_circuit_breaker):
         """Test fetch_public_esi when circuit breaker is open."""
-        from api_client import ESIRequestError
 
         mock_circuit_breaker.call = AsyncMock(side_effect=ESIRequestError("Circuit breaker is open"))
 

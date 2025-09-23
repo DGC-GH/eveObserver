@@ -13,7 +13,17 @@ import requests
 from dotenv import load_dotenv
 
 from api_client import fetch_esi, fetch_public_esi, fetch_type_icon
-from config import *
+from cache_manager import load_blueprint_cache, save_cache
+from config import (
+    BLUEPRINT_CACHE_FILE,
+    CACHE_DIR,
+    LOG_FILE,
+    LOG_LEVEL,
+    TOKENS_FILE,
+    WP_APP_PASSWORD,
+    WP_BASE_URL,
+    WP_USERNAME,
+)
 
 load_dotenv()
 
@@ -63,7 +73,7 @@ def load_cache(cache_file):
         try:
             with open(cache_file, "r") as f:
                 return json.load(f)
-        except:
+        except (json.JSONDecodeError, IOError):
             return {}
     return {}
 
@@ -214,7 +224,8 @@ def update_existing_contract(contract_post, tokens):
 
     if not contract_id or not entity_id:
         logger.warning(
-            f"Contract post {contract_post['id']} missing contract_id or entity_id (contract_id: {contract_id}, entity_id: {entity_id})"
+            f"Contract post {contract_post['id']} missing contract_id or entity_id "
+            f"(contract_id: {contract_id}, entity_id: {entity_id})"
         )
         return
 
@@ -269,7 +280,7 @@ def update_existing_contract(contract_post, tokens):
                             access_token = token_data["access_token"]
                             logger.info(f"Using Dr FiLiN's CEO token for No Mercy Incorporated contract {contract_id}")
                             break
-                except:
+                except (ValueError, TypeError):
                     continue
 
         # If Dr FiLiN's token didn't work or this isn't No Mercy, try other tokens
@@ -289,7 +300,7 @@ def update_existing_contract(contract_post, tokens):
                             char_name = token_data.get("name", f"Character {char_id}")
                             logger.info(f"Using {char_name}'s token for corporation contract {contract_id}")
                             break
-                except:
+                except (ValueError, TypeError):
                     continue
     else:
         # For character contracts, use the character's token directly
@@ -301,7 +312,7 @@ def update_existing_contract(contract_post, tokens):
                 )
                 if not expired:
                     access_token = token_data["access_token"]
-            except:
+            except (ValueError, TypeError):
                 pass
 
     if not access_token:

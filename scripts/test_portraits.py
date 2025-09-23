@@ -12,7 +12,7 @@ from datetime import datetime, timezone
 import requests
 from dotenv import load_dotenv
 
-from config import *
+from config import ESI_BASE_URL, ESI_TIMEOUT, LOG_FILE, LOG_LEVEL, WP_APP_PASSWORD, WP_BASE_URL, WP_USERNAME
 
 load_dotenv()
 

@@ -4,21 +4,13 @@ EVE Observer Blueprint Processor
 Handles fetching and processing of EVE blueprint data.
 """
 
-import json
 import logging
 from datetime import datetime, timezone
 from typing import Any, Dict, List, Optional
 
 import requests
 
-from api_client import (
-    WordPressAuthError,
-    WordPressRequestError,
-    delete_wp_post,
-    fetch_esi,
-    fetch_public_esi,
-    fetch_type_icon,
-)
+from api_client import delete_wp_post, fetch_esi, fetch_public_esi, fetch_type_icon
 from cache_manager import (
     get_cached_wp_post_id,
     load_blueprint_cache,
@@ -26,6 +18,7 @@ from cache_manager import (
     load_failed_structures,
     load_location_cache,
     load_structure_cache,
+    load_wp_post_id_cache,
     save_blueprint_cache,
     save_blueprint_type_cache,
     save_failed_structures,
@@ -33,7 +26,7 @@ from cache_manager import (
     save_structure_cache,
     set_cached_wp_post_id,
 )
-from config import *
+from config import WP_BASE_URL, WP_PER_PAGE
 from data_processors import get_wp_auth
 
 logger = logging.getLogger(__name__)
@@ -473,7 +466,6 @@ def update_blueprint_from_asset_in_wp(
     if quantity != -1:
         logger.info(f"Skipping BPC (quantity={quantity}) for item_id: {item_id}")
         return
-    owner_id = blueprint_data["owner_id"]
     source = blueprint_data["source"]
 
     slug = f"blueprint-{item_id}"

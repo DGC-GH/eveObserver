@@ -13,7 +13,15 @@ from typing import Any, Dict, Optional
 
 import requests
 
-from config import *
+from config import (
+    EMAIL_FROM,
+    EMAIL_PASSWORD,
+    EMAIL_SMTP_PORT,
+    EMAIL_SMTP_SERVER,
+    EMAIL_TO,
+    EMAIL_USERNAME,
+    ESI_BASE_URL,
+)
 
 logger = logging.getLogger(__name__)
 

@@ -5,14 +5,13 @@ Removes all Blueprint Copies (BPCs) from WordPress database.
 BPCs are identified by having quantity != -1 (BPOs have quantity = -1).
 """
 
-import json
 import logging
 import os
 
 import requests
 from dotenv import load_dotenv
 
-from config import *
+from config import LOG_LEVEL, LOG_FILE, WP_BASE_URL
 
 load_dotenv()
 

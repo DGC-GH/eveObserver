@@ -6,7 +6,6 @@ Handles ESI API and WordPress REST API interactions.
 
 import asyncio
 import functools
-import json
 import logging
 import os
 import re
@@ -22,7 +21,20 @@ import aiohttp
 import requests
 from dotenv import load_dotenv
 
-from config import *
+from config import (
+    EMAIL_FROM,
+    EMAIL_PASSWORD,
+    EMAIL_SMTP_PORT,
+    EMAIL_SMTP_SERVER,
+    EMAIL_TO,
+    EMAIL_USERNAME,
+    ESI_BASE_URL,
+    LOG_FILE,
+    LOG_LEVEL,
+    WP_APP_PASSWORD,
+    WP_BASE_URL,
+    WP_USERNAME,
+)
 
 
 # Performance benchmarking decorator
@@ -117,7 +129,8 @@ def validate_input_params(*param_types):
                     actual_value = args[arg_idx]
                     if not isinstance(actual_value, expected_type):
                         raise TypeError(
-                            f"{func.__name__} argument {i+1} must be {expected_type.__name__}, got {type(actual_value).__name__}"
+                            f"{func.__name__} argument {i+1} must be {expected_type.__name__}, "
+                            f"got {type(actual_value).__name__}"
                         )
 
             return func(*args, **kwargs)
@@ -315,7 +328,8 @@ class RateLimiter:
             wait_time = (self.calls[0] + timedelta(minutes=1) - now).total_seconds()
             if wait_time > 0:
                 logger.info(
-                    f"Rate limiter: Waiting {wait_time:.2f} seconds to respect {self.calls_per_minute} calls/minute limit"
+                    f"Rate limiter: Waiting {wait_time:.2f} seconds to respect "
+                    f"{self.calls_per_minute} calls/minute limit"
                 )
                 await asyncio.sleep(wait_time)
                 # Recheck after waiting
@@ -555,7 +569,6 @@ async def _fetch_esi_with_retry(
                         raise ESIRequestError(f"Resource not found: {endpoint}")
                     elif response.status == 429:  # Rate limited
                         # Check for X-ESI-Error-Limit-Remain header
-                        error_limit_remain = response.headers.get("X-ESI-Error-Limit-Remain")
                         error_limit_reset = response.headers.get("X-ESI-Error-Limit-Reset")
 
                         if error_limit_reset:
@@ -573,7 +586,6 @@ async def _fetch_esi_with_retry(
                             await asyncio.sleep(60)
                             continue
                     elif response.status == 420:  # Error limited
-                        error_limit_remain = response.headers.get("X-ESI-Error-Limit-Remain")
                         error_limit_reset = response.headers.get("X-ESI-Error-Limit-Reset")
 
                         if error_limit_reset:
@@ -600,7 +612,8 @@ async def _fetch_esi_with_retry(
                     else:
                         elapsed = time.time() - start_time
                         logger.error(
-                            f"ESI API error for {endpoint}: {response.status} - {await response.text()} (took {elapsed:.2f}s)"
+                            f"ESI API error for {endpoint}: {response.status} - "
+                            f"{await response.text()} (took {elapsed:.2f}s)"
                         )
                         raise ESIRequestError(f"ESI API error {response.status}: {endpoint}")
 
@@ -952,7 +965,8 @@ async def wp_request(method: str, endpoint: str, data: Optional[Dict] = None) ->
                     elif response.status == 401:
                         elapsed = time.time() - start_time
                         logger.error(
-                            f"WordPress authentication failed: {response.status} - {await response.text()} (took {elapsed:.2f}s)"
+                            f"WordPress authentication failed: {response.status} - "
+                            f"{await response.text()} (took {elapsed:.2f}s)"
                         )
                         raise WordPressAuthError(f"Authentication failed for {endpoint}")
                     else:
@@ -972,7 +986,8 @@ async def wp_request(method: str, endpoint: str, data: Optional[Dict] = None) ->
                     elif response.status == 401:
                         elapsed = time.time() - start_time
                         logger.error(
-                            f"WordPress authentication failed: {response.status} - {await response.text()} (took {elapsed:.2f}s)"
+                            f"WordPress authentication failed: {response.status} - "
+                            f"{await response.text()} (took {elapsed:.2f}s)"
                         )
                         raise WordPressAuthError(f"Authentication failed for {endpoint}")
                     else:
@@ -992,7 +1007,8 @@ async def wp_request(method: str, endpoint: str, data: Optional[Dict] = None) ->
                     elif response.status == 401:
                         elapsed = time.time() - start_time
                         logger.error(
-                            f"WordPress authentication failed: {response.status} - {await response.text()} (took {elapsed:.2f}s)"
+                            f"WordPress authentication failed: {response.status} - "
+                            f"{await response.text()} (took {elapsed:.2f}s)"
                         )
                         raise WordPressAuthError(f"Authentication failed for {endpoint}")
                     else:
@@ -1011,7 +1027,8 @@ async def wp_request(method: str, endpoint: str, data: Optional[Dict] = None) ->
                     elif response.status == 401:
                         elapsed = time.time() - start_time
                         logger.error(
-                            f"WordPress authentication failed: {response.status} - {await response.text()} (took {elapsed:.2f}s)"
+                            f"WordPress authentication failed: {response.status} - "
+                            f"{await response.text()} (took {elapsed:.2f}s)"
                         )
                         raise WordPressAuthError(f"Authentication failed for {endpoint}")
                     else:
@@ -1141,7 +1158,7 @@ async def fetch_type_icon(type_id: int, size: int = 512) -> str:
             async with sess.head(icon_url, timeout=aiohttp.ClientTimeout(total=5)) as response:
                 if response.status == 200:
                     return icon_url
-        except:
+        except Exception:
             continue
 
     # If no icon found, return placeholder
