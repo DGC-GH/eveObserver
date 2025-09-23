@@ -551,7 +551,6 @@ async def update_blueprint_from_asset_in_wp(
         "meta": {
             "_eve_bp_item_id": item_id,
             "_eve_bp_type_id": blueprint_data.get("type_id"),
-            "_eve_bp_location_id": blueprint_data.get("location_id"),
             "_eve_bp_location_name": location_name,
             "_eve_bp_quantity": blueprint_data.get("quantity", -1),
             "_eve_bp_me": blueprint_data.get("material_efficiency", 0),
@@ -562,6 +561,10 @@ async def update_blueprint_from_asset_in_wp(
             "_eve_last_updated": datetime.now(timezone.utc).isoformat(),
         },
     }
+
+    # Only include location_id if it's not None (prevents WordPress validation errors)
+    if blueprint_data.get("location_id") is not None:
+        post_data["meta"]["_eve_bp_location_id"] = blueprint_data.get("location_id")
 
     # Add featured image from type icon (only for new blueprints)
     if not existing_post:
