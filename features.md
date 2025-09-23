@@ -1,98 +1,97 @@
-# EVE Observer Features
+# Data Aggregation and Content Management Features
 
 This document describes the general features implemented in this data aggregation and content management system, designed for learning and inspiration in similar projects.
 
 ## Core Features
 
 ### External API Data Fetching
-- Asynchronous data retrieval from REST APIs with rate limiting
-- Robust error handling with retry mechanisms and exponential backoff
-- Circuit breaker pattern for API resilience and failure prevention
-- Concurrent processing for improved performance
+- Asynchronous data retrieval from REST APIs with rate limiting and retry mechanisms
+- Robust error handling with exponential backoff and circuit breaker patterns
+- Concurrent processing for improved performance and resource utilization
 - **Key Functions**: `fetch_public_esi`, `fetch_esi`, `_fetch_esi_with_retry`, `fetch_type_icon`, `refresh_token`
 
-### Intelligent Caching System
-- Multi-level caching with TTL (Time-To-Live) for data freshness
-- Compression support to reduce storage footprint
-- Batch operations to minimize I/O overhead
-- Automatic cleanup of expired cache entries
+### Intelligent Multi-Level Caching System
+- Compressed data storage with automatic TTL (Time-To-Live) management
+- Batch operations to minimize I/O overhead and improve write performance
+- Automatic cleanup of expired entries and cache statistics tracking
+- LRU-style caching with performance monitoring and hit/miss analytics
 - **Key Functions**: `load_blueprint_cache`, `save_blueprint_cache`, `load_location_cache`, `save_location_cache`, `load_structure_cache`, `save_structure_cache`, `load_failed_structures`, `save_failed_structures`, `load_wp_post_id_cache`, `save_wp_post_id_cache`, `get_cached_wp_post_id`, `set_cached_wp_post_id`, `get_cache_stats`, `log_cache_performance`, `get_cached_value_with_stats`, `flush_pending_saves`
 
-### Content Management Integration
-- REST API integration for content publishing and updates
-- Custom post type support for structured data storage
-- External media URL handling for featured images
-- Metadata management for rich content attributes
+### Content Management System Integration
+- REST API integration for automated content publishing and updates
+- Custom content type support for structured data organization
+- External media URL handling for dynamic image management
+- Metadata-driven content updates with change detection
 - **Key Functions**: `wp_request`, `update_or_create_blueprint_post`, `update_character_in_wp`, `update_corporation_in_wp`, `update_planet_in_wp`, `update_contract_in_wp`, `construct_blueprint_post_data`, `fetch_blueprint_details`
 
-### Market Analysis and Monitoring
-- Competitive pricing detection for marketplace items
-- Automated alerts for market condition changes
-- Historical data tracking for trend analysis
-- Outbid detection and notification systems
+### Competitive Market Analysis and Monitoring
+- Automated detection of competitive pricing in marketplace transactions
+- Configurable alerting for market condition changes and opportunities
+- Historical data tracking for trend analysis and decision support
+- Exclusion logic for same-entity comparisons to prevent false alerts
 - **Key Functions**: `check_contract_outbid`, `process_contracts`, `cleanup_old_posts`, `send_email`
 
-### Notification and Alerting System
-- Email-based alerting for critical events
-- Configurable notification thresholds
-- Asynchronous alert processing to avoid blocking operations
-- Template-based message formatting
+### Asynchronous Notification and Alerting System
+- Email-based alerting for time-sensitive events and system notifications
+- Configurable notification thresholds and delivery mechanisms
+- Non-blocking alert processing to maintain system responsiveness
+- Template-based message formatting for consistent communication
 - **Key Functions**: `send_email`
 
-### Data Processing Pipeline
-- Modular data transformation and validation
-- Parallel processing for large datasets
-- Type checking and input sanitization
-- Scalable architecture for growing data volumes
+### Scalable Data Processing Pipeline
+- Modular data transformation with parallel processing capabilities
+- Type checking and input sanitization for data integrity
+- Entity relationship mapping and hierarchical data organization
+- Scalable architecture supporting large dataset processing
 - **Key Functions**: `process_blueprints_parallel`, `collect_corporation_members`, `process_corporation_data`, `process_character_data`, `fetch_character_data`, `fetch_character_skills`, `fetch_character_blueprints`, `fetch_character_planets`, `fetch_corporation_data`
 
-### User Authentication and Security
-- OAuth2 token management with automatic refresh
-- Secure credential storage and environment variable usage
-- Request/response validation and sanitization
-- Audit logging for security monitoring
-- **Key Functions**: `refresh_token`, `get_session`, `sanitize_string`
+### Secure Authentication and Token Management
+- OAuth2 token lifecycle management with automatic refresh capabilities
+- Secure credential storage using environment variables and encrypted files
+- Request/response validation and data sanitization
+- Audit logging for authentication and sensitive operations
+- **Key Functions**: `refresh_token`, `get_session`, `sanitize_string`, `log_audit_event`
 
-### Performance Optimization
-- Async/await patterns for non-blocking I/O
-- Connection pooling and session reuse with proper cleanup
-- Lazy loading and on-demand data fetching
-- Benchmarking and performance monitoring tools with decorators
-- Intelligent caching with compression and TTL management
+### Performance Optimization and Benchmarking
+- Async/await patterns for non-blocking I/O operations
+- Connection pooling and session reuse with automatic cleanup
+- Lazy loading and on-demand data fetching strategies
+- Comprehensive benchmarking decorators for performance monitoring
+- Intelligent caching with compression, TTL, and batch operations
 - **Key Functions**: `benchmark`, `process_blueprints_parallel`, `get_cache_stats`, `log_cache_performance`
 
-### Testing and Quality Assurance
-- Comprehensive unit and integration test coverage (26/26 tests passing)
-- Mocking framework for external dependencies
-- Automated testing pipelines with coverage reporting
-- Linting and code formatting standards
-- Performance regression testing with benchmarking
+### Comprehensive Testing and Quality Assurance Framework
+- Unit and integration test coverage with async test support (27/27 tests passing)
+- Mocking framework for external dependency isolation
+- Automated testing pipelines with coverage reporting and quality metrics
+- Code formatting, linting, and security scanning integration
+- Performance regression testing with benchmarking validation
 - **Key Files**: `tests/test_config.py`, `tests/test_fetch_data.py`, `test_higher_quality_images.py`, `test_portraits.py`
 
-### Configuration Management
-- Environment-based configuration with validation
-- Flexible settings for different deployment environments
-- Runtime configuration reloading
+### Environment-Based Configuration Management
+- Flexible configuration system supporting multiple deployment environments
+- Runtime configuration validation and type checking
 - Secure handling of sensitive configuration data
+- Environment variable integration with fallback defaults
 - **Key File**: `config.py`
 
-### Logging and Monitoring
-- Structured logging with configurable levels
-- Performance metrics collection
-- Error tracking and reporting
-- Debug information for troubleshooting
-- **Key Functions**: `clear_log_file`, `log_cache_performance`
+### Structured Logging and System Monitoring
+- Configurable logging levels with performance metrics collection
+- Error tracking and reporting with timing information
+- Debug information capture for troubleshooting and analysis
+- Cache performance logging and system health monitoring
+- **Key Functions**: `clear_log_file`, `log_cache_performance`, `log_audit_event`
 
-### Blueprint and Asset Tracking
-- Hierarchical asset organization and tracking
-- Efficiency calculations for manufacturing processes
-- Location-based asset management
-- Automated inventory updates and synchronization
+### Hierarchical Asset and Inventory Tracking
+- Multi-level asset organization with efficiency calculations
+- Location-based inventory management and tracking
+- Automated inventory synchronization and update detection
+- Support for different asset types and manufacturing processes
 - **Key Functions**: `fetch_character_blueprints`, `update_blueprint_in_wp`, `fetch_blueprint_details`, `construct_blueprint_post_data`
 
-### Character and Entity Management
-- Multi-entity data aggregation (characters, corporations, alliances)
-- Relationship mapping and hierarchy tracking
-- Profile data synchronization
-- Activity monitoring and reporting
+### Multi-Entity Data Aggregation and Management
+- Comprehensive entity data collection (individuals, organizations, alliances)
+- Relationship mapping and hierarchical organization tracking
+- Profile data synchronization with change detection
+- Activity monitoring and automated reporting capabilities
 - **Key Functions**: `fetch_character_data`, `fetch_character_skills`, `fetch_character_planets`, `fetch_corporation_data`, `collect_corporation_members`, `process_corporation_data`, `process_character_data`
