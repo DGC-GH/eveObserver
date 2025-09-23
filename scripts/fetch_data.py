@@ -168,53 +168,7 @@ def set_cached_wp_post_id(cache: Dict[str, Any], post_type: str, item_id: int, p
     cache[key] = post_id
     save_wp_post_id_cache(cache)
 
-def process_blueprints_parallel(blueprints, update_func, wp_post_id_cache, *args, **kwargs):
-    """Process blueprints in parallel while respecting rate limits."""
-    from concurrent.futures import ThreadPoolExecutor, as_completed, TimeoutError
-    import time
-    import logging
 
-    max_workers = api_config.esi_max_workers  # Limit concurrent requests to avoid rate limiting
-    results = []
-    processed_count = 0
-    total_blueprints = len(blueprints)
-
-    logger.info(f"Starting parallel processing of {total_blueprints} blueprints with {max_workers} workers")
-
-    with ThreadPoolExecutor(max_workers=max_workers) as executor:
-        # Submit all blueprint update tasks
-        future_to_bp = {
-            executor.submit(update_func, bp, wp_post_id_cache, *args, **kwargs): bp
-            for bp in blueprints
-        }
-
-        for future in as_completed(future_to_bp):
-            bp = future_to_bp[future]
-            item_id = bp.get("item_id", "unknown")
-            processed_count += 1
-
-            try:
-                # Add timeout to prevent hanging
-                result = future.result(timeout=300)  # 5 minute timeout per blueprint
-                results.append(result)
-                logger.info(f"Processed blueprint {processed_count}/{total_blueprints}: {item_id}")
-
-                # Small delay between requests to be rate limit friendly
-                time.sleep(0.05)
-
-            except TimeoutError:
-                logger.error(f"Blueprint {item_id} timed out after 5 minutes - skipping")
-                # Cancel the future if possible
-                if not future.cancelled():
-                    future.cancel()
-
-            except Exception as exc:
-                logger.error(f'Blueprint {item_id} generated an exception: {exc}')
-                logger.error(f'Blueprint data: {bp}')
-                # Continue processing other blueprints
-
-    logger.info(f"Completed parallel processing: {len(results)}/{total_blueprints} blueprints processed successfully")
-    return results
 
 def send_email(subject: str, body: str) -> None:
     """Send an email alert."""
@@ -444,7 +398,7 @@ async def wp_request(method: str, endpoint: str, data: Optional[Dict] = None) ->
     
     return None
 
-def update_character_in_wp(char_id: int, char_data: Dict[str, Any]) -> None:
+async def update_character_in_wp(char_id: int, char_data: Dict[str, Any]) -> None:
     """
     Update or create a character post in WordPress.
 
@@ -463,8 +417,8 @@ def update_character_in_wp(char_id: int, char_data: Dict[str, Any]) -> None:
     """
     slug = f"character-{char_id}"
     # Check if post exists by slug
-    response = requests.get(f"{WP_BASE_URL}/wp-json/wp/v2/eve_character?slug={slug}", auth=get_wp_auth())
-    existing_posts = response.json() if response.status_code == 200 else []
+    response = await wp_request('GET', f"eve_character?slug={slug}")
+    existing_posts = response if response else []
     existing_post = existing_posts[0] if existing_posts else None
 
     post_data = {
@@ -494,7 +448,7 @@ def update_character_in_wp(char_id: int, char_data: Dict[str, Any]) -> None:
             post_data['meta'][key] = value
 
     # Add featured image from character portrait
-    portrait_data = fetch_character_portrait(char_id)
+    portrait_data = await fetch_character_portrait(char_id)
     if portrait_data and 'px256x256' in portrait_data:
         new_portrait_url = portrait_data['px256x256']
         # Check if portrait changed before updating
@@ -508,17 +462,17 @@ def update_character_in_wp(char_id: int, char_data: Dict[str, Any]) -> None:
     if existing_post:
         # Update existing
         post_id = existing_post['id']
-        url = f"{WP_BASE_URL}/wp-json/wp/v2/eve_character/{post_id}"
-        response = requests.put(url, json=post_data, auth=get_wp_auth())
+        url = f"eve_character/{post_id}"
+        response = await wp_request('PUT', url, post_data)
     else:
         # Create new
-        url = f"{WP_BASE_URL}/wp-json/wp/v2/eve_character"
-        response = requests.post(url, json=post_data, auth=get_wp_auth())
+        url = "eve_character"
+        response = await wp_request('POST', url, post_data)
 
-    if response.status_code in [200, 201]:
+    if response:
         logger.info(f"Updated character: {char_data['name']}")
     else:
-        logger.error(f"Failed to update character {char_data['name']}: {response.status_code} - {response.text}")
+        logger.error(f"Failed to update character {char_data['name']}")
 
 def update_character_skills_in_wp(char_id, skills_data):
     """Update character post with skills data."""
@@ -544,30 +498,30 @@ def update_character_skills_in_wp(char_id, skills_data):
         else:
             logger.error(f"Failed to update skills for character {char_id}: {response.status_code} - {response.text}")
 
-def fetch_character_data(char_id, access_token):
+async def fetch_character_data(char_id, access_token):
     """Fetch basic character data from ESI."""
     endpoint = f"/characters/{char_id}/"
-    return fetch_esi(endpoint, char_id, access_token)
+    return await fetch_esi(endpoint, char_id, access_token)
 
-def fetch_character_skills(char_id, access_token):
+async def fetch_character_skills(char_id, access_token):
     """Fetch character skills."""
     endpoint = f"/characters/{char_id}/skills/"
-    return fetch_esi(endpoint, char_id, access_token)
+    return await fetch_esi(endpoint, char_id, access_token)
 
-def fetch_character_blueprints(char_id, access_token):
+async def fetch_character_blueprints(char_id, access_token):
     """Fetch character blueprints."""
     endpoint = f"/characters/{char_id}/blueprints/"
-    return fetch_esi(endpoint, char_id, access_token)
+    return await fetch_esi(endpoint, char_id, access_token)
 
-def fetch_character_planets(char_id, access_token):
+async def fetch_character_planets(char_id, access_token):
     """Fetch character planets."""
     endpoint = f"/characters/{char_id}/planets/"
-    return fetch_esi(endpoint, char_id, access_token)
+    return await fetch_esi(endpoint, char_id, access_token)
 
-def fetch_corporation_data(corp_id, access_token):
+async def fetch_corporation_data(corp_id, access_token):
     """Fetch corporation data from ESI."""
     endpoint = f"/corporations/{corp_id}/"
-    return fetch_esi(endpoint, None, access_token)  # No char_id needed for corp data
+    return await fetch_esi(endpoint, None, access_token)  # No char_id needed for corp data
 
 def update_blueprint_in_wp(blueprint_data: Dict[str, Any], wp_post_id_cache: Dict[str, Any], char_id: int, access_token: str, blueprint_cache: Optional[Dict[str, Any]] = None, location_cache: Optional[Dict[str, Any]] = None, structure_cache: Optional[Dict[str, Any]] = None, failed_structures: Optional[Dict[str, Any]] = None) -> None:
     """
@@ -761,40 +715,40 @@ def update_blueprint_in_wp(blueprint_data: Dict[str, Any], wp_post_id_cache: Dic
     else:
         logger.error(f"Failed to update blueprint {item_id}: {response.status_code} - {response.text}")
 
-def fetch_character_assets(char_id, access_token):
+async def fetch_character_assets(char_id, access_token):
     """Fetch character assets."""
     endpoint = f"/characters/{char_id}/assets/"
-    return fetch_esi(endpoint, char_id, access_token)
+    return await fetch_esi(endpoint, char_id, access_token)
 
-def fetch_character_contracts(char_id, access_token):
+async def fetch_character_contracts(char_id, access_token):
     """Fetch character contracts."""
     endpoint = f"/characters/{char_id}/contracts/"
-    return fetch_esi(endpoint, char_id, access_token)
+    return await fetch_esi(endpoint, char_id, access_token)
 
 def fetch_character_contract_items(char_id, contract_id, access_token):
     """Fetch items in a specific character contract."""
     endpoint = f"/characters/{char_id}/contracts/{contract_id}/items/"
     return fetch_esi(endpoint, char_id, access_token)
 
-def fetch_corporation_blueprints(corp_id, access_token):
+async def fetch_corporation_blueprints(corp_id, access_token):
     """Fetch corporation blueprints."""
     endpoint = f"/corporations/{corp_id}/blueprints/"
-    return fetch_esi(endpoint, corp_id, access_token)
+    return await fetch_esi(endpoint, corp_id, access_token)
 
-def fetch_corporation_contracts(corp_id, access_token):
+async def fetch_corporation_contracts(corp_id, access_token):
     """Fetch corporation contracts."""
     endpoint = f"/corporations/{corp_id}/contracts/"
-    return fetch_esi(endpoint, None, access_token)  # Corp contracts don't need char_id
+    return await fetch_esi(endpoint, None, access_token)  # Corp contracts don't need char_id
 
 def fetch_corporation_contract_items(corp_id, contract_id, access_token):
     """Fetch items in a specific corporation contract."""
     endpoint = f"/corporations/{corp_id}/contracts/{contract_id}/items/"
     return fetch_esi(endpoint, None, access_token)  # Corp endpoint doesn't need char_id
 
-def fetch_corporation_industry_jobs(corp_id, access_token):
+async def fetch_corporation_industry_jobs(corp_id, access_token):
     """Fetch corporation industry jobs."""
     endpoint = f"/corporations/{corp_id}/industry/jobs/"
-    return fetch_esi(endpoint, corp_id, access_token)
+    return await fetch_esi(endpoint, corp_id, access_token)
 
 def extract_blueprints_from_assets(assets_data, owner_type, owner_id, access_token, track_bpcs=False):
     """Extract blueprint information from assets data."""
@@ -1088,15 +1042,15 @@ def update_blueprint_from_asset_in_wp(blueprint_data, wp_post_id_cache, char_id,
     else:
         logger.error(f"Failed to update blueprint {item_id} from {source}: {response.status_code} - {response.text}")
 
-def fetch_character_industry_jobs(char_id, access_token):
+async def fetch_character_industry_jobs(char_id, access_token):
     """Fetch character industry jobs."""
     endpoint = f"/characters/{char_id}/industry/jobs/"
-    return fetch_esi(endpoint, char_id, access_token)
+    return await fetch_esi(endpoint, char_id, access_token)
 
-def fetch_corporation_assets(corp_id, access_token):
+async def fetch_corporation_assets(corp_id, access_token):
     """Fetch corporation assets."""
     endpoint = f"/corporations/{corp_id}/assets/"
-    return fetch_esi(endpoint, None, access_token)  # Corp endpoint doesn't need char_id
+    return await fetch_esi(endpoint, None, access_token)  # Corp endpoint doesn't need char_id
 
 def generate_contract_title(contract_data, for_corp=False, entity_id=None, contract_items=None, blueprint_cache=None):
     """Generate a descriptive contract title based on items."""
@@ -1446,10 +1400,10 @@ async def fetch_corporation_logo(corp_id):
     endpoint = f"/corporations/{corp_id}/logo/"
     return await fetch_public_esi(endpoint)
 
-def fetch_planet_details(char_id, planet_id, access_token):
+async def fetch_planet_details(char_id, planet_id, access_token):
     """Fetch detailed planet colony information."""
     endpoint = f"/characters/{char_id}/planets/{planet_id}/"
-    return fetch_esi(endpoint, char_id, access_token) 
+    return await fetch_esi(endpoint, char_id, access_token) 
 def refresh_token(refresh_token):
     """Refresh an access token."""
     data = {
@@ -1612,7 +1566,7 @@ def check_contract_competition(contract_data, contract_items):
     logger.info(f"No competing contracts found for contract {contract_id}")
     return False, None
 
-def collect_corporation_members(tokens):
+async def collect_corporation_members(tokens):
     """Collect all corporations and their member characters from authorized tokens."""
     corp_members = {}
     for char_id, token_data in tokens.items():
@@ -1633,9 +1587,9 @@ def collect_corporation_members(tokens):
         char_name = token_data['name']
 
         # Fetch basic character data to get corporation
-        char_data = fetch_character_data(char_id, access_token)
+        char_data = await fetch_character_data(char_id, access_token)
         if char_data:
-            update_character_in_wp(char_id, char_data)
+            await update_character_in_wp(char_id, char_data)
             corp_id = char_data.get('corporation_id')
             if corp_id:
                 if corp_id not in corp_members:
@@ -1687,7 +1641,7 @@ def get_allowed_entities(corp_members: Dict[int, List[Tuple[int, str, str]]]) ->
     }
     return allowed_corp_ids, allowed_issuer_ids
 
-def process_all_data(corp_members: Dict[int, List[Tuple[int, str, str]]], caches: Tuple[Dict[str, Any], ...], args: argparse.Namespace, tokens: Dict[str, Any]) -> None:
+async def process_all_data(corp_members: Dict[int, List[Tuple[int, str, str]]], caches: Tuple[Dict[str, Any], ...], args: argparse.Namespace, tokens: Dict[str, Any]) -> None:
     """Process all corporation and character data."""
     blueprint_cache, location_cache, structure_cache, failed_structures, wp_post_id_cache = caches
     
@@ -1699,16 +1653,16 @@ def process_all_data(corp_members: Dict[int, List[Tuple[int, str, str]]], caches
 
         # Process data for the corporation and its members
         if args.all or args.corporations or args.blueprints:
-            process_corporation_data(corp_id, members, wp_post_id_cache, blueprint_cache, location_cache, structure_cache, failed_structures, args)
+            await process_corporation_data(corp_id, members, wp_post_id_cache, blueprint_cache, location_cache, structure_cache, failed_structures, args)
 
         processed_corps.add(corp_id)
 
     # Now process individual character data (skills, blueprints, etc.)
     for char_id, token_data in tokens.items():
         if args.all or args.characters or args.skills or args.blueprints or args.planets or args.contracts:
-            process_character_data(char_id, token_data, wp_post_id_cache, blueprint_cache, location_cache, structure_cache, failed_structures, args)
+            await process_character_data(char_id, token_data, wp_post_id_cache, blueprint_cache, location_cache, structure_cache, failed_structures, args)
 
-def main() -> None:
+async def main() -> None:
     """Main data fetching routine."""
     args = parse_arguments()
     clear_log_file()
@@ -1719,16 +1673,16 @@ def main() -> None:
         return
 
     # Collect all corporations and their member characters
-    corp_members = collect_corporation_members(tokens)
+    corp_members = await collect_corporation_members(tokens)
     allowed_corp_ids, allowed_issuer_ids = get_allowed_entities(corp_members)
 
     # Clean up old posts with filtering (only if doing full fetch or contracts)
     if args.all or args.contracts:
         cleanup_old_posts(allowed_corp_ids, allowed_issuer_ids)
 
-    process_all_data(corp_members, caches, args, tokens)
+    await process_all_data(corp_members, caches, args, tokens)
 
-def process_corporation_data(corp_id, members, wp_post_id_cache, blueprint_cache, location_cache, structure_cache, failed_structures, args):
+async def process_corporation_data(corp_id, members, wp_post_id_cache, blueprint_cache, location_cache, structure_cache, failed_structures, args):
     """Process data for a single corporation and its members."""
     # For No Mercy Incorporated, prioritize Dr FiLiN's token (CEO)
     if corp_id == 98092220:  # No Mercy Incorporated
@@ -1745,7 +1699,7 @@ def process_corporation_data(corp_id, members, wp_post_id_cache, blueprint_cache
         
         if dr_filin_token:
             logger.info(f"Using Dr FiLiN's CEO token for No Mercy Incorporated")
-            corp_data = fetch_corporation_data(corp_id, dr_filin_token)
+            corp_data = await fetch_corporation_data(corp_id, dr_filin_token)
             if corp_data:
                 successful_token = dr_filin_token
                 successful_char_name = dr_filin_name
@@ -1771,7 +1725,7 @@ def process_corporation_data(corp_id, members, wp_post_id_cache, blueprint_cache
                 continue
                 
             logger.info(f"Trying to fetch corporation data for corp {corp_id} using {char_name}'s token...")
-            corp_data = fetch_corporation_data(corp_id, access_token)
+            corp_data = await fetch_corporation_data(corp_id, access_token)
             if corp_data:
                 successful_token = access_token
                 successful_char_name = char_name
@@ -1794,28 +1748,29 @@ def process_corporation_data(corp_id, members, wp_post_id_cache, blueprint_cache
 
     # Process corporation blueprints from various sources
     if args.all or args.blueprints:
-        process_corporation_blueprints(corp_id, successful_token, successful_char_id, wp_post_id_cache, blueprint_cache, location_cache, structure_cache, failed_structures)
+        await process_corporation_blueprints(corp_id, access_token, char_id, wp_post_id_cache, blueprint_cache, location_cache, structure_cache, failed_structures)
 
     # Corporation contracts are processed via character contracts (issued by corp members)
-    # process_corporation_contracts(corp_id, successful_token, corp_data, blueprint_cache)
+    if args.all or args.contracts:
+        await process_corporation_contracts(corp_id, access_token, corp_data, blueprint_cache)
 
-def process_corporation_blueprints(corp_id, access_token, char_id, wp_post_id_cache, blueprint_cache, location_cache, structure_cache, failed_structures):
+async def process_corporation_blueprints(corp_id, access_token, char_id, wp_post_id_cache, blueprint_cache, location_cache, structure_cache, failed_structures):
     """Process all blueprint sources for a corporation."""
     logger.info(f"Fetching corporation blueprints for {corp_id}...")
 
     # From corporation blueprints endpoint
-    corp_blueprints = fetch_corporation_blueprints(corp_id, access_token)
+    corp_blueprints = await fetch_corporation_blueprints(corp_id, access_token)
     if corp_blueprints:
         # Filter to only BPOs (quantity == -1)
         bpo_blueprints = [bp for bp in corp_blueprints if bp.get('quantity', 1) == -1]
         logger.info(f"Corporation blueprints: {len(corp_blueprints)} total, {len(bpo_blueprints)} BPOs")
         if bpo_blueprints:
             # Process blueprints in parallel
-            process_blueprints_parallel(
+            await process_blueprints_parallel(
                 bpo_blueprints,
                 update_blueprint_in_wp,
                 wp_post_id_cache,
-                char_id,
+                corp_id,
                 access_token,
                 blueprint_cache,
                 location_cache,
@@ -1828,18 +1783,18 @@ def process_corporation_blueprints(corp_id, access_token, char_id, wp_post_id_ca
     if SKIP_CORPORATION_ASSETS:
         logger.info("Skipping corporation assets processing (SKIP_CORPORATION_ASSETS=true)")
     else:
-        corp_assets = fetch_corporation_assets(corp_id, access_token)
+        corp_assets = await fetch_corporation_assets(corp_id, access_token)
         if corp_assets:
             logger.info(f"Fetched {len(corp_assets)} corporation assets")
             asset_blueprints = extract_blueprints_from_assets(corp_assets, 'corp', corp_id, access_token)
             if asset_blueprints:
                 logger.info(f"Corporation asset blueprints: {len(asset_blueprints)} items")
                 # Process blueprints in parallel
-                process_blueprints_parallel(
+                await process_blueprints_parallel(
                     asset_blueprints,
                     update_blueprint_from_asset_in_wp,
                     wp_post_id_cache,
-                    char_id,
+                    corp_id,
                     access_token,
                     blueprint_cache,
                     location_cache,
@@ -1852,17 +1807,17 @@ def process_corporation_blueprints(corp_id, access_token, char_id, wp_post_id_ca
             logger.info("No corporation assets found or access denied")
 
     # From corporation industry jobs
-    corp_industry_jobs = fetch_corporation_industry_jobs(corp_id, access_token)
+    corp_industry_jobs = await fetch_corporation_industry_jobs(corp_id, access_token)
     if corp_industry_jobs:
         job_blueprints = extract_blueprints_from_industry_jobs(corp_industry_jobs, 'corp', corp_id)
         if job_blueprints:
             logger.info(f"Corporation industry job blueprints: {len(job_blueprints)} items")
             # Process blueprints in parallel
-            process_blueprints_parallel(
+            await process_blueprints_parallel(
                 job_blueprints,
                 update_blueprint_from_asset_in_wp,
                 wp_post_id_cache,
-                char_id,
+                corp_id,
                 access_token,
                 blueprint_cache,
                 location_cache,
@@ -1871,17 +1826,17 @@ def process_corporation_blueprints(corp_id, access_token, char_id, wp_post_id_ca
             )
 
     # From corporation contracts (blueprints already processed above)
-    corp_contracts = fetch_corporation_contracts(corp_id, access_token)
+    corp_contracts = await fetch_corporation_contracts(corp_id, access_token)
     if corp_contracts:
         contract_blueprints = extract_blueprints_from_contracts(corp_contracts, 'corp', corp_id)
         if contract_blueprints:
             logger.info(f"Corporation contract blueprints: {len(contract_blueprints)} items")
             # Process blueprints in parallel
-            process_blueprints_parallel(
+            await process_blueprints_parallel(
                 contract_blueprints,
                 update_blueprint_from_asset_in_wp,
                 wp_post_id_cache,
-                char_id,
+                corp_id,
                 access_token,
                 blueprint_cache,
                 location_cache,
@@ -1889,9 +1844,9 @@ def process_corporation_blueprints(corp_id, access_token, char_id, wp_post_id_ca
                 failed_structures
             )
 
-def process_corporation_contracts(corp_id, access_token, corp_data, blueprint_cache):
+async def process_corporation_contracts(corp_id, access_token, corp_data, blueprint_cache):
     """Process contracts for a corporation."""
-    corp_contracts = fetch_corporation_contracts(corp_id, access_token)
+    corp_contracts = await fetch_corporation_contracts(corp_id, access_token)
     if corp_contracts:
         logger.info(f"Corporation contracts for {corp_data.get('name', corp_id)}: {len(corp_contracts)} items")
         for contract in corp_contracts:
@@ -1908,7 +1863,7 @@ def process_corporation_contracts(corp_id, access_token, corp_data, blueprint_ca
                 
             update_contract_in_wp(contract['contract_id'], contract, for_corp=True, entity_id=corp_id, access_token=access_token, blueprint_cache=blueprint_cache)
 
-def process_character_data(char_id, token_data, wp_post_id_cache, blueprint_cache, location_cache, structure_cache, failed_structures, args):
+async def process_character_data(char_id, token_data, wp_post_id_cache, blueprint_cache, location_cache, structure_cache, failed_structures, args):
     """Process data for a single character."""
     access_token = token_data['access_token']
     char_name = token_data['name']
@@ -1917,7 +1872,7 @@ def process_character_data(char_id, token_data, wp_post_id_cache, blueprint_cach
 
     # Fetch skills
     if args.all or args.skills:
-        skills = fetch_character_skills(char_id, access_token)
+        skills = await fetch_character_skills(char_id, access_token)
         if skills:
             # Update character with skills data
             update_character_skills_in_wp(char_id, skills)
@@ -1925,29 +1880,29 @@ def process_character_data(char_id, token_data, wp_post_id_cache, blueprint_cach
 
     # Process character blueprints from all sources
     if args.all or args.blueprints:
-        process_character_blueprints(char_id, access_token, char_name, wp_post_id_cache, blueprint_cache, location_cache, structure_cache, failed_structures)
+        await process_character_blueprints(char_id, access_token, char_name, wp_post_id_cache, blueprint_cache, location_cache, structure_cache, failed_structures)
 
     # Process character planets
     if args.all or args.planets:
-        process_character_planets(char_id, access_token, char_name)
+        await process_character_planets(char_id, access_token, char_name)
 
     # Process character contracts
     if args.all or args.contracts:
-        process_character_contracts(char_id, access_token, char_name, wp_post_id_cache, blueprint_cache, location_cache, structure_cache, failed_structures)
+        await process_character_contracts(char_id, access_token, char_name, wp_post_id_cache, blueprint_cache, location_cache, structure_cache, failed_structures)
 
-def process_character_blueprints(char_id, access_token, char_name, wp_post_id_cache, blueprint_cache, location_cache, structure_cache, failed_structures):
+async def process_character_blueprints(char_id, access_token, char_name, wp_post_id_cache, blueprint_cache, location_cache, structure_cache, failed_structures):
     """Process all blueprint sources for a character."""
     logger.info(f"Fetching blueprints for {char_name}...")
 
     # From character blueprints endpoint
-    blueprints = fetch_character_blueprints(char_id, access_token)
+    blueprints = await fetch_character_blueprints(char_id, access_token)
     if blueprints:
         # Filter to only BPOs (quantity == -1)
         bpo_blueprints = [bp for bp in blueprints if bp.get('quantity', 1) == -1]
         logger.info(f"Character blueprints: {len(blueprints)} total, {len(bpo_blueprints)} BPOs")
         if bpo_blueprints:
             # Process blueprints in parallel
-            process_blueprints_parallel(
+            await process_blueprints_parallel(
                 bpo_blueprints,
                 update_blueprint_in_wp,
                 wp_post_id_cache,
@@ -1960,13 +1915,13 @@ def process_character_blueprints(char_id, access_token, char_name, wp_post_id_ca
             )
 
     # From character assets
-    char_assets = fetch_character_assets(char_id, access_token)
+    char_assets = await fetch_character_assets(char_id, access_token)
     if char_assets:
         asset_blueprints = extract_blueprints_from_assets(char_assets, 'char', char_id, access_token)
         if asset_blueprints:
             logger.info(f"Character asset blueprints: {len(asset_blueprints)} items")
             # Process blueprints in parallel
-            process_blueprints_parallel(
+            await process_blueprints_parallel(
                 asset_blueprints,
                 update_blueprint_from_asset_in_wp,
                 wp_post_id_cache,
@@ -1979,14 +1934,14 @@ def process_character_blueprints(char_id, access_token, char_name, wp_post_id_ca
             )
 
     # From character industry jobs (blueprints already processed above)
-    jobs = fetch_character_industry_jobs(char_id, access_token)
+    jobs = await fetch_character_industry_jobs(char_id, access_token)
     if jobs:
         logger.info(f"Industry jobs for {char_name}: {len(jobs)} active")
         job_blueprints = extract_blueprints_from_industry_jobs(jobs, 'char', char_id)
         if job_blueprints:
             logger.info(f"Character industry job blueprints: {len(job_blueprints)} items")
             # Process blueprints in parallel
-            process_blueprints_parallel(
+            await process_blueprints_parallel(
                 job_blueprints,
                 update_blueprint_from_asset_in_wp,
                 wp_post_id_cache,
@@ -2019,15 +1974,15 @@ def check_industry_job_completions(jobs, char_name):
         logger.info(f"Email alert disabled: {subject}")
         # send_email(subject, body)
 
-def process_character_planets(char_id, access_token, char_name):
+async def process_character_planets(char_id, access_token, char_name):
     """Process planets for a character."""
-    planets = fetch_character_planets(char_id, access_token)
+    planets = await fetch_character_planets(char_id, access_token)
     if planets:
         logger.info(f"Planets for {char_name}: {len(planets)} colonies")
         for planet in planets:
             planet_id = planet['planet_id']
             # Fetch details
-            details = fetch_planet_details(char_id, planet_id, access_token)
+            details = await fetch_planet_details(char_id, planet_id, access_token)
             if details:
                 planet.update(details)
                 # Check for extraction completions
@@ -2052,16 +2007,16 @@ def check_planet_extraction_completions(planet_details, char_name):
         logger.info(f"Email alert disabled: {subject}")
         # send_email(subject, body)
 
-def process_character_contracts(char_id, access_token, char_name, wp_post_id_cache, blueprint_cache, location_cache, structure_cache, failed_structures):
+async def process_character_contracts(char_id, access_token, char_name, wp_post_id_cache, blueprint_cache, location_cache, structure_cache, failed_structures):
     """Process contracts for a character."""
-    char_contracts = fetch_character_contracts(char_id, access_token)
+    char_contracts = await fetch_character_contracts(char_id, access_token)
     if char_contracts:
         logger.info(f"Character contracts for {char_name}: {len(char_contracts)} items")
         contract_blueprints = extract_blueprints_from_contracts(char_contracts, 'char', char_id)
         if contract_blueprints:
             logger.info(f"Character contract blueprints: {len(contract_blueprints)} items")
             # Process blueprints in parallel
-            process_blueprints_parallel(
+            await process_blueprints_parallel(
                 contract_blueprints,
                 update_blueprint_from_asset_in_wp,
                 wp_post_id_cache,
@@ -2316,4 +2271,4 @@ def cleanup_old_posts(allowed_corp_ids, allowed_issuer_ids):
     logger.info("Cleanup completed.")
 
 if __name__ == "__main__":
-    main()
+    asyncio.run(main())

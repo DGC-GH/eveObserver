@@ -21,13 +21,15 @@ Based on the analysis, suggest targeted improvements to make the code:
 - **Better Overall:** Enhanced features, improved error resilience, added tests, or security fixes.
 - **Faster:** Optimized execution, reduced latency, or resource efficiency.
 
-Output in this exact format for easy adoption in VS Code (e.g., copy-paste suggestions into Copilot prompts or files), use emojis and format the text for better readebility:
+Use emojis and format the text for better readebility and output in this exact format for easy adoption in VS Code (e.g., copy-paste suggestions into Copilot prompts or files), :
 
 - **Agent Preferences:** [Bulleted list summarizing your biases above]
 - **Repo Analysis Summary:** [Concise yet detailed overview, including key insights from the structured analysis steps]
 - **Improvements:** [Numbered list; for each: 1) Brief explanation and rationale, 2) Code snippet or diff (use Git-style diff format if changing existing code), 3) Copilot-friendly suggestion (e.g., “Paste this into VS Code and use Copilot to refactor: [prompt]”), 4) Expected benefits tied to preferences]
-- **Roadmap:** create new or modify the existing roadmap file based on your findings and plan it step by step in an optimal order
-- **Commit title:** prepare text to copy and paste in the inputfield in VS Code, output it as last thing every step so i can use it when commiting the changes
+
+**Roadmap:** update the existing roadmap.md file (or create new if it doesnt exis) based on your findings and plan it step by step in an optimal order, keep track of your progress by editing this file.
+**Commit title:** prepare text to copy and paste in the inputfield in VS Code, output it as last thing every step so i can use it when commiting the changes formated in code so i can use built in copy button
+**Tests:** each phase, run the test (add new if needed) and fix the issues
 
 
 -------------

@@ -8,11 +8,12 @@ import os
 import json
 import requests
 from datetime import datetime, timezone
-from typing import Dict, List, Any, Optional, Tuple
+from typing import Dict, List, Any, Optional, Tuple, Callable
 import logging
 from concurrent.futures import ThreadPoolExecutor, as_completed, TimeoutError
 import time
 import time
+import asyncio
 
 from config import *
 from api_client import (
@@ -26,6 +27,7 @@ from cache_manager import (
     load_failed_structures, save_failed_structures, load_wp_post_id_cache, save_wp_post_id_cache,
     get_cached_wp_post_id, set_cached_wp_post_id
 )
+from fetch_data import fetch_character_portrait
 
 logger = logging.getLogger(__name__)
 
@@ -33,53 +35,29 @@ def get_wp_auth():
     """Get WordPress authentication."""
     return requests.auth.HTTPBasicAuth(WP_USERNAME, WP_APP_PASSWORD)
 
-def process_blueprints_parallel(blueprints, update_func, wp_post_id_cache, *args, **kwargs):
-    """Process blueprints in parallel while respecting rate limits."""
+async def process_blueprints_parallel(blueprints: List[Dict[str, Any]], update_func: Callable[..., Any], wp_post_id_cache: Dict[str, Any], *args, **kwargs) -> List[Any]:
+    """Process blueprints in parallel using asyncio for better concurrency."""
     start_time = time.time()
-    max_workers = api_config.esi_max_workers  # Limit concurrent requests to avoid rate limiting
-    results = []
-    processed_count = 0
     total_blueprints = len(blueprints)
 
-    logger.info(f"Starting parallel processing of {total_blueprints} blueprints with {max_workers} workers")
+    logger.info(f"Starting async processing of {total_blueprints} blueprints")
 
-    with ThreadPoolExecutor(max_workers=max_workers) as executor:
-        # Submit all blueprint update tasks
-        future_to_bp = {
-            executor.submit(update_func, bp, wp_post_id_cache, *args, **kwargs): bp
-            for bp in blueprints
-        }
+    tasks = [update_func(bp, wp_post_id_cache, *args, **kwargs) for bp in blueprints]
+    results = await asyncio.gather(*tasks, return_exceptions=True)
 
-        for future in as_completed(future_to_bp):
-            bp = future_to_bp[future]
-            item_id = bp.get("item_id", "unknown")
+    processed_count = 0
+    for result in results:
+        if isinstance(result, Exception):
+            logger.error(f'Blueprint processing generated an exception: {result}')
+        else:
             processed_count += 1
-
-            try:
-                # Add timeout to prevent hanging
-                result = future.result(timeout=300)  # 5 minute timeout per blueprint
-                results.append(result)
-                logger.info(f"Processed blueprint {processed_count}/{total_blueprints}: {item_id}")
-
-                # Small delay between requests to be rate limit friendly
-                time.sleep(0.05)
-
-            except TimeoutError:
-                logger.error(f"Blueprint {item_id} timed out after 5 minutes - skipping")
-                # Cancel the future if possible
-                if not future.cancelled():
-                    future.cancel()
-
-            except Exception as exc:
-                logger.error(f'Blueprint {item_id} generated an exception: {exc}')
-                logger.error(f'Blueprint data: {bp}')
-                # Continue processing other blueprints
+            logger.info(f"Processed blueprint {processed_count}/{total_blueprints}")
 
     elapsed = time.time() - start_time
-    logger.info(f"Completed parallel processing: {len(results)}/{total_blueprints} blueprints processed successfully in {elapsed:.2f}s")
+    logger.info(f"Completed async processing: {processed_count}/{total_blueprints} blueprints processed successfully in {elapsed:.2f}s")
     return results
 
-def update_character_in_wp(char_id: int, char_data: Dict[str, Any]) -> None:
+async def update_character_in_wp(char_id: int, char_data: Dict[str, Any]) -> None:
     """
     Update or create a character post in WordPress.
 
@@ -99,10 +77,9 @@ def update_character_in_wp(char_id: int, char_data: Dict[str, Any]) -> None:
     slug = f"character-{char_id}"
     # Check if post exists by slug
     try:
-        response = requests.get(f"{WP_BASE_URL}/wp-json/wp/v2/eve_character?slug={slug}", auth=get_wp_auth())
-        existing_posts = response.json() if response.status_code == 200 else []
+        existing_posts = await wp_request('GET', f"/wp-json/wp/v2/eve_character?slug={slug}")
         existing_post = existing_posts[0] if existing_posts else None
-    except requests.RequestException as e:
+    except (WordPressAuthError, WordPressRequestError) as e:
         logger.error(f"Failed to fetch existing character post for {char_id}: {e}")
         return
 
@@ -133,7 +110,7 @@ def update_character_in_wp(char_id: int, char_data: Dict[str, Any]) -> None:
             post_data['meta'][key] = value
 
     # Add featured image from character portrait
-    portrait_data = fetch_character_portrait(char_id)
+    portrait_data = await fetch_character_portrait(char_id)
     if portrait_data and 'px256x256' in portrait_data:
         new_portrait_url = portrait_data['px256x256']
         # Check if portrait changed before updating
@@ -149,34 +126,32 @@ def update_character_in_wp(char_id: int, char_data: Dict[str, Any]) -> None:
         post_id = existing_post['id']
         url = f"{WP_BASE_URL}/wp-json/wp/v2/eve_character/{post_id}"
         try:
-            response = requests.put(url, json=post_data, auth=get_wp_auth())
-            if response.status_code in [200, 201]:
+            result = await wp_request('PUT', f"/wp-json/wp/v2/eve_character/{post_id}", post_data)
+            if result:
                 logger.info(f"Updated character: {char_data['name']}")
             else:
-                logger.error(f"Failed to update character {char_data['name']}: {response.status_code} - {response.text}")
-        except requests.RequestException as e:
+                logger.error(f"Failed to update character {char_data['name']}: No result")
+        except (WordPressAuthError, WordPressRequestError) as e:
             logger.error(f"Failed to update character {char_data['name']}: {e}")
     else:
         # Create new
-        url = f"{WP_BASE_URL}/wp-json/wp/v2/eve_character"
         try:
-            response = requests.post(url, json=post_data, auth=get_wp_auth())
-            if response.status_code in [200, 201]:
+            result = await wp_request('POST', "/wp-json/wp/v2/eve_character", post_data)
+            if result:
                 logger.info(f"Created character: {char_data['name']}")
             else:
-                logger.error(f"Failed to create character {char_data['name']}: {response.status_code} - {response.text}")
-        except requests.RequestException as e:
+                logger.error(f"Failed to create character {char_data['name']}: No result")
+        except (WordPressAuthError, WordPressRequestError) as e:
             logger.error(f"Failed to create character {char_data['name']}: {e}")
 
-def update_character_skills_in_wp(char_id: int, skills_data: Dict[str, Any]) -> None:
+async def update_character_skills_in_wp(char_id: int, skills_data: Dict[str, Any]) -> None:
     """Update character post with skills data."""
     slug = f"character-{char_id}"
     # Check if post exists by slug
     try:
-        response = requests.get(f"{WP_BASE_URL}/wp-json/wp/v2/eve_character?slug={slug}", auth=get_wp_auth())
-        existing_posts = response.json() if response.status_code == 200 else []
+        existing_posts = await wp_request('GET', f"/wp-json/wp/v2/eve_character?slug={slug}")
         existing_post = existing_posts[0] if existing_posts else None
-    except requests.RequestException as e:
+    except (WordPressAuthError, WordPressRequestError) as e:
         logger.error(f"Failed to fetch character post for skills update {char_id}: {e}")
         return
 
@@ -189,14 +164,13 @@ def update_character_skills_in_wp(char_id: int, skills_data: Dict[str, Any]) -> 
                 '_eve_last_updated': datetime.now(timezone.utc).isoformat()
             }
         }
-        url = f"{WP_BASE_URL}/wp-json/wp/v2/eve_character/{post_id}"
         try:
-            response = requests.put(url, json=post_data, auth=get_wp_auth())
-            if response.status_code in [200, 201]:
+            result = await wp_request('PUT', f"/wp-json/wp/v2/eve_character/{post_id}", post_data)
+            if result:
                 logger.info(f"Updated skills for character {char_id}")
             else:
-                logger.error(f"Failed to update skills for character {char_id}: {response.status_code} - {response.text}")
-        except requests.RequestException as e:
+                logger.error(f"Failed to update skills for character {char_id}: No result")
+        except (WordPressAuthError, WordPressRequestError) as e:
             logger.error(f"Failed to update skills for character {char_id}: {e}")
 
 def fetch_character_data(char_id: int, access_token: str) -> Optional[Dict[str, Any]]:
@@ -244,7 +218,7 @@ def fetch_corporation_data(corp_id: int, access_token: str) -> Optional[Dict[str
         logger.error(f"Failed to fetch corporation data for {corp_id}: {e}")
         return None
 
-def update_blueprint_in_wp(blueprint_data: Dict[str, Any], wp_post_id_cache: Dict[str, Any], char_id: int, access_token: str, blueprint_cache: Optional[Dict[str, Any]] = None, location_cache: Optional[Dict[str, Any]] = None, structure_cache: Optional[Dict[str, Any]] = None, failed_structures: Optional[Dict[str, Any]] = None) -> None:
+async def update_blueprint_in_wp(blueprint_data: Dict[str, Any], wp_post_id_cache: Dict[str, Any], char_id: int, access_token: str, blueprint_cache: Optional[Dict[str, Any]] = None, location_cache: Optional[Dict[str, Any]] = None, structure_cache: Optional[Dict[str, Any]] = None, failed_structures: Optional[Dict[str, Any]] = None) -> None:
     """
     Update or create a blueprint post in WordPress from direct blueprint endpoint data.
 
@@ -300,44 +274,109 @@ def update_blueprint_in_wp(blueprint_data: Dict[str, Any], wp_post_id_cache: Dic
     if cached_post_id:
         # Use direct post ID lookup
         try:
-            response = requests.get(f"{WP_BASE_URL}/wp-json/wp/v2/eve_blueprint/{cached_post_id}", auth=get_wp_auth())
-            if response.status_code == 200:
-                existing_post = response.json()
-            else:
-                # Cache might be stale, fall back to slug lookup
-                cached_post_id = None
-                existing_post = None
-        except requests.RequestException as e:
+            existing_post = await wp_request('GET', f"/wp-json/wp/v2/eve_blueprint/{cached_post_id}")
+        except (WordPressAuthError, WordPressRequestError) as e:
             logger.error(f"Failed to fetch existing blueprint post {cached_post_id}: {e}")
             cached_post_id = None
+            existing_post = None
     else:
         # Fall back to slug lookup
         try:
-            response = requests.get(f"{WP_BASE_URL}/wp-json/wp/v2/eve_blueprint?slug={slug}", auth=get_wp_auth())
-            existing_posts = response.json() if response.status_code == 200 else []
+            existing_posts = await wp_request('GET', f"/wp-json/wp/v2/eve_blueprint?slug={slug}")
             existing_post = existing_posts[0] if existing_posts else None
 
             # Cache the post ID if found
             if existing_post:
                 set_cached_wp_post_id(wp_post_id_cache, 'eve_blueprint', item_id, existing_post['id'])
-        except requests.RequestException as e:
+        except (WordPressAuthError, WordPressRequestError) as e:
             logger.error(f"Failed to fetch blueprint posts by slug {slug}: {e}")
             existing_post = None
 
-    # Get blueprint name and details
-    type_id = blueprint_data.get('type_id')
+    # Fetch blueprint details
+    type_name, location_name, bp_type = await fetch_blueprint_details(blueprint_data, char_id, access_token, blueprint_cache, location_cache, structure_cache, failed_structures)
+    
     me = blueprint_data.get('material_efficiency', 0)
     te = blueprint_data.get('time_efficiency', 0)
-    location_id = blueprint_data.get('location_id')
     quantity = blueprint_data.get('quantity', -1)
 
+    post_data = construct_blueprint_post_data(blueprint_data, type_name, location_name, bp_type, char_id, item_id)
+
+    # Update or create the blueprint post in WordPress
+    await update_or_create_blueprint_post(post_data, existing_post, wp_post_id_cache, item_id, blueprint_data, type_name, location_name, me, te, quantity)
+
+    elapsed = time.time() - start_time
+    logger.info(f"Blueprint processing completed for item {item_id} in {elapsed:.2f}s")
+
+async def update_or_create_blueprint_post(post_data: Dict[str, Any], existing_post: Optional[Dict[str, Any]], wp_post_id_cache: Dict[str, Any], item_id: int, blueprint_data: Dict[str, Any], type_name: str, location_name: str, me: int, te: int, quantity: int) -> None:
+    """
+    Update or create the blueprint post in WordPress.
+    """
+    # Add featured image from type icon (only for new blueprints)
+    if not existing_post:
+        type_id = blueprint_data.get('type_id')
+        if type_id:
+            image_url = await fetch_type_icon(type_id, size=512)
+            post_data['meta']['_thumbnail_external_url'] = image_url
+
+    if existing_post:
+        # Check if data has changed before updating
+        existing_meta = existing_post.get('meta', {})
+        existing_title = existing_post.get('title', {}).get('rendered', '')
+
+        # Compare key fields
+        needs_update = (
+            existing_title != post_data['title'] or
+            str(existing_meta.get('_eve_bp_location_name', '')) != str(location_name) or
+            str(existing_meta.get('_eve_bp_me', 0)) != str(me) or
+            str(existing_meta.get('_eve_bp_te', 0)) != str(te) or
+            str(existing_meta.get('_eve_bp_quantity', -1)) != str(quantity)
+        )
+
+        if not needs_update:
+            logger.info(f"Blueprint {item_id} unchanged, skipping update")
+            return
+
+        # Update existing
+        post_id = existing_post['id']
+        try:
+            result = await wp_request('PUT', f"/wp-json/wp/v2/eve_blueprint/{post_id}", post_data)
+            if result:
+                logger.info(f"Updated blueprint: {item_id}")
+            else:
+                logger.error(f"Failed to update blueprint {item_id}: No result")
+        except (WordPressAuthError, WordPressRequestError) as e:
+            logger.error(f"Failed to update blueprint {item_id}: {e}")
+    else:
+        # Create new
+        try:
+            new_post = await wp_request('POST', "/wp-json/wp/v2/eve_blueprint", post_data)
+            if new_post:
+                set_cached_wp_post_id(wp_post_id_cache, 'eve_blueprint', item_id, new_post['id'])
+                logger.info(f"Created new blueprint: {item_id}")
+            else:
+                logger.error(f"Failed to create blueprint {item_id}: No result")
+        except (WordPressAuthError, WordPressRequestError) as e:
+            logger.error(f"Failed to create blueprint {item_id}: {e}")
+
+async def fetch_blueprint_details(blueprint_data: Dict[str, Any], char_id: int, access_token: str, blueprint_cache: Dict[str, Any], location_cache: Dict[str, Any], structure_cache: Dict[str, Any], failed_structures: Dict[str, Any]) -> Tuple[str, str, str]:
+    """
+    Fetch blueprint type name and location name.
+    
+    Returns:
+        Tuple of (type_name, location_name, bp_type)
+    """
+    item_id = blueprint_data.get('item_id')
+    type_id = blueprint_data.get('type_id')
+    location_id = blueprint_data.get('location_id')
+    quantity = blueprint_data.get('quantity', -1)
+    
     # Get blueprint name from cache or API
     if type_id:
         if str(type_id) in blueprint_cache:
             type_name = blueprint_cache[str(type_id)]
         else:
             try:
-                type_data = fetch_public_esi(f"/universe/types/{type_id}")
+                type_data = await fetch_public_esi(f"/universe/types/{type_id}")
                 if type_data:
                     type_name = type_data.get('name', f"Blueprint {item_id}").replace(" Blueprint", "").strip()
                     blueprint_cache[str(type_id)] = type_name
@@ -354,7 +393,6 @@ def update_blueprint_in_wp(blueprint_data: Dict[str, Any], wp_post_id_cache: Dic
     bp_type = "BPO" if quantity == -1 else "BPC"
 
     # Get location name from cache or API
-    # Structures have IDs >= 1000000000000, stations have lower IDs
     if location_id:
         location_id_str = str(location_id)
         if location_id_str in location_cache:
@@ -367,7 +405,7 @@ def update_blueprint_in_wp(blueprint_data: Dict[str, Any], wp_post_id_cache: Dic
             else:
                 # Try auth fetch for private structures
                 try:
-                    struct_data = fetch_esi(f"/universe/structures/{location_id}", char_id, access_token)
+                    struct_data = await fetch_esi(f"/universe/structures/{location_id}", char_id, access_token)
                     if struct_data:
                         location_name = struct_data.get('name', f"Citadel {location_id}")
                         structure_cache[location_id_str] = location_name
@@ -386,7 +424,7 @@ def update_blueprint_in_wp(blueprint_data: Dict[str, Any], wp_post_id_cache: Dic
                 location_name = location_cache[location_id_str]
             else:
                 try:
-                    loc_data = fetch_public_esi(f"/universe/stations/{location_id}")
+                    loc_data = await fetch_public_esi(f"/universe/stations/{location_id}")
                     location_name = loc_data.get('name', f"Station {location_id}") if loc_data else f"Station {location_id}"
                     location_cache[location_id_str] = location_name
                     save_location_cache(location_cache)
@@ -397,10 +435,21 @@ def update_blueprint_in_wp(blueprint_data: Dict[str, Any], wp_post_id_cache: Dic
                     save_location_cache(location_cache)
     else:
         location_name = "Unknown Location"
+    
+    return type_name, location_name, bp_type
 
+def construct_blueprint_post_data(blueprint_data: Dict[str, Any], type_name: str, location_name: str, bp_type: str, char_id: int, item_id: int) -> Dict[str, Any]:
+    """
+    Construct the post data dictionary for a blueprint.
+    """
+    me = blueprint_data.get('material_efficiency', 0)
+    te = blueprint_data.get('time_efficiency', 0)
+    location_id = blueprint_data.get('location_id')
+    quantity = blueprint_data.get('quantity', -1)
+    
     # Construct title
     title = f"{type_name} {bp_type} {me}/{te} ({location_name}) – ID: {item_id}"
-
+    
     post_data = {
         'title': title,
         'slug': f"blueprint-{item_id}",
@@ -408,70 +457,15 @@ def update_blueprint_in_wp(blueprint_data: Dict[str, Any], wp_post_id_cache: Dic
         'meta': {
             '_eve_bp_item_id': item_id,
             '_eve_bp_type_id': blueprint_data.get('type_id'),
-            '_eve_bp_location_id': blueprint_data.get('location_id'),
+            '_eve_bp_location_id': location_id,
             '_eve_bp_location_name': location_name,
-            '_eve_bp_quantity': blueprint_data.get('quantity', -1),
-            '_eve_bp_me': blueprint_data.get('material_efficiency', 0),
-            '_eve_bp_te': blueprint_data.get('time_efficiency', 0),
+            '_eve_bp_quantity': quantity,
+            '_eve_bp_me': me,
+            '_eve_bp_te': te,
             '_eve_bp_runs': blueprint_data.get('runs', -1),
             '_eve_char_id': char_id,
             '_eve_last_updated': datetime.now(timezone.utc).isoformat()
         }
     }
-
-    # Add featured image from type icon (only for new blueprints)
-    if not existing_post:
-        type_id = blueprint_data.get('type_id')
-        if type_id:
-            image_url = fetch_type_icon(type_id, size=512)
-            post_data['meta']['_thumbnail_external_url'] = image_url
-
-    if existing_post:
-        # Check if data has changed before updating
-        existing_meta = existing_post.get('meta', {})
-        existing_title = existing_post.get('title', {}).get('rendered', '')
-
-        # Compare key fields
-        needs_update = (
-            existing_title != title or
-            str(existing_meta.get('_eve_bp_location_name', '')) != str(location_name) or
-            str(existing_meta.get('_eve_bp_me', 0)) != str(me) or
-            str(existing_meta.get('_eve_bp_te', 0)) != str(te) or
-            str(existing_meta.get('_eve_bp_quantity', -1)) != str(quantity)
-        )
-
-        if not needs_update:
-            logger.info(f"Blueprint {item_id} unchanged, skipping update")
-            return
-
-        # Update existing
-        post_id = existing_post['id']
-        url = f"{WP_BASE_URL}/wp-json/wp/v2/eve_blueprint/{post_id}"
-        try:
-            response = requests.put(url, json=post_data, auth=get_wp_auth())
-            if response.status_code in [200, 201]:
-                logger.info(f"Updated blueprint: {item_id}")
-            else:
-                logger.error(f"Failed to update blueprint {item_id}: {response.status_code} - {response.text}")
-        except requests.RequestException as e:
-            logger.error(f"Failed to update blueprint {item_id}: {e}")
-    else:
-        # Create new
-        url = f"{WP_BASE_URL}/wp-json/wp/v2/eve_blueprint"
-        try:
-            response = requests.post(url, json=post_data, auth=get_wp_auth())
-
-            # Cache the new post ID if creation was successful
-            if response.status_code in [200, 201]:
-                new_post = response.json()
-                set_cached_wp_post_id(wp_post_id_cache, 'eve_blueprint', item_id, new_post['id'])
-                logger.info(f"Created new blueprint: {item_id}")
-            else:
-                logger.error(f"Failed to create blueprint {item_id}: {response.status_code} - {response.text}")
-        except requests.RequestException as e:
-            logger.error(f"Failed to create blueprint {item_id}: {e}")
-
-    elapsed = time.time() - start_time
-    logger.info(f"Blueprint processing completed for item {item_id} in {elapsed:.2f}s")
-
-# ...existing code...
+    
+    return post_data
