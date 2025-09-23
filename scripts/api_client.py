@@ -14,7 +14,8 @@ import smtplib
 from email.mime.text import MIMEText
 import logging
 import requests
-from typing import Optional, Dict, List, Any, Tuple, Callable, Awaitable
+from typing import Any, Dict, List, Optional
+import re
 from dataclasses import dataclass
 from enum import Enum
 import time
@@ -452,3 +453,6 @@ async def fetch_type_icon(type_id: int, size: int = 512) -> str:
 
     # If no icon found, return placeholder
     return f"https://via.placeholder.com/{size}x{size}/cccccc/000000?text=No+Icon"
+
+def sanitize_string(value: str) -> str:
+    return re.sub(r'[^\w\s\-.,]', '', value) if isinstance(value, str) else str(value)

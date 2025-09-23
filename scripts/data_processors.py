@@ -16,11 +16,7 @@ import time
 import asyncio
 
 from config import *
-from api_client import (
-    fetch_public_esi, fetch_esi, wp_request, fetch_type_icon, send_email,
-    ESIApiError, ESIAuthError, ESIRequestError, WordPressApiError, WordPressAuthError, WordPressRequestError,
-    api_config
-)
+from api_client import fetch_public_esi, fetch_esi, wp_request, send_email, refresh_token, fetch_type_icon, sanitize_string, wp_semaphore, api_requests
 from cache_manager import (
     load_blueprint_cache, save_blueprint_cache, load_blueprint_type_cache, save_blueprint_type_cache,
     load_location_cache, save_location_cache, load_structure_cache, save_structure_cache,
@@ -35,6 +31,14 @@ logger = logging.getLogger(__name__)
 def get_wp_auth():
     """Get WordPress authentication."""
     return requests.auth.HTTPBasicAuth(WP_USERNAME, WP_APP_PASSWORD)
+
+def benchmark(func):
+    async def wrapper(*args, **kwargs):
+        start = time.time()
+        result = await func(*args, **kwargs)
+        logger.info(f"{func.__name__} took {time.time() - start:.2f}s")
+        return result
+    return wrapper
 
 async def process_blueprints_parallel(blueprints: List[Dict[str, Any]], update_func: Callable[..., Any], wp_post_id_cache: Dict[str, Any], *args, **kwargs) -> List[Any]:
     """Process blueprints in parallel using asyncio for better concurrency."""
@@ -219,7 +223,8 @@ def fetch_corporation_data(corp_id: int, access_token: str) -> Optional[Dict[str
         logger.error(f"Failed to fetch corporation data for {corp_id}: {e}")
         return None
 
-async def update_blueprint_in_wp(blueprint_data: Dict[str, Any], wp_post_id_cache: Dict[str, Any], char_id: int, access_token: str, blueprint_cache: Optional[Dict[str, Any]] = None, location_cache: Optional[Dict[str, Any]] = None, structure_cache: Optional[Dict[str, Any]] = None, failed_structures: Optional[Dict[str, Any]] = None) -> None:
+@benchmark
+async def update_blueprint_in_wp(bp_data: dict, session: aiohttp.ClientSession) -> bool:
     """
     Update or create a blueprint post in WordPress from direct blueprint endpoint data.
 

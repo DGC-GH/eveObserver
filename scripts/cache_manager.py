@@ -9,7 +9,12 @@ import json
 import gzip
 import logging
 import asyncio
-from typing import Dict, Any, Optional
+from typing import Any, Dict, List, Optional
+import redis
+r = redis.Redis()
+from prometheus_client import Counter
+cache_hits = Counter('cache_hits_total', 'Total cache hits')
+cache_misses = Counter('cache_misses_total', 'Total cache misses')
 from datetime import datetime, timezone
 from config import CACHE_DIR, BLUEPRINT_CACHE_FILE, BLUEPRINT_TYPE_CACHE_FILE, LOCATION_CACHE_FILE, STRUCTURE_CACHE_FILE, FAILED_STRUCTURES_FILE, WP_POST_ID_CACHE_FILE
 
