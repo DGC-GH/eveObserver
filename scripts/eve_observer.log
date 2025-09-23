@@ -29003,3 +29003,365 @@
 2025-09-24 01:54:44,759 - INFO - Saved 7859 contract items to cache
 2025-09-24 01:54:45,140 - INFO - Saved 7860 contract items to cache
 2025-09-24 01:54:45,385 - INFO - Saved 7861 contract items to cache
+2025-09-24 01:54:45,696 - INFO - Saved 7862 contract items to cache
+2025-09-24 01:54:45,696 - INFO - Fetching 3 missing type IDs...
+2025-09-24 01:54:45,696 - INFO - Fetching 3 missing type data entries...
+2025-09-24 01:54:45,728 - INFO - ESI public fetch successful: /universe/types/20576/ in 0.03s
+2025-09-24 01:54:45,728 - INFO - _fetch_esi_with_retry completed in 0.032s
+2025-09-24 01:54:45,762 - INFO - ESI public fetch successful: /universe/types/20580/ in 0.03s
+2025-09-24 01:54:45,762 - INFO - _fetch_esi_with_retry completed in 0.034s
+2025-09-24 01:54:45,794 - INFO - ESI public fetch successful: /universe/types/20582/ in 0.03s
+2025-09-24 01:54:45,794 - INFO - _fetch_esi_with_retry completed in 0.032s
+2025-09-24 01:54:45,913 - INFO - Saved 3873 type entries to cache
+2025-09-24 01:54:45,913 - INFO - Adding items to batch 395: contracts 7880 to 7899
+2025-09-24 01:54:46,331 - INFO - Saved 7863 contract items to cache
+2025-09-24 01:54:46,579 - INFO - Saved 7864 contract items to cache
+2025-09-24 01:54:46,980 - INFO - Saved 7865 contract items to cache
+2025-09-24 01:54:47,258 - INFO - Saved 7866 contract items to cache
+2025-09-24 01:54:47,611 - INFO - Saved 7867 contract items to cache
+2025-09-24 01:54:47,953 - INFO - Saved 7868 contract items to cache
+2025-09-24 01:54:48,309 - INFO - Saved 7869 contract items to cache
+2025-09-24 01:54:48,834 - INFO - Saved 7870 contract items to cache
+2025-09-24 01:54:49,175 - INFO - Saved 7871 contract items to cache
+2025-09-24 01:54:49,506 - INFO - Saved 7872 contract items to cache
+2025-09-24 01:54:49,855 - INFO - Saved 7873 contract items to cache
+2025-09-24 01:54:50,204 - INFO - Saved 7874 contract items to cache
+2025-09-24 01:54:50,584 - INFO - Saved 7875 contract items to cache
+2025-09-24 01:54:50,910 - INFO - Saved 7876 contract items to cache
+2025-09-24 01:54:51,337 - INFO - Saved 7877 contract items to cache
+2025-09-24 01:54:51,683 - INFO - Saved 7878 contract items to cache
+2025-09-24 01:54:52,074 - INFO - Saved 7879 contract items to cache
+2025-09-24 01:54:52,703 - INFO - Saved 7880 contract items to cache
+2025-09-24 01:54:53,118 - INFO - Saved 7881 contract items to cache
+2025-09-24 01:54:53,536 - INFO - Saved 7882 contract items to cache
+2025-09-24 01:54:53,536 - INFO - Fetching 6 missing type IDs...
+2025-09-24 01:54:53,536 - INFO - Fetching 6 missing type data entries...
+2025-09-24 01:54:53,573 - INFO - ESI public fetch successful: /universe/types/20640/ in 0.04s
+2025-09-24 01:54:53,573 - INFO - _fetch_esi_with_retry completed in 0.037s
+2025-09-24 01:54:53,607 - INFO - ESI public fetch successful: /universe/types/20642/ in 0.03s
+2025-09-24 01:54:53,607 - INFO - _fetch_esi_with_retry completed in 0.034s
+2025-09-24 01:54:53,642 - INFO - ESI public fetch successful: /universe/types/20556/ in 0.04s
+2025-09-24 01:54:53,642 - INFO - _fetch_esi_with_retry completed in 0.035s
+2025-09-24 01:54:53,676 - INFO - ESI public fetch successful: /universe/types/20558/ in 0.03s
+2025-09-24 01:54:53,676 - INFO - _fetch_esi_with_retry completed in 0.034s
+2025-09-24 01:54:53,711 - INFO - ESI public fetch successful: /universe/types/20634/ in 0.03s
+2025-09-24 01:54:53,711 - INFO - _fetch_esi_with_retry completed in 0.035s
+2025-09-24 01:54:53,831 - INFO - ESI public fetch successful: /universe/types/53916/ in 0.12s
+2025-09-24 01:54:53,831 - INFO - _fetch_esi_with_retry completed in 0.120s
+2025-09-24 01:54:53,971 - INFO - Saved 3879 type entries to cache
+2025-09-24 01:54:53,971 - INFO - Adding items to batch 396: contracts 7900 to 7919
+2025-09-24 01:54:54,607 - INFO - Saved 7883 contract items to cache
+2025-09-24 01:54:54,942 - INFO - Saved 7884 contract items to cache
+2025-09-24 01:54:55,277 - INFO - Saved 7885 contract items to cache
+2025-09-24 01:54:55,623 - INFO - Saved 7886 contract items to cache
+2025-09-24 01:54:55,874 - INFO - Saved 7887 contract items to cache
+2025-09-24 01:54:56,259 - INFO - Saved 7888 contract items to cache
+2025-09-24 01:54:56,513 - INFO - Saved 7889 contract items to cache
+2025-09-24 01:54:56,854 - INFO - Saved 7890 contract items to cache
+2025-09-24 01:54:57,222 - INFO - Saved 7891 contract items to cache
+2025-09-24 01:54:57,990 - INFO - Saved 7892 contract items to cache
+2025-09-24 01:54:58,387 - INFO - Saved 7893 contract items to cache
+2025-09-24 01:54:58,648 - INFO - Saved 7894 contract items to cache
+2025-09-24 01:54:58,960 - INFO - Saved 7895 contract items to cache
+2025-09-24 01:54:59,340 - INFO - Saved 7896 contract items to cache
+2025-09-24 01:54:59,686 - INFO - Saved 7897 contract items to cache
+2025-09-24 01:55:00,165 - INFO - Saved 7898 contract items to cache
+2025-09-24 01:55:00,532 - INFO - Saved 7899 contract items to cache
+2025-09-24 01:55:00,862 - INFO - Saved 7900 contract items to cache
+2025-09-24 01:55:01,208 - INFO - Saved 7901 contract items to cache
+2025-09-24 01:55:01,552 - INFO - Saved 7902 contract items to cache
+2025-09-24 01:55:01,552 - INFO - Adding items to batch 397: contracts 7920 to 7939
+2025-09-24 01:55:02,290 - INFO - Saved 7903 contract items to cache
+2025-09-24 01:55:02,622 - INFO - Saved 7904 contract items to cache
+2025-09-24 01:55:03,151 - INFO - Saved 7905 contract items to cache
+2025-09-24 01:55:03,507 - INFO - Saved 7906 contract items to cache
+2025-09-24 01:55:03,858 - INFO - Saved 7907 contract items to cache
+2025-09-24 01:55:04,192 - INFO - Saved 7908 contract items to cache
+2025-09-24 01:55:04,570 - INFO - Saved 7909 contract items to cache
+2025-09-24 01:55:04,908 - INFO - Saved 7910 contract items to cache
+2025-09-24 01:55:05,252 - INFO - Saved 7911 contract items to cache
+2025-09-24 01:55:05,580 - INFO - Saved 7912 contract items to cache
+2025-09-24 01:55:05,829 - INFO - Saved 7913 contract items to cache
+2025-09-24 01:55:06,244 - INFO - Saved 7914 contract items to cache
+2025-09-24 01:55:06,491 - INFO - Saved 7915 contract items to cache
+2025-09-24 01:55:06,806 - INFO - Saved 7916 contract items to cache
+2025-09-24 01:55:07,176 - INFO - Saved 7917 contract items to cache
+2025-09-24 01:55:07,504 - INFO - Saved 7918 contract items to cache
+2025-09-24 01:55:07,823 - INFO - Saved 7919 contract items to cache
+2025-09-24 01:55:08,212 - INFO - Saved 7920 contract items to cache
+2025-09-24 01:55:08,584 - INFO - Saved 7921 contract items to cache
+2025-09-24 01:55:08,942 - INFO - Saved 7922 contract items to cache
+2025-09-24 01:55:08,942 - INFO - Fetching 2 missing type IDs...
+2025-09-24 01:55:08,942 - INFO - Fetching 2 missing type data entries...
+2025-09-24 01:55:09,034 - INFO - ESI public fetch successful: /universe/types/22442/ in 0.09s
+2025-09-24 01:55:09,034 - INFO - _fetch_esi_with_retry completed in 0.092s
+2025-09-24 01:55:09,068 - INFO - ESI public fetch successful: /universe/types/31053/ in 0.03s
+2025-09-24 01:55:09,068 - INFO - _fetch_esi_with_retry completed in 0.034s
+2025-09-24 01:55:09,188 - INFO - Saved 3881 type entries to cache
+2025-09-24 01:55:09,188 - INFO - Adding items to batch 398: contracts 7940 to 7959
+2025-09-24 01:55:09,527 - INFO - Saved 7923 contract items to cache
+2025-09-24 01:55:09,915 - INFO - Saved 7924 contract items to cache
+2025-09-24 01:55:10,322 - INFO - Saved 7925 contract items to cache
+2025-09-24 01:55:10,658 - INFO - Saved 7926 contract items to cache
+2025-09-24 01:55:11,032 - INFO - Saved 7927 contract items to cache
+2025-09-24 01:55:11,369 - INFO - Saved 7928 contract items to cache
+2025-09-24 01:55:11,728 - INFO - Saved 7929 contract items to cache
+2025-09-24 01:55:12,067 - INFO - Saved 7930 contract items to cache
+2025-09-24 01:55:12,432 - INFO - Saved 7931 contract items to cache
+2025-09-24 01:55:12,783 - INFO - Saved 7932 contract items to cache
+2025-09-24 01:55:13,125 - INFO - Saved 7933 contract items to cache
+2025-09-24 01:55:13,471 - INFO - Saved 7934 contract items to cache
+2025-09-24 01:55:13,840 - INFO - Saved 7935 contract items to cache
+2025-09-24 01:55:14,188 - INFO - Saved 7936 contract items to cache
+2025-09-24 01:55:14,605 - INFO - Saved 7937 contract items to cache
+2025-09-24 01:55:14,921 - INFO - Saved 7938 contract items to cache
+2025-09-24 01:55:15,266 - INFO - Saved 7939 contract items to cache
+2025-09-24 01:55:15,646 - INFO - Saved 7940 contract items to cache
+2025-09-24 01:55:16,067 - INFO - Saved 7941 contract items to cache
+2025-09-24 01:55:16,398 - INFO - Saved 7942 contract items to cache
+2025-09-24 01:55:16,398 - INFO - Fetching 2 missing type IDs...
+2025-09-24 01:55:16,398 - INFO - Fetching 2 missing type data entries...
+2025-09-24 01:55:16,435 - INFO - ESI public fetch successful: /universe/types/1140/ in 0.04s
+2025-09-24 01:55:16,435 - INFO - _fetch_esi_with_retry completed in 0.037s
+2025-09-24 01:55:16,472 - INFO - ESI public fetch successful: /universe/types/1141/ in 0.04s
+2025-09-24 01:55:16,472 - INFO - _fetch_esi_with_retry completed in 0.036s
+2025-09-24 01:55:16,591 - INFO - Saved 3883 type entries to cache
+2025-09-24 01:55:16,591 - INFO - Adding items to batch 399: contracts 7960 to 7979
+2025-09-24 01:55:16,919 - INFO - Saved 7943 contract items to cache
+2025-09-24 01:55:17,244 - INFO - Saved 7944 contract items to cache
+2025-09-24 01:55:17,656 - INFO - Saved 7945 contract items to cache
+2025-09-24 01:55:17,910 - INFO - Saved 7946 contract items to cache
+2025-09-24 01:55:18,200 - INFO - Saved 7947 contract items to cache
+2025-09-24 01:55:18,455 - INFO - Saved 7948 contract items to cache
+2025-09-24 01:55:18,744 - INFO - Saved 7949 contract items to cache
+2025-09-24 01:55:19,073 - INFO - Saved 7950 contract items to cache
+2025-09-24 01:55:19,323 - INFO - Saved 7951 contract items to cache
+2025-09-24 01:55:19,598 - INFO - Saved 7952 contract items to cache
+2025-09-24 01:55:19,849 - INFO - Saved 7953 contract items to cache
+2025-09-24 01:55:20,102 - INFO - Saved 7954 contract items to cache
+2025-09-24 01:55:20,458 - INFO - Saved 7955 contract items to cache
+2025-09-24 01:55:20,812 - INFO - Saved 7956 contract items to cache
+2025-09-24 01:55:21,156 - INFO - Saved 7957 contract items to cache
+2025-09-24 01:55:21,505 - INFO - Saved 7958 contract items to cache
+2025-09-24 01:55:21,836 - INFO - Saved 7959 contract items to cache
+2025-09-24 01:55:22,167 - INFO - Saved 7960 contract items to cache
+2025-09-24 01:55:22,535 - INFO - Saved 7961 contract items to cache
+2025-09-24 01:55:22,913 - INFO - Saved 7962 contract items to cache
+2025-09-24 01:55:22,914 - INFO - Fetching 3 missing type IDs...
+2025-09-24 01:55:22,914 - INFO - Fetching 3 missing type data entries...
+2025-09-24 01:55:22,971 - INFO - ESI public fetch successful: /universe/types/85180/ in 0.06s
+2025-09-24 01:55:22,971 - INFO - _fetch_esi_with_retry completed in 0.058s
+2025-09-24 01:55:23,004 - INFO - ESI public fetch successful: /universe/types/23716/ in 0.03s
+2025-09-24 01:55:23,004 - INFO - _fetch_esi_with_retry completed in 0.033s
+2025-09-24 01:55:23,037 - INFO - ESI public fetch successful: /universe/types/85181/ in 0.03s
+2025-09-24 01:55:23,038 - INFO - _fetch_esi_with_retry completed in 0.033s
+2025-09-24 01:55:23,155 - INFO - Saved 3886 type entries to cache
+2025-09-24 01:55:23,155 - INFO - Adding items to batch 400: contracts 7980 to 7999
+2025-09-24 01:55:23,533 - INFO - Saved 7963 contract items to cache
+2025-09-24 01:55:23,932 - INFO - Saved 7964 contract items to cache
+2025-09-24 01:55:24,253 - INFO - Saved 7965 contract items to cache
+2025-09-24 01:55:24,592 - INFO - Saved 7966 contract items to cache
+2025-09-24 01:55:24,988 - INFO - Saved 7967 contract items to cache
+2025-09-24 01:55:25,296 - INFO - Saved 7968 contract items to cache
+2025-09-24 01:55:25,649 - INFO - Saved 7969 contract items to cache
+2025-09-24 01:55:26,026 - INFO - Saved 7970 contract items to cache
+2025-09-24 01:55:26,400 - INFO - Saved 7971 contract items to cache
+2025-09-24 01:55:26,652 - INFO - Saved 7972 contract items to cache
+2025-09-24 01:55:26,982 - INFO - Saved 7973 contract items to cache
+2025-09-24 01:55:27,337 - INFO - Saved 7974 contract items to cache
+2025-09-24 01:55:27,715 - INFO - Saved 7975 contract items to cache
+2025-09-24 01:55:28,147 - INFO - Saved 7976 contract items to cache
+2025-09-24 01:55:28,424 - INFO - Saved 7977 contract items to cache
+2025-09-24 01:55:28,681 - INFO - Saved 7978 contract items to cache
+2025-09-24 01:55:28,954 - INFO - Saved 7979 contract items to cache
+2025-09-24 01:55:29,243 - INFO - Saved 7980 contract items to cache
+2025-09-24 01:55:29,493 - INFO - Saved 7981 contract items to cache
+2025-09-24 01:55:29,762 - INFO - Saved 7982 contract items to cache
+2025-09-24 01:55:29,762 - INFO - Adding items to batch 401: contracts 8000 to 8019
+2025-09-24 01:55:30,111 - INFO - Saved 7983 contract items to cache
+2025-09-24 01:55:30,484 - INFO - Saved 7984 contract items to cache
+2025-09-24 01:55:30,893 - INFO - Saved 7985 contract items to cache
+2025-09-24 01:55:31,150 - INFO - Saved 7986 contract items to cache
+2025-09-24 01:55:31,440 - INFO - Saved 7987 contract items to cache
+2025-09-24 01:55:31,838 - INFO - Saved 7988 contract items to cache
+2025-09-24 01:55:32,185 - INFO - Saved 7989 contract items to cache
+2025-09-24 01:55:32,438 - INFO - Saved 7990 contract items to cache
+2025-09-24 01:55:32,722 - INFO - Saved 7991 contract items to cache
+2025-09-24 01:55:33,242 - INFO - Saved 7992 contract items to cache
+2025-09-24 01:55:33,495 - INFO - Saved 7993 contract items to cache
+2025-09-24 01:55:33,905 - INFO - Saved 7994 contract items to cache
+2025-09-24 01:55:34,162 - INFO - Saved 7995 contract items to cache
+2025-09-24 01:55:34,530 - INFO - Saved 7996 contract items to cache
+2025-09-24 01:55:34,802 - INFO - Saved 7997 contract items to cache
+2025-09-24 01:55:35,147 - INFO - Saved 7998 contract items to cache
+2025-09-24 01:55:35,482 - INFO - Saved 7999 contract items to cache
+2025-09-24 01:55:35,807 - INFO - Saved 8000 contract items to cache
+2025-09-24 01:55:36,130 - INFO - Saved 8001 contract items to cache
+2025-09-24 01:55:36,379 - INFO - Saved 8002 contract items to cache
+2025-09-24 01:55:36,379 - INFO - Fetching 2 missing type IDs...
+2025-09-24 01:55:36,379 - INFO - Fetching 2 missing type data entries...
+2025-09-24 01:55:36,413 - INFO - ESI public fetch successful: /universe/types/890/ in 0.03s
+2025-09-24 01:55:36,413 - INFO - _fetch_esi_with_retry completed in 0.034s
+2025-09-24 01:55:36,447 - INFO - ESI public fetch successful: /universe/types/41651/ in 0.03s
+2025-09-24 01:55:36,447 - INFO - _fetch_esi_with_retry completed in 0.034s
+2025-09-24 01:55:36,563 - INFO - Saved 3888 type entries to cache
+2025-09-24 01:55:36,563 - INFO - Adding items to batch 402: contracts 8020 to 8039
+2025-09-24 01:55:36,921 - INFO - Saved 8003 contract items to cache
+2025-09-24 01:55:37,168 - INFO - Saved 8004 contract items to cache
+2025-09-24 01:55:37,426 - INFO - Saved 8005 contract items to cache
+2025-09-24 01:55:37,675 - INFO - Saved 8006 contract items to cache
+2025-09-24 01:55:37,923 - INFO - Saved 8007 contract items to cache
+2025-09-24 01:55:38,175 - INFO - Saved 8008 contract items to cache
+2025-09-24 01:55:38,425 - INFO - Saved 8009 contract items to cache
+2025-09-24 01:55:38,689 - INFO - Saved 8010 contract items to cache
+2025-09-24 01:55:38,936 - INFO - Saved 8011 contract items to cache
+2025-09-24 01:55:39,186 - INFO - Saved 8012 contract items to cache
+2025-09-24 01:55:39,434 - INFO - Saved 8013 contract items to cache
+2025-09-24 01:55:39,685 - INFO - Saved 8014 contract items to cache
+2025-09-24 01:55:39,943 - INFO - Saved 8015 contract items to cache
+2025-09-24 01:55:40,207 - INFO - Saved 8016 contract items to cache
+2025-09-24 01:55:40,451 - INFO - Saved 8017 contract items to cache
+2025-09-24 01:55:40,737 - INFO - Saved 8018 contract items to cache
+2025-09-24 01:55:41,086 - INFO - Saved 8019 contract items to cache
+2025-09-24 01:55:41,428 - INFO - Saved 8020 contract items to cache
+2025-09-24 01:55:41,758 - INFO - Saved 8021 contract items to cache
+2025-09-24 01:55:42,114 - INFO - Saved 8022 contract items to cache
+2025-09-24 01:55:42,115 - INFO - Fetching 7 missing type IDs...
+2025-09-24 01:55:42,115 - INFO - Fetching 7 missing type data entries...
+2025-09-24 01:55:42,148 - INFO - ESI public fetch successful: /universe/types/25899/ in 0.03s
+2025-09-24 01:55:42,148 - INFO - _fetch_esi_with_retry completed in 0.034s
+2025-09-24 01:55:42,182 - INFO - ESI public fetch successful: /universe/types/819/ in 0.03s
+2025-09-24 01:55:42,183 - INFO - _fetch_esi_with_retry completed in 0.034s
+2025-09-24 01:55:42,222 - INFO - ESI public fetch successful: /universe/types/820/ in 0.04s
+2025-09-24 01:55:42,222 - INFO - _fetch_esi_with_retry completed in 0.039s
+2025-09-24 01:55:42,255 - INFO - ESI public fetch successful: /universe/types/16279/ in 0.03s
+2025-09-24 01:55:42,256 - INFO - _fetch_esi_with_retry completed in 0.034s
+2025-09-24 01:55:42,289 - INFO - ESI public fetch successful: /universe/types/888/ in 0.03s
+2025-09-24 01:55:42,289 - INFO - _fetch_esi_with_retry completed in 0.033s
+2025-09-24 01:55:42,323 - INFO - ESI public fetch successful: /universe/types/81625/ in 0.03s
+2025-09-24 01:55:42,323 - INFO - _fetch_esi_with_retry completed in 0.034s
+2025-09-24 01:55:42,385 - INFO - ESI public fetch successful: /universe/types/52253/ in 0.06s
+2025-09-24 01:55:42,385 - INFO - _fetch_esi_with_retry completed in 0.062s
+2025-09-24 01:55:42,497 - INFO - Saved 3895 type entries to cache
+2025-09-24 01:55:42,497 - INFO - Adding items to batch 403: contracts 8040 to 8059
+2025-09-24 01:55:42,837 - INFO - Saved 8023 contract items to cache
+2025-09-24 01:55:43,517 - INFO - Saved 8024 contract items to cache
+2025-09-24 01:55:43,861 - INFO - Saved 8025 contract items to cache
+2025-09-24 01:55:44,251 - INFO - Saved 8026 contract items to cache
+2025-09-24 01:55:44,993 - INFO - Saved 8027 contract items to cache
+2025-09-24 01:55:45,344 - INFO - Saved 8028 contract items to cache
+2025-09-24 01:55:45,672 - INFO - Saved 8029 contract items to cache
+2025-09-24 01:55:46,183 - INFO - Saved 8030 contract items to cache
+2025-09-24 01:55:46,591 - INFO - Saved 8031 contract items to cache
+2025-09-24 01:55:47,017 - INFO - Saved 8032 contract items to cache
+2025-09-24 01:55:47,365 - INFO - Saved 8033 contract items to cache
+2025-09-24 01:55:47,812 - INFO - Saved 8034 contract items to cache
+2025-09-24 01:55:48,246 - INFO - Saved 8035 contract items to cache
+2025-09-24 01:55:48,586 - INFO - Saved 8036 contract items to cache
+2025-09-24 01:55:49,012 - INFO - Saved 8037 contract items to cache
+2025-09-24 01:55:49,323 - INFO - Saved 8038 contract items to cache
+2025-09-24 01:55:49,827 - INFO - Saved 8039 contract items to cache
+2025-09-24 01:55:50,170 - INFO - Saved 8040 contract items to cache
+2025-09-24 01:55:50,527 - INFO - Saved 8041 contract items to cache
+2025-09-24 01:55:50,999 - INFO - Saved 8042 contract items to cache
+2025-09-24 01:55:50,999 - INFO - Fetching 3 missing type IDs...
+2025-09-24 01:55:50,999 - INFO - Fetching 3 missing type data entries...
+2025-09-24 01:55:51,035 - INFO - ESI public fetch successful: /universe/types/11401/ in 0.04s
+2025-09-24 01:55:51,035 - INFO - _fetch_esi_with_retry completed in 0.036s
+2025-09-24 01:55:51,069 - INFO - ESI public fetch successful: /universe/types/26459/ in 0.03s
+2025-09-24 01:55:51,069 - INFO - _fetch_esi_with_retry completed in 0.034s
+2025-09-24 01:55:51,101 - INFO - ESI public fetch successful: /universe/types/53031/ in 0.03s
+2025-09-24 01:55:51,102 - INFO - _fetch_esi_with_retry completed in 0.033s
+2025-09-24 01:55:51,224 - INFO - Saved 3898 type entries to cache
+2025-09-24 01:55:51,224 - INFO - Adding items to batch 404: contracts 8060 to 8079
+2025-09-24 01:55:51,560 - INFO - Saved 8043 contract items to cache
+2025-09-24 01:55:51,907 - INFO - Saved 8044 contract items to cache
+2025-09-24 01:55:52,247 - INFO - Saved 8045 contract items to cache
+2025-09-24 01:55:52,655 - INFO - Saved 8046 contract items to cache
+2025-09-24 01:55:53,027 - INFO - Saved 8047 contract items to cache
+2025-09-24 01:55:53,436 - INFO - Saved 8048 contract items to cache
+2025-09-24 01:55:53,922 - INFO - Saved 8049 contract items to cache
+2025-09-24 01:55:54,239 - INFO - Saved 8050 contract items to cache
+2025-09-24 01:55:54,590 - INFO - Saved 8051 contract items to cache
+2025-09-24 01:55:55,011 - INFO - Saved 8052 contract items to cache
+2025-09-24 01:55:55,405 - INFO - Saved 8053 contract items to cache
+2025-09-24 01:55:55,744 - INFO - Saved 8054 contract items to cache
+2025-09-24 01:55:56,088 - INFO - Saved 8055 contract items to cache
+2025-09-24 01:55:56,445 - INFO - Saved 8056 contract items to cache
+2025-09-24 01:55:56,778 - INFO - Saved 8057 contract items to cache
+2025-09-24 01:55:57,140 - INFO - Saved 8058 contract items to cache
+2025-09-24 01:55:57,495 - INFO - Saved 8059 contract items to cache
+2025-09-24 01:55:58,137 - INFO - Saved 8060 contract items to cache
+2025-09-24 01:55:58,612 - INFO - Saved 8061 contract items to cache
+2025-09-24 01:55:58,969 - INFO - Saved 8062 contract items to cache
+2025-09-24 01:55:58,969 - INFO - Fetching 7 missing type IDs...
+2025-09-24 01:55:58,969 - INFO - Fetching 7 missing type data entries...
+2025-09-24 01:55:59,004 - INFO - ESI public fetch successful: /universe/types/47233/ in 0.03s
+2025-09-24 01:55:59,004 - INFO - _fetch_esi_with_retry completed in 0.035s
+2025-09-24 01:55:59,037 - INFO - ESI public fetch successful: /universe/types/47235/ in 0.03s
+2025-09-24 01:55:59,037 - INFO - _fetch_esi_with_retry completed in 0.033s
+2025-09-24 01:55:59,074 - INFO - ESI public fetch successful: /universe/types/47243/ in 0.04s
+2025-09-24 01:55:59,074 - INFO - _fetch_esi_with_retry completed in 0.037s
+2025-09-24 01:55:59,108 - INFO - ESI public fetch successful: /universe/types/47245/ in 0.03s
+2025-09-24 01:55:59,108 - INFO - _fetch_esi_with_retry completed in 0.034s
+2025-09-24 01:55:59,142 - INFO - ESI public fetch successful: /universe/types/26126/ in 0.03s
+2025-09-24 01:55:59,142 - INFO - _fetch_esi_with_retry completed in 0.034s
+2025-09-24 01:55:59,180 - INFO - ESI public fetch successful: /universe/types/26129/ in 0.04s
+2025-09-24 01:55:59,181 - INFO - _fetch_esi_with_retry completed in 0.038s
+2025-09-24 01:55:59,213 - INFO - ESI public fetch successful: /universe/types/26463/ in 0.03s
+2025-09-24 01:55:59,213 - INFO - _fetch_esi_with_retry completed in 0.033s
+2025-09-24 01:55:59,340 - INFO - Saved 3905 type entries to cache
+2025-09-24 01:55:59,340 - INFO - Adding items to batch 405: contracts 8080 to 8099
+2025-09-24 01:55:59,711 - INFO - Saved 8063 contract items to cache
+2025-09-24 01:56:00,117 - INFO - Saved 8064 contract items to cache
+2025-09-24 01:56:00,451 - INFO - Saved 8065 contract items to cache
+2025-09-24 01:56:00,808 - INFO - Saved 8066 contract items to cache
+2025-09-24 01:56:01,160 - INFO - Saved 8067 contract items to cache
+2025-09-24 01:56:01,515 - INFO - Saved 8068 contract items to cache
+2025-09-24 01:56:01,894 - INFO - Saved 8069 contract items to cache
+2025-09-24 01:56:02,210 - INFO - Saved 8070 contract items to cache
+2025-09-24 01:56:02,466 - INFO - Saved 8071 contract items to cache
+2025-09-24 01:56:02,826 - INFO - Saved 8072 contract items to cache
+2025-09-24 01:56:03,170 - INFO - Saved 8073 contract items to cache
+2025-09-24 01:56:03,508 - INFO - Saved 8074 contract items to cache
+2025-09-24 01:56:03,901 - INFO - Saved 8075 contract items to cache
+2025-09-24 01:56:04,316 - INFO - Saved 8076 contract items to cache
+2025-09-24 01:56:04,649 - INFO - Saved 8077 contract items to cache
+2025-09-24 01:56:04,958 - INFO - Saved 8078 contract items to cache
+2025-09-24 01:56:05,366 - INFO - Saved 8079 contract items to cache
+2025-09-24 01:56:05,782 - INFO - Saved 8080 contract items to cache
+2025-09-24 01:56:06,141 - INFO - Saved 8081 contract items to cache
+2025-09-24 01:56:06,516 - INFO - Saved 8082 contract items to cache
+2025-09-24 01:56:06,517 - INFO - Fetching 1 missing type IDs...
+2025-09-24 01:56:06,517 - INFO - Fetching 1 missing type data entries...
+2025-09-24 01:56:06,550 - INFO - ESI public fetch successful: /universe/types/85855/ in 0.03s
+2025-09-24 01:56:06,550 - INFO - _fetch_esi_with_retry completed in 0.034s
+2025-09-24 01:56:06,665 - INFO - Saved 3906 type entries to cache
+2025-09-24 01:56:06,665 - INFO - Adding items to batch 406: contracts 8100 to 8119
+2025-09-24 01:56:07,062 - INFO - Saved 8083 contract items to cache
+2025-09-24 01:56:07,454 - INFO - Saved 8084 contract items to cache
+2025-09-24 01:56:07,869 - INFO - Saved 8085 contract items to cache
+2025-09-24 01:56:08,222 - INFO - Saved 8086 contract items to cache
+2025-09-24 01:56:08,605 - INFO - Saved 8087 contract items to cache
+2025-09-24 01:56:08,944 - INFO - Saved 8088 contract items to cache
+2025-09-24 01:56:09,305 - INFO - Saved 8089 contract items to cache
+2025-09-24 01:56:09,669 - INFO - Saved 8090 contract items to cache
+2025-09-24 01:56:10,091 - INFO - Saved 8091 contract items to cache
+2025-09-24 01:56:10,446 - INFO - Saved 8092 contract items to cache
+2025-09-24 01:56:10,799 - INFO - Saved 8093 contract items to cache
+2025-09-24 01:56:11,126 - INFO - Saved 8094 contract items to cache
+2025-09-24 01:56:11,457 - INFO - Saved 8095 contract items to cache
+2025-09-24 01:56:11,820 - INFO - Saved 8096 contract items to cache
+2025-09-24 01:56:12,192 - INFO - Saved 8097 contract items to cache
+2025-09-24 01:56:12,569 - INFO - Saved 8098 contract items to cache
+2025-09-24 01:56:12,912 - INFO - Saved 8099 contract items to cache
+2025-09-24 01:56:13,529 - INFO - Saved 8100 contract items to cache
+2025-09-24 01:56:13,858 - INFO - Saved 8101 contract items to cache
+2025-09-24 01:56:14,267 - INFO - Saved 8102 contract items to cache
+2025-09-24 01:56:14,267 - INFO - Adding items to batch 407: contracts 8120 to 8139
+2025-09-24 01:56:14,609 - INFO - Saved 8103 contract items to cache
+2025-09-24 01:56:14,963 - INFO - Saved 8104 contract items to cache
+2025-09-24 01:56:15,322 - INFO - Saved 8105 contract items to cache
+2025-09-24 01:56:15,644 - INFO - Saved 8106 contract items to cache
+2025-09-24 01:56:15,983 - INFO - Saved 8107 contract items to cache
+2025-09-24 01:56:16,395 - INFO - Saved 8108 contract items to cache
