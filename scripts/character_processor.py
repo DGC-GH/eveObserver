@@ -16,7 +16,7 @@ from blueprint_processor import (
 from data_processors import process_blueprints_parallel
 from contract_processor import process_character_contracts
 
-def update_character_skills_in_wp(char_id: int, skills_data: Dict[str, Any]) -> None:
+async def update_character_skills_in_wp(char_id: int, skills_data: Dict[str, Any]) -> None:
     """Update character post in WordPress with skills training data.
     
     Updates an existing character post with total skill points and last update timestamp.
@@ -33,10 +33,11 @@ def update_character_skills_in_wp(char_id: int, skills_data: Dict[str, Any]) -> 
         Requires an existing character post to be present in WordPress.
         Logs success/failure of the update operation.
     """
+    from api_client import wp_request
+    
     slug = f"character-{char_id}"
     # Check if post exists by slug
-    response = requests.get(f"{WP_BASE_URL}/wp-json/wp/v2/eve_character?slug={slug}", auth=get_wp_auth())
-    existing_posts = response.json() if response.status_code == 200 else []
+    existing_posts = await wp_request('GET', f"/wp/v2/eve_character?slug={slug}")
     existing_post = existing_posts[0] if existing_posts else None
 
     if existing_post:
@@ -48,12 +49,11 @@ def update_character_skills_in_wp(char_id: int, skills_data: Dict[str, Any]) -> 
                 '_eve_last_updated': datetime.now(timezone.utc).isoformat()
             }
         }
-        url = f"{WP_BASE_URL}/wp-json/wp/v2/eve_character/{post_id}"
-        response = requests.put(url, json=post_data, auth=get_wp_auth())
-        if response.status_code in [200, 201]:
+        result = await wp_request('PUT', f"/wp/v2/eve_character/{post_id}", post_data)
+        if result:
             logger.info(f"Updated skills for character {char_id}")
         else:
-            logger.error(f"Failed to update skills for character {char_id}: {response.status_code} - {response.text}")
+            logger.error(f"Failed to update skills for character {char_id}")
 
 def check_industry_job_completions(jobs: List[Dict[str, Any]], char_name: str) -> None:
     """Check for upcoming industry job completions and prepare alerts.
@@ -123,7 +123,7 @@ def check_planet_extraction_completions(planet_details: Dict[str, Any], char_nam
         logger.info(f"Email alert disabled: {subject}")
         # send_email(subject, body)
 
-def update_planet_in_wp(planet_id: int, planet_data: Dict[str, Any], char_id: int) -> None:
+async def update_planet_in_wp(planet_id: int, planet_data: Dict[str, Any], char_id: int) -> None:
     """Update or create planet post in WordPress with planetary interaction data.
     
     Creates or updates WordPress posts for planets with PI installations.
@@ -141,10 +141,11 @@ def update_planet_in_wp(planet_id: int, planet_data: Dict[str, Any], char_id: in
         Stores complete planet details as JSON in post metadata.
         Updates existing posts or creates new ones as needed.
     """
+    from api_client import wp_request
+    
     slug = f"planet-{planet_id}"
     # Check if post exists by slug
-    response = requests.get(f"{WP_BASE_URL}/wp-json/wp/v2/eve_planet?slug={slug}", auth=get_wp_auth())
-    existing_posts = response.json() if response.status_code == 200 else []
+    existing_posts = await wp_request('GET', f"/wp/v2/eve_planet?slug={slug}")
     existing_post = existing_posts[0] if existing_posts else None
 
     post_data = {
@@ -169,17 +170,15 @@ def update_planet_in_wp(planet_id: int, planet_data: Dict[str, Any], char_id: in
     if existing_post:
         # Update existing
         post_id = existing_post['id']
-        url = f"{WP_BASE_URL}/wp-json/wp/v2/eve_planet/{post_id}"
-        response = requests.put(url, json=post_data, auth=get_wp_auth())
+        result = await wp_request('PUT', f"/wp/v2/eve_planet/{post_id}", post_data)
     else:
         # Create new
-        url = f"{WP_BASE_URL}/wp-json/wp/v2/eve_planet"
-        response = requests.post(url, json=post_data, auth=get_wp_auth())
+        result = await wp_request('POST', "/wp/v2/eve_planet", post_data)
 
-    if response.status_code in [200, 201]:
+    if result:
         logger.info(f"Updated planet: {planet_id}")
     else:
-        logger.error(f"Failed to update planet {planet_id}: {response.status_code} - {response.text}")
+        logger.error(f"Failed to update planet {planet_id}")
 
 async def fetch_character_skills(char_id: int, access_token: str) -> Optional[Dict[str, Any]]:
     """
@@ -281,7 +280,7 @@ async def process_character_skills(char_id: int, access_token: str, char_name: s
     skills = await fetch_character_skills(char_id, access_token)
     if skills:
         # Update character with skills data
-        update_character_skills_in_wp(char_id, skills)
+        await update_character_skills_in_wp(char_id, skills)
         logger.info(f"Skills for {char_name}: {skills['total_sp']} SP")
 
 async def process_character_planets(char_id: int, access_token: str, char_name: str) -> None:
@@ -304,7 +303,7 @@ async def process_character_planets(char_id: int, access_token: str, char_name: 
             if planet_id:
                 planet_details = await fetch_planet_details(char_id, planet_id, access_token)
                 if planet_details:
-                    update_planet_in_wp(char_id, planet_id, planet_details)
+                    await update_planet_in_wp(planet_id, planet_details, char_id)
 
 async def process_character_data(char_id, token_data, wp_post_id_cache, blueprint_cache, location_cache, structure_cache, failed_structures, args):
     """

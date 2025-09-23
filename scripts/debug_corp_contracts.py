@@ -3,6 +3,7 @@
 
 import sys
 import os
+import logging
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 
 from fetch_data import (
@@ -13,18 +14,22 @@ from fetch_data import (
     refresh_token
 )
 
+# Set up logging
+logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
+logger = logging.getLogger(__name__)
+
 def main():
     # Corporation ID to check
     corp_id = 98092220  # No Mercy Incorporated
 
     # Load blueprint cache
     blueprint_cache = load_blueprint_cache()
-    print(f"Loaded blueprint cache with {len(blueprint_cache)} entries")
+    logger.info(f"Loaded blueprint cache with {len(blueprint_cache)} entries")
 
     # Load tokens
     tokens = load_tokens()
     if not tokens:
-        print("No tokens found. Run 'python esi_oauth.py authorize' first.")
+        logger.error("No tokens found. Run 'python esi_oauth.py authorize' first.")
         return
 
     # Find a valid token for this corporation
@@ -40,16 +45,16 @@ def main():
             expired = True
 
         if expired:
-            print(f"Token for {token_data['name']} expired, refreshing...")
+            logger.info(f"Token for {token_data['name']} expired, refreshing...")
             new_token = refresh_token(token_data['refresh_token'])
             if new_token:
                 token_data.update(new_token)
                 # Save updated tokens
                 from fetch_data import save_tokens
                 save_tokens(tokens)
-                print(f"Refreshed token for {token_data['name']}")
+                logger.info(f"Refreshed token for {token_data['name']}")
             else:
-                print(f"Failed to refresh token for {token_data['name']}")
+                logger.error(f"Failed to refresh token for {token_data['name']}")
                 continue
 
         access_token = token_data['access_token']
@@ -58,25 +63,25 @@ def main():
         # Try to fetch corporation contracts to test access
         contracts = fetch_corporation_contracts(corp_id, access_token)
         if contracts is not None:
-            print(f"Successfully accessed corporation contracts using {char_name}'s token")
+            logger.info(f"Successfully accessed corporation contracts using {char_name}'s token")
             break
         else:
-            print(f"Failed to access corporation contracts with {char_name}'s token")
+            logger.warning(f"Failed to access corporation contracts with {char_name}'s token")
             access_token = None
 
     if not access_token:
-        print("No valid token found for corporation access")
+        logger.error("No valid token found for corporation access")
         return
 
     # Fetch corporation contracts
-    print(f"Fetching contracts for corporation {corp_id}...")
+    logger.info(f"Fetching contracts for corporation {corp_id}...")
     contracts = fetch_corporation_contracts(corp_id, access_token)
 
     if not contracts:
-        print("No contracts found or access denied")
+        logger.warning("No contracts found or access denied")
         return
 
-    print(f"Found {len(contracts)} contracts")
+    logger.info(f"Found {len(contracts)} contracts")
 
     # Check each contract for blueprints
     contracts_with_blueprints = 0
@@ -97,7 +102,7 @@ def main():
         contract_items = fetch_corporation_contract_items(corp_id, contract_id, access_token)
 
         if not contract_items:
-            print(f"Contract {contract_id} ({status}): No items found")
+            logger.debug(f"Contract {contract_id} ({status}): No items found")
             continue
 
         # Check for blueprints
@@ -118,16 +123,13 @@ def main():
 
         if has_blueprint:
             contracts_with_blueprints += 1
-            print(f"Contract {contract_id} ({status}): CONTAINS BLUEPRINTS")
+            logger.info(f"Contract {contract_id} ({status}): CONTAINS BLUEPRINTS")
             for bp in blueprint_items:
-                print(f"  - {bp['name']} (ID: {bp['type_id']}, Qty: {bp['quantity']})")
+                logger.info(f"  - {bp['name']} (ID: {bp['type_id']}, Qty: {bp['quantity']})")
         else:
-            print(f"Contract {contract_id} ({status}): No blueprints found")
+            logger.debug(f"Contract {contract_id} ({status}): No blueprints found")
 
-    print(f"\nSummary:")
-    print(f"Total contracts checked: {total_contracts_checked}")
-    print(f"Contracts with blueprints: {contracts_with_blueprints}")
-    print(f"Contracts without blueprints: {total_contracts_checked - contracts_with_blueprints}")
+    logger.info(f"Summary: Total contracts checked: {total_contracts_checked}, Contracts with blueprints: {contracts_with_blueprints}, Contracts without blueprints: {total_contracts_checked - contracts_with_blueprints}")
 
 if __name__ == "__main__":
     main()

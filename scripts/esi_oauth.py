@@ -13,6 +13,11 @@ from datetime import datetime, timedelta, timezone
 import requests
 from requests_oauthlib import OAuth2Session
 from dotenv import load_dotenv
+import logging
+
+# Set up logging
+logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
+logger = logging.getLogger(__name__)
 
 # Load environment variables
 load_dotenv()
@@ -56,8 +61,8 @@ CLIENT_SECRET = os.getenv('ESI_CLIENT_SECRET', 'your_client_secret_here')
 REDIRECT_URI = os.getenv('ESI_REDIRECT_URI', 'http://localhost:8080/callback')
 
 if CLIENT_ID == 'your_client_id_here' or CLIENT_SECRET == 'your_client_secret_here':
-    print("ERROR: ESI_CLIENT_ID and ESI_CLIENT_SECRET must be set in .env file")
-    print("Get them from https://developers.eveonline.com/")
+    logger.error("ESI_CLIENT_ID and ESI_CLIENT_SECRET must be set in .env file")
+    logger.error("Get them from https://developers.eveonline.com/")
     sys.exit(1)
 
 # File to store tokens
@@ -110,15 +115,15 @@ def authorize_character(character_name=None):
         code = params.get('code', [None])[0]
         returned_state = params.get('state', [None])[0]
     else:
-        print("Invalid redirect URL")
+        logger.error("Invalid redirect URL")
         return
 
     if returned_state != state:
-        print("State mismatch! Possible CSRF attack.")
+        logger.error("State mismatch! Possible CSRF attack.")
         return
 
     if not code:
-        print("No authorization code received.")
+        logger.error("No authorization code received.")
         return
 
     # Exchange code for tokens
@@ -128,21 +133,21 @@ def authorize_character(character_name=None):
             code=code,
             client_secret=CLIENT_SECRET
         )
-        print("Token obtained successfully")
+        logger.info("Token obtained successfully")
     except Exception as e:
-        print(f"Failed to obtain token: {e}")
+        logger.error(f"Failed to obtain token: {e}")
         return
 
     # Get character info
     headers = {'Authorization': f'Bearer {token["access_token"]}'}
     response = requests.get('https://login.eveonline.com/oauth/verify', headers=headers)
-    print(f"Character info response: {response.status_code}")
+    logger.debug(f"Character info response: {response.status_code}")
     if response.status_code == 200:
         char_info = response.json()
         char_id = str(char_info['CharacterID'])
         char_name = char_info['CharacterName']
     else:
-        print(f"Failed to get character info: {response.status_code} - {response.text}")
+        logger.error(f"Failed to get character info: {response.status_code} - {response.text}")
         return
 
     # Store token
@@ -156,13 +161,13 @@ def authorize_character(character_name=None):
     }
     save_tokens(tokens)
 
-    print(f"Successfully authorized character: {char_name} (ID: {char_id})")
+    logger.info(f"Successfully authorized character: {char_name} (ID: {char_id})")
 
 def refresh_token(char_id):
     """Refresh an access token."""
     tokens = load_tokens()
     if char_id not in tokens:
-        print(f"No token found for character ID {char_id}")
+        logger.error(f"No token found for character ID {char_id}")
         return
 
     refresh_token_str = tokens[char_id]['refresh_token']
@@ -184,9 +189,9 @@ def refresh_token(char_id):
         })
         save_tokens(tokens)
 
-        print(f"Refreshed token for character: {tokens[char_id]['name']}")
+        logger.info(f"Refreshed token for character: {tokens[char_id]['name']}")
     else:
-        print(f"Failed to refresh token: {response.status_code} - {response.text}")
+        logger.error(f"Failed to refresh token: {response.status_code} - {response.text}")
 
 def authorize_all_characters():
     """Authorize all characters in sequence."""

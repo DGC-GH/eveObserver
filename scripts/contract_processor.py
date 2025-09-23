@@ -1,4 +1,13 @@
-#!/usr/bin/env python3
+#!/usrimport os
+import json
+import requests
+import aiohttp
+import asyncio
+import time
+from datetime import datetime, timezone
+from typing import Dict, List, Any, Optional, Tuple
+from config import *
+from api_client import fetch_public_esi, fetch_esi, wp_request, send_email, fetch_type_icon, sanitize_string, WordPressAuthError, WordPressRequestError, fetch_public_contracts_async, fetch_public_contract_items_async, get_session, validate_input_params, validate_api_response
 """
 EVE Observer Contract Processor
 Handles fetching and processing of EVE contract data.
@@ -7,14 +16,17 @@ Handles fetching and processing of EVE contract data.
 import os
 import json
 import requests
+import aiohttp
+import asyncio
 import time
 from datetime import datetime, timezone
 from typing import Dict, List, Any, Optional, Tuple
 from config import *
-from api_client import fetch_public_esi, fetch_esi, wp_request, send_email, fetch_type_icon, sanitize_string, WordPressAuthError, WordPressRequestError, fetch_public_contracts, fetch_public_contract_items
-from cache_manager import load_blueprint_cache, save_blueprint_cache, load_blueprint_type_cache, save_blueprint_type_cache
+from api_client import fetch_public_esi, fetch_esi, wp_request, send_email, fetch_type_icon, sanitize_string, WordPressAuthError, WordPressRequestError, fetch_public_contracts_async, fetch_public_contract_items_async, get_session
+from cache_manager import load_blueprint_cache, save_blueprint_cache, load_blueprint_type_cache, save_blueprint_type_cache, get_cached_blueprint_name
 
-def check_contract_competition(contract_data: Dict[str, Any], contract_items: List[Dict[str, Any]]) -> Tuple[bool, Optional[float]]:
+@validate_input_params(dict, list)
+async def check_contract_competition(contract_data: Dict[str, Any], contract_items: List[Dict[str, Any]]) -> Tuple[bool, Optional[float]]:
     """Check if a sell contract has been outbid by cheaper competing contracts in the same region.
     
     Analyzes market competition for single-item sell contracts by comparing prices
@@ -53,7 +65,7 @@ def check_contract_competition(contract_data: Dict[str, Any], contract_items: Li
     price_per_item = contract_price / quantity
     
     # Get contract region
-    region_id = get_region_from_location(contract_data.get('start_location_id'))
+    region_id = await get_region_from_location(contract_data.get('start_location_id'))
     if not region_id:
         logger.warning(f"Could not determine region for contract {contract_id}")
         return False, None
@@ -66,7 +78,7 @@ def check_contract_competition(contract_data: Dict[str, Any], contract_items: Li
     
     while True:
         logger.debug(f"Fetching contracts page {page} for region {region_id}")
-        contracts_page = fetch_public_contracts(region_id, page)
+        contracts_page = await fetch_public_contracts_async(region_id, page)
         if contracts_page is None:
             logger.error(f"Failed to fetch contracts for region {region_id}, page {page}")
             break
@@ -99,7 +111,7 @@ def check_contract_competition(contract_data: Dict[str, Any], contract_items: Li
         comp_price = comp_contract.get('price', 0)
         
         # Fetch contract items
-        comp_items = fetch_public_contract_items(comp_contract_id)
+        comp_items = await fetch_public_contract_items_async(comp_contract_id)
         if not comp_items or len(comp_items) != 1:
             continue  # Only check single-item contracts
         
@@ -116,7 +128,8 @@ def check_contract_competition(contract_data: Dict[str, Any], contract_items: Li
     logger.info(f"No competing contracts found for contract {contract_id}")
     return False, None
 
-def get_region_from_location(location_id: Optional[int]) -> Optional[int]:
+@validate_input_params((int, type(None)))
+async def get_region_from_location(location_id: Optional[int]) -> Optional[int]:
     """Get region ID from a location ID (station or structure) with caching.
     
     Determines the region containing a station or structure by traversing the
@@ -148,63 +161,64 @@ def get_region_from_location(location_id: Optional[int]) -> Optional[int]:
         return region_cache[location_id_str]
     
     region_id = None
+    sess = await get_session()
     if location_id >= 1000000000000:  # Structure
         # For structures, we need to fetch structure info to get solar_system_id, then region
         try:
-            response = requests.get(f"{ESI_BASE_URL}/universe/structures/{location_id}", headers={'Accept': 'application/json'}, timeout=30)
-            response.raise_for_status()
-            struct_data = response.json()
-        except requests.exceptions.RequestException:
+            async with sess.get(f"{ESI_BASE_URL}/universe/structures/{location_id}", headers={'Accept': 'application/json'}, timeout=aiohttp.ClientTimeout(total=30)) as response:
+                response.raise_for_status()
+                struct_data = await response.json()
+        except (aiohttp.ClientError, asyncio.TimeoutError):
             struct_data = None
         
         if struct_data:
             solar_system_id = struct_data.get('solar_system_id')
             if solar_system_id:
                 try:
-                    response = requests.get(f"{ESI_BASE_URL}/universe/systems/{solar_system_id}", headers={'Accept': 'application/json'}, timeout=30)
-                    response.raise_for_status()
-                    system_data = response.json()
-                except requests.exceptions.RequestException:
+                    async with sess.get(f"{ESI_BASE_URL}/universe/systems/{solar_system_id}", headers={'Accept': 'application/json'}, timeout=aiohttp.ClientTimeout(total=30)) as response:
+                        response.raise_for_status()
+                        system_data = await response.json()
+                except (aiohttp.ClientError, asyncio.TimeoutError):
                     system_data = None
                 
                 if system_data:
                     constellation_id = system_data.get('constellation_id')
                     if constellation_id:
                         try:
-                            response = requests.get(f"{ESI_BASE_URL}/universe/constellations/{constellation_id}", headers={'Accept': 'application/json'}, timeout=30)
-                            response.raise_for_status()
-                            constellation_data = response.json()
-                        except requests.exceptions.RequestException:
+                            async with sess.get(f"{ESI_BASE_URL}/universe/constellations/{constellation_id}", headers={'Accept': 'application/json'}, timeout=aiohttp.ClientTimeout(total=30)) as response:
+                                response.raise_for_status()
+                                constellation_data = await response.json()
+                        except (aiohttp.ClientError, asyncio.TimeoutError):
                             constellation_data = None
                         
                         if constellation_data:
                             region_id = constellation_data.get('region_id')
     else:  # Station
         try:
-            response = requests.get(f"{ESI_BASE_URL}/universe/stations/{location_id}", headers={'Accept': 'application/json'}, timeout=30)
-            response.raise_for_status()
-            station_data = response.json()
-        except requests.exceptions.RequestException:
+            async with sess.get(f"{ESI_BASE_URL}/universe/stations/{location_id}", headers={'Accept': 'application/json'}, timeout=aiohttp.ClientTimeout(total=30)) as response:
+                response.raise_for_status()
+                station_data = await response.json()
+        except (aiohttp.ClientError, asyncio.TimeoutError):
             station_data = None
         
         if station_data:
             system_id = station_data.get('system_id')
             if system_id:
                 try:
-                    response = requests.get(f"{ESI_BASE_URL}/universe/systems/{system_id}", headers={'Accept': 'application/json'}, timeout=30)
-                    response.raise_for_status()
-                    system_data = response.json()
-                except requests.exceptions.RequestException:
+                    async with sess.get(f"{ESI_BASE_URL}/universe/systems/{system_id}", headers={'Accept': 'application/json'}, timeout=aiohttp.ClientTimeout(total=30)) as response:
+                        response.raise_for_status()
+                        system_data = await response.json()
+                except (aiohttp.ClientError, asyncio.TimeoutError):
                     system_data = None
                 
                 if system_data:
                     constellation_id = system_data.get('constellation_id')
                     if constellation_id:
                         try:
-                            response = requests.get(f"{ESI_BASE_URL}/universe/constellations/{constellation_id}", headers={'Accept': 'application/json'}, timeout=30)
-                            response.raise_for_status()
-                            constellation_data = response.json()
-                        except requests.exceptions.RequestException:
+                            async with sess.get(f"{ESI_BASE_URL}/universe/constellations/{constellation_id}", headers={'Accept': 'application/json'}, timeout=aiohttp.ClientTimeout(total=30)) as response:
+                                response.raise_for_status()
+                                constellation_data = await response.json()
+                        except (aiohttp.ClientError, asyncio.TimeoutError):
                             constellation_data = None
                         
                         if constellation_data:
@@ -219,7 +233,8 @@ def get_region_from_location(location_id: Optional[int]) -> Optional[int]:
     
     return region_id
 
-def generate_contract_title(contract_data: Dict[str, Any], for_corp: bool = False, entity_id: Optional[int] = None, contract_items: Optional[List[Dict[str, Any]]] = None, blueprint_cache: Optional[Dict[str, Any]] = None) -> str:
+@validate_input_params(dict, bool, (int, type(None)), (list, type(None)), (dict, type(None)))
+async def generate_contract_title(contract_data: Dict[str, Any], for_corp: bool = False, entity_id: Optional[int] = None, contract_items: Optional[List[Dict[str, Any]]] = None, blueprint_cache: Optional[Dict[str, Any]] = None) -> str:
     """Generate a descriptive contract title based on contract type and items.
     
     Creates human-readable titles that include item names, quantities, and contract details.
@@ -268,10 +283,9 @@ def generate_contract_title(contract_data: Dict[str, Any], for_corp: bool = Fals
             
             if type_id:
                 # Get item name
-                if str(type_id) in blueprint_cache:
-                    item_name = blueprint_cache[str(type_id)]
-                else:
-                    type_data = fetch_public_esi(f"/universe/types/{type_id}")
+                item_name = get_cached_blueprint_name(str(type_id))
+                if item_name is None:
+                    type_data = await fetch_public_esi(f"/universe/types/{type_id}")
                     if type_data:
                         item_name = type_data.get('name', f"Item {type_id}")
                         # Only cache if it's actually a blueprint
@@ -286,7 +300,7 @@ def generate_contract_title(contract_data: Dict[str, Any], for_corp: bool = Fals
                 is_blueprint = str(type_id) in blueprint_type_cache and blueprint_type_cache[str(type_id)]
                 if not is_blueprint:
                     # Double-check with ESI
-                    type_data = fetch_public_esi(f"/universe/types/{type_id}")
+                    type_data = await fetch_public_esi(f"/universe/types/{type_id}")
                     is_blueprint = type_data and 'Blueprint' in type_data.get('name', '')
                 
                 if is_blueprint:
@@ -312,7 +326,7 @@ def generate_contract_title(contract_data: Dict[str, Any], for_corp: bool = Fals
                         blueprint_count += 1
                     else:
                         # Check with ESI
-                        type_data = fetch_public_esi(f"/universe/types/{type_id}")
+                        type_data = await fetch_public_esi(f"/universe/types/{type_id}")
                         if type_data and 'Blueprint' in type_data.get('name', ''):
                             blueprint_count += 1
             
@@ -331,7 +345,8 @@ def generate_contract_title(contract_data: Dict[str, Any], for_corp: bool = Fals
     
     return title
 
-def update_contract_in_wp(contract_id: int, contract_data: Dict[str, Any], for_corp: bool = False, entity_id: Optional[int] = None, access_token: Optional[str] = None, blueprint_cache: Optional[Dict[str, Any]] = None) -> None:
+@validate_input_params(int, dict, bool, (int, type(None)), (str, type(None)), (dict, type(None)))
+async def update_contract_in_wp(contract_id: int, contract_data: Dict[str, Any], for_corp: bool = False, entity_id: Optional[int] = None, access_token: Optional[str] = None, blueprint_cache: Optional[Dict[str, Any]] = None) -> None:
     """Update or create a contract post in WordPress with comprehensive metadata.
     
     Creates or updates WordPress posts for EVE contracts, including market competition
@@ -361,23 +376,22 @@ def update_contract_in_wp(contract_id: int, contract_data: Dict[str, Any], for_c
     
     slug = f"contract-{contract_id}"
     # Check if post exists by slug
-    response = requests.get(f"{WP_BASE_URL}/wp-json/wp/v2/eve_contract?slug={slug}", auth=get_wp_auth())
-    existing_posts = response.json() if response.status_code == 200 else []
+    existing_posts = await wp_request('GET', f"/wp/v2/eve_contract?slug={slug}")
     existing_post = existing_posts[0] if existing_posts else None
 
     # Fetch contract items if we have access token
     contract_items = None
     if access_token:
         if for_corp and entity_id:
-            contract_items = fetch_corporation_contract_items(entity_id, contract_id, access_token)
+            contract_items = await fetch_corporation_contract_items(entity_id, contract_id, access_token)
         elif not for_corp and entity_id:
-            contract_items = fetch_character_contract_items(entity_id, contract_id, access_token)
+            contract_items = await fetch_character_contract_items(entity_id, contract_id, access_token)
 
     # Get region ID from start location
     region_id = None
     start_location_id = contract_data.get('start_location_id')
     if start_location_id:
-        region_id = get_region_from_location(start_location_id)
+        region_id = await get_region_from_location(start_location_id)
 
     # Check if contract contains blueprints - only track contracts with blueprints
     has_blueprint = False
@@ -392,7 +406,7 @@ def update_contract_in_wp(contract_id: int, contract_data: Dict[str, Any], for_c
         logger.info(f"Contract {contract_id} contains no blueprints, skipping")
         return
 
-    title = generate_contract_title(contract_data, for_corp=for_corp, entity_id=entity_id, contract_items=contract_items, blueprint_cache=blueprint_cache)
+    title = await generate_contract_title(contract_data, for_corp=for_corp, entity_id=entity_id, contract_items=contract_items, blueprint_cache=blueprint_cache)
 
     post_data = {
         'title': title,
@@ -430,8 +444,7 @@ def update_contract_in_wp(contract_id: int, contract_data: Dict[str, Any], for_c
     post_data['meta'] = {k: v for k, v in post_data['meta'].items() if v is not None}
 
     # Check if post exists by slug
-    response = requests.get(f"{WP_BASE_URL}/wp-json/wp/v2/eve_contract?slug={slug}", auth=get_wp_auth())
-    existing_posts = response.json() if response.status_code == 200 else []
+    existing_posts = await wp_request('GET', f"/wp/v2/eve_contract?slug={slug}")
     existing_post = existing_posts[0] if existing_posts else None
     existing_meta = existing_post.get('meta', {}) if existing_post else {}
 
@@ -445,7 +458,7 @@ def update_contract_in_wp(contract_id: int, contract_data: Dict[str, Any], for_c
         
         # Check for market competition on outstanding sell contracts
         if contract_data.get('status') == 'outstanding' and contract_data.get('type') == 'item_exchange':
-            is_outbid, competing_price = check_contract_competition(contract_data, contract_items)
+            is_outbid, competing_price = await check_contract_competition(contract_data, contract_items)
             if is_outbid:
                 post_data['meta']['_eve_contract_outbid'] = '1'
                 post_data['meta']['_eve_contract_competing_price'] = str(competing_price)
@@ -488,25 +501,25 @@ def update_contract_in_wp(contract_id: int, contract_data: Dict[str, Any], for_c
         
         # Update existing
         post_id = existing_post['id']
-        url = f"{WP_BASE_URL}/wp-json/wp/v2/eve_contract/{post_id}"
-        response = requests.put(url, json=post_data, auth=get_wp_auth())
+        result = await wp_request('PUT', f"/wp/v2/eve_contract/{post_id}", post_data)
     else:
         # Create new (without region_id to avoid ACF protection issues)
         # Add thumbnail from first contract item
         if contract_items and len(contract_items) > 0:
             first_item_type_id = contract_items[0].get('type_id')
             if first_item_type_id:
-                image_url = fetch_type_icon(first_item_type_id, size=512)
+                image_url = await fetch_type_icon(first_item_type_id, size=512)
                 post_data['meta']['_thumbnail_external_url'] = image_url
-        url = f"{WP_BASE_URL}/wp-json/wp/v2/eve_contract"
-        response = requests.post(url, json=post_data, auth=get_wp_auth())
+        result = await wp_request('POST', "/wp/v2/eve_contract", post_data)
 
-    if response.status_code in [200, 201]:
+    if result:
         logger.info(f"Updated contract: {contract_id} - {title}")
     else:
-        logger.error(f"Failed to update contract {contract_id}: {response.status_code} - {response.text}")
+        logger.error(f"Failed to update contract {contract_id}")
 
-def fetch_character_contract_items(char_id: int, contract_id: int, access_token: str) -> Optional[List[Dict[str, Any]]]:
+@validate_api_response
+@validate_input_params(int, int, str)
+async def fetch_character_contract_items(char_id: int, contract_id: int, access_token: str) -> Optional[List[Dict[str, Any]]]:
     """Fetch items contained in a specific character contract.
     
     Requires the character to have access to view the contract details.
@@ -520,9 +533,11 @@ def fetch_character_contract_items(char_id: int, contract_id: int, access_token:
         List of contract item dictionaries if successful, None if access denied or failed
     """
     endpoint = f"/characters/{char_id}/contracts/{contract_id}/items/"
-    return fetch_esi(endpoint, char_id, access_token)
+    return await fetch_esi(endpoint, char_id, access_token)
 
-def fetch_corporation_contract_items(corp_id: int, contract_id: int, access_token: str) -> Optional[List[Dict[str, Any]]]:
+@validate_api_response
+@validate_input_params(int, int, str)
+async def fetch_corporation_contract_items(corp_id: int, contract_id: int, access_token: str) -> Optional[List[Dict[str, Any]]]:
     """Fetch items contained in a specific corporation contract.
     
     Requires corporation access permissions for the character with the access token.
@@ -536,8 +551,10 @@ def fetch_corporation_contract_items(corp_id: int, contract_id: int, access_toke
         List of contract item dictionaries if successful, None if access denied or failed
     """
     endpoint = f"/corporations/{corp_id}/contracts/{contract_id}/items/"
-    return fetch_esi(endpoint, None, access_token)  # Corp endpoint doesn't need char_id
+    return await fetch_esi(endpoint, None, access_token)  # Corp endpoint doesn't need char_id
 
+@validate_api_response
+@validate_input_params(int, str)
 async def fetch_character_contracts(char_id: int, access_token: str) -> Optional[List[Dict[str, Any]]]:
     """
     Fetch character contracts from ESI.
@@ -555,6 +572,8 @@ async def fetch_character_contracts(char_id: int, access_token: str) -> Optional
     endpoint = f"/characters/{char_id}/contracts/"
     return await fetch_esi(endpoint, char_id, access_token)
 
+@validate_api_response
+@validate_input_params(int, str)
 async def fetch_corporation_contracts(corp_id: int, access_token: str) -> Optional[List[Dict[str, Any]]]:
     """
     Fetch corporation contracts from ESI.
@@ -572,6 +591,7 @@ async def fetch_corporation_contracts(corp_id: int, access_token: str) -> Option
     endpoint = f"/corporations/{corp_id}/contracts/"
     return await fetch_esi(endpoint, None, access_token)  # Corp contracts don't need char_id
 
+@validate_input_params(int, str, str, dict, dict, dict, dict, dict)
 async def process_character_contracts(char_id: int, access_token: str, char_name: str, wp_post_id_cache: Dict[str, Any], blueprint_cache: Dict[str, Any], location_cache: Dict[str, Any], structure_cache: Dict[str, Any], failed_structures: Dict[str, Any]) -> None:
     """
     Process contracts for a character.
@@ -618,9 +638,10 @@ async def process_character_contracts(char_id: int, access_token: str, char_name
                 continue
             elif contract_status == 'expired':
                 logger.info(f"EXPIRED CHARACTER CONTRACT TO DELETE MANUALLY: {contract['contract_id']}")
-            update_contract_in_wp(contract['contract_id'], contract, for_corp=False, entity_id=char_id, access_token=access_token, blueprint_cache=blueprint_cache)
+            await update_contract_in_wp(contract['contract_id'], contract, for_corp=False, entity_id=char_id, access_token=access_token, blueprint_cache=blueprint_cache)
 
-def cleanup_contract_posts(allowed_corp_ids: set, allowed_issuer_ids: set) -> None:
+@validate_input_params(set, set)
+async def cleanup_contract_posts(allowed_corp_ids: set, allowed_issuer_ids: set) -> None:
     """
     Clean up contract posts that don't match filtering criteria.
 
@@ -637,9 +658,8 @@ def cleanup_contract_posts(allowed_corp_ids: set, allowed_issuer_ids: set) -> No
     """
     logger.info("Cleaning up contract posts...")
     
-    response = requests.get(f"{WP_BASE_URL}/wp-json/wp/v2/eve_contract", auth=get_wp_auth(), params={'per_page': WP_PER_PAGE})
-    if response.status_code == 200:
-        contracts = response.json()
+    contracts = await wp_request('GET', "/wp/v2/eve_contract", {'per_page': WP_PER_PAGE})
+    if contracts:
         for contract in contracts:
             meta = contract.get('meta', {})
             status = meta.get('_eve_contract_status')
@@ -662,4 +682,8 @@ def cleanup_contract_posts(allowed_corp_ids: set, allowed_issuer_ids: set) -> No
                 logger.info(f"EXPIRED CONTRACT TO DELETE MANUALLY: {title} (ID: {contract_id})")
             
             if should_delete:
-                delete_wp_post('eve_contract', contract['id'])
+                result = await wp_request('DELETE', f"/wp/v2/eve_contract/{contract['id']}", {'force': True})
+                if result:
+                    logger.info(f"Deleted contract: {contract_id}")
+                else:
+                    logger.error(f"Failed to delete contract: {contract_id}")

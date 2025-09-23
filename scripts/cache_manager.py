@@ -13,6 +13,7 @@ from typing import Any, Dict, List, Optional
 import time
 from datetime import datetime, timezone
 from functools import lru_cache
+from collections import OrderedDict
 from config import CACHE_DIR, BLUEPRINT_CACHE_FILE, BLUEPRINT_TYPE_CACHE_FILE, LOCATION_CACHE_FILE, STRUCTURE_CACHE_FILE, FAILED_STRUCTURES_FILE, WP_POST_ID_CACHE_FILE
 
 # Prometheus-style metrics for monitoring
@@ -32,6 +33,123 @@ except ImportError:
     CACHE_HITS = CACHE_MISSES = CACHE_SIZE = API_REQUEST_DURATION = CACHE_OPERATION_DURATION = None
 
 logger = logging.getLogger(__name__)
+
+class LRUCache:
+    """In-memory LRU cache with disk persistence."""
+    
+    def __init__(self, max_size: int = 1000, cache_file: str = None, auto_save: bool = True):
+        self.max_size = max_size
+        self.cache_file = cache_file
+        self.auto_save = auto_save
+        self.cache = OrderedDict()
+        self._load_from_disk()
+    
+    def _load_from_disk(self) -> None:
+        """Load cache from disk if file exists."""
+        if self.cache_file and os.path.exists(self.cache_file):
+            try:
+                data = load_cache(self.cache_file)
+                # Sort by access time if available, otherwise load all
+                for key, value in data.items():
+                    if isinstance(value, dict) and '_last_access' in value:
+                        # Keep only recent entries based on max_size
+                        if len(self.cache) < self.max_size:
+                            self.cache[key] = value
+                    else:
+                        # Legacy data without timestamps
+                        if len(self.cache) < self.max_size:
+                            self.cache[key] = value
+                logger.debug(f"Loaded {len(self.cache)} entries from {self.cache_file}")
+            except Exception as e:
+                logger.warning(f"Failed to load LRU cache from {self.cache_file}: {e}")
+    
+    def _save_to_disk(self) -> None:
+        """Save cache to disk."""
+        if self.cache_file and self.auto_save:
+            try:
+                # Convert OrderedDict to regular dict for JSON serialization
+                data_to_save = dict(self.cache)
+                save_cache(self.cache_file, data_to_save)
+                logger.debug(f"Saved {len(self.cache)} entries to {self.cache_file}")
+            except Exception as e:
+                logger.error(f"Failed to save LRU cache to {self.cache_file}: {e}")
+    
+    def get(self, key: str) -> Any:
+        """Get value from cache, moving it to most recently used."""
+        if key in self.cache:
+            # Move to end (most recently used)
+            value = self.cache.pop(key)
+            self.cache[key] = value
+            # Update last access time
+            if isinstance(value, dict):
+                value['_last_access'] = datetime.now(timezone.utc).isoformat()
+            _cache_stats['hits'] += 1
+            return value.get('_value', value) if isinstance(value, dict) and '_value' in value else value
+        _cache_stats['misses'] += 1
+        return None
+    
+    def put(self, key: str, value: Any) -> None:
+        """Put value in cache, evicting least recently used if necessary."""
+        # Remove if already exists
+        if key in self.cache:
+            self.cache.pop(key)
+        elif len(self.cache) >= self.max_size:
+            # Evict least recently used
+            evicted_key, _ = self.cache.popitem(last=False)
+            logger.debug(f"Evicted {evicted_key} from LRU cache")
+        
+        # Store with metadata
+        cache_entry = {
+            '_value': value,
+            '_last_access': datetime.now(timezone.utc).isoformat(),
+            '_timestamp': datetime.now(timezone.utc).isoformat()
+        }
+        self.cache[key] = cache_entry
+        
+        # Auto-save periodically
+        if len(self.cache) % 100 == 0:  # Save every 100 operations
+            self._save_to_disk()
+    
+    def __contains__(self, key: str) -> bool:
+        return key in self.cache
+    
+    def __len__(self) -> int:
+        return len(self.cache)
+    
+    def clear(self) -> None:
+        """Clear the cache."""
+        self.cache.clear()
+        self._save_to_disk()
+    
+    def flush(self) -> None:
+        """Flush cache to disk."""
+        self._save_to_disk()
+
+# Global LRU cache instances
+_blueprint_lru_cache = None
+_location_lru_cache = None
+_structure_lru_cache = None
+
+def get_blueprint_lru_cache() -> LRUCache:
+    """Get or create blueprint LRU cache instance."""
+    global _blueprint_lru_cache
+    if _blueprint_lru_cache is None:
+        _blueprint_lru_cache = LRUCache(max_size=2000, cache_file=BLUEPRINT_CACHE_FILE)
+    return _blueprint_lru_cache
+
+def get_location_lru_cache() -> LRUCache:
+    """Get or create location LRU cache instance."""
+    global _location_lru_cache
+    if _location_lru_cache is None:
+        _location_lru_cache = LRUCache(max_size=1500, cache_file=LOCATION_CACHE_FILE)
+    return _location_lru_cache
+
+def get_structure_lru_cache() -> LRUCache:
+    """Get or create structure LRU cache instance."""
+    global _structure_lru_cache
+    if _structure_lru_cache is None:
+        _structure_lru_cache = LRUCache(max_size=1000, cache_file=STRUCTURE_CACHE_FILE)
+    return _structure_lru_cache
 
 # Cache configuration
 CACHE_CONFIG = {
@@ -195,6 +313,10 @@ def load_blueprint_cache() -> Dict[str, Any]:
 def save_blueprint_cache(cache: Dict[str, Any]) -> None:
     """Save blueprint name cache."""
     save_cache(BLUEPRINT_CACHE_FILE, cache)
+    # Also update LRU cache
+    lru_cache = get_blueprint_lru_cache()
+    for key, value in cache.items():
+        lru_cache.put(key, value)
 
 def load_blueprint_type_cache() -> Dict[str, Any]:
     """Load blueprint type cache."""
@@ -211,6 +333,10 @@ def load_location_cache() -> Dict[str, Any]:
 def save_location_cache(cache: Dict[str, Any]) -> None:
     """Save location name cache."""
     save_cache(LOCATION_CACHE_FILE, cache)
+    # Also update LRU cache
+    lru_cache = get_location_lru_cache()
+    for key, value in cache.items():
+        lru_cache.put(key, value)
 
 def load_structure_cache() -> Dict[str, Any]:
     """Load structure name cache."""
@@ -298,14 +424,14 @@ def get_cached_value_with_stats(cache: Dict[str, Any], key: str, cache_type: str
 @lru_cache(maxsize=1000)
 def get_cached_blueprint_name(type_id: str) -> Optional[str]:
     """Get cached blueprint name with LRU caching for performance."""
-    cache = load_blueprint_cache()
-    return get_cached_value_with_stats(cache, type_id)
+    cache = get_blueprint_lru_cache()
+    return cache.get(type_id)
 
 @lru_cache(maxsize=1000)
 def get_cached_location_name(location_id: str) -> Optional[str]:
     """Get cached location name with LRU caching for performance."""
-    cache = load_location_cache()
-    return get_cached_value_with_stats(cache, location_id)
+    cache = get_location_lru_cache()
+    return cache.get(location_id)
 
 def set_cache_value_with_stats(cache: Dict[str, Any], key: str, value: Any, cache_file: str) -> None:
     """Set a value in cache with statistics tracking."""

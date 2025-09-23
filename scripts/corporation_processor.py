@@ -9,8 +9,10 @@ import argparse
 from datetime import datetime, timezone
 from typing import Dict, Any, Optional, List, Tuple
 from config import *
-from api_client import fetch_esi, fetch_public_esi, get_wp_auth
-from blueprint_processor import extract_blueprints_from_assets, extract_blueprints_from_industry_jobs, extract_blueprints_from_contracts, process_blueprints_parallel, update_blueprint_in_wp, update_blueprint_from_asset_in_wp
+from api_client import fetch_esi, fetch_public_esi, wp_request, WordPressAuthError, WordPressRequestError
+from data_processors import get_wp_auth
+from blueprint_processor import extract_blueprints_from_assets, extract_blueprints_from_industry_jobs, extract_blueprints_from_contracts, update_blueprint_in_wp, update_blueprint_from_asset_in_wp
+from data_processors import process_blueprints_parallel
 
 async def fetch_corporation_data(corp_id: int, access_token: str) -> Optional[Dict[str, Any]]:
     """
@@ -219,7 +221,7 @@ async def process_corporation_data(corp_id: int, members: List[Tuple[int, str, s
         return
 
     if args.all or args.corporations:
-        update_corporation_in_wp(corp_id, corp_data)
+        await update_corporation_in_wp(corp_id, corp_data)
 
     # Process corporation blueprints from various sources
     if args.all or args.blueprints:
@@ -440,9 +442,9 @@ async def process_corporation_contracts(corp_id: int, access_token: str, corp_da
             if contract.get('issuer_corporation_id') != corp_id:
                 continue
                 
-            update_contract_in_wp(contract['contract_id'], contract, for_corp=True, entity_id=corp_id, access_token=access_token, blueprint_cache=blueprint_cache)
+            await update_contract_in_wp(contract['contract_id'], contract, for_corp=True, entity_id=corp_id, access_token=access_token, blueprint_cache=blueprint_cache)
 
-def update_corporation_in_wp(corp_id: int, corp_data: Dict[str, Any]) -> None:
+async def update_corporation_in_wp(corp_id: int, corp_data: Dict[str, Any]) -> None:
     """Update or create corporation post in WordPress with corporation details.
     
     Creates or updates WordPress posts for EVE corporations with comprehensive
@@ -460,10 +462,11 @@ def update_corporation_in_wp(corp_id: int, corp_data: Dict[str, Any]) -> None:
         Removes null values from metadata to avoid WordPress validation issues.
         Updates existing posts or creates new ones based on slug lookup.
     """
+    from api_client import wp_request
+    
     slug = f"corporation-{corp_id}"
     # Check if post exists by slug
-    response = requests.get(f"{WP_BASE_URL}/wp-json/wp/v2/eve_corporation?slug={slug}", auth=get_wp_auth())
-    existing_posts = response.json() if response.status_code == 200 else []
+    existing_posts = await wp_request('GET', f"/wp/v2/eve_corporation?slug={slug}")
     existing_post = existing_posts[0] if existing_posts else None
 
     post_data = {
@@ -489,14 +492,12 @@ def update_corporation_in_wp(corp_id: int, corp_data: Dict[str, Any]) -> None:
     if existing_post:
         # Update existing
         post_id = existing_post['id']
-        url = f"{WP_BASE_URL}/wp-json/wp/v2/eve_corporation/{post_id}"
-        response = requests.put(url, json=post_data, auth=get_wp_auth())
+        result = await wp_request('PUT', f"/wp/v2/eve_corporation/{post_id}", post_data)
     else:
         # Create new
-        url = f"{WP_BASE_URL}/wp-json/wp/v2/eve_corporation"
-        response = requests.post(url, json=post_data, auth=get_wp_auth())
+        result = await wp_request('POST', "/wp/v2/eve_corporation", post_data)
 
-    if response.status_code in [200, 201]:
+    if result:
         logger.info(f"Updated corporation: {corp_data.get('name', corp_id)}")
     else:
-        logger.error(f"Failed to update corporation {corp_id}: {response.status_code} - {response.text}")
+        logger.error(f"Failed to update corporation {corp_id}")
