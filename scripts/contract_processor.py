@@ -28,6 +28,7 @@ from cache_manager import (
     load_blueprint_type_cache,
     save_blueprint_cache,
 )
+from cache_manager_contracts import ContractCacheManager
 from config import ESI_BASE_URL, WP_PER_PAGE
 
 """
@@ -108,7 +109,12 @@ async def check_contract_competition(
     competing_price = None
     total_competing_found = 0
 
-    if all_expanded_contracts:
+    if all_expanded_contracts is None:
+        # Load expanded contracts from cache or fetch if needed
+        logger.info("No expanded contracts provided, loading from cache...")
+        all_expanded_contracts = await fetch_and_expand_all_forge_contracts()
+
+    if all_expanded_contracts and len(all_expanded_contracts) > 0:
         # Use pre-expanded contracts - much more efficient!
         logger.debug(f"Using pre-expanded contracts list with {len(all_expanded_contracts)} contracts")
 
@@ -1049,21 +1055,47 @@ async def fetch_and_expand_all_forge_contracts() -> List[Dict[str, Any]]:
     """Fetch all outstanding contracts from The Forge region and expand with full details."""
     logger.info("Fetching and expanding all outstanding contracts from The Forge region...")
 
+    cache_file = os.path.join(os.path.dirname(__file__), "cache", "all_contracts_forge.json")
+
+    # Try to load from cache first
+    if os.path.exists(cache_file):
+        try:
+            with open(cache_file, 'r') as f:
+                cached_contracts = json.load(f)
+            if cached_contracts and len(cached_contracts) > 0:
+                # Check if contracts are already expanded (have issuer_name field)
+                if cached_contracts[0].get('issuer_name'):
+                    logger.info(f"Loaded {len(cached_contracts)} expanded contracts from cache")
+                    return cached_contracts
+                else:
+                    logger.info(f"Loaded {len(cached_contracts)} basic contracts from cache, expanding...")
+                    # Contracts need expansion
+                    expanded_contracts = await expand_all_contracts(cached_contracts)
+                    # Save expanded version back to cache
+                    with open(cache_file, 'w') as f:
+                        json.dump(expanded_contracts, f, indent=2, default=str)
+                    logger.info(f"Saved {len(expanded_contracts)} expanded contracts to cache")
+                    return expanded_contracts
+        except (json.JSONDecodeError, IOError) as e:
+            logger.warning(f"Failed to load cached contracts: {e}")
+
+    # Cache is empty or doesn't exist, fetch fresh data
+    logger.info("Cache empty or invalid, fetching fresh contract data...")
+
     # Fetch all contracts from The Forge
     contracts = await fetch_all_contracts_in_region(FORGE_REGION_ID)
+    logger.info(f"fetch_all_contracts_in_region returned {len(contracts)} contracts")
 
     # Filter for outstanding contracts only
-    outstanding_contracts = [
-        c for c in contracts
-        if c.get("status") == "outstanding"
-    ]
-    logger.info(f"Found {len(outstanding_contracts)} outstanding contracts")
+    # Note: Public contracts endpoint only returns active contracts, so all are effectively outstanding
+    outstanding_contracts = contracts  # All contracts from public endpoint are active
+    logger.info(f"Found {len(outstanding_contracts)} active contracts from public endpoint")
 
     # Expand all contracts with full details
     expanded_contracts = await expand_all_contracts(outstanding_contracts)
+    logger.info(f"expand_all_contracts returned {len(expanded_contracts)} contracts")
 
     # Save to cache file
-    cache_file = os.path.join(os.path.dirname(__file__), "cache", "all_contracts_forge.json")
     with open(cache_file, 'w') as f:
         json.dump(expanded_contracts, f, indent=2, default=str)
     logger.info(f"Saved {len(expanded_contracts)} expanded contracts to {cache_file}")
@@ -1143,11 +1175,12 @@ async def get_user_contracts(char_id: int, access_token: str) -> List[Dict[str, 
 
 async def expand_all_contracts(contracts: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
     """Expand all contracts with issuer names and item details including blueprint attributes."""
-    logger.info("Expanding all contracts with details...")
+    logger.info(f"expand_all_contracts called with {len(contracts)} contracts")
 
-    expanded_contracts = []
+    # Initialize cache manager
+    cache_manager = ContractCacheManager()
 
-    # Get all unique issuer IDs
+    # Get all unique issuer IDs first
     issuer_ids = set()
     for contract in contracts:
         if contract.get("issuer_id"):
@@ -1155,65 +1188,149 @@ async def expand_all_contracts(contracts: List[Dict[str, Any]]) -> List[Dict[str
         if contract.get("issuer_corporation_id"):
             issuer_ids.add(contract["issuer_corporation_id"])
 
-    # Get issuer names
-    issuer_names = await get_issuer_names(list(issuer_ids))
-    logger.info(f"Resolved {len(issuer_names)} issuer names")
+    logger.info(f"Found {len(issuer_ids)} unique issuer IDs")
 
-    for contract in contracts:
-        contract_id = contract["contract_id"]
-        issuer_id = contract.get("issuer_id")
-        issuer_corp_id = contract.get("issuer_corporation_id")
+    # Load existing issuer cache and get missing names
+    issuer_cache = await cache_manager.load_issuer_cache()
+    missing_issuers = await cache_manager.get_missing_issuer_names(list(issuer_ids), issuer_cache)
+    if missing_issuers:
+        issuer_cache.update(missing_issuers)
+        await cache_manager.save_issuer_cache(issuer_cache)
 
-        expanded = contract.copy()
-        expanded["issuer_name"] = issuer_names.get(issuer_id, "Unknown")
-        expanded["issuer_corporation_name"] = issuer_names.get(issuer_corp_id, "Unknown") if issuer_corp_id else "Unknown"
+    logger.info(f"Issuer cache: {len(issuer_cache)} total entries")
 
-        # Get contract items
-        if contract.get("type") == "item_exchange":
-            contract_items = await fetch_public_contract_items_async(contract_id)
-            if contract_items:
-                items_details = []
-                for item in contract_items:
-                    type_id = item.get("type_id")
-                    if type_id:
-                        # Get item type data
-                        type_data = await fetch_public_esi(f"/universe/types/{type_id}/")
-                        item_name = type_data.get("name", f"Type {type_id}") if type_data else f"Type {type_id}"
+    # Load existing caches
+    issuer_cache = await cache_manager.load_issuer_cache()
+    type_cache = await cache_manager.load_type_cache()
+    contract_items_cache = await cache_manager.load_contract_items_cache()
 
-                        item_detail = {
-                            "type_id": type_id,
-                            "name": item_name,
-                            "quantity": item.get("quantity", 1),
-                            "is_blueprint_copy": item.get("is_blueprint_copy", False)
-                        }
+    logger.info(f"Issuer cache: {len(issuer_cache)} total entries")
+    logger.info(f"Type cache: {len(type_cache)} total entries")
+    logger.info(f"Contract items cache: {len(contract_items_cache)} total entries")
 
-                        # Determine if BPO or BPC and get blueprint attributes
-                        if item_detail["is_blueprint_copy"]:
-                            item_detail["blueprint_type"] = "BPC"
-                            # For BPCs, get the blueprint attributes
-                            if "time_efficiency" in item and "material_efficiency" in item:
-                                item_detail["time_efficiency"] = item.get("time_efficiency", 0)
-                                item_detail["material_efficiency"] = item.get("material_efficiency", 0)
-                        else:
-                            # Check if this is a blueprint original by looking at the type data
-                            group_id = type_data.get("group_id") if type_data else None
-                            if group_id == 2:  # Blueprint group
-                                item_detail["blueprint_type"] = "BPO"
-                                # BPOs don't have efficiency attributes in contract items
-                                item_detail["time_efficiency"] = None
-                                item_detail["material_efficiency"] = None
+    # Process contracts in batches to avoid memory issues and provide progress
+    batch_size = 1000
+    expanded_contracts = []
+    logger.info(f"Processing contracts in batches of {batch_size}...")
+
+    for batch_start in range(0, len(contracts), batch_size):
+        batch_end = min(batch_start + batch_size, len(contracts))
+        batch_contracts = contracts[batch_start:batch_end]
+
+        logger.info(f"Processing batch {batch_start//batch_size + 1}: contracts {batch_start} to {batch_end-1}")
+
+        # First, add contracts with issuer names only
+        for contract in batch_contracts:
+            contract_id = contract["contract_id"]
+            issuer_id = contract.get("issuer_id")
+            issuer_corp_id = contract.get("issuer_corporation_id")
+
+            expanded = contract.copy()
+            expanded["issuer_name"] = issuer_cache.get(str(issuer_id), "Unknown")
+            expanded["issuer_corporation_name"] = issuer_cache.get(str(issuer_corp_id), "Unknown") if issuer_corp_id else "Unknown"
+            # Items will be added later
+
+            expanded_contracts.append(expanded)
+
+        logger.info(f"Completed batch {batch_start//batch_size + 1}, total expanded: {len(expanded_contracts)}")
+
+    logger.info(f"All contracts expanded with issuer names. Now adding item details...")
+
+    # Second pass: add item details in very small batches
+    item_batch_size = 20  # Very small batches for item fetching
+    for batch_start in range(0, len(expanded_contracts), item_batch_size):
+        batch_end = min(batch_start + item_batch_size, len(expanded_contracts))
+        logger.info(f"Adding items to batch {batch_start//item_batch_size + 1}: contracts {batch_start} to {batch_end-1}")
+
+        # Collect type IDs needed for this small batch
+        batch_type_ids = set()
+        contracts_to_update = []
+
+        for i in range(batch_start, batch_end):
+            contract = expanded_contracts[i]
+            if contract.get("type") == "item_exchange":
+                contracts_to_update.append(i)
+                contract_id = contract["contract_id"]
+
+                try:
+                    contract_id_str = str(contract_id)
+                    contract_items = contract_items_cache.get(contract_id_str)
+                    if contract_items is None:
+                        contract_items = await fetch_public_contract_items_async(contract_id)
+                        if contract_items:
+                            contract_items_cache[contract_id_str] = contract_items
+                            await cache_manager.save_contract_items_cache(contract_items_cache)
+                    if contract_items:
+                        for item in contract_items:
+                            type_id = item.get("type_id")
+                            if type_id and str(type_id) not in type_cache:
+                                batch_type_ids.add(type_id)
+                except Exception as e:
+                    logger.warning(f"Failed to fetch items for contract {contract_id}: {e}")
+
+        # Fetch missing type data for this batch
+        if batch_type_ids:
+            logger.info(f"Fetching {len(batch_type_ids)} missing type IDs...")
+            missing_types = await cache_manager.get_missing_type_data(list(batch_type_ids), type_cache)
+            if missing_types:
+                type_cache.update(missing_types)
+                await cache_manager.save_type_cache(type_cache)
+
+        # Add item details to contracts in this batch
+        for i in contracts_to_update:
+            contract = expanded_contracts[i]
+            contract_id = contract["contract_id"]
+
+            try:
+                contract_id_str = str(contract_id)
+                contract_items = contract_items_cache.get(contract_id_str)
+                if contract_items is None:
+                    contract_items = await fetch_public_contract_items_async(contract_id)
+                    if contract_items:
+                        contract_items_cache[contract_id_str] = contract_items
+                        await cache_manager.save_contract_items_cache(contract_items_cache)
+                if contract_items:
+                    items_details = []
+                    for item in contract_items:
+                        type_id = item.get("type_id")
+                        if type_id:
+                            # Use cached type data
+                            type_data = type_cache.get(str(type_id))
+                            item_name = type_data.get("name", f"Type {type_id}") if type_data else f"Type {type_id}"
+
+                            item_detail = {
+                                "type_id": type_id,
+                                "name": item_name,
+                                "quantity": item.get("quantity", 1),
+                                "is_blueprint_copy": item.get("is_blueprint_copy", False)
+                            }
+
+                            # Determine if BPO or BPC and get blueprint attributes
+                            if item_detail["is_blueprint_copy"]:
+                                item_detail["blueprint_type"] = "BPC"
+                                # For BPCs, get the blueprint attributes
+                                if "time_efficiency" in item and "material_efficiency" in item:
+                                    item_detail["time_efficiency"] = item.get("time_efficiency", 0)
+                                    item_detail["material_efficiency"] = item.get("material_efficiency", 0)
                             else:
-                                item_detail["blueprint_type"] = None
+                                # Check if this is a blueprint original by looking at the type data
+                                group_id = type_data.get("group_id") if type_data else None
+                                if group_id == 2:  # Blueprint group
+                                    item_detail["blueprint_type"] = "BPO"
+                                    # BPOs don't have efficiency attributes in contract items
+                                    item_detail["time_efficiency"] = None
+                                    item_detail["material_efficiency"] = None
+                                else:
+                                    item_detail["blueprint_type"] = None
 
-                        items_details.append(item_detail)
+                            items_details.append(item_detail)
 
-                expanded["items"] = items_details
-                expanded["item_count"] = len(contract_items)
+                    expanded_contracts[i]["items"] = items_details
+                    expanded_contracts[i]["item_count"] = len(contract_items)
+            except Exception as e:
+                logger.warning(f"Failed to process items for contract {contract_id}: {e}")
 
-        expanded_contracts.append(expanded)
-        logger.debug(f"Expanded contract {contract_id}")
-
-    logger.info(f"Expanded {len(expanded_contracts)} contracts")
+    logger.info(f"Expanded {len(expanded_contracts)} contracts total")
     return expanded_contracts
 
 
@@ -1263,6 +1380,7 @@ async def fetch_all_contracts_in_region(region_id: int) -> List[Dict[str, Any]]:
                 'date_issued': contract.get("date_issued"),
                 'date_expired': contract.get("date_expired"),
                 'volume': contract.get("volume", 1),
+                'status': 'outstanding',  # Public endpoint only returns active contracts
             }
 
             all_contracts.append(contract_data)
