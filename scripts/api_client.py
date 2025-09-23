@@ -140,6 +140,33 @@ _wp_circuit_breaker = CircuitBreaker("WordPress_API", CircuitBreakerConfig(
     timeout=15.0
 ))
 
+class RateLimiter:
+    """Rate limiter to prevent API abuse with configurable calls per minute."""
+    
+    def __init__(self, calls_per_minute: int = 60):
+        self.calls_per_minute = calls_per_minute
+        self.calls = []
+    
+    async def wait_if_needed(self):
+        """Wait if necessary to respect rate limits."""
+        now = datetime.now()
+        # Remove calls older than 1 minute
+        self.calls = [call for call in self.calls if call > now - timedelta(minutes=1)]
+        
+        if len(self.calls) >= self.calls_per_minute:
+            # Wait until the oldest call is more than 1 minute old
+            wait_time = (self.calls[0] + timedelta(minutes=1) - now).total_seconds()
+            if wait_time > 0:
+                logger.info(f"Rate limiter: Waiting {wait_time:.2f} seconds to respect {self.calls_per_minute} calls/minute limit")
+                await asyncio.sleep(wait_time)
+                # Recheck after waiting
+                return await self.wait_if_needed()
+        
+        self.calls.append(now)
+
+# Global rate limiter for WordPress API
+wp_rate_limiter = RateLimiter(calls_per_minute=60)  # 60 calls per minute default
+
 # Custom exceptions for better error handling
 
 # Custom exceptions for better error handling
@@ -247,6 +274,17 @@ logging.basicConfig(
 )
 logger = logging.getLogger(__name__)
 
+# Set up audit logging for sensitive operations
+audit_logger = logging.getLogger('audit')
+audit_logger.setLevel(logging.INFO)
+audit_handler = logging.FileHandler('audit.log')
+audit_handler.setFormatter(logging.Formatter('%(asctime)s - %(levelname)s - %(message)s'))
+audit_logger.addHandler(audit_handler)
+
+def log_audit_event(event: str, user: str, details: dict):
+    """Log audit events for security monitoring."""
+    audit_logger.info(f"EVENT: {event} | USER: {user} | DETAILS: {details}")
+
 @benchmark
 async def _fetch_esi_with_retry(endpoint: str, headers: Optional[Dict[str, str]] = None, max_retries: int = None, is_public: bool = True) -> Dict[str, Any]:
     """Internal function to fetch data from ESI API with circuit breaker and error handling."""
@@ -265,6 +303,7 @@ async def _fetch_esi_with_retry(endpoint: str, headers: Optional[Dict[str, str]]
                 async with sess.get(url, headers=headers or {}) as response:
                     if response.status == 200:
                         result = await response.json()
+                        result = sanitize_api_response(result)  # Sanitize API response
                         elapsed = time.time() - start_time
                         endpoint_type = "public" if is_public else "authenticated"
                         logger.info(f"ESI {endpoint_type} fetch successful: {endpoint} in {elapsed:.2f}s")
@@ -372,6 +411,9 @@ async def wp_request(method: str, endpoint: str, data: Optional[Dict] = None) ->
     
     async def _do_wp_request():
         start_time = time.time()
+        # Apply rate limiting
+        await wp_rate_limiter.wait_if_needed()
+        
         sess = await get_session()
         url = f"{WP_BASE_URL}{endpoint}"
         auth = aiohttp.BasicAuth(WP_USERNAME, WP_APP_PASSWORD)
@@ -381,6 +423,7 @@ async def wp_request(method: str, endpoint: str, data: Optional[Dict] = None) ->
                 async with sess.get(url, auth=auth) as response:
                     if response.status == 200:
                         result = await response.json()
+                        result = sanitize_api_response(result)  # Sanitize API response
                         elapsed = time.time() - start_time
                         logger.info(f"WordPress GET successful: {endpoint} in {elapsed:.2f}s")
                         return result
@@ -396,6 +439,7 @@ async def wp_request(method: str, endpoint: str, data: Optional[Dict] = None) ->
                 async with sess.post(url, json=data, auth=auth) as response:
                     if response.status in [200, 201]:
                         result = await response.json()
+                        result = sanitize_api_response(result)  # Sanitize API response
                         elapsed = time.time() - start_time
                         logger.info(f"WordPress POST successful: {endpoint} in {elapsed:.2f}s")
                         return result
@@ -411,6 +455,7 @@ async def wp_request(method: str, endpoint: str, data: Optional[Dict] = None) ->
                 async with sess.put(url, json=data, auth=auth) as response:
                     if response.status in [200, 201]:
                         result = await response.json()
+                        result = sanitize_api_response(result)  # Sanitize API response
                         elapsed = time.time() - start_time
                         logger.info(f"WordPress PUT successful: {endpoint} in {elapsed:.2f}s")
                         return result
@@ -480,12 +525,17 @@ def refresh_token(refresh_token: str) -> Optional[Dict[str, Any]]:
     if response.status_code == 200:
         token_data = response.json()
         expires_at = datetime.now(timezone.utc) + timedelta(seconds=token_data['expires_in'])
-        return {
+        result = {
             'access_token': token_data['access_token'],
             'refresh_token': token_data.get('refresh_token', refresh_token),
             'expires_at': expires_at.isoformat()
         }
+        # Audit log successful token refresh
+        log_audit_event('TOKEN_REFRESH_SUCCESS', 'system', {'client_id': client_id[:8] + '...' if client_id else 'unknown'})
+        return result
     else:
+        # Audit log failed token refresh
+        log_audit_event('TOKEN_REFRESH_FAILURE', 'system', {'status_code': response.status_code, 'client_id': client_id[:8] + '...' if client_id else 'unknown'})
         logger.error(f"Failed to refresh token: {response.status_code} - {response.text}")
         return None
 
@@ -511,3 +561,23 @@ async def fetch_type_icon(type_id: int, size: int = 512) -> str:
 
 def sanitize_string(value: str) -> str:
     return re.sub(r'[^\w\s\-.,]', '', value) if isinstance(value, str) else str(value)
+
+def sanitize_api_response(data: Any) -> Any:
+    """Sanitize API response data recursively to prevent injection and ensure type safety."""
+    if isinstance(data, dict):
+        sanitized = {}
+        for k, v in data.items():
+            if isinstance(k, str) and re.match(r'^[a-zA-Z_][a-zA-Z0-9_]*$', k):  # Valid key names only
+                sanitized[k] = sanitize_api_response(v)
+        return sanitized
+    elif isinstance(data, list):
+        return [sanitize_api_response(item) for item in data]
+    elif isinstance(data, str):
+        # Basic sanitization: remove potentially dangerous characters
+        return re.sub(r'[^\w\s\-.,@/:]', '', data)
+    elif isinstance(data, (int, float, bool)) or data is None:
+        # Allow primitive types as-is
+        return data
+    else:
+        # Convert unknown types to string and sanitize
+        return sanitize_string(str(data))

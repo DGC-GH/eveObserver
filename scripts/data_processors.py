@@ -17,7 +17,7 @@ import time
 import asyncio
 
 from config import *
-from api_client import fetch_public_esi, fetch_esi, wp_request, send_email, refresh_token, fetch_type_icon, sanitize_string, WordPressAuthError, WordPressRequestError, ESIAuthError, ESIRequestError
+from api_client import fetch_public_esi, fetch_esi, wp_request, send_email, refresh_token, fetch_type_icon, sanitize_string, WordPressAuthError, WordPressRequestError, ESIAuthError, ESIRequestError, log_audit_event
 from cache_manager import (
     load_blueprint_cache, save_blueprint_cache, load_blueprint_type_cache, save_blueprint_type_cache,
     load_location_cache, save_location_cache, load_structure_cache, save_structure_cache,
@@ -64,7 +64,7 @@ async def process_blueprints_parallel(blueprints: List[Dict[str, Any]], update_f
 
     return results
 
-async def update_or_create_blueprint_post(post_data: Dict[str, Any], existing_post: Optional[Dict[str, Any]], wp_post_id_cache: Dict[str, Any], item_id: int, blueprint_data: Dict[str, Any], type_name: str, location_name: str, me: int, te: int, quantity: int) -> None:
+async def update_or_create_blueprint_post(post_data: Dict[str, Any], existing_post: Optional[Dict[str, Any]], wp_post_id_cache: Dict[str, Any], item_id: int, blueprint_data: Dict[str, Any], type_name: str, location_name: str, me: int, te: int, quantity: int, char_id: int) -> None:
     """
     Update or create the blueprint post in WordPress.
     """
@@ -99,6 +99,7 @@ async def update_or_create_blueprint_post(post_data: Dict[str, Any], existing_po
             result = await wp_request('PUT', f"/wp-json/wp/v2/eve_blueprint/{post_id}", post_data)
             if result:
                 logger.info(f"Updated blueprint: {item_id}")
+                log_audit_event('BLUEPRINT_UPDATE', str(char_id), {'item_id': item_id, 'post_id': post_id})
             else:
                 logger.error(f"Failed to update blueprint {item_id}: No result")
         except (WordPressAuthError, WordPressRequestError) as e:
@@ -110,6 +111,7 @@ async def update_or_create_blueprint_post(post_data: Dict[str, Any], existing_po
             if new_post:
                 set_cached_wp_post_id(wp_post_id_cache, 'eve_blueprint', item_id, new_post['id'])
                 logger.info(f"Created new blueprint: {item_id}")
+                log_audit_event('BLUEPRINT_CREATE', str(char_id), {'item_id': item_id, 'post_id': new_post['id']})
             else:
                 logger.error(f"Failed to create blueprint {item_id}: No result")
         except (WordPressAuthError, WordPressRequestError) as e:
@@ -190,6 +192,7 @@ async def update_character_in_wp(char_id: int, char_data: Dict[str, Any]) -> Non
             result = await wp_request('PUT', f"/wp-json/wp/v2/eve_character/{post_id}", post_data)
             if result:
                 logger.info(f"Updated character: {char_data['name']}")
+                log_audit_event('CHARACTER_UPDATE', str(char_id), {'name': char_data['name'], 'post_id': post_id})
             else:
                 logger.error(f"Failed to update character {char_data['name']}: No result")
         except (WordPressAuthError, WordPressRequestError) as e:
@@ -200,6 +203,7 @@ async def update_character_in_wp(char_id: int, char_data: Dict[str, Any]) -> Non
             result = await wp_request('POST', "/wp-json/wp/v2/eve_character", post_data)
             if result:
                 logger.info(f"Created character: {char_data['name']}")
+                log_audit_event('CHARACTER_CREATE', str(char_id), {'name': char_data['name'], 'post_id': result['id']})
             else:
                 logger.error(f"Failed to create character {char_data['name']}: No result")
         except (WordPressAuthError, WordPressRequestError) as e:
@@ -363,7 +367,7 @@ async def update_blueprint_in_wp(blueprint_data: Dict[str, Any], char_id: int, a
     post_data = construct_blueprint_post_data(blueprint_data, type_name, location_name, bp_type, char_id, item_id)
 
     # Update or create the blueprint post in WordPress
-    await update_or_create_blueprint_post(post_data, existing_post, wp_post_id_cache, item_id, blueprint_data, type_name, location_name, me, te, quantity)
+    await update_or_create_blueprint_post(post_data, existing_post, wp_post_id_cache, item_id, blueprint_data, type_name, location_name, me, te, quantity, char_id)
 
     elapsed = time.time() - start_time
     logger.info(f"Blueprint processing completed for item {item_id} in {elapsed:.2f}s")
