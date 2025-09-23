@@ -523,15 +523,15 @@ class EVEDashboard {
         const canvas = document.getElementById('eveChart');
         if (!canvas) return;
 
-        // Destroy existing chart if it exists
-        if (this.chart) {
+        // Destroy any existing chart on this canvas
+        const existingChart = Chart.getChart(canvas);
+        if (existingChart) {
             console.log('🔄 [CHART] Destroying existing chart...');
             try {
-                this.chart.destroy();
+                existingChart.destroy();
             } catch (e) {
                 console.warn('🔄 [CHART] Error destroying chart:', e);
             }
-            this.chart = null;
         }
 
         // Clear the canvas context and reset dimensions
@@ -539,6 +539,9 @@ class EVEDashboard {
         ctx.clearRect(0, 0, canvas.width, canvas.height);
 
         // Reset canvas dimensions to force a clean state
+        canvas.width = 0;
+        canvas.height = 0;
+
         const parent = canvas.parentElement;
         if (parent) {
             const computedStyle = getComputedStyle(parent);
