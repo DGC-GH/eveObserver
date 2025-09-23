@@ -405,7 +405,7 @@ wp_rate_limiter = DynamicRateLimiter(base_calls_per_minute=60, max_calls_per_min
 
 
 # Global rate limiter for WordPress API
-wp_rate_limiter = RateLimiter(calls_per_minute=60)  # 60 calls per minute default
+wp_rate_limiter = DynamicRateLimiter(base_calls_per_minute=60, max_calls_per_minute=120)
 
 # Custom exceptions for better error handling
 
@@ -785,7 +785,7 @@ async def fetch_esi(
     return await _fetch_esi_with_retry(endpoint, headers=headers, max_retries=max_retries, is_public=False)
 
 
-@validate_input_params(str, type(None), str)
+@validate_input_params(str, (int, type(None)), str)
 def fetch_esi_sync(
     endpoint: str, char_id: Optional[int], access_token: str, max_retries: int = None
 ) -> Optional[Dict[str, Any]]:
@@ -800,7 +800,7 @@ def fetch_public_esi_sync(endpoint: str, max_retries: int = None) -> Optional[Di
 
 
 @validate_input_params(int, int)
-def fetch_public_contracts(region_id: int, page: int = 1, max_retries: int = 3) -> Optional[List[Dict[str, Any]]]:
+def fetch_public_contracts(region_id: int, page: int = 1, contract_type: str = None, max_retries: int = 3) -> Optional[List[Dict[str, Any]]]:
     """Fetch public contracts for a specific region with retry logic and rate limiting.
 
     This function retrieves public contracts from the EVE ESI API for a given region,
@@ -809,6 +809,7 @@ def fetch_public_contracts(region_id: int, page: int = 1, max_retries: int = 3) 
     Args:
         region_id: The EVE region ID to fetch contracts from
         page: Page number for pagination (default: 1)
+        contract_type: Optional contract type filter ('item_exchange', 'auction', 'courier', 'loan')
         max_retries: Maximum number of retry attempts on failure (default: 3)
 
     Returns:
@@ -817,7 +818,11 @@ def fetch_public_contracts(region_id: int, page: int = 1, max_retries: int = 3) 
     Note:
         ESI returns a maximum of 1000 contracts per page. Use pagination for complete results.
     """
-    endpoint = f"/contracts/public/{region_id}/?page={page}"
+    query_params = f"page={page}"
+    if contract_type:
+        query_params += f"&type={contract_type}"
+
+    endpoint = f"/contracts/public/{region_id}/?{query_params}"
     url = f"{ESI_BASE_URL}{endpoint}"
     headers = {"Accept": "application/json"}
 
