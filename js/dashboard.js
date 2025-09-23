@@ -527,7 +527,13 @@ class EVEDashboard {
         if (this.chart) {
             console.log('🔄 [CHART] Destroying existing chart...');
             this.chart.destroy();
+            this.chart = null;
         }
+
+        // Clear the canvas context
+        const canvas = ctx;
+        const context = canvas.getContext('2d');
+        context.clearRect(0, 0, canvas.width, canvas.height);
 
         const counts = {
             Characters: this.data.characters.length,
