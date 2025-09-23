@@ -297,6 +297,12 @@ class EVEDashboard {
 
             if (!response.ok) {
                 const errorData = await response.json().catch(() => ({ message: 'Unknown error' }));
+
+                // Check for specific error types
+                if (errorData.code === 'function_disabled') {
+                    throw new Error(`Server configuration error: ${errorData.message}. Please contact your hosting provider to enable shell_exec function.`);
+                }
+
                 throw new Error(`HTTP ${response.status}: ${errorData.message || response.statusText}`);
             }
 

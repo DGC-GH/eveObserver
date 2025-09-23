@@ -193,6 +193,12 @@ class EVE_Observer {
         // Log the sync request
         error_log("EVE Observer: Sync request started for section: {$section}");
 
+        // Check if required functions are available
+        if (!function_exists('shell_exec')) {
+            error_log("EVE Observer: shell_exec function is disabled");
+            return new WP_Error('function_disabled', 'shell_exec function is disabled by server configuration', array('status' => 500));
+        }
+
         // Get the path to the scripts directory
         $plugin_dir = plugin_dir_path(__FILE__);
         $scripts_dir = dirname($plugin_dir) . '/scripts/';
