@@ -1,6 +1,9 @@
 // EVE Observer Dashboard - Modern JavaScript
+console.log('EVE Observer Dashboard script loaded');
+
 class EVEDashboard {
     constructor() {
+        console.log('EVEDashboard constructor called');
         this.currentPage = {
             blueprints: 1,
             planets: 1
@@ -28,6 +31,7 @@ class EVEDashboard {
 
     async init() {
         console.log('EVEDashboard init called');
+        console.log('DOM ready state:', document.readyState);
         await this.loadAllData();
         this.setupSearch();
         this.setupCardClicks();
@@ -223,8 +227,25 @@ class EVEDashboard {
 
     setupSyncButtons() {
         console.log('setupSyncButtons called');
+
         const syncButtons = document.querySelectorAll('.eve-sync-btn');
         const syncAllButton = document.getElementById('eve-sync-all');
+
+        console.log('Found sync buttons:', syncButtons.length);
+        console.log('Sync all button found:', !!syncAllButton);
+
+        if (syncAllButton) {
+            console.log('Sync all button element:', syncAllButton);
+            console.log('Sync all button HTML:', syncAllButton.outerHTML);
+        } else {
+            console.error('Sync all button not found!');
+        }
+
+        console.log('eveObserverApi available:', typeof eveObserverApi !== 'undefined');
+        if (typeof eveObserverApi !== 'undefined') {
+            console.log('eveObserverApi.nonce:', eveObserverApi.nonce ? 'present' : 'missing');
+            console.log('eveObserverApi.restUrl:', eveObserverApi.restUrl);
+        }
 
         syncButtons.forEach(button => {
             button.addEventListener('click', (e) => {
@@ -236,15 +257,25 @@ class EVEDashboard {
         });
 
         if (syncAllButton) {
-            syncAllButton.addEventListener('click', () => {
-                console.log('Sync all button clicked');
+            syncAllButton.addEventListener('click', (e) => {
+                console.log('Sync all button clicked - event detected!');
+                alert('Sync All button clicked! Check console for details.');
                 this.syncSection('all', syncAllButton);
             });
+        } else {
+            console.error('Sync all button not found!');
         }
     }
 
     async syncSection(section, button) {
         console.log(`EVE Observer: Starting sync for section: ${section}`);
+        console.log('eveObserverApi available at sync time:', typeof eveObserverApi !== 'undefined');
+
+        if (typeof eveObserverApi === 'undefined') {
+            console.error('eveObserverApi is not defined!');
+            this.showNotification('API configuration error - please refresh the page', 'error');
+            return;
+        }
 
         // Disable button and show loading state
         const originalText = button.innerHTML;
@@ -253,7 +284,10 @@ class EVEDashboard {
 
         try {
             console.log(`EVE Observer: Making API request to sync ${section}`);
-            const response = await fetch(`/wp-json/eve-observer/v1/sync/${section}`, {
+            console.log('API URL:', eveObserverApi.restUrl + 'sync/' + section);
+            console.log('Nonce:', eveObserverApi.nonce);
+
+            const response = await fetch(`${eveObserverApi.restUrl}sync/${section}`, {
                 method: 'POST',
                 headers: {
                     'X-WP-Nonce': eveObserverApi.nonce,
@@ -725,5 +759,6 @@ class EVEDashboard {
 
 // Initialize dashboard when DOM is ready
 document.addEventListener('DOMContentLoaded', () => {
+    console.log('DOM content loaded, initializing EVE Dashboard');
     new EVEDashboard();
 });
