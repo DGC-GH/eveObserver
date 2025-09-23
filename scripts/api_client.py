@@ -306,7 +306,7 @@ _esi_circuit_breaker = CircuitBreaker(
 )
 
 _wp_circuit_breaker = CircuitBreaker(
-    "WordPress_API", CircuitBreakerConfig(failure_threshold=3, recovery_timeout=30, success_threshold=2, timeout=15.0)
+    "WordPress_API", CircuitBreakerConfig(failure_threshold=20, recovery_timeout=300, success_threshold=3, timeout=30.0)
 )
 
 

@@ -67,8 +67,8 @@ async def process_blueprints_parallel(
     Process multiple blueprints concurrently using asyncio for improved performance.
 
     Executes blueprint update operations in parallel to reduce total processing time
-    when handling large numbers of blueprints. Uses asyncio.gather to run all
-    update operations concurrently and collects results.
+    when handling large numbers of blueprints. Uses asyncio.gather with a semaphore
+    to limit concurrent requests and prevent overwhelming the WordPress API.
 
     Args:
         blueprints: List of blueprint data dictionaries from ESI API.
@@ -83,14 +83,24 @@ async def process_blueprints_parallel(
 
     Note:
         Exceptions during individual blueprint processing are caught and logged
-        but don't stop processing of other blueprints.
+        but don't stop processing of other blueprints. Limits concurrency to 10
+        simultaneous requests to avoid overwhelming the API.
     """
+    import asyncio
+
     start_time = time.time()
     total_blueprints = len(blueprints)
 
     logger.info(f"Starting async processing of {total_blueprints} blueprints")
 
-    tasks = [update_func(bp, wp_post_id_cache, *args, **kwargs) for bp in blueprints]
+    # Semaphore to limit concurrent requests to prevent overwhelming the API
+    semaphore = asyncio.Semaphore(10)  # Limit to 10 concurrent requests
+
+    async def limited_update_func(bp):
+        async with semaphore:
+            return await update_func(bp, wp_post_id_cache, *args, **kwargs)
+
+    tasks = [limited_update_func(bp) for bp in blueprints]
     results = await asyncio.gather(*tasks, return_exceptions=True)
 
     processed_count = 0
