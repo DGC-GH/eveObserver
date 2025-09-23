@@ -329,8 +329,8 @@ class DynamicRateLimiter:
         # Clean up old data (keep last 5 minutes)
         cutoff_time = now - timedelta(minutes=5)
         self.calls = [call for call in self.calls if call > cutoff_time]
-        self.response_times = [rt for rt, ts in self.response_times if ts > cutoff_time]
-        self.errors = [err for err, ts in self.errors if ts > cutoff_time]
+        self.response_times = [item for item in self.response_times if isinstance(item, tuple) and len(item) == 2 and item[1] > cutoff_time]
+        self.errors = [item for item in self.errors if isinstance(item, tuple) and len(item) == 2 and item[1] > cutoff_time]
 
         # Adjust rate based on recent performance
         self._adjust_rate(now)
@@ -366,8 +366,8 @@ class DynamicRateLimiter:
         # Look at last 2 minutes of data
         recent_cutoff = now - timedelta(minutes=2)
 
-        recent_responses = [rt for rt, ts in self.response_times if ts > recent_cutoff]
-        recent_errors = [err for err, ts in self.errors if ts > recent_errors]
+        recent_responses = [rt for rt, ts in self.response_times if isinstance((rt, ts), tuple) and ts > recent_cutoff]
+        recent_errors = [err for err, ts in self.errors if isinstance((err, ts), tuple) and ts > recent_cutoff]
 
         if not recent_responses:
             return  # Not enough data yet
@@ -394,9 +394,8 @@ class DynamicRateLimiter:
         # Log significant changes
         if abs(self.current_calls_per_minute - self.base_calls_per_minute) > 5:
             logger.info(
-                ".1f"
-                ".2f"
-                ".1f"
+                f"Rate limiter adjusted: base={self.base_calls_per_minute:.1f}, "
+                f"current={self.current_calls_per_minute:.2f}, factor={self.adjustment_factor:.1f}"
             )
 
 

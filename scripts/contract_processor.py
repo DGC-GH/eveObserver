@@ -127,16 +127,27 @@ async def check_contract_competition(
 
     logger.info(f"Found {len(competing_contracts)} potential competing contracts in region {region_id}")
 
-    # Check each competing contract
+    # Check each competing contract - fetch items concurrently
+    competing_tasks = []
     for comp_contract in competing_contracts:
         comp_contract_id = comp_contract.get("contract_id")
-        comp_price = comp_contract.get("price", 0)
+        competing_tasks.append(fetch_public_contract_items_async(comp_contract_id))
 
-        # Fetch contract items
-        comp_items = await fetch_public_contract_items_async(comp_contract_id)
+    # Execute all item fetches concurrently
+    competing_items_results = await asyncio.gather(*competing_tasks, return_exceptions=True)
+
+    # Process results
+    for comp_contract, comp_items_result in zip(competing_contracts, competing_items_results):
+        if isinstance(comp_items_result, Exception):
+            # Handle fetch error
+            continue
+
+        comp_items = comp_items_result
         if not comp_items or len(comp_items) != 1:
             continue  # Only check single-item contracts
 
+        comp_contract_id = comp_contract.get("contract_id")
+        comp_price = comp_contract.get("price", 0)
         comp_item = comp_items[0]
         comp_type_id = comp_item.get("type_id")
         comp_quantity = comp_item.get("quantity", 1)
