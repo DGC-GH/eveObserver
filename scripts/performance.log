@@ -123,3 +123,13 @@
 2025-09-23 16:28:31,658 - INFO - wp_request completed in 0.000s
 2025-09-23 17:29:46,421 - INFO - wp_request completed in 0.000s
 2025-09-23 17:31:19,952 - INFO - _fetch_esi_with_retry completed in 0.000s
+2025-09-23 17:37:17,649 - INFO - _fetch_esi_with_retry completed in 0.000s
+2025-09-23 17:37:17,656 - INFO - _fetch_esi_with_retry completed in 0.001s
+2025-09-23 17:37:17,658 - INFO - _fetch_esi_with_retry completed in 0.000s
+2025-09-23 17:37:17,841 - INFO - wp_request completed in 0.000s
+2025-09-23 17:37:17,845 - INFO - wp_request completed in 0.001s
+2025-09-23 17:40:18,230 - INFO - _fetch_esi_with_retry completed in 0.000s
+2025-09-23 17:40:18,234 - INFO - _fetch_esi_with_retry completed in 0.000s
+2025-09-23 17:40:18,236 - INFO - _fetch_esi_with_retry completed in 0.000s
+2025-09-23 17:40:18,452 - INFO - wp_request completed in 0.000s
+2025-09-23 17:40:18,455 - INFO - wp_request completed in 0.000s

@@ -12,6 +12,8 @@ sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from fetch_data import (
     collect_corporation_members,
+)
+from api_client import (
     ApiConfig,
 )
 from character_processor import (

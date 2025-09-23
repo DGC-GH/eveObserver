@@ -8,6 +8,7 @@ import os
 import json
 import aiohttp
 import asyncio
+import requests
 from datetime import datetime, timedelta, timezone
 from dotenv import load_dotenv
 import smtplib
@@ -35,65 +36,125 @@ from cache_manager import (
 )
 from api_client import fetch_public_esi, fetch_esi, wp_request, send_email, refresh_token, fetch_type_icon, delete_wp_post
 from utils import get_region_from_location
-class ESIApiError(Exception):
-    """Base exception for ESI API errors."""
-    pass
 
-class ESIAuthError(ESIApiError):
-    """Exception raised for authentication failures."""
-    pass
+async def collect_corporation_members(tokens):
+    corp_members = {}
+    for char_id, token_data in tokens.items():
+        try:
+            expired = datetime.now(timezone.utc) > datetime.fromisoformat(token_data.get('expires_at', '2000-01-01T00:00:00+00:00'))
+        except:
+            expired = True
+        if expired:
+            new_token = refresh_token(token_data['refresh_token'])
+            if new_token:
+                token_data.update(new_token)
+                save_tokens(tokens)
+            else:
+                logger.warning(f"Failed to refresh token for {token_data['name']}")
+                continue
 
-class ESIRequestError(ESIApiError):
-    """Exception raised for general ESI request errors."""
-    pass
+        access_token = token_data['access_token']
+        char_name = token_data['name']
 
-@dataclass
-class ApiConfig:
-    """Centralized configuration for API settings and limits."""
-    esi_base_url: str = 'https://esi.evetech.net/latest'
-    esi_timeout: int = 30
-    esi_max_retries: int = 3
-    esi_max_workers: int = 10
-    wp_per_page: int = 100
-    rate_limit_buffer: int = 1
-    
-    @classmethod
-    def from_env(cls) -> 'ApiConfig':
-        """Create ApiConfig instance from environment variables."""
-        return cls(
-            esi_base_url=os.getenv('ESI_BASE_URL', 'https://esi.evetech.net/latest'),
-            esi_timeout=int(os.getenv('ESI_TIMEOUT', 30)),
-            esi_max_retries=int(os.getenv('ESI_MAX_RETRIES', 3)),
-            esi_max_workers=int(os.getenv('ESI_MAX_WORKERS', 10)),
-            wp_per_page=int(os.getenv('WP_PER_PAGE', 100)),
-        )
+        # Fetch basic character data to get corporation
+        char_data = await fetch_character_data(char_id, access_token)
+        if char_data:
+            await update_character_in_wp(char_id, char_data)
+            corp_id = char_data.get('corporation_id')
+            if corp_id:
+                if corp_id not in corp_members:
+                    corp_members[corp_id] = []
+                corp_members[corp_id].append((char_id, access_token, char_name))
 
-load_dotenv()
+    return corp_members
 
-# Create a global aiohttp session for connection reuse
-session = None
-
-async def get_session():
+async def process_character_data(char_id: int, token_data: Dict[str, Any], wp_post_id_cache: Dict[str, Any], 
+                                blueprint_cache: Dict[str, Any], location_cache: Dict[str, Any], 
+                                structure_cache: Dict[str, Any], failed_structures: Dict[str, Any], 
+                                args: argparse.Namespace) -> None:
     """
-    Get or create a global aiohttp ClientSession for connection reuse.
+    Process all data for a single character based on command line arguments.
 
-    Creates a new session with configured timeout and connection limits if one
-    doesn't exist or has been closed. Uses TCPConnector with worker limits to
-    prevent connection pool exhaustion.
+    Fetches and processes character skills, blueprints, planets, and contracts
+    according to the specified arguments.
 
-    Returns:
-        aiohttp.ClientSession: The global session instance for HTTP requests.
+    Args:
+        char_id: EVE character ID to process.
+        token_data: Token data dictionary for the character.
+        wp_post_id_cache: WordPress post ID cache.
+        blueprint_cache: Blueprint name cache.
+        location_cache: Location name cache.
+        structure_cache: Structure name cache.
+        failed_structures: Failed structure cache.
+        args: Parsed command line arguments.
+
+    Note:
+        Only processes data types specified in the arguments.
+        Updates WordPress with fetched data.
     """
-    global session
-    if session is None or session.closed:
-        session = aiohttp.ClientSession(
-            timeout=aiohttp.ClientTimeout(total=api_config.esi_timeout),
-            connector=aiohttp.TCPConnector(limit=api_config.esi_max_workers * 2)
-        )
-    return session
+    access_token = token_data['access_token']
+    char_name = token_data['name']
 
-# Initialize API configuration
-api_config = ApiConfig.from_env()
+    logger.info(f"Processing character: {char_name} (ID: {char_id})")
+
+    # Update character skills if requested
+    if args.all or args.skills:
+        await update_character_skills_in_wp(char_id, access_token)
+
+    # Process blueprints if requested
+    if args.all or args.blueprints:
+        await process_character_blueprints(char_id, access_token, wp_post_id_cache, 
+                                         blueprint_cache, location_cache, structure_cache, failed_structures)
+
+    # Process planets if requested
+    if args.all or args.planets:
+        await update_planet_in_wp(char_id, access_token)
+
+    # Process contracts if requested
+    if args.all or args.contracts:
+        await process_character_contracts(char_id, access_token, char_name, wp_post_id_cache, 
+                                        blueprint_cache, location_cache, structure_cache, failed_structures)
+
+async def process_character_blueprints(char_id: int, access_token: str, wp_post_id_cache: Dict[str, Any],
+                                     blueprint_cache: Dict[str, Any], location_cache: Dict[str, Any],
+                                     structure_cache: Dict[str, Any], failed_structures: Dict[str, Any]) -> None:
+    """
+    Process all blueprint data for a character.
+
+    Fetches blueprints from direct ESI endpoint, assets, and industry jobs,
+    then updates WordPress with the combined data.
+
+    Args:
+        char_id: EVE character ID.
+        access_token: Valid OAuth2 access token.
+        wp_post_id_cache: WordPress post ID cache.
+        blueprint_cache: Blueprint name cache.
+        location_cache: Location name cache.
+        structure_cache: Structure name cache.
+        failed_structures: Failed structure cache.
+    """
+    # Get blueprints from direct endpoint
+    blueprints = await fetch_esi(f"/characters/{char_id}/blueprints", char_id, access_token)
+    if blueprints:
+        for bp in blueprints:
+            await update_blueprint_in_wp(bp, wp_post_id_cache, char_id, access_token, 
+                                       blueprint_cache, location_cache, structure_cache, failed_structures)
+
+    # Get blueprints from assets
+    assets = await fetch_esi(f"/characters/{char_id}/assets", char_id, access_token)
+    if assets:
+        asset_blueprints = extract_blueprints_from_assets(assets, 'char', char_id, access_token)
+        for bp in asset_blueprints:
+            await update_blueprint_from_asset_in_wp(bp, wp_post_id_cache, char_id, access_token,
+                                                  blueprint_cache, location_cache, structure_cache, failed_structures)
+
+    # Get blueprints from industry jobs
+    jobs = await fetch_esi(f"/characters/{char_id}/industry/jobs", char_id, access_token)
+    if jobs:
+        job_blueprints = extract_blueprints_from_industry_jobs(jobs, 'char', char_id)
+        for bp in job_blueprints:
+            await update_blueprint_from_asset_in_wp(bp, wp_post_id_cache, char_id, access_token,
+                                                  blueprint_cache, location_cache, structure_cache, failed_structures)
 
 # Configure logging
 logging.basicConfig(
@@ -253,7 +314,7 @@ async def main() -> None:
     if args.all or args.contracts:
         await cleanup_old_posts(allowed_corp_ids, allowed_issuer_ids)
 
-        await process_all_data(corp_members, caches, args, tokens)
+    await process_all_data(corp_members, caches, args, tokens)
 
 async def cleanup_old_posts(allowed_corp_ids, allowed_issuer_ids):
     """
