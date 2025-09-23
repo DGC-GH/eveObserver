@@ -209,7 +209,25 @@ def update_blueprint_in_wp(blueprint_data: Dict[str, Any], wp_post_id_cache: Dic
         logger.error(f"Failed to update blueprint {item_id}: {response.status_code} - {response.text}")
 
 def extract_blueprints_from_assets(assets_data: List[Dict[str, Any]], owner_type: str, owner_id: int, access_token: str, track_bpcs: bool = False) -> List[Dict[str, Any]]:
-    """Extract blueprint information from assets data."""
+    """Extract blueprint information from character or corporation assets data.
+    
+    Recursively processes asset lists to identify blueprints, filtering by type
+    and ownership. By default only tracks BPOs (originals), optionally tracks BPCs.
+    
+    Args:
+        assets_data: List of asset dictionaries from ESI API
+        owner_type: Type of owner ('char' or 'corp')
+        owner_id: Character or corporation ID
+        access_token: Valid ESI access token (for structure lookups if needed)
+        track_bpcs: Whether to include blueprint copies (default: False)
+        
+    Returns:
+        List of blueprint dictionaries with standardized format
+        
+    Note:
+        Recursively processes containers within assets.
+        Uses blueprint type cache to avoid repeated ESI calls for type identification.
+    """
     blueprint_type_cache = load_blueprint_type_cache()
     blueprints = []
     total_assets = len(assets_data) if assets_data else 0
@@ -273,7 +291,23 @@ def extract_blueprints_from_assets(assets_data: List[Dict[str, Any]], owner_type
     return blueprints
 
 def extract_blueprints_from_industry_jobs(jobs_data: List[Dict[str, Any]], owner_type: str, owner_id: int) -> List[Dict[str, Any]]:
-    """Extract blueprint information from industry jobs."""
+    """Extract blueprint information from active industry jobs.
+    
+    Processes industry job data to identify blueprints currently being used
+    in manufacturing, copying, or invention activities.
+    
+    Args:
+        jobs_data: List of industry job dictionaries from ESI API
+        owner_type: Type of owner ('char' or 'corp')
+        owner_id: Character or corporation ID
+        
+    Returns:
+        List of blueprint dictionaries with ME/TE and runs information
+        
+    Note:
+        Industry jobs always use blueprint originals (BPOs), never copies.
+        Includes material and time efficiency levels from the job data.
+    """
     return [
         {
             'item_id': job.get('blueprint_id'),
@@ -291,7 +325,23 @@ def extract_blueprints_from_industry_jobs(jobs_data: List[Dict[str, Any]], owner
     ]
 
 def extract_blueprints_from_contracts(contracts_data: List[Dict[str, Any]], owner_type: str, owner_id: int) -> List[Dict[str, Any]]:
-    """Extract blueprint information from contracts."""
+    """Extract blueprint information from contract items.
+    
+    Processes contract item lists to identify blueprints being sold or traded.
+    Only tracks blueprint originals (BPOs) as BPCs in contracts are typically consumable.
+    
+    Args:
+        contracts_data: List of contract dictionaries with items from ESI API
+        owner_type: Type of owner ('char' or 'corp')
+        owner_id: Character or corporation ID
+        
+    Returns:
+        List of blueprint dictionaries from contract items
+        
+    Note:
+        Only includes BPOs (quantity == -1) from contracts.
+        Contract blueprints don't include ME/TE information.
+    """
     blueprint_type_cache = load_blueprint_type_cache()
     blueprints = []
     
@@ -331,7 +381,29 @@ def extract_blueprints_from_contracts(contracts_data: List[Dict[str, Any]], owne
     return blueprints
 
 def update_blueprint_from_asset_in_wp(blueprint_data: Dict[str, Any], wp_post_id_cache: Dict[str, Any], char_id: int, access_token: str, blueprint_cache: Optional[Dict[str, Any]] = None, location_cache: Optional[Dict[str, Any]] = None, structure_cache: Optional[Dict[str, Any]] = None, failed_structures: Optional[Dict[str, Any]] = None) -> None:
-    """Update or create blueprint post from asset/industry/contract data."""
+    """Update or create blueprint post in WordPress from asset/industry/contract data.
+    
+    Creates WordPress posts for blueprints found in assets, industry jobs, or contracts.
+    Handles location resolution for stations and structures, caching for performance.
+    
+    Args:
+        blueprint_data: Blueprint information dictionary with standardized format
+        wp_post_id_cache: Cache of WordPress post IDs for quick lookups
+        char_id: Character ID for authentication (needed for structure access)
+        access_token: Valid ESI access token
+        blueprint_cache: Optional cache for blueprint type names
+        location_cache: Optional cache for station/structure location names
+        structure_cache: Optional cache for structure names
+        failed_structures: Optional cache for structures that failed to load
+        
+    Returns:
+        None
+        
+    Note:
+        Only processes BPOs (originals), skips BPCs.
+        Updates existing posts only if data has changed.
+        Resolves location names for both public stations and private structures.
+    """
     if blueprint_cache is None:
         blueprint_cache = load_blueprint_cache()
     if location_cache is None:

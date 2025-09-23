@@ -28,11 +28,43 @@ from cache_manager import (
 logger = logging.getLogger(__name__)
 
 def get_wp_auth() -> requests.auth.HTTPBasicAuth:
-    """Get WordPress authentication."""
+    """
+    Get WordPress authentication object for API requests.
+
+    Creates and returns an HTTPBasicAuth object using the configured WordPress
+    username and application password for authenticating API requests.
+
+    Returns:
+        requests.auth.HTTPBasicAuth: Authentication object for WordPress API calls.
+
+    Note:
+        Requires WP_USERNAME and WP_APP_PASSWORD to be configured in config.py.
+    """
     return requests.auth.HTTPBasicAuth(WP_USERNAME, WP_APP_PASSWORD)
 
 async def process_blueprints_parallel(blueprints: List[Dict[str, Any]], update_func: Callable[..., Any], wp_post_id_cache: Dict[str, Any], *args, **kwargs) -> List[Any]:
-    """Process blueprints in parallel using asyncio for better concurrency."""
+    """
+    Process multiple blueprints concurrently using asyncio for improved performance.
+
+    Executes blueprint update operations in parallel to reduce total processing time
+    when handling large numbers of blueprints. Uses asyncio.gather to run all
+    update operations concurrently and collects results.
+
+    Args:
+        blueprints: List of blueprint data dictionaries from ESI API.
+        update_func: Async callable that processes individual blueprint data.
+        wp_post_id_cache: Cache for WordPress post IDs to avoid repeated lookups.
+        *args: Additional positional arguments to pass to update_func.
+        **kwargs: Additional keyword arguments to pass to update_func.
+
+    Returns:
+        List[Any]: Results from each blueprint processing operation. May contain
+                   exceptions for failed operations.
+
+    Note:
+        Exceptions during individual blueprint processing are caught and logged
+        but don't stop processing of other blueprints.
+    """
     start_time = time.time()
     total_blueprints = len(blueprints)
 
@@ -56,7 +88,31 @@ async def process_blueprints_parallel(blueprints: List[Dict[str, Any]], update_f
 
 async def update_or_create_blueprint_post(post_data: Dict[str, Any], existing_post: Optional[Dict[str, Any]], wp_post_id_cache: Dict[str, Any], item_id: int, blueprint_data: Dict[str, Any], type_name: str, location_name: str, me: int, te: int, quantity: int, char_id: int) -> None:
     """
-    Update or create the blueprint post in WordPress.
+    Update an existing blueprint post or create a new one in WordPress.
+
+    Handles both creation of new blueprint posts and updates to existing ones.
+    For new posts, attempts to fetch and set a featured image from the blueprint's
+    type icon. For existing posts, compares key data fields to determine if an
+    update is necessary, avoiding unnecessary API calls.
+
+    Args:
+        post_data: Complete post data dictionary ready for WordPress API.
+        existing_post: Existing WordPress post data if found, None for new posts.
+        wp_post_id_cache: Cache for WordPress post IDs.
+        item_id: Blueprint item ID for caching and logging.
+        blueprint_data: Raw blueprint data from ESI API.
+        type_name: Resolved blueprint type name.
+        location_name: Resolved location name.
+        me: Material efficiency level.
+        te: Time efficiency level.
+        quantity: Blueprint quantity (-1 for BPO, positive for BPC).
+        char_id: Character ID for audit logging.
+
+    Returns:
+        None
+
+    Raises:
+        No explicit raises; logs errors internally and continues processing.
     """
     # Add featured image from type icon (only for new blueprints)
     if not existing_post:
@@ -197,7 +253,27 @@ async def update_character_in_wp(char_id: int, char_data: Dict[str, Any]) -> Non
             logger.error(f"Failed to create character {char_data['name']}: {e}")
 
 async def update_character_skills_in_wp(char_id: int, skills_data: Dict[str, Any]) -> None:
-    """Update character post with skills data."""
+    """
+    Update a character post with skills training data.
+
+    Updates the character's WordPress post with total skill points and last
+    updated timestamp. Only updates existing character posts; does not create
+    new posts if the character doesn't exist.
+
+    Args:
+        char_id: EVE character ID to update.
+        skills_data: Skills data dictionary from ESI API containing total_sp.
+
+    Returns:
+        None
+
+    Raises:
+        No explicit raises; logs errors internally.
+
+    Note:
+        Requires an existing character post to update. Use update_character_in_wp
+        first to ensure the character post exists.
+    """
     slug = f"character-{char_id}"
     # Check if post exists by slug
     try:
@@ -226,7 +302,23 @@ async def update_character_skills_in_wp(char_id: int, skills_data: Dict[str, Any
             logger.error(f"Failed to update skills for character {char_id}: {e}")
 
 def fetch_character_data(char_id: int, access_token: str) -> Optional[Dict[str, Any]]:
-    """Fetch basic character data from ESI."""
+    """
+    Fetch basic character information from EVE ESI API.
+
+    Retrieves core character data including name, corporation, alliance,
+    security status, and other basic character attributes.
+
+    Args:
+        char_id: EVE character ID to fetch data for.
+        access_token: Valid OAuth2 access token for ESI authentication.
+
+    Returns:
+        Optional[Dict[str, Any]]: Character data dictionary if successful,
+                                 None if fetch failed.
+
+    Raises:
+        No explicit raises; logs errors internally and returns None on failure.
+    """
     try:
         endpoint = f"/characters/{char_id}/"
         return fetch_esi(endpoint, char_id, access_token)
@@ -235,7 +327,23 @@ def fetch_character_data(char_id: int, access_token: str) -> Optional[Dict[str, 
         return None
 
 def fetch_character_skills(char_id: int, access_token: str) -> Optional[Dict[str, Any]]:
-    """Fetch character skills."""
+    """
+    Fetch character skills and training information from EVE ESI API.
+
+    Retrieves the character's skill queue, trained skills, and total skill points.
+    Used to track character progression and skill training status.
+
+    Args:
+        char_id: EVE character ID to fetch skills for.
+        access_token: Valid OAuth2 access token for ESI authentication.
+
+    Returns:
+        Optional[Dict[str, Any]]: Skills data dictionary containing total_sp and
+                                 skills array if successful, None if fetch failed.
+
+    Raises:
+        No explicit raises; logs errors internally and returns None on failure.
+    """
     try:
         endpoint = f"/characters/{char_id}/skills/"
         return fetch_esi(endpoint, char_id, access_token)
@@ -244,7 +352,23 @@ def fetch_character_skills(char_id: int, access_token: str) -> Optional[Dict[str
         return None
 
 def fetch_character_blueprints(char_id: int, access_token: str) -> Optional[Dict[str, Any]]:
-    """Fetch character blueprints."""
+    """
+    Fetch character blueprint collection from EVE ESI API.
+
+    Retrieves all blueprints owned by the character, including both BPOs and BPCs,
+    with their ME/TE levels, location, and other blueprint attributes.
+
+    Args:
+        char_id: EVE character ID to fetch blueprints for.
+        access_token: Valid OAuth2 access token for ESI authentication.
+
+    Returns:
+        Optional[Dict[str, Any]]: Blueprint data array if successful,
+                                 None if fetch failed.
+
+    Raises:
+        No explicit raises; logs errors internally and returns None on failure.
+    """
     try:
         endpoint = f"/characters/{char_id}/blueprints/"
         return fetch_esi(endpoint, char_id, access_token)
@@ -253,7 +377,23 @@ def fetch_character_blueprints(char_id: int, access_token: str) -> Optional[Dict
         return None
 
 def fetch_character_planets(char_id: int, access_token: str) -> Optional[Dict[str, Any]]:
-    """Fetch character planets."""
+    """
+    Fetch character planetary colony information from EVE ESI API.
+
+    Retrieves data about the character's planetary colonies (PI), including
+    planet types, colony status, and resource extraction setups.
+
+    Args:
+        char_id: EVE character ID to fetch planets for.
+        access_token: Valid OAuth2 access token for ESI authentication.
+
+    Returns:
+        Optional[Dict[str, Any]]: Planetary colony data array if successful,
+                                 None if fetch failed.
+
+    Raises:
+        No explicit raises; logs errors internally and returns None on failure.
+    """
     try:
         endpoint = f"/characters/{char_id}/planets/"
         return fetch_esi(endpoint, char_id, access_token)
@@ -262,7 +402,27 @@ def fetch_character_planets(char_id: int, access_token: str) -> Optional[Dict[st
         return None
 
 def fetch_corporation_data(corp_id: int, access_token: str) -> Optional[Dict[str, Any]]:
-    """Fetch corporation data from ESI."""
+    """
+    Fetch corporation information from EVE ESI API.
+
+    Retrieves basic corporation data including name, ticker, member count,
+    alliance affiliation, and other corporation attributes.
+
+    Args:
+        corp_id: EVE corporation ID to fetch data for.
+        access_token: Valid OAuth2 access token for ESI authentication.
+
+    Returns:
+        Optional[Dict[str, Any]]: Corporation data dictionary if successful,
+                                 None if fetch failed.
+
+    Raises:
+        No explicit raises; logs errors internally and returns None on failure.
+
+    Note:
+        Unlike character endpoints, corporation data doesn't require a specific
+        character ID for authentication, but still needs a valid access token.
+    """
     try:
         endpoint = f"/corporations/{corp_id}/"
         return fetch_esi(endpoint, None, access_token)  # No char_id needed for corp data
@@ -561,7 +721,24 @@ async def get_station_location_name(location_id: int, location_id_str: str, loca
 
 def construct_blueprint_post_data(blueprint_data: Dict[str, Any], type_name: str, location_name: str, bp_type: str, char_id: int, item_id: int) -> Dict[str, Any]:
     """
-    Construct the post data dictionary for a blueprint.
+    Construct WordPress post data dictionary for a blueprint.
+
+    Builds a complete post data structure with title, slug, status, and all
+    necessary meta fields for storing blueprint information in WordPress.
+
+    Args:
+        blueprint_data: Raw blueprint data from ESI API.
+        type_name: Resolved blueprint type name (e.g., "Rifter").
+        location_name: Resolved location name (e.g., "Jita IV - Moon 4").
+        bp_type: Blueprint type ("BPO" or "BPC").
+        char_id: Character ID that owns this blueprint.
+        item_id: Unique blueprint item ID.
+
+    Returns:
+        Dict[str, Any]: Complete post data dictionary ready for WordPress API.
+
+    Note:
+        Title format: "{type_name} {bp_type} {ME}/{TE} ({location_name}) – ID: {item_id}"
     """
     me = blueprint_data.get('material_efficiency', 0)
     te = blueprint_data.get('time_efficiency', 0)
@@ -592,6 +769,24 @@ def construct_blueprint_post_data(blueprint_data: Dict[str, Any], type_name: str
     return post_data
 
 async def fetch_character_portrait(char_id):
-    """Fetch character portrait URLs from ESI."""
+    """
+    Fetch character portrait image URLs from EVE ESI API.
+
+    Retrieves portrait URLs in multiple sizes (64x64, 128x128, 256x256, 512x512)
+    for use as featured images in WordPress character posts.
+
+    Args:
+        char_id: EVE character ID to fetch portrait for.
+
+    Returns:
+        Optional[Dict[str, Any]]: Portrait URLs dictionary with size keys if successful,
+                                 None if fetch failed.
+
+    Raises:
+        No explicit raises; logs errors internally and returns None on failure.
+
+    Note:
+        This is a public endpoint that doesn't require authentication.
+    """
     endpoint = f"/characters/{char_id}/portrait/"
     return await fetch_public_esi(endpoint)

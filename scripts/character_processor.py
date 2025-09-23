@@ -11,7 +11,22 @@ from config import *
 from api_client import wp_request, send_email
 
 def update_character_skills_in_wp(char_id: int, skills_data: Dict[str, Any]) -> None:
-    """Update character post with skills data."""
+    """Update character post in WordPress with skills training data.
+    
+    Updates an existing character post with total skill points and last update timestamp.
+    Only updates the skills metadata, preserving other character information.
+    
+    Args:
+        char_id: EVE character ID
+        skills_data: Skills data dictionary from ESI API containing 'total_sp' and other skill info
+        
+    Returns:
+        None
+        
+    Note:
+        Requires an existing character post to be present in WordPress.
+        Logs success/failure of the update operation.
+    """
     slug = f"character-{char_id}"
     # Check if post exists by slug
     response = requests.get(f"{WP_BASE_URL}/wp-json/wp/v2/eve_character?slug={slug}", auth=get_wp_auth())
@@ -35,7 +50,23 @@ def update_character_skills_in_wp(char_id: int, skills_data: Dict[str, Any]) -> 
             logger.error(f"Failed to update skills for character {char_id}: {response.status_code} - {response.text}")
 
 def check_industry_job_completions(jobs: List[Dict[str, Any]], char_name: str) -> None:
-    """Check for upcoming industry job completions and send alerts."""
+    """Check for upcoming industry job completions and prepare alerts.
+    
+    Scans active industry jobs for those completing within 24 hours and
+    prepares email alerts (currently disabled). Jobs are checked for end_date
+    within the next day from current time.
+    
+    Args:
+        jobs: List of industry job dictionaries from ESI API
+        char_name: Character name for alert personalization
+        
+    Returns:
+        None
+        
+    Note:
+        Email functionality is currently disabled in the code.
+        Only logs the alert information instead of sending emails.
+    """
     now = datetime.now(timezone.utc)
     upcoming_completions = [
         job for job in jobs
@@ -53,7 +84,23 @@ def check_industry_job_completions(jobs: List[Dict[str, Any]], char_name: str) -
         # send_email(subject, body)
 
 def check_planet_extraction_completions(planet_details: Dict[str, Any], char_name: str) -> None:
-    """Check for upcoming planet extraction completions and send alerts."""
+    """Check for upcoming planet extraction pin completions and prepare alerts.
+    
+    Scans planetary interaction pins for those with expiry times within 24 hours
+    and prepares email alerts (currently disabled). Extractions are checked for
+    expiry_time within the next day from current time.
+    
+    Args:
+        planet_details: Planet details dictionary containing 'pins' list from ESI API
+        char_name: Character name for alert personalization
+        
+    Returns:
+        None
+        
+    Note:
+        Email functionality is currently disabled in the code.
+        Only logs the alert information instead of sending emails.
+    """
     now = datetime.now(timezone.utc)
     upcoming_extractions = [
         pin for pin in planet_details.get('pins', [])
@@ -71,7 +118,23 @@ def check_planet_extraction_completions(planet_details: Dict[str, Any], char_nam
         # send_email(subject, body)
 
 def update_planet_in_wp(planet_id: int, planet_data: Dict[str, Any], char_id: int) -> None:
-    """Update or create planet post in WordPress."""
+    """Update or create planet post in WordPress with planetary interaction data.
+    
+    Creates or updates WordPress posts for planets with PI installations.
+    Includes pin count, planet details, and ownership information.
+    
+    Args:
+        planet_id: EVE planet ID
+        planet_data: Planet information dictionary from ESI API
+        char_id: Character ID that owns/has access to this planet
+        
+    Returns:
+        None
+        
+    Note:
+        Stores complete planet details as JSON in post metadata.
+        Updates existing posts or creates new ones as needed.
+    """
     slug = f"planet-{planet_id}"
     # Check if post exists by slug
     response = requests.get(f"{WP_BASE_URL}/wp-json/wp/v2/eve_planet?slug={slug}", auth=get_wp_auth())

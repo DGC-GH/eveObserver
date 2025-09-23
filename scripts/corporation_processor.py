@@ -10,7 +10,23 @@ from typing import Dict, Any
 from config import *
 
 def update_corporation_in_wp(corp_id: int, corp_data: Dict[str, Any]) -> None:
-    """Update or create corporation post in WordPress."""
+    """Update or create corporation post in WordPress with corporation details.
+    
+    Creates or updates WordPress posts for EVE corporations with comprehensive
+    metadata including member count, CEO, alliance affiliation, and other details.
+    
+    Args:
+        corp_id: EVE corporation ID
+        corp_data: Corporation information dictionary from ESI API
+        
+    Returns:
+        None
+        
+    Note:
+        Stores corporation details as post metadata in WordPress.
+        Removes null values from metadata to avoid WordPress validation issues.
+        Updates existing posts or creates new ones based on slug lookup.
+    """
     slug = f"corporation-{corp_id}"
     # Check if post exists by slug
     response = requests.get(f"{WP_BASE_URL}/wp-json/wp/v2/eve_corporation?slug={slug}", auth=get_wp_auth())

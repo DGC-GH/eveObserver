@@ -11,24 +11,26 @@ import time
 from datetime import datetime, timezone
 from typing import Dict, List, Any, Optional, Tuple
 from config import *
-from api_client import fetch_public_esi, fetch_esi, wp_request, send_email, fetch_type_icon, WordPressAuthError, WordPressRequestErrorpython3
-"""
-EVE Observer Contract Processor
-Handles fetching and processing of EVE contract data.
-"""
-
-import os
-import json
-import requests
-import time
-from datetime import datetime, timezone
-from typing import Dict, List, Any, Optional, Tuple
-from config import *
 from api_client import fetch_public_esi, fetch_esi, wp_request, send_email, fetch_type_icon, sanitize_string, WordPressAuthError, WordPressRequestError
 from cache_manager import load_blueprint_cache, save_blueprint_cache, load_blueprint_type_cache, save_blueprint_type_cache
 
 def fetch_public_contracts(region_id: int, page: int = 1, max_retries: int = 3) -> Optional[List[Dict[str, Any]]]:
-    """Fetch public contracts for a region with retry logic."""
+    """Fetch public contracts for a specific region with retry logic and rate limiting.
+    
+    This function retrieves public contracts from the EVE ESI API for a given region,
+    implementing exponential backoff retry logic and monitoring ESI rate limits.
+    
+    Args:
+        region_id: The EVE region ID to fetch contracts from
+        page: Page number for pagination (default: 1)
+        max_retries: Maximum number of retry attempts on failure (default: 3)
+        
+    Returns:
+        List of contract dictionaries if successful, None if all retries failed
+        
+    Note:
+        ESI returns a maximum of 1000 contracts per page. Use pagination for complete results.
+    """
     endpoint = f"/contracts/public/{region_id}/?page={page}"
     url = f"{ESI_BASE_URL}{endpoint}"
     headers = {'Accept': 'application/json'}
@@ -55,7 +57,21 @@ def fetch_public_contracts(region_id: int, page: int = 1, max_retries: int = 3) 
                 return None
 
 def fetch_public_contract_items(contract_id: int, max_retries: int = 3) -> Optional[List[Dict[str, Any]]]:
-    """Fetch items in a public contract with retry logic."""
+    """Fetch items contained in a public contract with retry logic.
+    
+    Retrieves the list of items and their quantities for a specific public contract.
+    Only works for contracts that are publicly visible (not private courier contracts).
+    
+    Args:
+        contract_id: The EVE contract ID to fetch items for
+        max_retries: Maximum number of retry attempts on failure (default: 3)
+        
+    Returns:
+        List of contract item dictionaries if successful, None if failed
+        
+    Note:
+        Item quantities are negative for blueprint originals (BPOs) and positive for copies (BPCs).
+    """
     endpoint = f"/contracts/public/items/{contract_id}/"
     url = f"{ESI_BASE_URL}{endpoint}"
     headers = {'Accept': 'application/json'}
@@ -82,7 +98,24 @@ def fetch_public_contract_items(contract_id: int, max_retries: int = 3) -> Optio
                 return None
 
 def check_contract_competition(contract_data: Dict[str, Any], contract_items: List[Dict[str, Any]]) -> Tuple[bool, Optional[float]]:
-    """Check if a sell contract has been outbid by cheaper contracts in the same region."""
+    """Check if a sell contract has been outbid by cheaper competing contracts in the same region.
+    
+    Analyzes market competition for single-item sell contracts by comparing prices
+    against other outstanding contracts for the same item type in the same region.
+    
+    Args:
+        contract_data: Contract information dictionary from ESI
+        contract_items: List of items in the contract
+        
+    Returns:
+        Tuple of (is_outbid: bool, competing_price: float or None)
+        - is_outbid: True if a cheaper competing contract exists
+        - competing_price: The price per item of the cheapest competing contract, or None
+        
+    Note:
+        Only checks single-item sell contracts (item_exchange type) with positive quantities.
+        Skips contracts from the same issuer to avoid self-comparison.
+    """
     if not contract_items or len(contract_items) != 1:
         return False, None  # Only check single item contracts
     
@@ -167,7 +200,21 @@ def check_contract_competition(contract_data: Dict[str, Any], contract_items: Li
     return False, None
 
 def get_region_from_location(location_id: Optional[int]) -> Optional[int]:
-    """Get region_id from a location_id (station or structure) with caching."""
+    """Get region ID from a location ID (station or structure) with caching.
+    
+    Determines the region containing a station or structure by traversing the
+    EVE universe hierarchy: location -> solar system -> constellation -> region.
+    
+    Args:
+        location_id: Station ID (< 10^12) or structure ID (>= 10^12)
+        
+    Returns:
+        Region ID if found, None if location cannot be resolved
+        
+    Note:
+        Results are cached in 'cache/region_cache.json' to avoid repeated ESI calls.
+        Structure lookups require appropriate access permissions.
+    """
     if not location_id:
         return None
     
@@ -256,7 +303,25 @@ def get_region_from_location(location_id: Optional[int]) -> Optional[int]:
     return region_id
 
 def generate_contract_title(contract_data: Dict[str, Any], for_corp: bool = False, entity_id: Optional[int] = None, contract_items: Optional[List[Dict[str, Any]]] = None, blueprint_cache: Optional[Dict[str, Any]] = None) -> str:
-    """Generate a descriptive contract title based on items."""
+    """Generate a descriptive contract title based on contract type and items.
+    
+    Creates human-readable titles that include item names, quantities, and contract details.
+    Special handling for blueprint contracts and mixed item types.
+    
+    Args:
+        contract_data: Contract information dictionary from ESI
+        for_corp: Whether this is a corporation contract (affects title prefix)
+        entity_id: Character or corporation ID (for context)
+        contract_items: List of items in the contract (optional)
+        blueprint_cache: Cached blueprint names (loaded automatically if not provided)
+        
+    Returns:
+        Formatted contract title string
+        
+    Note:
+        Titles follow the format: "[Corp] Item Name - Contract ID" for blueprints,
+        or "[Corp] X Items (xQuantity) - Contract ID" for regular items.
+    """
     if blueprint_cache is None:
         blueprint_cache = load_blueprint_cache()
     
@@ -350,7 +415,28 @@ def generate_contract_title(contract_data: Dict[str, Any], for_corp: bool = Fals
     return title
 
 def update_contract_in_wp(contract_id: int, contract_data: Dict[str, Any], for_corp: bool = False, entity_id: Optional[int] = None, access_token: Optional[str] = None, blueprint_cache: Optional[Dict[str, Any]] = None) -> None:
-    """Update or create contract post in WordPress."""
+    """Update or create a contract post in WordPress with comprehensive metadata.
+    
+    Creates or updates WordPress posts for EVE contracts, including market competition
+    analysis for sell orders. Only processes contracts containing blueprints.
+    
+    Args:
+        contract_id: The EVE contract ID
+        contract_data: Contract information dictionary from ESI
+        for_corp: Whether this is a corporation contract
+        entity_id: Character or corporation ID that has access to the contract
+        access_token: Valid ESI access token for fetching contract items
+        blueprint_cache: Cached blueprint names (loaded automatically if not provided)
+        
+    Returns:
+        None
+        
+    Note:
+        - Only creates posts for contracts containing blueprints
+        - Performs market competition analysis for outstanding sell contracts
+        - Updates existing posts only if data has changed
+        - Includes contract items, pricing, and location metadata
+    """
     if blueprint_cache is None:
         blueprint_cache = load_blueprint_cache()
     
@@ -504,11 +590,33 @@ def update_contract_in_wp(contract_id: int, contract_data: Dict[str, Any], for_c
         logger.error(f"Failed to update contract {contract_id}: {response.status_code} - {response.text}")
 
 def fetch_character_contract_items(char_id: int, contract_id: int, access_token: str) -> Optional[List[Dict[str, Any]]]:
-    """Fetch items in a specific character contract."""
+    """Fetch items contained in a specific character contract.
+    
+    Requires the character to have access to view the contract details.
+    
+    Args:
+        char_id: EVE character ID
+        contract_id: EVE contract ID
+        access_token: Valid ESI access token for the character
+        
+    Returns:
+        List of contract item dictionaries if successful, None if access denied or failed
+    """
     endpoint = f"/characters/{char_id}/contracts/{contract_id}/items/"
     return fetch_esi(endpoint, char_id, access_token)
 
 def fetch_corporation_contract_items(corp_id: int, contract_id: int, access_token: str) -> Optional[List[Dict[str, Any]]]:
-    """Fetch items in a specific corporation contract."""
+    """Fetch items contained in a specific corporation contract.
+    
+    Requires corporation access permissions for the character with the access token.
+    
+    Args:
+        corp_id: EVE corporation ID
+        contract_id: EVE contract ID
+        access_token: Valid ESI access token for a corporation member with appropriate roles
+        
+    Returns:
+        List of contract item dictionaries if successful, None if access denied or failed
+    """
     endpoint = f"/corporations/{corp_id}/contracts/{contract_id}/items/"
     return fetch_esi(endpoint, None, access_token)  # Corp endpoint doesn't need char_id
