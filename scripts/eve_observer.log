@@ -1,8 +1,937 @@
-2025-09-22 11:50:31,230 - INFO - Portrait unchanged for character: Mr FiLiN
-2025-09-22 11:50:31,394 - INFO - Updated character: Mr FiLiN
-2025-09-22 11:50:31,783 - INFO - Portrait unchanged for character: Dr FiLiN
-2025-09-22 11:50:31,939 - INFO - Updated character: Dr FiLiN
-2025-09-22 11:50:32,242 - INFO - Portrait unchanged for character: Orev Khazar
-2025-09-22 11:50:32,398 - INFO - Updated character: Orev Khazar
-2025-09-22 11:50:32,639 - INFO - Portrait unchanged for character: Sir FiLiN
-2025-09-22 11:50:32,820 - INFO - Updated character: Sir FiLiN
+2025-09-23 10:14:36,437 - INFO - Portrait unchanged for character: Mr FiLiN
+2025-09-23 10:14:36,865 - INFO - Updated character: Mr FiLiN
+2025-09-23 10:14:37,180 - INFO - Portrait unchanged for character: Dr FiLiN
+2025-09-23 10:14:37,635 - INFO - Updated character: Dr FiLiN
+2025-09-23 10:14:37,903 - INFO - Portrait unchanged for character: Orev Khazar
+2025-09-23 10:14:39,426 - INFO - Updated character: Orev Khazar
+2025-09-23 10:14:39,748 - INFO - Portrait unchanged for character: Sir FiLiN
+2025-09-23 10:14:39,905 - INFO - Updated character: Sir FiLiN
+2025-09-23 10:14:40,194 - INFO - Portrait unchanged for character: Filin Khan
+2025-09-23 10:14:40,396 - INFO - Updated character: Filin Khan
+2025-09-23 10:14:40,685 - INFO - Portrait unchanged for character: Corvin Khan
+2025-09-23 10:14:40,920 - INFO - Updated character: Corvin Khan
+2025-09-23 10:14:41,196 - INFO - Portrait unchanged for character: FiLiN Core
+2025-09-23 10:14:41,443 - INFO - Updated character: FiLiN Core
+2025-09-23 10:14:41,710 - INFO - Portrait unchanged for character: Raven Madyar
+2025-09-23 10:14:41,843 - INFO - Updated character: Raven Madyar
+2025-09-23 10:14:42,197 - INFO - Portrait unchanged for character: Vran Ruthen
+2025-09-23 10:14:42,350 - INFO - Updated character: Vran Ruthen
+2025-09-23 10:14:42,351 - INFO - Starting cleanup of old posts...
+2025-09-23 10:14:43,127 - INFO - Cleanup completed.
+2025-09-23 10:14:43,129 - INFO - Trying to fetch corporation data for corp 98644650 using Mr FiLiN's token...
+2025-09-23 10:14:43,191 - INFO - Successfully fetched corporation data using Mr FiLiN's token
+2025-09-23 10:14:43,191 - INFO - Skipping corporation: Kybernauts (only processing ['no mercy incorporated'])
+2025-09-23 10:14:43,192 - INFO - Using Dr FiLiN's CEO token for No Mercy Incorporated
+2025-09-23 10:14:43,821 - INFO - Updated corporation: No Mercy Incorporated
+2025-09-23 10:14:43,821 - INFO - Fetching corporation blueprints for 98092220...
+2025-09-23 10:14:44,333 - INFO - Corporation blueprints: 853 total, 341 BPOs
+2025-09-23 10:14:44,339 - INFO - Starting parallel processing of 341 blueprints with 10 workers
+2025-09-23 10:14:44,632 - INFO - Blueprint 1045441194700 unchanged, skipping update
+2025-09-23 10:14:44,635 - INFO - Processed blueprint 1/341: 1045441194700
+2025-09-23 10:14:44,649 - INFO - Blueprint 1045441142350 unchanged, skipping update
+2025-09-23 10:14:44,677 - INFO - Blueprint 1023593233897 unchanged, skipping update
+2025-09-23 10:14:44,677 - INFO - Blueprint 1045441197718 unchanged, skipping update
+2025-09-23 10:14:44,681 - INFO - Blueprint 1023121749544 unchanged, skipping update
+2025-09-23 10:14:44,684 - INFO - Blueprint 1045441177897 unchanged, skipping update
+2025-09-23 10:14:44,685 - INFO - Blueprint 1023121750606 unchanged, skipping update
+2025-09-23 10:14:44,687 - INFO - Processed blueprint 2/341: 1045441142350
+2025-09-23 10:14:44,699 - INFO - Blueprint 1045441143276 unchanged, skipping update
+2025-09-23 10:14:44,699 - INFO - Blueprint 1045441195512 unchanged, skipping update
+2025-09-23 10:14:44,699 - INFO - Blueprint 1045441196207 unchanged, skipping update
+2025-09-23 10:14:44,739 - INFO - Processed blueprint 3/341: 1023593233897
+2025-09-23 10:14:44,794 - INFO - Processed blueprint 4/341: 1045441197718
+2025-09-23 10:14:44,832 - INFO - Blueprint 1045441200093 unchanged, skipping update
+2025-09-23 10:14:44,850 - INFO - Processed blueprint 5/341: 1023121749544
+2025-09-23 10:14:44,853 - INFO - Blueprint 1045441200934 unchanged, skipping update
+2025-09-23 10:14:44,882 - INFO - Blueprint 1045441201642 unchanged, skipping update
+2025-09-23 10:14:44,891 - INFO - Blueprint 1045441247943 unchanged, skipping update
+2025-09-23 10:14:44,902 - INFO - Blueprint 1045441252767 unchanged, skipping update
+2025-09-23 10:14:44,904 - INFO - Blueprint 1045441250647 unchanged, skipping update
+2025-09-23 10:14:44,905 - INFO - Processed blueprint 6/341: 1045441177897
+2025-09-23 10:14:44,906 - INFO - Blueprint 1045441251310 unchanged, skipping update
+2025-09-23 10:14:44,958 - INFO - Processed blueprint 7/341: 1023121750606
+2025-09-23 10:14:44,986 - INFO - Blueprint 1045441358768 unchanged, skipping update
+2025-09-23 10:14:45,010 - INFO - Processed blueprint 8/341: 1045441195512
+2025-09-23 10:14:45,013 - INFO - Blueprint 1045441359482 unchanged, skipping update
+2025-09-23 10:14:45,065 - INFO - Processed blueprint 9/341: 1045441143276
+2025-09-23 10:14:45,112 - INFO - Blueprint 1045441360231 unchanged, skipping update
+2025-09-23 10:14:45,112 - INFO - Blueprint 1045441361384 unchanged, skipping update
+2025-09-23 10:14:45,113 - INFO - Blueprint 1045441365698 unchanged, skipping update
+2025-09-23 10:14:45,113 - INFO - Blueprint 1045441360873 unchanged, skipping update
+2025-09-23 10:14:45,119 - INFO - Processed blueprint 10/341: 1045441196207
+2025-09-23 10:14:45,121 - INFO - Blueprint 1045441362088 unchanged, skipping update
+2025-09-23 10:14:45,170 - INFO - Processed blueprint 11/341: 1045441200093
+2025-09-23 10:14:45,213 - INFO - Blueprint 1045441248880 unchanged, skipping update
+2025-09-23 10:14:45,215 - INFO - Blueprint 1045441203945 unchanged, skipping update
+2025-09-23 10:14:45,221 - INFO - Processed blueprint 12/341: 1045441200934
+2025-09-23 10:14:45,227 - INFO - Blueprint 1045441259441 unchanged, skipping update
+2025-09-23 10:14:45,261 - INFO - Blueprint 1045441366482 unchanged, skipping update
+2025-09-23 10:14:45,274 - INFO - Processed blueprint 13/341: 1045441201642
+2025-09-23 10:14:45,322 - INFO - Blueprint 1045441367815 unchanged, skipping update
+2025-09-23 10:14:45,326 - INFO - Processed blueprint 14/341: 1045441247943
+2025-09-23 10:14:45,341 - INFO - Blueprint 1045441369610 unchanged, skipping update
+2025-09-23 10:14:45,367 - INFO - Blueprint 1045441374287 unchanged, skipping update
+2025-09-23 10:14:45,367 - INFO - Blueprint 1045441376322 unchanged, skipping update
+2025-09-23 10:14:45,379 - INFO - Processed blueprint 15/341: 1045441252767
+2025-09-23 10:14:45,383 - INFO - Blueprint 1045441377161 unchanged, skipping update
+2025-09-23 10:14:45,384 - INFO - Blueprint 1045441375616 unchanged, skipping update
+2025-09-23 10:14:45,416 - INFO - Blueprint 1045441378054 unchanged, skipping update
+2025-09-23 10:14:45,434 - INFO - Processed blueprint 16/341: 1045441250647
+2025-09-23 10:14:45,452 - INFO - Blueprint 1045442719592 unchanged, skipping update
+2025-09-23 10:14:45,460 - INFO - Blueprint 1045442721258 unchanged, skipping update
+2025-09-23 10:14:45,483 - INFO - Blueprint 1045442724600 unchanged, skipping update
+2025-09-23 10:14:45,489 - INFO - Processed blueprint 17/341: 1045441251310
+2025-09-23 10:14:45,544 - INFO - Processed blueprint 18/341: 1045441358768
+2025-09-23 10:14:45,599 - INFO - Processed blueprint 19/341: 1045441359482
+2025-09-23 10:14:45,637 - INFO - Blueprint 1045442726002 unchanged, skipping update
+2025-09-23 10:14:45,638 - INFO - Blueprint 1045443017972 unchanged, skipping update
+2025-09-23 10:14:45,638 - INFO - Blueprint 1045456976435 unchanged, skipping update
+2025-09-23 10:14:45,638 - INFO - Blueprint 1045443207486 unchanged, skipping update
+2025-09-23 10:14:45,646 - INFO - Blueprint 1045456972232 unchanged, skipping update
+2025-09-23 10:14:45,649 - INFO - Processed blueprint 20/341: 1045441360231
+2025-09-23 10:14:45,663 - INFO - Blueprint 1045443208337 unchanged, skipping update
+2025-09-23 10:14:45,705 - INFO - Processed blueprint 21/341: 1045441361384
+2025-09-23 10:14:45,749 - INFO - Blueprint 1045507077812 unchanged, skipping update
+2025-09-23 10:14:45,758 - INFO - Processed blueprint 22/341: 1045441365698
+2025-09-23 10:14:45,788 - INFO - Blueprint 1045514378038 unchanged, skipping update
+2025-09-23 10:14:45,790 - INFO - Blueprint 1045568294445 unchanged, skipping update
+2025-09-23 10:14:45,792 - INFO - Blueprint 1045540470039 unchanged, skipping update
+2025-09-23 10:14:45,809 - INFO - Processed blueprint 23/341: 1045441360873
+2025-09-23 10:14:45,864 - INFO - Processed blueprint 24/341: 1045441362088
+2025-09-23 10:14:45,887 - INFO - Blueprint 1045608044563 unchanged, skipping update
+2025-09-23 10:14:45,889 - INFO - Blueprint 1045570497892 unchanged, skipping update
+2025-09-23 10:14:45,889 - INFO - Blueprint 1045570493611 unchanged, skipping update
+2025-09-23 10:14:45,892 - INFO - Blueprint 1045594580237 unchanged, skipping update
+2025-09-23 10:14:45,894 - INFO - Blueprint 1045594582010 unchanged, skipping update
+2025-09-23 10:14:45,901 - INFO - Blueprint 1045570597854 unchanged, skipping update
+2025-09-23 10:14:45,917 - INFO - Blueprint 1045608045085 unchanged, skipping update
+2025-09-23 10:14:45,920 - INFO - Processed blueprint 25/341: 1045441248880
+2025-09-23 10:14:45,955 - INFO - Blueprint 1045618042330 unchanged, skipping update
+2025-09-23 10:14:45,957 - INFO - Blueprint 1045608045947 unchanged, skipping update
+2025-09-23 10:14:45,975 - INFO - Processed blueprint 26/341: 1045441203945
+2025-09-23 10:14:46,009 - INFO - Blueprint 1045618045431 unchanged, skipping update
+2025-09-23 10:14:46,025 - INFO - Processed blueprint 27/341: 1045441259441
+2025-09-23 10:14:46,080 - INFO - Processed blueprint 28/341: 1045441366482
+2025-09-23 10:14:46,135 - INFO - Processed blueprint 29/341: 1045441367815
+2025-09-23 10:14:46,160 - INFO - Blueprint 1045618098057 unchanged, skipping update
+2025-09-23 10:14:46,190 - INFO - Processed blueprint 30/341: 1045441369610
+2025-09-23 10:14:46,246 - INFO - Processed blueprint 31/341: 1045441374287
+2025-09-23 10:14:46,296 - INFO - Processed blueprint 32/341: 1045441376322
+2025-09-23 10:14:46,352 - INFO - Processed blueprint 33/341: 1045441377161
+2025-09-23 10:14:46,398 - INFO - Updated blueprint: 1045627298995
+2025-09-23 10:14:46,404 - INFO - Updated blueprint: 1045627284388
+2025-09-23 10:14:46,406 - INFO - Processed blueprint 34/341: 1045441375616
+2025-09-23 10:14:46,415 - INFO - Updated blueprint: 1045627299335
+2025-09-23 10:14:46,425 - INFO - Updated blueprint: 1045627298456
+2025-09-23 10:14:46,456 - INFO - Processed blueprint 35/341: 1045441378054
+2025-09-23 10:14:46,506 - INFO - Updated blueprint: 1045631820801
+2025-09-23 10:14:46,508 - INFO - Updated blueprint: 1045631820987
+2025-09-23 10:14:46,510 - INFO - Processed blueprint 36/341: 1045442719592
+2025-09-23 10:14:46,524 - INFO - Updated blueprint: 1045631743088
+2025-09-23 10:14:46,566 - INFO - Processed blueprint 37/341: 1045442721258
+2025-09-23 10:14:46,570 - INFO - Updated blueprint: 1045631821111
+2025-09-23 10:14:46,575 - INFO - Updated blueprint: 1045631820908
+2025-09-23 10:14:46,621 - INFO - Processed blueprint 38/341: 1045442724600
+2025-09-23 10:14:46,672 - INFO - Processed blueprint 39/341: 1045442726002
+2025-09-23 10:14:46,727 - INFO - Processed blueprint 40/341: 1045443017972
+2025-09-23 10:14:46,782 - INFO - Processed blueprint 41/341: 1045456976435
+2025-09-23 10:14:46,784 - INFO - Updated blueprint: 1045631821222
+2025-09-23 10:14:46,834 - INFO - Processed blueprint 42/341: 1045443207486
+2025-09-23 10:14:46,890 - INFO - Processed blueprint 43/341: 1045456972232
+2025-09-23 10:14:46,942 - INFO - Processed blueprint 44/341: 1045443208337
+2025-09-23 10:14:46,948 - INFO - Updated blueprint: 1045631821358
+2025-09-23 10:14:46,952 - INFO - Updated blueprint: 1045631821588
+2025-09-23 10:14:46,978 - INFO - Updated blueprint: 1045631821473
+2025-09-23 10:14:46,991 - INFO - Updated blueprint: 1045631821778
+2025-09-23 10:14:46,997 - INFO - Processed blueprint 45/341: 1045507077812
+2025-09-23 10:14:47,012 - INFO - Updated blueprint: 1045631898364
+2025-09-23 10:14:47,014 - INFO - Updated blueprint: 1045631856745
+2025-09-23 10:14:47,016 - INFO - Updated blueprint: 1045631898197
+2025-09-23 10:14:47,040 - INFO - Updated blueprint: 1045631898068
+2025-09-23 10:14:47,045 - INFO - Updated blueprint: 1045631897778
+2025-09-23 10:14:47,050 - INFO - Processed blueprint 46/341: 1045514378038
+2025-09-23 10:14:47,105 - INFO - Processed blueprint 47/341: 1045568294445
+2025-09-23 10:14:47,158 - INFO - Processed blueprint 48/341: 1045540470039
+2025-09-23 10:14:47,213 - INFO - Processed blueprint 49/341: 1045608044563
+2025-09-23 10:14:47,268 - INFO - Processed blueprint 50/341: 1045570497892
+2025-09-23 10:14:47,324 - INFO - Processed blueprint 51/341: 1045570493611
+2025-09-23 10:14:47,335 - INFO - Updated blueprint: 1045631898598
+2025-09-23 10:14:47,374 - INFO - Processed blueprint 52/341: 1045594580237
+2025-09-23 10:14:47,399 - INFO - Updated blueprint: 1045640388883
+2025-09-23 10:14:47,421 - INFO - Updated blueprint: 1045640331892
+2025-09-23 10:14:47,429 - INFO - Processed blueprint 53/341: 1045594582010
+2025-09-23 10:14:47,480 - INFO - Updated blueprint: 1045640400989
+2025-09-23 10:14:47,484 - INFO - Processed blueprint 54/341: 1045570597854
+2025-09-23 10:14:47,540 - INFO - Processed blueprint 55/341: 1045608045085
+2025-09-23 10:14:47,555 - INFO - Updated blueprint: 1045640476461
+2025-09-23 10:14:47,556 - INFO - Updated blueprint: 1045640413970
+2025-09-23 10:14:47,564 - INFO - Updated blueprint: 1045640479457
+2025-09-23 10:14:47,574 - INFO - Updated blueprint: 1045640479629
+2025-09-23 10:14:47,580 - INFO - Updated blueprint: 1045640479269
+2025-09-23 10:14:47,592 - INFO - Processed blueprint 56/341: 1045618042330
+2025-09-23 10:14:47,611 - INFO - Updated blueprint: 1045647052587
+2025-09-23 10:14:47,645 - INFO - Processed blueprint 57/341: 1045608045947
+2025-09-23 10:14:47,700 - INFO - Processed blueprint 58/341: 1045618045431
+2025-09-23 10:14:47,755 - INFO - Processed blueprint 59/341: 1045618098057
+2025-09-23 10:14:47,811 - INFO - Processed blueprint 60/341: 1045627298995
+2025-09-23 10:14:47,861 - INFO - Processed blueprint 61/341: 1045627284388
+2025-09-23 10:14:47,891 - INFO - Updated blueprint: 1045647052752
+2025-09-23 10:14:47,916 - INFO - Processed blueprint 62/341: 1045627299335
+2025-09-23 10:14:47,931 - INFO - Updated blueprint: 1045647052952
+2025-09-23 10:14:47,935 - INFO - Updated blueprint: 1045647831857
+2025-09-23 10:14:47,971 - INFO - Processed blueprint 63/341: 1045627298456
+2025-09-23 10:14:48,027 - INFO - Processed blueprint 64/341: 1045631820801
+2025-09-23 10:14:48,044 - INFO - Updated blueprint: 1045647832058
+2025-09-23 10:14:48,077 - INFO - Processed blueprint 65/341: 1045631820987
+2025-09-23 10:14:48,078 - INFO - Updated blueprint: 1045647832993
+2025-09-23 10:14:48,087 - INFO - Updated blueprint: 1045647832286
+2025-09-23 10:14:48,093 - INFO - Updated blueprint: 1045647832671
+2025-09-23 10:14:48,114 - INFO - Updated blueprint: 1045647833763
+2025-09-23 10:14:48,124 - INFO - Blueprint 1045648045584 unchanged, skipping update
+2025-09-23 10:14:48,128 - INFO - Processed blueprint 66/341: 1045631743088
+2025-09-23 10:14:48,140 - INFO - Updated blueprint: 1045647833326
+2025-09-23 10:14:48,181 - INFO - Processed blueprint 67/341: 1045631821111
+2025-09-23 10:14:48,236 - INFO - Processed blueprint 68/341: 1045631820908
+2025-09-23 10:14:48,259 - INFO - Updated blueprint: 1045647834018
+2025-09-23 10:14:48,262 - INFO - Blueprint 1045710384666 unchanged, skipping update
+2025-09-23 10:14:48,291 - INFO - Processed blueprint 69/341: 1045631821222
+2025-09-23 10:14:48,347 - INFO - Processed blueprint 70/341: 1045631821358
+2025-09-23 10:14:48,359 - INFO - Blueprint 1045710417630 unchanged, skipping update
+2025-09-23 10:14:48,399 - INFO - Processed blueprint 71/341: 1045631821588
+2025-09-23 10:14:48,435 - INFO - Blueprint 1045730159350 unchanged, skipping update
+2025-09-23 10:14:48,452 - INFO - Processed blueprint 72/341: 1045631821473
+2025-09-23 10:14:48,485 - INFO - Updated blueprint: 1045648319219
+2025-09-23 10:14:48,507 - INFO - Processed blueprint 73/341: 1045631821778
+2025-09-23 10:14:48,552 - INFO - Updated blueprint: 1045648317694
+2025-09-23 10:14:48,562 - INFO - Processed blueprint 74/341: 1045631898364
+2025-09-23 10:14:48,566 - INFO - Blueprint 1045824284242 unchanged, skipping update
+2025-09-23 10:14:48,568 - INFO - Blueprint 1045872934323 unchanged, skipping update
+2025-09-23 10:14:48,605 - INFO - Updated blueprint: 1045729548362
+2025-09-23 10:14:48,616 - INFO - Processed blueprint 75/341: 1045631856745
+2025-09-23 10:14:48,656 - INFO - Blueprint 1048497103438 unchanged, skipping update
+2025-09-23 10:14:48,671 - INFO - Processed blueprint 76/341: 1045631898197
+2025-09-23 10:14:48,676 - INFO - Updated blueprint: 1045742495229
+2025-09-23 10:14:48,687 - INFO - Updated blueprint: 1045742495412
+2025-09-23 10:14:48,723 - INFO - Processed blueprint 77/341: 1045631898068
+2025-09-23 10:14:48,778 - INFO - Processed blueprint 78/341: 1045631897778
+2025-09-23 10:14:48,783 - INFO - Blueprint 1048497113189 unchanged, skipping update
+2025-09-23 10:14:48,784 - INFO - Updated blueprint: 1045742494850
+2025-09-23 10:14:48,833 - INFO - Processed blueprint 79/341: 1045631898598
+2025-09-23 10:14:48,888 - INFO - Processed blueprint 80/341: 1045640388883
+2025-09-23 10:14:48,944 - INFO - Processed blueprint 81/341: 1045640331892
+2025-09-23 10:14:48,956 - INFO - Blueprint 1048497120066 unchanged, skipping update
+2025-09-23 10:14:48,960 - INFO - Updated blueprint: 1048491192978
+2025-09-23 10:14:48,963 - INFO - Blueprint 1048497118042 unchanged, skipping update
+2025-09-23 10:14:48,967 - INFO - Blueprint 1048497131383 unchanged, skipping update
+2025-09-23 10:14:48,988 - INFO - Blueprint 1048497132562 unchanged, skipping update
+2025-09-23 10:14:48,999 - INFO - Processed blueprint 82/341: 1045640400989
+2025-09-23 10:14:49,050 - INFO - Processed blueprint 83/341: 1045640476461
+2025-09-23 10:14:49,063 - INFO - Blueprint 1048497139737 unchanged, skipping update
+2025-09-23 10:14:49,072 - INFO - Blueprint 1048497171975 unchanged, skipping update
+2025-09-23 10:14:49,072 - INFO - Updated blueprint: 1048497114164
+2025-09-23 10:14:49,105 - INFO - Processed blueprint 84/341: 1045640413970
+2025-09-23 10:14:49,152 - INFO - Blueprint 1048497174523 unchanged, skipping update
+2025-09-23 10:14:49,155 - INFO - Processed blueprint 85/341: 1045640479457
+2025-09-23 10:14:49,209 - INFO - Updated blueprint: 1048497133143
+2025-09-23 10:14:49,210 - INFO - Processed blueprint 86/341: 1045640479629
+2025-09-23 10:14:49,265 - INFO - Processed blueprint 87/341: 1045640479269
+2025-09-23 10:14:49,306 - INFO - Updated blueprint: 1048497137640
+2025-09-23 10:14:49,320 - INFO - Processed blueprint 88/341: 1045647052587
+2025-09-23 10:14:49,375 - INFO - Processed blueprint 89/341: 1045647052752
+2025-09-23 10:14:49,431 - INFO - Processed blueprint 90/341: 1045647052952
+2025-09-23 10:14:49,477 - INFO - Updated blueprint: 1048497312227
+2025-09-23 10:14:49,481 - INFO - Processed blueprint 91/341: 1045647831857
+2025-09-23 10:14:49,498 - INFO - Updated blueprint: 1048497316785
+2025-09-23 10:14:49,500 - INFO - Updated blueprint: 1048497178895
+2025-09-23 10:14:49,525 - INFO - Updated blueprint: 1048497346575
+2025-09-23 10:14:49,535 - INFO - Processed blueprint 92/341: 1045647832058
+2025-09-23 10:14:49,590 - INFO - Processed blueprint 93/341: 1045647832993
+2025-09-23 10:14:49,641 - INFO - Processed blueprint 94/341: 1045647832286
+2025-09-23 10:14:49,645 - INFO - Updated blueprint: 1048497394220
+2025-09-23 10:14:49,656 - INFO - Updated blueprint: 1048497353807
+2025-09-23 10:14:49,673 - INFO - Updated blueprint: 1048497347779
+2025-09-23 10:14:49,696 - INFO - Processed blueprint 95/341: 1045647832671
+2025-09-23 10:14:49,751 - INFO - Processed blueprint 96/341: 1045647833763
+2025-09-23 10:14:49,806 - INFO - Processed blueprint 97/341: 1045648045584
+2025-09-23 10:14:49,833 - INFO - Updated blueprint: 1048497397841
+2025-09-23 10:14:49,861 - INFO - Processed blueprint 98/341: 1045647833326
+2025-09-23 10:14:49,912 - INFO - Processed blueprint 99/341: 1045647834018
+2025-09-23 10:14:49,922 - INFO - Updated blueprint: 1048497398887
+2025-09-23 10:14:49,966 - INFO - Updated blueprint: 1048497400969
+2025-09-23 10:14:49,967 - INFO - Processed blueprint 100/341: 1045710384666
+2025-09-23 10:14:50,002 - INFO - Updated blueprint: 1048534157118
+2025-09-23 10:14:50,022 - INFO - Processed blueprint 101/341: 1045710417630
+2025-09-23 10:14:50,041 - INFO - Updated blueprint: 1048534147370
+2025-09-23 10:14:50,043 - INFO - Updated blueprint: 1048534160961
+2025-09-23 10:14:50,044 - INFO - Updated blueprint: 1048534148235
+2025-09-23 10:14:50,076 - INFO - Processed blueprint 102/341: 1045730159350
+2025-09-23 10:14:50,119 - INFO - Updated blueprint: 1048534164477
+2025-09-23 10:14:50,131 - INFO - Processed blueprint 103/341: 1045648319219
+2025-09-23 10:14:50,180 - INFO - Updated blueprint: 1048534163506
+2025-09-23 10:14:50,182 - INFO - Processed blueprint 104/341: 1045648317694
+2025-09-23 10:14:50,182 - INFO - Updated blueprint: 1048534171025
+2025-09-23 10:14:50,229 - INFO - Updated blueprint: 1048534174691
+2025-09-23 10:14:50,237 - INFO - Processed blueprint 105/341: 1045824284242
+2025-09-23 10:14:50,292 - INFO - Processed blueprint 106/341: 1045872934323
+2025-09-23 10:14:50,343 - INFO - Processed blueprint 107/341: 1045729548362
+2025-09-23 10:14:50,360 - INFO - Updated blueprint: 1048534178618
+2025-09-23 10:14:50,396 - INFO - Processed blueprint 108/341: 1048497103438
+2025-09-23 10:14:50,447 - INFO - Processed blueprint 109/341: 1045742495229
+2025-09-23 10:14:50,467 - INFO - Updated blueprint: 1048534182526
+2025-09-23 10:14:50,501 - INFO - Processed blueprint 110/341: 1045742495412
+2025-09-23 10:14:50,513 - INFO - Updated blueprint: 1048556396402
+2025-09-23 10:14:50,539 - INFO - Updated blueprint: 1048572180110
+2025-09-23 10:14:50,556 - INFO - Processed blueprint 111/341: 1048497113189
+2025-09-23 10:14:50,559 - INFO - Updated blueprint: 1048556399713
+2025-09-23 10:14:50,563 - INFO - Updated blueprint: 1048556397510
+2025-09-23 10:14:50,607 - INFO - Processed blueprint 112/341: 1045742494850
+2025-09-23 10:14:50,614 - INFO - Updated blueprint: 1048572205336
+2025-09-23 10:14:50,628 - INFO - Updated blueprint: 1048572180881
+2025-09-23 10:14:50,662 - INFO - Processed blueprint 113/341: 1048497120066
+2025-09-23 10:14:50,667 - INFO - Updated blueprint: 1048572181562
+2025-09-23 10:14:50,718 - INFO - Processed blueprint 114/341: 1048491192978
+2025-09-23 10:14:50,739 - INFO - Updated blueprint: 1048572206820
+2025-09-23 10:14:50,773 - INFO - Processed blueprint 115/341: 1048497118042
+2025-09-23 10:14:50,828 - INFO - Processed blueprint 116/341: 1048497131383
+2025-09-23 10:14:50,885 - INFO - Updated blueprint: 1048572208142
+2025-09-23 10:14:50,886 - INFO - Processed blueprint 117/341: 1048497132562
+2025-09-23 10:14:50,892 - INFO - Updated blueprint: 1048572209514
+2025-09-23 10:14:50,941 - INFO - Processed blueprint 118/341: 1048497139737
+2025-09-23 10:14:50,996 - INFO - Processed blueprint 119/341: 1048497171975
+2025-09-23 10:14:51,040 - INFO - Updated blueprint: 1048753789102
+2025-09-23 10:14:51,043 - INFO - Updated blueprint: 1048753820347
+2025-09-23 10:14:51,050 - INFO - Processed blueprint 120/341: 1048497114164
+2025-09-23 10:14:51,053 - INFO - Updated blueprint: 1048572214764
+2025-09-23 10:14:51,060 - INFO - Updated blueprint: 1048572211846
+2025-09-23 10:14:51,105 - INFO - Processed blueprint 121/341: 1048497174523
+2025-09-23 10:14:51,108 - INFO - Updated blueprint: 1048753834364
+2025-09-23 10:14:51,126 - INFO - Updated blueprint: 1048753835009
+2025-09-23 10:14:51,156 - INFO - Processed blueprint 122/341: 1048497133143
+2025-09-23 10:14:51,180 - INFO - Updated blueprint: 1048753835545
+2025-09-23 10:14:51,208 - INFO - Processed blueprint 123/341: 1048497137640
+2025-09-23 10:14:51,243 - INFO - Updated blueprint: 1048753836771
+2025-09-23 10:14:51,261 - INFO - Processed blueprint 124/341: 1048497312227
+2025-09-23 10:14:51,292 - INFO - Updated blueprint: 1048753837463
+2025-09-23 10:14:51,305 - INFO - Updated blueprint: 1048755110183
+2025-09-23 10:14:51,316 - INFO - Processed blueprint 125/341: 1048497316785
+2025-09-23 10:14:51,370 - INFO - Processed blueprint 126/341: 1048497178895
+2025-09-23 10:14:51,407 - INFO - Updated blueprint: 1048755112726
+2025-09-23 10:14:51,408 - INFO - Updated blueprint: 1048755111133
+2025-09-23 10:14:51,421 - INFO - Processed blueprint 127/341: 1048497346575
+2025-09-23 10:14:51,476 - INFO - Processed blueprint 128/341: 1048497394220
+2025-09-23 10:14:51,531 - INFO - Processed blueprint 129/341: 1048497353807
+2025-09-23 10:14:51,541 - INFO - Updated blueprint: 1048755113552
+2025-09-23 10:14:51,563 - INFO - Updated blueprint: 1048755114427
+2025-09-23 10:14:51,586 - INFO - Processed blueprint 130/341: 1048497347779
+2025-09-23 10:14:51,606 - INFO - Updated blueprint: 1048755117310
+2025-09-23 10:14:51,642 - INFO - Processed blueprint 131/341: 1048497397841
+2025-09-23 10:14:51,666 - INFO - Updated blueprint: 1048755116658
+2025-09-23 10:14:51,696 - INFO - Processed blueprint 132/341: 1048497398887
+2025-09-23 10:14:51,715 - INFO - Updated blueprint: 1048755120497
+2025-09-23 10:14:51,751 - INFO - Processed blueprint 133/341: 1048497400969
+2025-09-23 10:14:51,786 - INFO - Updated blueprint: 1048755120972
+2025-09-23 10:14:51,803 - INFO - Processed blueprint 134/341: 1048534157118
+2025-09-23 10:14:51,858 - INFO - Processed blueprint 135/341: 1048534147370
+2025-09-23 10:14:51,913 - INFO - Processed blueprint 136/341: 1048534160961
+2025-09-23 10:14:51,929 - INFO - Updated blueprint: 1048755122441
+2025-09-23 10:14:51,930 - INFO - Updated blueprint: 1048755121539
+2025-09-23 10:14:51,968 - INFO - Processed blueprint 137/341: 1048534148235
+2025-09-23 10:14:52,024 - INFO - Processed blueprint 138/341: 1048534164477
+2025-09-23 10:14:52,043 - INFO - Updated blueprint: 1048755128010
+2025-09-23 10:14:52,052 - INFO - Updated blueprint: 1048755128622
+2025-09-23 10:14:52,079 - INFO - Processed blueprint 139/341: 1048534163506
+2025-09-23 10:14:52,094 - INFO - Updated blueprint: 1048755129183
+2025-09-23 10:14:52,130 - INFO - Processed blueprint 140/341: 1048534171025
+2025-09-23 10:14:52,160 - INFO - Updated blueprint: 1048755129857
+2025-09-23 10:14:52,185 - INFO - Processed blueprint 141/341: 1048534174691
+2025-09-23 10:14:52,199 - INFO - Updated blueprint: 1048755136406
+2025-09-23 10:14:52,238 - INFO - Processed blueprint 142/341: 1048534178618
+2025-09-23 10:14:52,275 - INFO - Updated blueprint: 1048755137882
+2025-09-23 10:14:52,281 - INFO - Updated blueprint: 1048755137030
+2025-09-23 10:14:52,289 - INFO - Processed blueprint 143/341: 1048534182526
+2025-09-23 10:14:52,311 - INFO - Updated blueprint: 1048755138399
+2025-09-23 10:14:52,332 - INFO - Updated blueprint: 1048755140242
+2025-09-23 10:14:52,344 - INFO - Processed blueprint 144/341: 1048556396402
+2025-09-23 10:14:52,399 - INFO - Processed blueprint 145/341: 1048572180110
+2025-09-23 10:14:52,449 - INFO - Processed blueprint 146/341: 1048556399713
+2025-09-23 10:14:52,456 - INFO - Updated blueprint: 1048755428682
+2025-09-23 10:14:52,460 - INFO - Updated blueprint: 1048755430294
+2025-09-23 10:14:52,504 - INFO - Processed blueprint 147/341: 1048556397510
+2025-09-23 10:14:52,560 - INFO - Processed blueprint 148/341: 1048572205336
+2025-09-23 10:14:52,571 - INFO - Updated blueprint: 1048755430355
+2025-09-23 10:14:52,615 - INFO - Processed blueprint 149/341: 1048572180881
+2025-09-23 10:14:52,642 - INFO - Updated blueprint: 1048755133911
+2025-09-23 10:14:52,670 - INFO - Processed blueprint 150/341: 1048572181562
+2025-09-23 10:14:52,713 - INFO - Updated blueprint: 1048755430435
+2025-09-23 10:14:52,721 - INFO - Processed blueprint 151/341: 1048572206820
+2025-09-23 10:14:52,747 - INFO - Updated blueprint: 1048755430504
+2025-09-23 10:14:52,776 - INFO - Processed blueprint 152/341: 1048572208142
+2025-09-23 10:14:52,831 - INFO - Processed blueprint 153/341: 1048572209514
+2025-09-23 10:14:52,871 - INFO - Updated blueprint: 1048755448634
+2025-09-23 10:14:52,885 - INFO - Processed blueprint 154/341: 1048753789102
+2025-09-23 10:14:52,940 - INFO - Processed blueprint 155/341: 1048753820347
+2025-09-23 10:14:52,977 - INFO - Updated blueprint: 1048755449534
+2025-09-23 10:14:52,995 - INFO - Processed blueprint 156/341: 1048572214764
+2025-09-23 10:14:53,016 - INFO - Updated blueprint: 1048755453478
+2025-09-23 10:14:53,017 - INFO - Updated blueprint: 1048755452886
+2025-09-23 10:14:53,047 - INFO - Processed blueprint 157/341: 1048572211846
+2025-09-23 10:14:53,103 - INFO - Processed blueprint 158/341: 1048753834364
+2025-09-23 10:14:53,109 - INFO - Updated blueprint: 1048755455038
+2025-09-23 10:14:53,114 - INFO - Updated blueprint: 1048755455495
+2025-09-23 10:14:53,158 - INFO - Processed blueprint 159/341: 1048753835009
+2025-09-23 10:14:53,173 - INFO - Updated blueprint: 1048755457115
+2025-09-23 10:14:53,213 - INFO - Processed blueprint 160/341: 1048753835545
+2025-09-23 10:14:53,238 - INFO - Updated blueprint: 1048755456560
+2025-09-23 10:14:53,239 - INFO - Updated blueprint: 1048755459020
+2025-09-23 10:14:53,268 - INFO - Processed blueprint 161/341: 1048753836771
+2025-09-23 10:14:53,304 - INFO - Updated blueprint: 1048755461101
+2025-09-23 10:14:53,323 - INFO - Processed blueprint 162/341: 1048753837463
+2025-09-23 10:14:53,374 - INFO - Updated blueprint: 1048755470646
+2025-09-23 10:14:53,375 - INFO - Processed blueprint 163/341: 1048755110183
+2025-09-23 10:14:53,429 - INFO - Processed blueprint 164/341: 1048755112726
+2025-09-23 10:14:53,485 - INFO - Processed blueprint 165/341: 1048755111133
+2025-09-23 10:14:53,540 - INFO - Processed blueprint 166/341: 1048755113552
+2025-09-23 10:14:53,595 - INFO - Processed blueprint 167/341: 1048755114427
+2025-09-23 10:14:53,601 - INFO - Blueprint 1048755478242 unchanged, skipping update
+2025-09-23 10:14:53,612 - INFO - Updated blueprint: 1048755471334
+2025-09-23 10:14:53,615 - INFO - Updated blueprint: 1048755472640
+2025-09-23 10:14:53,646 - INFO - Processed blueprint 168/341: 1048755117310
+2025-09-23 10:14:53,677 - INFO - Updated blueprint: 1048755474381
+2025-09-23 10:14:53,678 - INFO - Updated blueprint: 1048755472125
+2025-09-23 10:14:53,678 - INFO - Updated blueprint: 1048755473578
+2025-09-23 10:14:53,701 - INFO - Updated blueprint: 1048755475197
+2025-09-23 10:14:53,701 - INFO - Processed blueprint 169/341: 1048755116658
+2025-09-23 10:14:53,756 - INFO - Processed blueprint 170/341: 1048755120497
+2025-09-23 10:14:53,811 - INFO - Processed blueprint 171/341: 1048755120972
+2025-09-23 10:14:53,835 - INFO - Updated blueprint: 1048755477552
+2025-09-23 10:14:53,866 - INFO - Processed blueprint 172/341: 1048755122441
+2025-09-23 10:14:53,916 - INFO - Processed blueprint 173/341: 1048755121539
+2025-09-23 10:14:53,972 - INFO - Processed blueprint 174/341: 1048755128010
+2025-09-23 10:14:54,031 - INFO - Processed blueprint 175/341: 1048755128622
+2025-09-23 10:14:54,034 - INFO - Updated blueprint: 1048793172855
+2025-09-23 10:14:54,035 - INFO - Updated blueprint: 1048793172563
+2025-09-23 10:14:54,086 - INFO - Processed blueprint 176/341: 1048755129183
+2025-09-23 10:14:54,133 - INFO - Updated blueprint: 1048853933937
+2025-09-23 10:14:54,139 - INFO - Processed blueprint 177/341: 1048755129857
+2025-09-23 10:14:54,156 - INFO - Updated blueprint: 1048793182748
+2025-09-23 10:14:54,157 - INFO - Updated blueprint: 1048853918187
+2025-09-23 10:14:54,192 - INFO - Processed blueprint 178/341: 1048755136406
+2025-09-23 10:14:54,206 - INFO - Updated blueprint: 1048854321095
+2025-09-23 10:14:54,224 - INFO - Updated blueprint: 1048853935147
+2025-09-23 10:14:54,225 - INFO - Updated blueprint: 1048853934689
+2025-09-23 10:14:54,243 - INFO - Processed blueprint 179/341: 1048755137882
+2025-09-23 10:14:54,244 - INFO - Updated blueprint: 1048853934928
+2025-09-23 10:14:54,299 - INFO - Processed blueprint 180/341: 1048755137030
+2025-09-23 10:14:54,339 - INFO - Updated blueprint: 1048854331940
+2025-09-23 10:14:54,340 - INFO - Blueprint 1048854335779 unchanged, skipping update
+2025-09-23 10:14:54,354 - INFO - Processed blueprint 181/341: 1048755138399
+2025-09-23 10:14:54,406 - INFO - Processed blueprint 182/341: 1048755140242
+2025-09-23 10:14:54,432 - INFO - Updated blueprint: 1048854333216
+2025-09-23 10:14:54,457 - INFO - Updated blueprint: 1048854332408
+2025-09-23 10:14:54,459 - INFO - Processed blueprint 183/341: 1048755428682
+2025-09-23 10:14:54,514 - INFO - Processed blueprint 184/341: 1048755430294
+2025-09-23 10:14:54,553 - INFO - Blueprint 1048854358040 unchanged, skipping update
+2025-09-23 10:14:54,553 - INFO - Blueprint 1048854359089 unchanged, skipping update
+2025-09-23 10:14:54,554 - INFO - Updated blueprint: 1048854334148
+2025-09-23 10:14:54,557 - INFO - Updated blueprint: 1048854334853
+2025-09-23 10:14:54,566 - INFO - Processed blueprint 185/341: 1048755430355
+2025-09-23 10:14:54,621 - INFO - Processed blueprint 186/341: 1048755133911
+2025-09-23 10:14:54,673 - INFO - Processed blueprint 187/341: 1048755430435
+2025-09-23 10:14:54,723 - INFO - Processed blueprint 188/341: 1048755430504
+2025-09-23 10:14:54,732 - INFO - Updated blueprint: 1048854336495
+2025-09-23 10:14:54,774 - INFO - Processed blueprint 189/341: 1048755448634
+2025-09-23 10:14:54,776 - INFO - Updated blueprint: 1048854337154
+2025-09-23 10:14:54,781 - INFO - Updated blueprint: 1048854337872
+2025-09-23 10:14:54,817 - INFO - Updated blueprint: 1048854354150
+2025-09-23 10:14:54,829 - INFO - Processed blueprint 190/341: 1048755449534
+2025-09-23 10:14:54,883 - INFO - Processed blueprint 191/341: 1048755453478
+2025-09-23 10:14:54,938 - INFO - Processed blueprint 192/341: 1048755452886
+2025-09-23 10:14:54,993 - INFO - Processed blueprint 193/341: 1048755455038
+2025-09-23 10:14:55,048 - INFO - Processed blueprint 194/341: 1048755455495
+2025-09-23 10:14:55,081 - INFO - Updated blueprint: 1048854360242
+2025-09-23 10:14:55,103 - INFO - Processed blueprint 195/341: 1048755457115
+2025-09-23 10:14:55,158 - INFO - Processed blueprint 196/341: 1048755456560
+2025-09-23 10:14:55,172 - INFO - Updated blueprint: 1048854401183
+2025-09-23 10:14:55,175 - INFO - Updated blueprint: 1048854398154
+2025-09-23 10:14:55,177 - INFO - Updated blueprint: 1048854369185
+2025-09-23 10:14:55,184 - INFO - Updated blueprint: 1048854399758
+2025-09-23 10:14:55,209 - INFO - Processed blueprint 197/341: 1048755459020
+2025-09-23 10:14:55,210 - INFO - Updated blueprint: 1048854384007
+2025-09-23 10:14:55,263 - INFO - Processed blueprint 198/341: 1048755461101
+2025-09-23 10:14:55,282 - INFO - Updated blueprint: 1048854413030
+2025-09-23 10:14:55,292 - INFO - Updated blueprint: 1048854415530
+2025-09-23 10:14:55,306 - INFO - Updated blueprint: 1048854415763
+2025-09-23 10:14:55,314 - INFO - Processed blueprint 199/341: 1048755470646
+2025-09-23 10:14:55,361 - INFO - Updated blueprint: 1048854416044
+2025-09-23 10:14:55,367 - INFO - Processed blueprint 200/341: 1048755478242
+2025-09-23 10:14:55,385 - INFO - Blueprint 1048854467446 unchanged, skipping update
+2025-09-23 10:14:55,391 - INFO - Blueprint 1048854468567 unchanged, skipping update
+2025-09-23 10:14:55,401 - INFO - Blueprint 1048854468099 unchanged, skipping update
+2025-09-23 10:14:55,419 - INFO - Processed blueprint 201/341: 1048755471334
+2025-09-23 10:14:55,451 - INFO - Blueprint 1048892818270 unchanged, skipping update
+2025-09-23 10:14:55,470 - INFO - Updated blueprint: 1048854416872
+2025-09-23 10:14:55,472 - INFO - Blueprint 1048892819939 unchanged, skipping update
+2025-09-23 10:14:55,474 - INFO - Processed blueprint 202/341: 1048755472640
+2025-09-23 10:14:55,486 - INFO - Blueprint 1048892820689 unchanged, skipping update
+2025-09-23 10:14:55,529 - INFO - Processed blueprint 203/341: 1048755472125
+2025-09-23 10:14:55,584 - INFO - Processed blueprint 204/341: 1048755474381
+2025-09-23 10:14:55,604 - INFO - Blueprint 1048892821950 unchanged, skipping update
+2025-09-23 10:14:55,637 - INFO - Processed blueprint 205/341: 1048755473578
+2025-09-23 10:14:55,692 - INFO - Processed blueprint 206/341: 1048755475197
+2025-09-23 10:14:55,717 - INFO - Blueprint 1048892823333 unchanged, skipping update
+2025-09-23 10:14:55,720 - INFO - Updated blueprint: 1048854418099
+2025-09-23 10:14:55,726 - INFO - Blueprint 1048892824791 unchanged, skipping update
+2025-09-23 10:14:55,727 - INFO - Blueprint 1048892825918 unchanged, skipping update
+2025-09-23 10:14:55,744 - INFO - Processed blueprint 207/341: 1048755477552
+2025-09-23 10:14:55,746 - INFO - Updated blueprint: 1048892615386
+2025-09-23 10:14:55,795 - INFO - Processed blueprint 208/341: 1048793172855
+2025-09-23 10:14:55,849 - INFO - Processed blueprint 209/341: 1048793172563
+2025-09-23 10:14:55,904 - INFO - Processed blueprint 210/341: 1048853933937
+2025-09-23 10:14:55,959 - INFO - Processed blueprint 211/341: 1048793182748
+2025-09-23 10:14:56,014 - INFO - Processed blueprint 212/341: 1048853918187
+2025-09-23 10:14:56,068 - INFO - Processed blueprint 213/341: 1048854321095
+2025-09-23 10:14:56,120 - INFO - Processed blueprint 214/341: 1048853935147
+2025-09-23 10:14:56,125 - INFO - Updated blueprint: 1049574317609
+2025-09-23 10:14:56,126 - INFO - Updated blueprint: 1049574103840
+2025-09-23 10:14:56,126 - INFO - Updated blueprint: 1049574314029
+2025-09-23 10:14:56,133 - INFO - Updated blueprint: 1049574442751
+2025-09-23 10:14:56,140 - INFO - Updated blueprint: 1049574441448
+2025-09-23 10:14:56,173 - INFO - Processed blueprint 215/341: 1048853934689
+2025-09-23 10:14:56,229 - INFO - Processed blueprint 216/341: 1048853934928
+2025-09-23 10:14:56,283 - INFO - Processed blueprint 217/341: 1048854331940
+2025-09-23 10:14:56,306 - INFO - Updated blueprint: 1049574444009
+2025-09-23 10:14:56,317 - INFO - Updated blueprint: 1049574447488
+2025-09-23 10:14:56,319 - INFO - Updated blueprint: 1049574449602
+2025-09-23 10:14:56,335 - INFO - Processed blueprint 218/341: 1048854335779
+2025-09-23 10:14:56,384 - INFO - Updated blueprint: 1049574579770
+2025-09-23 10:14:56,387 - INFO - Processed blueprint 219/341: 1048854333216
+2025-09-23 10:14:56,388 - INFO - Updated blueprint: 1049574451532
+2025-09-23 10:14:56,440 - INFO - Processed blueprint 220/341: 1048854332408
+2025-09-23 10:14:56,491 - INFO - Processed blueprint 221/341: 1048854358040
+2025-09-23 10:14:56,543 - INFO - Processed blueprint 222/341: 1048854359089
+2025-09-23 10:14:56,598 - INFO - Processed blueprint 223/341: 1048854334148
+2025-09-23 10:14:56,649 - INFO - Processed blueprint 224/341: 1048854334853
+2025-09-23 10:14:56,702 - INFO - Processed blueprint 225/341: 1048854336495
+2025-09-23 10:14:56,750 - INFO - Updated blueprint: 1049574682998
+2025-09-23 10:14:56,753 - INFO - Processed blueprint 226/341: 1048854337154
+2025-09-23 10:14:56,759 - INFO - Updated blueprint: 1049574685686
+2025-09-23 10:14:56,762 - INFO - Updated blueprint: 1049574687167
+2025-09-23 10:14:56,807 - INFO - Updated blueprint: 1049574582590
+2025-09-23 10:14:56,808 - INFO - Updated blueprint: 1049574677299
+2025-09-23 10:14:56,809 - INFO - Processed blueprint 227/341: 1048854337872
+2025-09-23 10:14:56,844 - INFO - Updated blueprint: 1049574690328
+2025-09-23 10:14:56,853 - INFO - Updated blueprint: 1049574688527
+2025-09-23 10:14:56,861 - INFO - Processed blueprint 228/341: 1048854354150
+2025-09-23 10:14:56,912 - INFO - Processed blueprint 229/341: 1048854360242
+2025-09-23 10:14:56,967 - INFO - Processed blueprint 230/341: 1048854401183
+2025-09-23 10:14:57,004 - INFO - Updated blueprint: 1049574692766
+2025-09-23 10:14:57,021 - INFO - Updated blueprint: 1049574694012
+2025-09-23 10:14:57,022 - INFO - Processed blueprint 231/341: 1048854398154
+2025-09-23 10:14:57,060 - INFO - Updated blueprint: 1049574695751
+2025-09-23 10:14:57,077 - INFO - Processed blueprint 232/341: 1048854369185
+2025-09-23 10:14:57,133 - INFO - Processed blueprint 233/341: 1048854399758
+2025-09-23 10:14:57,175 - INFO - Updated blueprint: 1049574708304
+2025-09-23 10:14:57,187 - INFO - Processed blueprint 234/341: 1048854384007
+2025-09-23 10:14:57,221 - INFO - Updated blueprint: 1049574705873
+2025-09-23 10:14:57,238 - INFO - Processed blueprint 235/341: 1048854413030
+2025-09-23 10:14:57,269 - INFO - Updated blueprint: 1049574712131
+2025-09-23 10:14:57,293 - INFO - Processed blueprint 236/341: 1048854415530
+2025-09-23 10:14:57,344 - INFO - Processed blueprint 237/341: 1048854415763
+2025-09-23 10:14:57,370 - INFO - Updated blueprint: 1049574751987
+2025-09-23 10:14:57,371 - INFO - Updated blueprint: 1049574725214
+2025-09-23 10:14:57,399 - INFO - Processed blueprint 238/341: 1048854416044
+2025-09-23 10:14:57,407 - INFO - Updated blueprint: 1049574755244
+2025-09-23 10:14:57,417 - INFO - Updated blueprint: 1049574753605
+2025-09-23 10:14:57,454 - INFO - Processed blueprint 239/341: 1048854467446
+2025-09-23 10:14:57,509 - INFO - Processed blueprint 240/341: 1048854468567
+2025-09-23 10:14:57,561 - INFO - Processed blueprint 241/341: 1048854468099
+2025-09-23 10:14:57,616 - INFO - Processed blueprint 242/341: 1048892818270
+2025-09-23 10:14:57,671 - INFO - Processed blueprint 243/341: 1048854416872
+2025-09-23 10:14:57,702 - INFO - Updated blueprint: 1049574763305
+2025-09-23 10:14:57,703 - INFO - Updated blueprint: 1049574756931
+2025-09-23 10:14:57,704 - INFO - Updated blueprint: 1049574760705
+2025-09-23 10:14:57,704 - INFO - Updated blueprint: 1049574762041
+2025-09-23 10:14:57,725 - INFO - Processed blueprint 244/341: 1048892819939
+2025-09-23 10:14:57,737 - INFO - Updated blueprint: 1049574764624
+2025-09-23 10:14:57,775 - INFO - Processed blueprint 245/341: 1048892820689
+2025-09-23 10:14:57,830 - INFO - Processed blueprint 246/341: 1048892821950
+2025-09-23 10:14:57,885 - INFO - Processed blueprint 247/341: 1048892823333
+2025-09-23 10:14:57,940 - INFO - Processed blueprint 248/341: 1048854418099
+2025-09-23 10:14:57,986 - INFO - Updated blueprint: 1049574767458
+2025-09-23 10:14:57,991 - INFO - Processed blueprint 249/341: 1048892824791
+2025-09-23 10:14:58,044 - INFO - Updated blueprint: 1049574771593
+2025-09-23 10:14:58,044 - INFO - Processed blueprint 250/341: 1048892825918
+2025-09-23 10:14:58,085 - INFO - Updated blueprint: 1049574769783
+2025-09-23 10:14:58,094 - INFO - Updated blueprint: 1049574768724
+2025-09-23 10:14:58,097 - INFO - Processed blueprint 251/341: 1048892615386
+2025-09-23 10:14:58,153 - INFO - Processed blueprint 252/341: 1049574317609
+2025-09-23 10:14:58,206 - INFO - Processed blueprint 253/341: 1049574103840
+2025-09-23 10:14:58,261 - INFO - Processed blueprint 254/341: 1049574314029
+2025-09-23 10:14:58,315 - INFO - Processed blueprint 255/341: 1049574442751
+2025-09-23 10:14:58,358 - INFO - Updated blueprint: 1049574759425
+2025-09-23 10:14:58,366 - INFO - Processed blueprint 256/341: 1049574441448
+2025-09-23 10:14:58,377 - INFO - Updated blueprint: 1049574786127
+2025-09-23 10:14:58,388 - INFO - Updated blueprint: 1049574781697
+2025-09-23 10:14:58,402 - INFO - Updated blueprint: 1049574784788
+2025-09-23 10:14:58,422 - INFO - Processed blueprint 257/341: 1049574444009
+2025-09-23 10:14:58,436 - INFO - Updated blueprint: 1049574783623
+2025-09-23 10:14:58,474 - INFO - Updated blueprint: 1049574787807
+2025-09-23 10:14:58,475 - INFO - Updated blueprint: 1049574788474
+2025-09-23 10:14:58,477 - INFO - Processed blueprint 258/341: 1049574447488
+2025-09-23 10:14:58,532 - INFO - Processed blueprint 259/341: 1049574449602
+2025-09-23 10:14:58,585 - INFO - Updated blueprint: 1049574790307
+2025-09-23 10:14:58,587 - INFO - Processed blueprint 260/341: 1049574579770
+2025-09-23 10:14:58,636 - INFO - Updated blueprint: 1049574805777
+2025-09-23 10:14:58,637 - INFO - Processed blueprint 261/341: 1049574451532
+2025-09-23 10:14:58,638 - INFO - Blueprint 1049574817909 unchanged, skipping update
+2025-09-23 10:14:58,692 - INFO - Processed blueprint 262/341: 1049574682998
+2025-09-23 10:14:58,752 - INFO - Updated blueprint: 1049574812602
+2025-09-23 10:14:58,753 - INFO - Processed blueprint 263/341: 1049574685686
+2025-09-23 10:14:58,806 - INFO - Processed blueprint 264/341: 1049574687167
+2025-09-23 10:14:58,858 - INFO - Processed blueprint 265/341: 1049574582590
+2025-09-23 10:14:58,913 - INFO - Processed blueprint 266/341: 1049574677299
+2025-09-23 10:14:58,919 - INFO - Updated blueprint: 1049574814115
+2025-09-23 10:14:58,920 - INFO - Updated blueprint: 1049574816825
+2025-09-23 10:14:58,922 - INFO - Updated blueprint: 1049574815479
+2025-09-23 10:14:58,967 - INFO - Processed blueprint 267/341: 1049574690328
+2025-09-23 10:14:59,022 - INFO - Updated blueprint: 1049576016678
+2025-09-23 10:14:59,022 - INFO - Processed blueprint 268/341: 1049574688527
+2025-09-23 10:14:59,024 - INFO - Updated blueprint: 1049576017392
+2025-09-23 10:14:59,059 - INFO - Updated blueprint: 1049574869338
+2025-09-23 10:14:59,073 - INFO - Processed blueprint 269/341: 1049574692766
+2025-09-23 10:14:59,128 - INFO - Processed blueprint 270/341: 1049574694012
+2025-09-23 10:14:59,180 - INFO - Processed blueprint 271/341: 1049574695751
+2025-09-23 10:14:59,235 - INFO - Processed blueprint 272/341: 1049574708304
+2025-09-23 10:14:59,270 - INFO - Updated blueprint: 1049576018142
+2025-09-23 10:14:59,271 - INFO - Updated blueprint: 1049576017671
+2025-09-23 10:14:59,272 - INFO - Updated blueprint: 1049576017866
+2025-09-23 10:14:59,290 - INFO - Processed blueprint 273/341: 1049574705873
+2025-09-23 10:14:59,344 - INFO - Processed blueprint 274/341: 1049574712131
+2025-09-23 10:14:59,380 - INFO - Updated blueprint: 1049576018563
+2025-09-23 10:14:59,399 - INFO - Processed blueprint 275/341: 1049574751987
+2025-09-23 10:14:59,451 - INFO - Processed blueprint 276/341: 1049574725214
+2025-09-23 10:14:59,483 - INFO - Updated blueprint: 1049576018885
+2025-09-23 10:14:59,488 - INFO - Updated blueprint: 1049576019228
+2025-09-23 10:14:59,498 - INFO - Updated blueprint: 1049576019604
+2025-09-23 10:14:59,504 - INFO - Processed blueprint 277/341: 1049574755244
+2025-09-23 10:14:59,558 - INFO - Processed blueprint 278/341: 1049574753605
+2025-09-23 10:14:59,571 - INFO - Updated blueprint: 1049576047227
+2025-09-23 10:14:59,577 - INFO - Updated blueprint: 1049576044342
+2025-09-23 10:14:59,613 - INFO - Processed blueprint 279/341: 1049574763305
+2025-09-23 10:14:59,663 - INFO - Updated blueprint: 1049576045884
+2025-09-23 10:14:59,666 - INFO - Processed blueprint 280/341: 1049574756931
+2025-09-23 10:14:59,721 - INFO - Processed blueprint 281/341: 1049574760705
+2025-09-23 10:14:59,776 - INFO - Processed blueprint 282/341: 1049574762041
+2025-09-23 10:14:59,801 - INFO - Updated blueprint: 1049576048517
+2025-09-23 10:14:59,812 - INFO - Updated blueprint: 1049576540350
+2025-09-23 10:14:59,814 - INFO - Updated blueprint: 1049576541010
+2025-09-23 10:14:59,831 - INFO - Processed blueprint 283/341: 1049574764624
+2025-09-23 10:14:59,886 - INFO - Processed blueprint 284/341: 1049574767458
+2025-09-23 10:14:59,940 - INFO - Processed blueprint 285/341: 1049574771593
+2025-09-23 10:14:59,945 - INFO - Updated blueprint: 1049576541669
+2025-09-23 10:14:59,992 - INFO - Processed blueprint 286/341: 1049574769783
+2025-09-23 10:15:00,014 - INFO - Updated blueprint: 1049576547463
+2025-09-23 10:15:00,026 - INFO - Updated blueprint: 1049576546106
+2025-09-23 10:15:00,046 - INFO - Processed blueprint 287/341: 1049574768724
+2025-09-23 10:15:00,049 - INFO - Updated blueprint: 1049576547988
+2025-09-23 10:15:00,101 - INFO - Processed blueprint 288/341: 1049574759425
+2025-09-23 10:15:00,117 - INFO - Updated blueprint: 1049576548631
+2025-09-23 10:15:00,120 - INFO - Updated blueprint: 1049576549259
+2025-09-23 10:15:00,153 - INFO - Processed blueprint 289/341: 1049574786127
+2025-09-23 10:15:00,206 - INFO - Processed blueprint 290/341: 1049574781697
+2025-09-23 10:15:00,257 - INFO - Processed blueprint 291/341: 1049574784788
+2025-09-23 10:15:00,311 - INFO - Processed blueprint 292/341: 1049574783623
+2025-09-23 10:15:00,327 - INFO - Updated blueprint: 1049576556736
+2025-09-23 10:15:00,328 - INFO - Updated blueprint: 1049576555733
+2025-09-23 10:15:00,330 - INFO - Updated blueprint: 1049576557386
+2025-09-23 10:15:00,331 - INFO - Updated blueprint: 1049576558540
+2025-09-23 10:15:00,365 - INFO - Processed blueprint 293/341: 1049574787807
+2025-09-23 10:15:00,480 - INFO - Processed blueprint 294/341: 1049574788474
+2025-09-23 10:15:00,535 - INFO - Processed blueprint 295/341: 1049574790307
+2025-09-23 10:15:00,552 - INFO - Updated blueprint: 1049576559320
+2025-09-23 10:15:00,590 - INFO - Processed blueprint 296/341: 1049574805777
+2025-09-23 10:15:00,604 - INFO - Blueprint 1049589409028 unchanged, skipping update
+2025-09-23 10:15:00,611 - INFO - Blueprint 1049576644465 unchanged, skipping update
+2025-09-23 10:15:00,614 - INFO - Updated blueprint: 1049576627404
+2025-09-23 10:15:00,619 - INFO - Blueprint 1049576645167 unchanged, skipping update
+2025-09-23 10:15:00,628 - INFO - Blueprint 1049589408412 unchanged, skipping update
+2025-09-23 10:15:00,641 - INFO - Processed blueprint 297/341: 1049574817909
+2025-09-23 10:15:00,643 - INFO - Updated blueprint: 1049576630884
+2025-09-23 10:15:00,644 - INFO - Updated blueprint: 1049576629954
+2025-09-23 10:15:00,692 - INFO - Blueprint 1049589409666 unchanged, skipping update
+2025-09-23 10:15:00,695 - INFO - Processed blueprint 298/341: 1049574812602
+2025-09-23 10:15:00,727 - INFO - Updated blueprint: 1049576632228
+2025-09-23 10:15:00,730 - INFO - Updated blueprint: 1049576631501
+2025-09-23 10:15:00,746 - INFO - Processed blueprint 299/341: 1049574814115
+2025-09-23 10:15:00,799 - INFO - Processed blueprint 300/341: 1049574816825
+2025-09-23 10:15:00,851 - INFO - Processed blueprint 301/341: 1049574815479
+2025-09-23 10:15:00,868 - INFO - Blueprint 1049589412723 unchanged, skipping update
+2025-09-23 10:15:00,868 - INFO - Blueprint 1049589413302 unchanged, skipping update
+2025-09-23 10:15:00,907 - INFO - Processed blueprint 302/341: 1049576016678
+2025-09-23 10:15:00,907 - INFO - Blueprint 1049589451922 unchanged, skipping update
+2025-09-23 10:15:00,958 - INFO - Processed blueprint 303/341: 1049576017392
+2025-09-23 10:15:01,011 - INFO - Processed blueprint 304/341: 1049574869338
+2025-09-23 10:15:01,066 - INFO - Processed blueprint 305/341: 1049576018142
+2025-09-23 10:15:01,121 - INFO - Processed blueprint 306/341: 1049576017671
+2025-09-23 10:15:01,176 - INFO - Processed blueprint 307/341: 1049576017866
+2025-09-23 10:15:01,231 - INFO - Processed blueprint 308/341: 1049576018563
+2025-09-23 10:15:01,287 - INFO - Processed blueprint 309/341: 1049576018885
+2025-09-23 10:15:01,341 - INFO - Processed blueprint 310/341: 1049576019228
+2025-09-23 10:15:01,396 - INFO - Processed blueprint 311/341: 1049576019604
+2025-09-23 10:15:01,451 - INFO - Processed blueprint 312/341: 1049576047227
+2025-09-23 10:15:01,506 - INFO - Processed blueprint 313/341: 1049576044342
+2025-09-23 10:15:01,562 - INFO - Processed blueprint 314/341: 1049576045884
+2025-09-23 10:15:01,613 - INFO - Processed blueprint 315/341: 1049576048517
+2025-09-23 10:15:01,668 - INFO - Processed blueprint 316/341: 1049576540350
+2025-09-23 10:15:01,723 - INFO - Processed blueprint 317/341: 1049576541010
+2025-09-23 10:15:01,778 - INFO - Processed blueprint 318/341: 1049576541669
+2025-09-23 10:15:01,834 - INFO - Processed blueprint 319/341: 1049576547463
+2025-09-23 10:15:01,889 - INFO - Processed blueprint 320/341: 1049576546106
+2025-09-23 10:15:01,940 - INFO - Processed blueprint 321/341: 1049576547988
+2025-09-23 10:15:01,995 - INFO - Processed blueprint 322/341: 1049576548631
+2025-09-23 10:15:02,045 - INFO - Processed blueprint 323/341: 1049576549259
+2025-09-23 10:15:02,100 - INFO - Processed blueprint 324/341: 1049576556736
+2025-09-23 10:15:02,156 - INFO - Processed blueprint 325/341: 1049576555733
+2025-09-23 10:15:02,211 - INFO - Processed blueprint 326/341: 1049576557386
+2025-09-23 10:15:02,266 - INFO - Processed blueprint 327/341: 1049576558540
+2025-09-23 10:15:02,320 - INFO - Processed blueprint 328/341: 1049576559320
+2025-09-23 10:15:02,371 - INFO - Processed blueprint 329/341: 1049589409028
+2025-09-23 10:15:02,426 - INFO - Processed blueprint 330/341: 1049576644465
+2025-09-23 10:15:02,481 - INFO - Processed blueprint 331/341: 1049576627404
+2025-09-23 10:15:02,535 - INFO - Processed blueprint 332/341: 1049576645167
+2025-09-23 10:15:02,589 - INFO - Processed blueprint 333/341: 1049589408412
+2025-09-23 10:15:02,644 - INFO - Processed blueprint 334/341: 1049576630884
+2025-09-23 10:15:02,699 - INFO - Processed blueprint 335/341: 1049576629954
+2025-09-23 10:15:02,753 - INFO - Processed blueprint 336/341: 1049589409666
+2025-09-23 10:15:02,808 - INFO - Processed blueprint 337/341: 1049576632228
+2025-09-23 10:15:02,860 - INFO - Processed blueprint 338/341: 1049576631501
+2025-09-23 10:15:02,913 - INFO - Processed blueprint 339/341: 1049589412723
+2025-09-23 10:15:02,969 - INFO - Processed blueprint 340/341: 1049589413302
+2025-09-23 10:15:03,024 - INFO - Processed blueprint 341/341: 1049589451922
+2025-09-23 10:15:03,076 - INFO - Completed parallel processing: 341/341 blueprints processed successfully
+2025-09-23 10:15:03,077 - INFO - Fetching corporation assets for 98092220...
+2025-09-23 10:15:03,349 - INFO - Fetched 1000 corporation assets
+2025-09-23 10:15:03,350 - INFO - Processing 1000 corp assets for blueprint extraction...
+2025-09-23 10:15:04,107 - INFO - Processed 1000/1000 assets...
+2025-09-23 10:15:04,107 - INFO - Completed asset processing: found 0 BPO blueprints in 1000 assets
+2025-09-23 10:15:04,107 - INFO - No blueprints found in corporation assets
+2025-09-23 10:15:04,272 - INFO - Corporation industry job blueprints: 82 items
+2025-09-23 10:15:04,272 - INFO - Starting parallel processing of 82 blueprints with 10 workers
+2025-09-23 10:15:05,043 - INFO - Updated blueprint from corp_industry_job: 1049576019604
+2025-09-23 10:15:05,044 - INFO - Updated blueprint from corp_industry_job: 1049574869338
+2025-09-23 10:15:05,045 - INFO - Updated blueprint from corp_industry_job: 1049576016678
+2025-09-23 10:15:05,045 - INFO - Updated blueprint from corp_industry_job: 1049576019228
+2025-09-23 10:15:05,046 - INFO - Updated blueprint from corp_industry_job: 1049576018563
+2025-09-23 10:15:05,046 - INFO - Updated blueprint from corp_industry_job: 1049576018885
+2025-09-23 10:15:05,046 - INFO - Updated blueprint from corp_industry_job: 1049576017866
+2025-09-23 10:15:05,047 - INFO - Updated blueprint from corp_industry_job: 1049576017671
+2025-09-23 10:15:05,048 - INFO - Updated blueprint from corp_industry_job: 1049576017392
+2025-09-23 10:15:05,048 - INFO - Updated blueprint from corp_industry_job: 1049576018142
+2025-09-23 10:15:05,049 - INFO - Processed blueprint 1/82: 1049576019604
+2025-09-23 10:15:05,112 - INFO - Processed blueprint 2/82: 1049574869338
+2025-09-23 10:15:05,166 - INFO - Processed blueprint 3/82: 1049576016678
+2025-09-23 10:15:05,221 - INFO - Processed blueprint 4/82: 1049576019228
+2025-09-23 10:15:05,276 - INFO - Processed blueprint 5/82: 1049576018563
+2025-09-23 10:15:05,329 - INFO - Processed blueprint 6/82: 1049576018885
+2025-09-23 10:15:05,383 - INFO - Processed blueprint 7/82: 1049576017866
+2025-09-23 10:15:05,436 - INFO - Processed blueprint 8/82: 1049576017671
+2025-09-23 10:15:05,446 - INFO - Updated blueprint from corp_industry_job: 1049576630884
+2025-09-23 10:15:05,466 - INFO - Updated blueprint from corp_industry_job: 1049576627404
+2025-09-23 10:15:05,492 - INFO - Processed blueprint 9/82: 1049576017392
+2025-09-23 10:15:05,547 - INFO - Processed blueprint 10/82: 1049576018142
+2025-09-23 10:15:05,563 - INFO - Updated blueprint from corp_industry_job: 1049576629954
+2025-09-23 10:15:05,565 - INFO - Updated blueprint from corp_industry_job: 1049576632228
+2025-09-23 10:15:05,566 - INFO - Updated blueprint from corp_industry_job: 1049576631501
+2025-09-23 10:15:05,599 - INFO - Updated blueprint from corp_industry_job: 1049576559320
+2025-09-23 10:15:05,600 - INFO - Updated blueprint from corp_industry_job: 1049576556736
+2025-09-23 10:15:05,601 - INFO - Processed blueprint 11/82: 1049576630884
+2025-09-23 10:15:05,656 - INFO - Processed blueprint 12/82: 1049576627404
+2025-09-23 10:15:05,710 - INFO - Updated blueprint from corp_industry_job: 1049576557386
+2025-09-23 10:15:05,711 - INFO - Processed blueprint 13/82: 1049576629954
+2025-09-23 10:15:05,712 - INFO - Updated blueprint from corp_industry_job: 1049576555733
+2025-09-23 10:15:05,713 - INFO - Updated blueprint from corp_industry_job: 1049576558540
+2025-09-23 10:15:05,763 - INFO - Processed blueprint 14/82: 1049576632228
+2025-09-23 10:15:05,818 - INFO - Processed blueprint 15/82: 1049576631501
+2025-09-23 10:15:05,873 - INFO - Processed blueprint 16/82: 1049576559320
+2025-09-23 10:15:05,928 - INFO - Processed blueprint 17/82: 1049576556736
+2025-09-23 10:15:05,983 - INFO - Processed blueprint 18/82: 1049576557386
+2025-09-23 10:15:06,038 - INFO - Processed blueprint 19/82: 1049576555733
+2025-09-23 10:15:06,086 - INFO - Updated blueprint from corp_industry_job: 1049576549259
+2025-09-23 10:15:06,090 - INFO - Processed blueprint 20/82: 1049576558540
+2025-09-23 10:15:06,143 - INFO - Processed blueprint 21/82: 1049576549259
+2025-09-23 10:15:06,226 - INFO - Updated blueprint from corp_industry_job: 1049576548631
+2025-09-23 10:15:06,227 - INFO - Processed blueprint 22/82: 1049576548631
+2025-09-23 10:15:06,279 - INFO - Updated blueprint from corp_industry_job: 1049576541669
+2025-09-23 10:15:06,282 - INFO - Processed blueprint 23/82: 1049576541669
+2025-09-23 10:15:06,290 - INFO - Updated blueprint from corp_industry_job: 1049576546106
+2025-09-23 10:15:06,291 - INFO - Updated blueprint from corp_industry_job: 1049576541010
+2025-09-23 10:15:06,291 - INFO - Updated blueprint from corp_industry_job: 1049576547988
+2025-09-23 10:15:06,292 - INFO - Updated blueprint from corp_industry_job: 1049576547463
+2025-09-23 10:15:06,305 - INFO - Updated blueprint from corp_industry_job: 1049576540350
+2025-09-23 10:15:06,310 - INFO - Updated blueprint from corp_industry_job: 1049576047227
+2025-09-23 10:15:06,319 - INFO - Updated blueprint from corp_industry_job: 1049576048517
+2025-09-23 10:15:06,334 - INFO - Processed blueprint 24/82: 1049576546106
+2025-09-23 10:15:06,389 - INFO - Processed blueprint 25/82: 1049576541010
+2025-09-23 10:15:06,444 - INFO - Processed blueprint 26/82: 1049576547988
+2025-09-23 10:15:06,499 - INFO - Processed blueprint 27/82: 1049576547463
+2025-09-23 10:15:06,553 - INFO - Processed blueprint 28/82: 1049576540350
+2025-09-23 10:15:06,605 - INFO - Processed blueprint 29/82: 1049576047227
+2025-09-23 10:15:06,612 - INFO - Updated blueprint from corp_industry_job: 1049576045884
+2025-09-23 10:15:06,660 - INFO - Processed blueprint 30/82: 1049576048517
+2025-09-23 10:15:06,713 - INFO - Processed blueprint 31/82: 1049576045884
+2025-09-23 10:15:06,722 - INFO - Updated blueprint from corp_industry_job: 1049576044342
+2025-09-23 10:15:06,765 - INFO - Processed blueprint 32/82: 1049576044342
+2025-09-23 10:15:06,873 - INFO - Updated blueprint from corp_industry_job: 1049574812602
+2025-09-23 10:15:06,873 - INFO - Processed blueprint 33/82: 1049574812602
+2025-09-23 10:15:06,874 - INFO - Updated blueprint from corp_industry_job: 1049574788474
+2025-09-23 10:15:06,875 - INFO - Updated blueprint from corp_industry_job: 1049574790307
+2025-09-23 10:15:06,878 - INFO - Updated blueprint from corp_industry_job: 1049574805777
+2025-09-23 10:15:06,886 - INFO - Updated blueprint from corp_industry_job: 1049574814115
+2025-09-23 10:15:06,907 - INFO - Updated blueprint from corp_industry_job: 1049574815479
+2025-09-23 10:15:06,919 - INFO - Updated blueprint from corp_industry_job: 1049574816825
+2025-09-23 10:15:06,920 - INFO - Updated blueprint from corp_industry_job: 1049574753605
+2025-09-23 10:15:06,924 - INFO - Processed blueprint 34/82: 1049574788474
+2025-09-23 10:15:06,977 - INFO - Processed blueprint 35/82: 1049574790307
+2025-09-23 10:15:07,032 - INFO - Processed blueprint 36/82: 1049574805777
+2025-09-23 10:15:07,084 - INFO - Processed blueprint 37/82: 1049574814115
+2025-09-23 10:15:07,140 - INFO - Processed blueprint 38/82: 1049574815479
+2025-09-23 10:15:07,193 - INFO - Processed blueprint 39/82: 1049574816825
+2025-09-23 10:15:07,248 - INFO - Processed blueprint 40/82: 1049574753605
+2025-09-23 10:15:07,249 - INFO - Updated blueprint from corp_industry_job: 1049574787807
+2025-09-23 10:15:07,299 - INFO - Updated blueprint from corp_industry_job: 1049574786127
+2025-09-23 10:15:07,302 - INFO - Updated blueprint from corp_industry_job: 1049574762041
+2025-09-23 10:15:07,303 - INFO - Processed blueprint 41/82: 1049574787807
+2025-09-23 10:15:07,349 - INFO - Updated blueprint from corp_industry_job: 1049574760705
+2025-09-23 10:15:07,356 - INFO - Processed blueprint 42/82: 1049574786127
+2025-09-23 10:15:07,411 - INFO - Processed blueprint 43/82: 1049574762041
+2025-09-23 10:15:07,466 - INFO - Processed blueprint 44/82: 1049574760705
+2025-09-23 10:15:07,658 - INFO - Updated blueprint from corp_industry_job: 1049574768724
+2025-09-23 10:15:07,659 - INFO - Updated blueprint from corp_industry_job: 1049574783623
+2025-09-23 10:15:07,661 - INFO - Processed blueprint 45/82: 1049574768724
+2025-09-23 10:15:07,663 - INFO - Updated blueprint from corp_industry_job: 1049574784788
+2025-09-23 10:15:07,663 - INFO - Updated blueprint from corp_industry_job: 1049574781697
+2025-09-23 10:15:07,664 - INFO - Updated blueprint from corp_industry_job: 1049574769783
+2025-09-23 10:15:07,675 - INFO - Updated blueprint from corp_industry_job: 1049574771593
+2025-09-23 10:15:07,715 - INFO - Processed blueprint 46/82: 1049574783623
+2025-09-23 10:15:07,766 - INFO - Processed blueprint 47/82: 1049574784788
+2025-09-23 10:15:07,821 - INFO - Processed blueprint 48/82: 1049574781697
+2025-09-23 10:15:07,876 - INFO - Processed blueprint 49/82: 1049574769783
+2025-09-23 10:15:07,918 - INFO - Updated blueprint from corp_industry_job: 1049574764624
+2025-09-23 10:15:07,918 - INFO - Updated blueprint from corp_industry_job: 1049574767458
+2025-09-23 10:15:07,931 - INFO - Processed blueprint 50/82: 1049574771593
+2025-09-23 10:15:07,987 - INFO - Processed blueprint 51/82: 1049574764624
+2025-09-23 10:15:08,006 - INFO - Updated blueprint from corp_industry_job: 1049574763305
+2025-09-23 10:15:08,008 - INFO - Updated blueprint from corp_industry_job: 1049574759425
+2025-09-23 10:15:08,038 - INFO - Processed blueprint 52/82: 1049574767458
+2025-09-23 10:15:08,092 - INFO - Processed blueprint 53/82: 1049574763305
+2025-09-23 10:15:08,148 - INFO - Processed blueprint 54/82: 1049574759425
+2025-09-23 10:15:08,187 - INFO - Updated blueprint from corp_industry_job: 1049574755244
+2025-09-23 10:15:08,191 - INFO - Updated blueprint from corp_industry_job: 1049574756931
+2025-09-23 10:15:08,198 - INFO - Processed blueprint 55/82: 1049574755244
+2025-09-23 10:15:08,253 - INFO - Processed blueprint 56/82: 1049574756931
+2025-09-23 10:15:08,313 - INFO - Updated blueprint from corp_industry_job: 1049574725214
+2025-09-23 10:15:08,314 - INFO - Processed blueprint 57/82: 1049574725214
+2025-09-23 10:15:08,316 - INFO - Updated blueprint from corp_industry_job: 1049574751987
+2025-09-23 10:15:08,317 - INFO - Updated blueprint from corp_industry_job: 1049574712131
+2025-09-23 10:15:08,319 - INFO - Updated blueprint from corp_industry_job: 1049574708304
+2025-09-23 10:15:08,369 - INFO - Processed blueprint 58/82: 1049574751987
+2025-09-23 10:15:08,419 - INFO - Processed blueprint 59/82: 1049574712131
+2025-09-23 10:15:08,474 - INFO - Processed blueprint 60/82: 1049574708304
+2025-09-23 10:15:08,519 - INFO - Updated blueprint from corp_industry_job: 1049574695751
+2025-09-23 10:15:08,530 - INFO - Processed blueprint 61/82: 1049574695751
+2025-09-23 10:15:08,536 - INFO - Updated blueprint from corp_industry_job: 1049574692766
+2025-09-23 10:15:08,539 - INFO - Updated blueprint from corp_industry_job: 1049574694012
+2025-09-23 10:15:08,540 - INFO - Updated blueprint from corp_industry_job: 1049574705873
+2025-09-23 10:15:08,581 - INFO - Processed blueprint 62/82: 1049574692766
+2025-09-23 10:15:08,601 - INFO - Updated blueprint from corp_industry_job: 1049574690328
+2025-09-23 10:15:08,636 - INFO - Processed blueprint 63/82: 1049574694012
+2025-09-23 10:15:08,690 - INFO - Processed blueprint 64/82: 1049574705873
+2025-09-23 10:15:08,746 - INFO - Processed blueprint 65/82: 1049574690328
+2025-09-23 10:15:08,747 - INFO - Updated blueprint from corp_industry_job: 1049574688527
+2025-09-23 10:15:08,801 - INFO - Processed blueprint 66/82: 1049574688527
+2025-09-23 10:15:08,956 - INFO - Updated blueprint from corp_industry_job: 1049574677299
+2025-09-23 10:15:08,958 - INFO - Processed blueprint 67/82: 1049574677299
+2025-09-23 10:15:08,972 - INFO - Updated blueprint from corp_industry_job: 1049574685686
+2025-09-23 10:15:08,973 - INFO - Updated blueprint from corp_industry_job: 1049574687167
+2025-09-23 10:15:08,980 - INFO - Updated blueprint from corp_industry_job: 1049574682998
+2025-09-23 10:15:09,013 - INFO - Processed blueprint 68/82: 1049574685686
+2025-09-23 10:15:09,065 - INFO - Processed blueprint 69/82: 1049574687167
+2025-09-23 10:15:09,121 - INFO - Processed blueprint 70/82: 1049574682998
+2025-09-23 10:15:09,135 - INFO - Updated blueprint from corp_industry_job: 1049574582590
+2025-09-23 10:15:09,176 - INFO - Processed blueprint 71/82: 1049574582590
+2025-09-23 10:15:09,237 - INFO - Updated blueprint from corp_industry_job: 1049574449602
+2025-09-23 10:15:09,239 - INFO - Processed blueprint 72/82: 1049574449602
+2025-09-23 10:15:09,335 - INFO - Updated blueprint from corp_industry_job: 1049574451532
+2025-09-23 10:15:09,338 - INFO - Updated blueprint from corp_industry_job: 1049574579770
+2025-09-23 10:15:09,339 - INFO - Processed blueprint 73/82: 1049574451532
+2025-09-23 10:15:09,394 - INFO - Processed blueprint 74/82: 1049574579770
+2025-09-23 10:15:09,870 - INFO - Updated blueprint from corp_industry_job: 1049574447488
+2025-09-23 10:15:09,871 - INFO - Processed blueprint 75/82: 1049574447488
+2025-09-23 10:15:10,100 - INFO - Updated blueprint from corp_industry_job: 1049574441448
+2025-09-23 10:15:10,102 - INFO - Processed blueprint 76/82: 1049574441448
+2025-09-23 10:15:10,112 - INFO - Updated blueprint from corp_industry_job: 1048892615386
+2025-09-23 10:15:10,114 - INFO - Updated blueprint from corp_industry_job: 1049574314029
+2025-09-23 10:15:10,116 - INFO - Updated blueprint from corp_industry_job: 1049574444009
+2025-09-23 10:15:10,157 - INFO - Processed blueprint 77/82: 1048892615386
+2025-09-23 10:15:10,209 - INFO - Processed blueprint 78/82: 1049574314029
+2025-09-23 10:15:10,262 - INFO - Processed blueprint 79/82: 1049574444009
+2025-09-23 10:15:10,278 - INFO - Updated blueprint from corp_industry_job: 1049574317609
+2025-09-23 10:15:10,279 - INFO - Updated blueprint from corp_industry_job: 1049574442751
+2025-09-23 10:15:10,318 - INFO - Processed blueprint 80/82: 1049574317609
+2025-09-23 10:15:10,370 - INFO - Processed blueprint 81/82: 1049574442751
+2025-09-23 10:15:10,440 - INFO - Updated blueprint from corp_industry_job: 1049574103840
+2025-09-23 10:15:10,442 - INFO - Processed blueprint 82/82: 1049574103840
+2025-09-23 10:15:10,496 - INFO - Completed parallel processing: 82/82 blueprints processed successfully
+2025-09-23 10:15:10,547 - INFO - Fetching additional data for Mr FiLiN...
+2025-09-23 10:15:11,758 - INFO - Updated skills for character 90020513
+2025-09-23 10:15:11,758 - INFO - Skills for Mr FiLiN: 124188071 SP
+2025-09-23 10:15:11,758 - INFO - Fetching blueprints for Mr FiLiN...
+2025-09-23 10:15:11,957 - INFO - Character blueprints: 28 total, 10 BPOs
+2025-09-23 10:15:11,958 - INFO - Starting parallel processing of 10 blueprints with 10 workers
+2025-09-23 10:15:12,509 - INFO - Updated blueprint: 1049574776419
+2025-09-23 10:15:12,510 - INFO - Processed blueprint 1/10: 1049574776419
+2025-09-23 10:15:12,518 - INFO - Updated blueprint: 1049574774038
+2025-09-23 10:15:12,552 - INFO - Updated blueprint: 1049574799503
+2025-09-23 10:15:12,559 - INFO - Updated blueprint: 1049574772710
+2025-09-23 10:15:12,560 - INFO - Updated blueprint: 1049574775416
+2025-09-23 10:15:12,566 - INFO - Processed blueprint 2/10: 1049574774038
+2025-09-23 10:15:12,566 - INFO - Updated blueprint: 1049576660794
+2025-09-23 10:15:12,573 - INFO - Updated blueprint: 1049576663499
+2025-09-23 10:15:12,603 - INFO - Updated blueprint: 1049576658476
+2025-09-23 10:15:12,604 - INFO - Updated blueprint: 1049576662770
+2025-09-23 10:15:12,617 - INFO - Processed blueprint 3/10: 1049574799503
+2025-09-23 10:15:12,654 - INFO - Updated blueprint: 1049576661931
+2025-09-23 10:15:12,672 - INFO - Processed blueprint 4/10: 1049574772710
+2025-09-23 10:15:12,727 - INFO - Processed blueprint 5/10: 1049574775416
+2025-09-23 10:15:12,782 - INFO - Processed blueprint 6/10: 1049576660794
+2025-09-23 10:15:12,834 - INFO - Processed blueprint 7/10: 1049576663499
+2025-09-23 10:15:12,889 - INFO - Processed blueprint 8/10: 1049576658476
+2025-09-23 10:15:12,943 - INFO - Processed blueprint 9/10: 1049576662770
+2025-09-23 10:15:12,994 - INFO - Processed blueprint 10/10: 1049576661931
+2025-09-23 10:15:13,051 - INFO - Completed parallel processing: 10/10 blueprints processed successfully
+2025-09-23 10:15:13,257 - INFO - Processing 999 char assets for blueprint extraction...
+2025-09-23 10:15:13,258 - INFO - Completed asset processing: found 0 BPO blueprints in 999 assets
+2025-09-23 10:15:13,424 - INFO - Industry jobs for Mr FiLiN: 10 active
+2025-09-23 10:15:13,425 - INFO - Character industry job blueprints: 10 items
+2025-09-23 10:15:13,425 - INFO - Starting parallel processing of 10 blueprints with 10 workers
+2025-09-23 10:15:13,837 - INFO - Updated blueprint from char_industry_job: 1049576663499
+2025-09-23 10:15:13,839 - INFO - Processed blueprint 1/10: 1049576663499
+2025-09-23 10:15:13,957 - INFO - Updated blueprint from char_industry_job: 1049574772710
+2025-09-23 10:15:13,958 - INFO - Updated blueprint from char_industry_job: 1049574776419
+2025-09-23 10:15:13,959 - INFO - Updated blueprint from char_industry_job: 1049576662770
+2025-09-23 10:15:13,960 - INFO - Updated blueprint from char_industry_job: 1049576660794
+2025-09-23 10:15:13,960 - INFO - Updated blueprint from char_industry_job: 1049574774038
+2025-09-23 10:15:13,961 - INFO - Processed blueprint 2/10: 1049574772710
+2025-09-23 10:15:13,964 - INFO - Updated blueprint from char_industry_job: 1049574799503
+2025-09-23 10:15:13,964 - INFO - Updated blueprint from char_industry_job: 1049576658476
+2025-09-23 10:15:14,016 - INFO - Processed blueprint 3/10: 1049574776419
+2025-09-23 10:15:14,047 - INFO - Updated blueprint from char_industry_job: 1049576661931
+2025-09-23 10:15:14,060 - INFO - Updated blueprint from char_industry_job: 1049574775416
+2025-09-23 10:15:14,069 - INFO - Processed blueprint 4/10: 1049576662770
+2025-09-23 10:15:14,121 - INFO - Processed blueprint 5/10: 1049576660794
+2025-09-23 10:15:14,177 - INFO - Processed blueprint 6/10: 1049574774038
+2025-09-23 10:15:14,232 - INFO - Processed blueprint 7/10: 1049574799503
+2025-09-23 10:15:14,287 - INFO - Processed blueprint 8/10: 1049576658476
+2025-09-23 10:15:14,342 - INFO - Processed blueprint 9/10: 1049576661931
+2025-09-23 10:15:14,398 - INFO - Processed blueprint 10/10: 1049574775416
+2025-09-23 10:15:14,450 - INFO - Completed parallel processing: 10/10 blueprints processed successfully

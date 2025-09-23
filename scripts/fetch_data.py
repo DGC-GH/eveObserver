@@ -1298,9 +1298,14 @@ def refresh_token(refresh_token):
         logger.error(f"Failed to refresh token: {response.status_code} - {response.text}")
         return None
 
-def fetch_market_orders(region_id, type_id):
-    """Fetch market orders for a specific region and type."""
-    endpoint = f"/markets/{region_id}/orders/?type_id={type_id}"
+def fetch_public_contracts(region_id, page=1):
+    """Fetch public contracts for a region."""
+    endpoint = f"/contracts/public/{region_id}/?page={page}"
+    return fetch_public_esi(endpoint)
+
+def fetch_public_contract_items(contract_id):
+    """Fetch items in a public contract."""
+    endpoint = f"/contracts/public/items/{contract_id}/"
     return fetch_public_esi(endpoint)
 
 def check_contract_competition(contract_data, contract_items):
@@ -1317,6 +1322,7 @@ def check_contract_competition(contract_data, contract_items):
     quantity = item.get('quantity', 1)
     contract_price = contract_data.get('price', 0)
     contract_id = contract_data.get('contract_id')
+    contract_issuer_id = contract_data.get('issuer_id')
     
     if not type_id or quantity <= 0 or contract_price <= 0:
         return False, None
@@ -1328,56 +1334,53 @@ def check_contract_competition(contract_data, contract_items):
     if not region_id:
         return False, None
     
-    # Query WordPress for other contracts in the same region with the same item type
-    # Use meta query for region and item types
-    params = {
-        'meta_query[0][key]': '_eve_contract_region_id',
-        'meta_query[0][value]': str(region_id),
-        'meta_query[0][compare]': '=',
-        'meta_query[1][key]': '_eve_contract_item_types',
-        'meta_query[1][value]': str(type_id),
-        'meta_query[1][compare]': 'LIKE',
-        'meta_query[relation]': 'AND',
-        'per_page': 100  # Limit results
-    }
+    logger.info(f"Checking competition for contract {contract_id} (type_id: {type_id}, price_per_item: {price_per_item:.2f}) in region {region_id}")
     
-    response = requests.get(f"{WP_BASE_URL}/wp-json/wp/v2/eve_contract", auth=get_wp_auth(), params=params)
-    if response.status_code != 200:
-        return False, None
+    # Fetch all public contracts in the region
+    page = 1
+    competing_contracts = []
     
-    other_contracts = response.json()
-    
-    # Filter out this contract, finished/deleted contracts, and contracts from the same issuer
-    contract_issuer_id = contract_data.get('issuer_id')
-    competing_contracts = [
-        c for c in other_contracts
-        if c.get('meta', {}).get('_eve_contract_id') != str(contract_id) and
-        c.get('meta', {}).get('_eve_contract_status') == 'outstanding' and
-        str(c.get('meta', {}).get('_eve_contract_issuer_id')) != str(contract_issuer_id)
-    ]
-    
-    if not competing_contracts:
-        return False, None
-    
-    # Check if any competing contract has lower price per item
-    for comp_contract in competing_contracts:
-        comp_meta = comp_contract.get('meta', {})
-        comp_price = comp_meta.get('_eve_contract_price')
-        comp_items_json = comp_meta.get('_eve_contract_items')
+    while True:
+        contracts_page = fetch_public_contracts(region_id, page)
+        if not contracts_page:
+            break
         
-        if comp_price and comp_items_json:
-            try:
-                comp_items = json.loads(comp_items_json)
-                if len(comp_items) == 1:
-                    comp_item = comp_items[0]
-                    comp_quantity = comp_item.get('quantity', 1)
-                    if comp_quantity > 0:
-                        comp_price_per_item = float(comp_price) / comp_quantity
-                        if comp_price_per_item < price_per_item:
-                            return True, comp_price_per_item
-            except:
-                continue
+        # Filter for outstanding item_exchange contracts
+        for contract in contracts_page:
+            if (contract.get('type') == 'item_exchange' and 
+                contract.get('status') == 'outstanding' and
+                contract.get('contract_id') != contract_id and
+                contract.get('issuer_id') != contract_issuer_id):
+                competing_contracts.append(contract)
+        
+        # Check if there are more pages
+        if len(contracts_page) < 1000:  # ESI returns max 1000 per page
+            break
+        page += 1
     
+    logger.info(f"Found {len(competing_contracts)} potential competing contracts in region {region_id}")
+    
+    # Check each competing contract
+    for comp_contract in competing_contracts:
+        comp_contract_id = comp_contract.get('contract_id')
+        comp_price = comp_contract.get('price', 0)
+        
+        # Fetch contract items
+        comp_items = fetch_public_contract_items(comp_contract_id)
+        if not comp_items or len(comp_items) != 1:
+            continue  # Only check single-item contracts
+        
+        comp_item = comp_items[0]
+        comp_type_id = comp_item.get('type_id')
+        comp_quantity = comp_item.get('quantity', 1)
+        
+        if comp_type_id == type_id and comp_quantity > 0 and comp_price > 0:
+            comp_price_per_item = comp_price / comp_quantity
+            if comp_price_per_item < price_per_item:
+                logger.info(f"Contract {contract_id} outbid by contract {comp_contract_id} with price_per_item: {comp_price_per_item:.2f}")
+                return True, comp_price_per_item
+    
+    logger.info(f"No competing contracts found for contract {contract_id}")
     return False, None
 
 def collect_corporation_members(tokens):
