@@ -568,6 +568,7 @@ class EVEDashboard {
         console.log('🔄 [CHART] Creating new chart with data:', counts);
         try {
             this.chart = new Chart(canvas.getContext('2d'), {
+                id: `eve-chart-${Date.now()}`, // Unique ID to prevent conflicts
                 type: 'doughnut',
                 data: {
                     labels: Object.keys(counts).map(key => `${key} (${counts[key]})`),
