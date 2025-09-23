@@ -23,7 +23,10 @@ from blueprint_processor import (
     extract_blueprints_from_contracts, update_blueprint_from_asset_in_wp
 )
 from character_processor import update_character_skills_in_wp, check_industry_job_completions, update_planet_in_wp
-from corporation_processor import update_corporation_in_wp
+from contract_processor import (
+    fetch_character_contracts, fetch_corporation_contracts, process_character_contracts, cleanup_contract_posts,
+    generate_contract_title, update_contract_in_wp
+)
 from data_processors import fetch_character_data, update_character_in_wp
 class ESIApiError(Exception):
     """Base exception for ESI API errors."""
@@ -624,126 +627,6 @@ async def wp_request(method: str, endpoint: str, data: Optional[Dict] = None) ->
     
     return None
 
-async def fetch_character_skills(char_id: int, access_token: str) -> Optional[Dict[str, Any]]:
-    """
-    Fetch character skills and training information from ESI.
-
-    Retrieves the character's skill queue, trained skills, and total skill points.
-    Used for tracking character progression and skill training status.
-
-    Args:
-        char_id: EVE character ID to fetch skills for.
-        access_token: Valid OAuth2 access token for authentication.
-
-    Returns:
-        Optional[Dict[str, Any]]: Skills data including total_sp and skills array.
-    """
-    endpoint = f"/characters/{char_id}/skills/"
-    return await fetch_esi(endpoint, char_id, access_token)
-
-async def fetch_character_blueprints(char_id, access_token):
-    """
-    Fetch character blueprint collection from ESI.
-
-    Retrieves all blueprints owned by the character, including both BPOs and BPCs,
-    with their ME/TE levels, location, and other blueprint attributes.
-
-    Args:
-        char_id: EVE character ID to fetch blueprints for.
-        access_token: Valid OAuth2 access token for authentication.
-
-    Returns:
-        Optional[Dict[str, Any]]: Blueprint data array if successful.
-    """
-    endpoint = f"/characters/{char_id}/blueprints/"
-    return await fetch_esi(endpoint, char_id, access_token)
-
-async def fetch_character_planets(char_id, access_token):
-    """
-    Fetch character planetary colony information from ESI.
-
-    Retrieves data about the character's planetary colonies (PI), including
-    planet types, colony status, and resource extraction setups.
-
-    Args:
-        char_id: EVE character ID to fetch planets for.
-        access_token: Valid OAuth2 access token for authentication.
-
-    Returns:
-        Optional[Dict[str, Any]]: Planetary colony data array if successful.
-    """
-    endpoint = f"/characters/{char_id}/planets/"
-    return await fetch_esi(endpoint, char_id, access_token)
-
-async def fetch_corporation_data(corp_id, access_token):
-    """
-    Fetch corporation information from ESI.
-
-    Retrieves basic corporation data including name, ticker, member count,
-    alliance affiliation, and other corporation attributes.
-
-    Args:
-        corp_id: EVE corporation ID to fetch data for.
-        access_token: Valid OAuth2 access token for authentication.
-
-    Returns:
-        Optional[Dict[str, Any]]: Corporation data dictionary if successful.
-    """
-    endpoint = f"/corporations/{corp_id}/"
-    return await fetch_esi(endpoint, None, access_token)  # No char_id needed for corp data
-
-async def fetch_character_assets(char_id, access_token):
-    """
-    Fetch character assets from ESI.
-
-    Retrieves the complete list of items owned by the character across all locations,
-    including items in stations, structures, and ships.
-
-    Args:
-        char_id: EVE character ID to fetch assets for.
-        access_token: Valid OAuth2 access token for authentication.
-
-    Returns:
-        Optional[Dict[str, Any]]: Assets data array if successful.
-    """
-    endpoint = f"/characters/{char_id}/assets/"
-    return await fetch_esi(endpoint, char_id, access_token)
-
-async def fetch_character_contracts(char_id, access_token):
-    """
-    Fetch character contracts from ESI.
-
-    Retrieves all contracts the character is involved in, including contracts
-    they've issued, accepted, or have access to.
-
-    Args:
-        char_id: EVE character ID to fetch contracts for.
-        access_token: Valid OAuth2 access token for authentication.
-
-    Returns:
-        Optional[Dict[str, Any]]: Contracts data array if successful.
-    """
-    endpoint = f"/characters/{char_id}/contracts/"
-    return await fetch_esi(endpoint, char_id, access_token)
-
-def fetch_character_contract_items(char_id, contract_id, access_token):
-    """
-    Fetch items in a specific character contract from ESI.
-
-    Retrieves the detailed list of items included in a particular contract,
-    including quantities and types for contract analysis.
-
-    Args:
-        char_id: EVE character ID that owns the contract.
-        contract_id: Specific contract ID to fetch items for.
-        access_token: Valid OAuth2 access token for authentication.
-
-    Returns:
-        Optional[Dict[str, Any]]: Contract items data array if successful.
-    """
-    endpoint = f"/characters/{char_id}/contracts/{contract_id}/items/"
-    return fetch_esi(endpoint, char_id, access_token)
-
 async def fetch_corporation_blueprints(corp_id, access_token):
     """
     Fetch corporation blueprint collection from ESI.
@@ -760,23 +643,6 @@ async def fetch_corporation_blueprints(corp_id, access_token):
     """
     endpoint = f"/corporations/{corp_id}/blueprints/"
     return await fetch_esi(endpoint, corp_id, access_token)
-
-async def fetch_corporation_contracts(corp_id, access_token):
-    """
-    Fetch corporation contracts from ESI.
-
-    Retrieves all contracts issued by the corporation, including item exchanges,
-    auctions, courier contracts, and other contract types.
-
-    Args:
-        corp_id: EVE corporation ID to fetch contracts for.
-        access_token: Valid OAuth2 access token for authentication.
-
-    Returns:
-        Optional[Dict[str, Any]]: Contracts data array if successful.
-    """
-    endpoint = f"/corporations/{corp_id}/contracts/"
-    return await fetch_esi(endpoint, None, access_token)  # Corp contracts don't need char_id
 
 def fetch_corporation_contract_items(corp_id, contract_id, access_token):
     """
@@ -814,23 +680,6 @@ async def fetch_corporation_industry_jobs(corp_id, access_token):
     return await fetch_esi(endpoint, corp_id, access_token)
 
 
-async def fetch_character_industry_jobs(char_id: int, access_token: str) -> Optional[Dict[str, Any]]:
-    """
-    Fetch character industry jobs from ESI.
-
-    Retrieves all active industry jobs for the character, including manufacturing,
-    research, and other industry activities.
-
-    Args:
-        char_id: EVE character ID to fetch industry jobs for.
-        access_token: Valid OAuth2 access token for authentication.
-
-    Returns:
-        Optional[Dict[str, Any]]: Industry jobs data array if successful.
-    """
-    endpoint = f"/characters/{char_id}/industry/jobs/"
-    return await fetch_esi(endpoint, char_id, access_token)
-
 async def fetch_corporation_assets(corp_id, access_token):
     """
     Fetch corporation assets from ESI.
@@ -847,119 +696,6 @@ async def fetch_corporation_assets(corp_id, access_token):
     """
     endpoint = f"/corporations/{corp_id}/assets/"
     return await fetch_esi(endpoint, None, access_token)  # Corp endpoint doesn't need char_id
-
-def generate_contract_title(contract_data, for_corp=False, entity_id=None, contract_items=None, blueprint_cache=None):
-    """
-    Generate a descriptive contract title based on contract items.
-
-    Creates human-readable contract titles by analyzing the items included
-    in the contract, with special handling for blueprint contracts.
-
-    Args:
-        contract_data: Contract data dictionary from ESI API.
-        for_corp: Whether this is a corporation contract.
-        entity_id: Character or corporation ID for context.
-        contract_items: List of items in the contract.
-        blueprint_cache: Cache for blueprint type information.
-
-    Returns:
-        str: Descriptive contract title.
-
-    Note:
-        Titles follow format: "[Corp] {item_description} - Contract {id}"
-        or fallback to "Contract {id} - {type} ({status})"
-    """
-    if blueprint_cache is None:
-        blueprint_cache = load_blueprint_cache()
-    
-    blueprint_type_cache = load_blueprint_type_cache()
-    
-    contract_id = contract_data.get('contract_id')
-    contract_type = contract_data.get('type', 'unknown')
-    status = contract_data.get('status', 'unknown').title()
-    
-    # If no items, use default format
-    if not contract_items:
-        type_names = {
-            'item_exchange': 'Item Exchange',
-            'auction': 'Auction',
-            'courier': 'Courier',
-            'loan': 'Loan'
-        }
-        type_name = type_names.get(contract_type, contract_type.title())
-        title = f"Contract {contract_id} - {type_name} ({status})"
-    else:
-        # If we have items, create a more descriptive title
-        if len(contract_items) == 1:
-            # Single item contract
-            item = contract_items[0]
-            type_id = item.get('type_id')
-            quantity = item.get('quantity', 1)
-            
-            if type_id:
-                # Get item name
-                if str(type_id) in blueprint_cache:
-                    item_name = blueprint_cache[str(type_id)]
-                else:
-                    type_data = fetch_public_esi(f"/universe/types/{type_id}")
-                    if type_data:
-                        item_name = type_data.get('name', f"Item {type_id}")
-                        # Only cache if it's actually a blueprint
-                        if 'Blueprint' in item_name:
-                            cleaned_name = item_name.replace(" Blueprint", "").strip()
-                            blueprint_cache[str(type_id)] = cleaned_name
-                            save_blueprint_cache(blueprint_cache)
-                    else:
-                        item_name = f"Item {type_id}"
-                
-                # Check if it's a blueprint (quantity -1 indicates BPO, or check if it's in blueprint cache)
-                is_blueprint = str(type_id) in blueprint_type_cache and blueprint_type_cache[str(type_id)]
-                if not is_blueprint:
-                    # Double-check with ESI if not in cache
-                    type_data = fetch_public_esi(f"/universe/types/{type_id}")
-                    is_blueprint = type_data and 'Blueprint' in type_data.get('name', '')
-                
-                if is_blueprint:
-                    title = f"{item_name} - Contract {contract_id}"
-                else:
-                    # Regular item
-                    title = f"{item_name} (x{quantity}) - Contract {contract_id}"
-        
-        else:
-            # Multiple items contract - count blueprints and total quantity in single pass
-            blueprint_count = 0
-            total_quantity = 0
-            
-            for item in contract_items:
-                quantity = item.get('quantity', 1)
-                total_quantity += abs(quantity)  # Use abs in case of BPOs
-                
-                # Check if it's a blueprint
-                type_id = item.get('type_id')
-                if type_id:
-                    # First check if it's in blueprint cache
-                    if str(type_id) in blueprint_type_cache and blueprint_type_cache[str(type_id)]:
-                        blueprint_count += 1
-                    else:
-                        # Check with ESI
-                        type_data = fetch_public_esi(f"/universe/types/{type_id}")
-                        if type_data and 'Blueprint' in type_data.get('name', ''):
-                            blueprint_count += 1
-            
-            if blueprint_count == len(contract_items):
-                # All items are blueprints
-                title = f"{blueprint_count} Blueprints - Contract {contract_id}"
-            elif blueprint_count > 0:
-                # Mix of blueprints and other items
-                title = f"{blueprint_count} Blueprints + {len(contract_items) - blueprint_count} Items - Contract {contract_id}"
-            else:
-                # No blueprints, just regular items
-                title = f"{len(contract_items)} Items (x{total_quantity}) - Contract {contract_id}"
-
-    if for_corp:
-        title = f"[Corp] {title}"
-    
-    return title
 
 def get_region_from_location(location_id):
     """
@@ -1086,23 +822,26 @@ async def fetch_corporation_logo(corp_id):
     endpoint = f"/corporations/{corp_id}/logo/"
     return await fetch_public_esi(endpoint)
 
-async def fetch_planet_details(char_id, planet_id, access_token):
+async def fetch_corporation_logo(corp_id):
     """
-    Fetch detailed planetary colony information from ESI.
+    Fetch corporation logo image URLs from ESI.
 
-    Retrieves detailed information about a specific planetary colony,
-    including resource extraction, factory setups, and colony status.
+    Retrieves corporation logo URLs in multiple sizes (64x64, 128x128, 256x256, 512x512)
+    for use as featured images in WordPress corporation posts.
 
     Args:
-        char_id: EVE character ID that owns the colony.
-        planet_id: Specific planet ID to fetch details for.
-        access_token: Valid OAuth2 access token for authentication.
+        corp_id: EVE corporation ID to fetch logo for.
 
     Returns:
-        Optional[Dict[str, Any]]: Detailed planet colony data if successful.
+        Optional[Dict[str, Any]]: Logo URLs dictionary with size keys if successful,
+                                 None if fetch failed.
+
+    Note:
+        This is a public endpoint that doesn't require authentication.
     """
-    endpoint = f"/characters/{char_id}/planets/{planet_id}/"
-    return await fetch_esi(endpoint, char_id, access_token) 
+    endpoint = f"/corporations/{corp_id}/logo/"
+    return await fetch_public_esi(endpoint)
+
 def refresh_token(refresh_token):
     """
     Refresh an expired OAuth2 access token.
@@ -1138,50 +877,6 @@ def refresh_token(refresh_token):
     else:
         logger.error(f"Failed to refresh token: {response.status_code} - {response.text}")
         return None
-
-def fetch_public_contract_items(contract_id, max_retries=3):
-    """
-    Fetch items in a public contract with retry logic.
-
-    Retrieves the detailed list of items included in a public contract,
-    with built-in retry logic and rate limit monitoring.
-
-    Args:
-        contract_id: Public contract ID to fetch items for.
-        max_retries: Maximum number of retry attempts (default 3).
-
-    Returns:
-        Optional[Dict[str, Any]]: Contract items data array if successful.
-
-    Note:
-        Monitors ESI rate limits and logs warnings when approaching limits.
-        Uses exponential backoff for retries.
-    """
-    endpoint = f"/contracts/public/items/{contract_id}/"
-    import requests
-    url = f"{ESI_BASE_URL}{endpoint}"
-    headers = {'Accept': 'application/json'}
-    
-    for attempt in range(max_retries):
-        try:
-            response = requests.get(url, headers=headers, timeout=30)
-            response.raise_for_status()
-            
-            # Check rate limiting
-            remaining = response.headers.get('X-ESI-Error-Limit-Remain', '100')
-            reset_time = response.headers.get('X-ESI-Error-Limit-Reset', '60')
-            if int(remaining) < 20:
-                logger.warning(f"ESI rate limit low: {remaining} requests remaining, resets in {reset_time}s")
-            
-            return response.json()
-        except requests.exceptions.RequestException as e:
-            if attempt < max_retries - 1:
-                wait_time = 2 ** attempt  # Exponential backoff
-                logger.warning(f"ESI request failed (attempt {attempt + 1}/{max_retries}): {e}. Retrying in {wait_time}s")
-                time.sleep(wait_time)
-            else:
-                logger.error(f"ESI request failed after {max_retries} attempts: {e}")
-                return None
 
 async def collect_corporation_members(tokens):
     """
@@ -1323,36 +1018,24 @@ def get_allowed_entities(corp_members: Dict[int, List[Tuple[int, str, str]]]) ->
 
 async def process_all_data(corp_members: Dict[int, List[Tuple[int, str, str]]], caches: Tuple[Dict[str, Any], ...], args: argparse.Namespace, tokens: Dict[str, Any]) -> None:
     """
-    Process all corporation and character data based on command line arguments.
+    Process all character data based on command line arguments.
 
-    Orchestrates the fetching and processing of data for all authorized corporations
-    and their member characters, respecting the selected data types.
+    Orchestrates the fetching and processing of data for all authorized characters,
+    respecting the selected data types.
 
     Args:
-        corp_members: Corporation members grouped by corporation ID.
+        corp_members: Corporation members grouped by corporation ID (for reference).
         caches: Tuple of cache dictionaries.
         args: Parsed command line arguments.
         tokens: Dictionary of token data keyed by character ID.
 
     Note:
-        Processes corporations first, then individual characters.
-        Only processes corporations in the ALLOWED_CORPORATIONS list.
+        Processes individual character data including skills, blueprints, planets, and contracts.
+        Corporation data is now handled separately in corporation_processor.py.
     """
     blueprint_cache, location_cache, structure_cache, failed_structures, wp_post_id_cache = caches
     
-    # Process each corporation with any available member token
-    processed_corps = set()
-    for corp_id, members in corp_members.items():
-        if corp_id in processed_corps:
-            continue
-
-        # Process data for the corporation and its members
-        if args.all or args.corporations or args.blueprints:
-            await process_corporation_data(corp_id, members, wp_post_id_cache, blueprint_cache, location_cache, structure_cache, failed_structures, args)
-
-        processed_corps.add(corp_id)
-
-    # Now process individual character data (skills, blueprints, etc.)
+    # Process individual character data (skills, blueprints, planets, contracts)
     for char_id, token_data in tokens.items():
         if args.all or args.characters or args.skills or args.blueprints or args.planets or args.contracts:
             await process_character_data(char_id, token_data, wp_post_id_cache, blueprint_cache, location_cache, structure_cache, failed_structures, args)
@@ -1389,554 +1072,6 @@ async def main() -> None:
         cleanup_old_posts(allowed_corp_ids, allowed_issuer_ids)
 
     await process_all_data(corp_members, caches, args, tokens)
-
-async def select_corporation_token(corp_id: int, members: List[Tuple[int, str, str]]) -> Tuple[Optional[str], Optional[str], Optional[int], Optional[Dict[str, Any]]]:
-    """
-    Select the best token for accessing corporation data.
-
-    For No Mercy Incorporated, prioritizes Dr FiLiN's CEO token.
-    For other corporations, tries each member token until one works.
-
-    Args:
-        corp_id: The corporation ID
-        members: List of (char_id, access_token, char_name) tuples
-
-    Returns:
-        Tuple of (access_token, char_name, char_id, corp_data) or (None, None, None, None) if no token works
-    """
-    # For No Mercy Incorporated, prioritize Dr FiLiN's token (CEO)
-    if corp_id == 98092220:  # No Mercy Incorporated
-        # Find Dr FiLiN's token
-        dr_filin_token = None
-        dr_filin_char_id = None
-        dr_filin_name = None
-        for char_id, access_token, char_name in members:
-            if char_name == 'Dr FiLiN':
-                dr_filin_token = access_token
-                dr_filin_char_id = char_id
-                dr_filin_name = char_name
-                break
-        
-        if dr_filin_token:
-            logger.info(f"Using Dr FiLiN's CEO token for No Mercy Incorporated")
-            corp_data = await fetch_corporation_data(corp_id, dr_filin_token)
-            if corp_data:
-                return dr_filin_token, dr_filin_name, dr_filin_char_id, corp_data
-            else:
-                logger.warning(f"Dr FiLiN's token failed for corporation {corp_id}, falling back to other members")
-    
-    # Try each member token until one works
-    for char_id, access_token, char_name in members:
-        # Skip Dr FiLiN if we already tried them for No Mercy
-        if corp_id == 98092220 and char_name == 'Dr FiLiN':
-            continue
-            
-        logger.info(f"Trying to fetch corporation data for corp {corp_id} using {char_name}'s token...")
-        corp_data = await fetch_corporation_data(corp_id, access_token)
-        if corp_data:
-            logger.info(f"Successfully fetched corporation data using {char_name}'s token")
-            return access_token, char_name, char_id, corp_data
-        else:
-            logger.warning(f"Failed to fetch corporation data using {char_name}'s token (likely no access)")
-    
-    return None, None, None, None
-
-
-async def process_corporation_data(corp_id, members, wp_post_id_cache, blueprint_cache, location_cache, structure_cache, failed_structures, args):
-    """
-    Process data for a single corporation and its members.
-
-    Fetches and processes corporation information, blueprints from multiple sources,
-    and corporation contracts based on command line arguments.
-
-    Args:
-        corp_id: Corporation ID to process.
-        members: List of corporation member tuples (char_id, access_token, char_name).
-        wp_post_id_cache: WordPress post ID cache.
-        blueprint_cache: Blueprint name cache.
-        location_cache: Location name cache.
-        structure_cache: Structure name cache.
-        failed_structures: Failed structure fetch cache.
-        args: Parsed command line arguments.
-
-    Note:
-        Only processes corporations in the ALLOWED_CORPORATIONS list.
-        Corporation contracts are processed via character contract processing.
-    """
-    # Select the best token for corporation access
-    access_token, char_name, char_id, corp_data = await select_corporation_token(corp_id, members)
-    
-    if not corp_data:
-        return
-
-    corp_name = corp_data.get('name', '')
-    if corp_name.lower() not in ALLOWED_CORPORATIONS:
-        logger.info(f"Skipping corporation: {corp_name} (only processing {ALLOWED_CORPORATIONS})")
-        return
-
-    if args.all or args.corporations:
-        update_corporation_in_wp(corp_id, corp_data)
-
-    # Process corporation blueprints from various sources
-    if args.all or args.blueprints:
-        await process_corporation_blueprints(corp_id, access_token, char_id, wp_post_id_cache, blueprint_cache, location_cache, structure_cache, failed_structures)
-
-    # Corporation contracts are processed via character contracts (issued by corp members)
-    if args.all or args.contracts:
-        await process_corporation_contracts(corp_id, access_token, corp_data, blueprint_cache)
-
-async def process_corporation_blueprints_from_endpoint(corp_id: int, access_token: str, wp_post_id_cache: Dict[str, Any], blueprint_cache: Dict[str, Any], location_cache: Dict[str, Any], structure_cache: Dict[str, Any], failed_structures: Dict[str, Any]) -> None:
-    """
-    Process corporation blueprints from the direct blueprints endpoint.
-
-    Fetches blueprints directly from the corporation's blueprint endpoint,
-    filters to BPOs only, and processes them in parallel.
-
-    Args:
-        corp_id: Corporation ID to fetch blueprints for.
-        access_token: Valid access token for corporation data.
-        wp_post_id_cache: WordPress post ID cache.
-        blueprint_cache: Blueprint name cache.
-        location_cache: Location name cache.
-        structure_cache: Structure name cache.
-        failed_structures: Failed structure fetch cache.
-    """
-    logger.info(f"Fetching corporation blueprints for {corp_id}...")
-    
-    corp_blueprints = await fetch_corporation_blueprints(corp_id, access_token)
-    if corp_blueprints:
-        # Filter to only BPOs (quantity == -1)
-        bpo_blueprints = [bp for bp in corp_blueprints if bp.get('quantity', 1) == -1]
-        logger.info(f"Corporation blueprints: {len(corp_blueprints)} total, {len(bpo_blueprints)} BPOs")
-        if bpo_blueprints:
-            # Process blueprints in parallel
-            await process_blueprints_parallel(
-                bpo_blueprints,
-                update_blueprint_in_wp,
-                wp_post_id_cache,
-                corp_id,
-                access_token,
-                blueprint_cache,
-                location_cache,
-                structure_cache,
-                failed_structures
-            )
-
-
-async def process_corporation_blueprints_from_assets(corp_id: int, access_token: str, wp_post_id_cache: Dict[str, Any], blueprint_cache: Dict[str, Any], location_cache: Dict[str, Any], structure_cache: Dict[str, Any], failed_structures: Dict[str, Any]) -> None:
-    """
-    Process corporation blueprints from corporation assets.
-
-    Extracts blueprints from corporation asset lists and processes them.
-    Can be disabled via SKIP_CORPORATION_ASSETS configuration.
-
-    Args:
-        corp_id: Corporation ID to fetch assets for.
-        access_token: Valid access token for corporation data.
-        wp_post_id_cache: WordPress post ID cache.
-        blueprint_cache: Blueprint name cache.
-        location_cache: Location name cache.
-        structure_cache: Structure name cache.
-        failed_structures: Failed structure fetch cache.
-    """
-    logger.info(f"Fetching corporation assets for {corp_id}...")
-    if SKIP_CORPORATION_ASSETS:
-        logger.info("Skipping corporation assets processing (SKIP_CORPORATION_ASSETS=true)")
-        return
-        
-    corp_assets = await fetch_corporation_assets(corp_id, access_token)
-    if corp_assets:
-        logger.info(f"Fetched {len(corp_assets)} corporation assets")
-        asset_blueprints = extract_blueprints_from_assets(corp_assets, 'corp', corp_id, access_token)
-        if asset_blueprints:
-            logger.info(f"Corporation asset blueprints: {len(asset_blueprints)} items")
-            # Process blueprints in parallel
-            await process_blueprints_parallel(
-                asset_blueprints,
-                update_blueprint_from_asset_in_wp,
-                wp_post_id_cache,
-                corp_id,
-                access_token,
-                blueprint_cache,
-                location_cache,
-                structure_cache,
-                failed_structures
-            )
-        else:
-            logger.info("No blueprints found in corporation assets")
-    else:
-        logger.info("No corporation assets found or access denied")
-
-
-async def process_corporation_blueprints_from_industry_jobs(corp_id: int, access_token: str, wp_post_id_cache: Dict[str, Any], blueprint_cache: Dict[str, Any], location_cache: Dict[str, Any], structure_cache: Dict[str, Any], failed_structures: Dict[str, Any]) -> None:
-    """
-    Process corporation blueprints from corporation industry jobs.
-
-    Extracts blueprints from active corporation industry jobs and processes them.
-
-    Args:
-        corp_id: Corporation ID to fetch industry jobs for.
-        access_token: Valid access token for corporation data.
-        wp_post_id_cache: WordPress post ID cache.
-        blueprint_cache: Blueprint name cache.
-        location_cache: Location name cache.
-        structure_cache: Structure name cache.
-        failed_structures: Failed structure fetch cache.
-    """
-    corp_industry_jobs = await fetch_corporation_industry_jobs(corp_id, access_token)
-    if corp_industry_jobs:
-        job_blueprints = extract_blueprints_from_industry_jobs(corp_industry_jobs, 'corp', corp_id)
-        if job_blueprints:
-            logger.info(f"Corporation industry job blueprints: {len(job_blueprints)} items")
-            # Process blueprints in parallel
-            await process_blueprints_parallel(
-                job_blueprints,
-                update_blueprint_from_asset_in_wp,
-                wp_post_id_cache,
-                corp_id,
-                access_token,
-                blueprint_cache,
-                location_cache,
-                structure_cache,
-                failed_structures
-            )
-
-
-async def process_corporation_blueprints_from_contracts(corp_id: int, access_token: str, wp_post_id_cache: Dict[str, Any], blueprint_cache: Dict[str, Any], location_cache: Dict[str, Any], structure_cache: Dict[str, Any], failed_structures: Dict[str, Any]) -> None:
-    """
-    Process corporation blueprints from corporation contracts.
-
-    Extracts blueprints from corporation contract items and processes them.
-
-    Args:
-        corp_id: Corporation ID to fetch contracts for.
-        access_token: Valid access token for corporation data.
-        wp_post_id_cache: WordPress post ID cache.
-        blueprint_cache: Blueprint name cache.
-        location_cache: Location name cache.
-        structure_cache: Structure name cache.
-        failed_structures: Failed structure fetch cache.
-    """
-    corp_contracts = await fetch_corporation_contracts(corp_id, access_token)
-    if corp_contracts:
-        contract_blueprints = extract_blueprints_from_contracts(corp_contracts, 'corp', corp_id)
-        if contract_blueprints:
-            logger.info(f"Corporation contract blueprints: {len(contract_blueprints)} items")
-            # Process blueprints in parallel
-            await process_blueprints_parallel(
-                contract_blueprints,
-                update_blueprint_from_asset_in_wp,
-                wp_post_id_cache,
-                corp_id,
-                access_token,
-                blueprint_cache,
-                location_cache,
-                structure_cache,
-                failed_structures
-            )
-
-
-async def process_corporation_blueprints(corp_id, access_token, char_id, wp_post_id_cache, blueprint_cache, location_cache, structure_cache, failed_structures):
-    """
-    Process all blueprint sources for a corporation.
-
-    Orchestrates blueprint processing from all available sources:
-    direct endpoint, assets, industry jobs, and contracts.
-
-    Args:
-        corp_id: Corporation ID to process blueprints for.
-        access_token: Valid access token for corporation data.
-        char_id: Character ID for context (may be None).
-        wp_post_id_cache: WordPress post ID cache.
-        blueprint_cache: Blueprint name cache.
-        location_cache: Location name cache.
-        structure_cache: Structure name cache.
-        failed_structures: Failed structure fetch cache.
-    """
-    # Process blueprints from different sources
-    await process_corporation_blueprints_from_endpoint(
-        corp_id, access_token, wp_post_id_cache, blueprint_cache, location_cache, structure_cache, failed_structures
-    )
-    
-    await process_corporation_blueprints_from_assets(
-        corp_id, access_token, wp_post_id_cache, blueprint_cache, location_cache, structure_cache, failed_structures
-    )
-    
-    await process_corporation_blueprints_from_industry_jobs(
-        corp_id, access_token, wp_post_id_cache, blueprint_cache, location_cache, structure_cache, failed_structures
-    )
-    
-    await process_corporation_blueprints_from_contracts(
-        corp_id, access_token, wp_post_id_cache, blueprint_cache, location_cache, structure_cache, failed_structures
-    )
-
-async def process_corporation_contracts(corp_id, access_token, corp_data, blueprint_cache):
-    """
-    Process contracts for a corporation.
-
-    Fetches corporation contracts and processes those issued by this corporation,
-    skipping finished/deleted contracts for performance.
-
-    Args:
-        corp_id: Corporation ID to process contracts for.
-        access_token: Valid access token for corporation data.
-        corp_data: Corporation data dictionary.
-        blueprint_cache: Blueprint name cache for contract title generation.
-    """
-    corp_contracts = await fetch_corporation_contracts(corp_id, access_token)
-    if corp_contracts:
-        logger.info(f"Corporation contracts for {corp_data.get('name', corp_id)}: {len(corp_contracts)} items")
-        for contract in corp_contracts:
-            contract_status = contract.get('status', '')
-            if contract_status in ['finished', 'deleted']:
-                # Skip finished/deleted contracts to improve performance
-                continue
-            elif contract_status == 'expired':
-                logger.info(f"EXPIRED CORPORATION CONTRACT TO DELETE MANUALLY: {contract['contract_id']}")
-            
-            # Only process contracts issued by this corporation
-            if contract.get('issuer_corporation_id') != corp_id:
-                continue
-                
-            update_contract_in_wp(contract['contract_id'], contract, for_corp=True, entity_id=corp_id, access_token=access_token, blueprint_cache=blueprint_cache)
-
-async def process_character_skills(char_id: int, access_token: str, char_name: str) -> None:
-    """
-    Process character skills data.
-
-    Fetches character skills and total SP, then updates the character post
-    in WordPress with the latest skills information.
-
-    Args:
-        char_id: Character ID to process skills for.
-        access_token: Valid access token for character data.
-        char_name: Character name for logging.
-    """
-    skills = await fetch_character_skills(char_id, access_token)
-    if skills:
-        # Update character with skills data
-        update_character_skills_in_wp(char_id, skills)
-        logger.info(f"Skills for {char_name}: {skills['total_sp']} SP")
-
-
-async def process_character_planets(char_id: int, access_token: str, char_name: str) -> None:
-    """
-    Process character planetary colony data.
-
-    Fetches planetary colonies and retrieves detailed information for each,
-    then updates planet posts in WordPress.
-
-    Args:
-        char_id: Character ID to process planets for.
-        access_token: Valid access token for character data.
-        char_name: Character name for logging.
-    """
-    planets = await fetch_character_planets(char_id, access_token)
-    if planets:
-        logger.info(f"Planets for {char_name}: {len(planets)} colonies")
-        for planet in planets:
-            planet_id = planet.get('planet_id')
-            if planet_id:
-                planet_details = await fetch_planet_details(char_id, planet_id, access_token)
-                if planet_details:
-                    update_planet_in_wp(char_id, planet_id, planet_details)
-
-
-async def process_character_data(char_id, token_data, wp_post_id_cache, blueprint_cache, location_cache, structure_cache, failed_structures, args):
-    """
-    Process data for a single character.
-
-    Fetches and processes character-specific data including skills, blueprints
-    from multiple sources, planetary colonies, and contracts.
-
-    Args:
-        char_id: Character ID to process.
-        token_data: Token data dictionary for the character.
-        wp_post_id_cache: WordPress post ID cache.
-        blueprint_cache: Blueprint name cache.
-        location_cache: Location name cache.
-        structure_cache: Structure name cache.
-        failed_structures: Failed structure fetch cache.
-        args: Parsed command line arguments.
-    """
-    access_token = token_data['access_token']
-    char_name = token_data['name']
-
-    logger.info(f"Fetching additional data for {char_name}...")
-
-    # Fetch skills
-    if args.all or args.skills:
-        await process_character_skills(char_id, access_token, char_name)
-
-    # Process character blueprints from all sources
-    if args.all or args.blueprints:
-        await process_character_blueprints(char_id, access_token, char_name, wp_post_id_cache, blueprint_cache, location_cache, structure_cache, failed_structures)
-
-    # Process character planets
-    if args.all or args.planets:
-        await process_character_planets(char_id, access_token, char_name)
-
-    # Process character contracts
-    if args.all or args.contracts:
-        await process_character_contracts(char_id, access_token, char_name, wp_post_id_cache, blueprint_cache, location_cache, structure_cache, failed_structures)
-
-async def process_character_blueprints_from_endpoint(char_id: int, access_token: str, char_name: str, wp_post_id_cache: Dict[str, Any], blueprint_cache: Dict[str, Any], location_cache: Dict[str, Any], structure_cache: Dict[str, Any], failed_structures: Dict[str, Any]) -> None:
-    """
-    Process character blueprints from the direct blueprints endpoint.
-
-    Fetches blueprints directly from the character's blueprint endpoint,
-    filters to BPOs only, and processes them in parallel.
-
-    Args:
-        char_id: Character ID to fetch blueprints for.
-        access_token: Valid access token for character data.
-        char_name: Character name for logging.
-        wp_post_id_cache: WordPress post ID cache.
-        blueprint_cache: Blueprint name cache.
-        location_cache: Location name cache.
-        structure_cache: Structure name cache.
-        failed_structures: Failed structure fetch cache.
-    """
-    logger.info(f"Fetching blueprints for {char_name}...")
-    
-    blueprints = await fetch_character_blueprints(char_id, access_token)
-    if blueprints:
-        # Filter to only BPOs (quantity == -1)
-        bpo_blueprints = [bp for bp in blueprints if bp.get('quantity', 1) == -1]
-        logger.info(f"Character blueprints: {len(blueprints)} total, {len(bpo_blueprints)} BPOs")
-        if bpo_blueprints:
-            # Process blueprints in parallel
-            await process_blueprints_parallel(
-                bpo_blueprints,
-                update_blueprint_in_wp,
-                wp_post_id_cache,
-                char_id,
-                access_token,
-                blueprint_cache,
-                location_cache,
-                structure_cache,
-                failed_structures
-            )
-
-
-async def process_character_blueprints_from_assets(char_id: int, access_token: str, char_name: str, wp_post_id_cache: Dict[str, Any], blueprint_cache: Dict[str, Any], location_cache: Dict[str, Any], structure_cache: Dict[str, Any], failed_structures: Dict[str, Any]) -> None:
-    """
-    Process character blueprints from character assets.
-
-    Extracts blueprints from character asset lists and processes them.
-
-    Args:
-        char_id: Character ID to fetch assets for.
-        access_token: Valid access token for character data.
-        char_name: Character name for logging.
-        wp_post_id_cache: WordPress post ID cache.
-        blueprint_cache: Blueprint name cache.
-        location_cache: Location name cache.
-        structure_cache: Structure name cache.
-        failed_structures: Failed structure fetch cache.
-    """
-    char_assets = await fetch_character_assets(char_id, access_token)
-    if char_assets:
-        asset_blueprints = extract_blueprints_from_assets(char_assets, 'char', char_id, access_token)
-        if asset_blueprints:
-            logger.info(f"Character asset blueprints: {len(asset_blueprints)} items")
-            # Process blueprints in parallel
-            await process_blueprints_parallel(
-                asset_blueprints,
-                update_blueprint_from_asset_in_wp,
-                wp_post_id_cache,
-                char_id,
-                access_token,
-                blueprint_cache,
-                location_cache,
-                structure_cache,
-                failed_structures
-            )
-
-
-async def process_character_blueprints_from_industry_jobs(char_id: int, access_token: str, char_name: str, wp_post_id_cache: Dict[str, Any], blueprint_cache: Dict[str, Any], location_cache: Dict[str, Any], structure_cache: Dict[str, Any], failed_structures: Dict[str, Any]) -> None:
-    """
-    Process character blueprints from character industry jobs.
-
-    Extracts blueprints from active character industry jobs and processes them.
-
-    Args:
-        char_id: Character ID to fetch industry jobs for.
-        access_token: Valid access token for character data.
-        char_name: Character name for logging.
-        wp_post_id_cache: WordPress post ID cache.
-        blueprint_cache: Blueprint name cache.
-        location_cache: Location name cache.
-        structure_cache: Structure name cache.
-        failed_structures: Failed structure fetch cache.
-    """
-    jobs = await fetch_character_industry_jobs(char_id, access_token)
-    if jobs:
-        logger.info(f"Industry jobs for {char_name}: {len(jobs)} active")
-        job_blueprints = extract_blueprints_from_industry_jobs(jobs, 'char', char_id)
-        if job_blueprints:
-            logger.info(f"Character industry job blueprints: {len(job_blueprints)} items")
-            # Process blueprints in parallel
-            await process_blueprints_parallel(
-                job_blueprints,
-                update_blueprint_from_asset_in_wp,
-                wp_post_id_cache,
-                char_id,
-                access_token,
-                blueprint_cache,
-                location_cache,
-                structure_cache,
-                failed_structures
-            )
-
-async def process_character_contracts(char_id: int, access_token: str, char_name: str, wp_post_id_cache: Dict[str, Any], blueprint_cache: Dict[str, Any], location_cache: Dict[str, Any], structure_cache: Dict[str, Any], failed_structures: Dict[str, Any]) -> None:
-    """
-    Process contracts for a character.
-
-    Fetches character contracts, processes blueprints from contract items,
-    and creates/updates contract posts in WordPress.
-
-    Args:
-        char_id: Character ID to process contracts for.
-        access_token: Valid access token for character data.
-        char_name: Character name for logging.
-        wp_post_id_cache: WordPress post ID cache.
-        blueprint_cache: Blueprint name cache.
-        location_cache: Location name cache.
-        structure_cache: Structure name cache.
-        failed_structures: Failed structure fetch cache.
-    """
-    char_contracts = await fetch_character_contracts(char_id, access_token)
-    if char_contracts:
-        logger.info(f"Character contracts for {char_name}: {len(char_contracts)} items")
-        
-        # Process blueprints from contracts
-        contract_blueprints = extract_blueprints_from_contracts(char_contracts, 'char', char_id)
-        if contract_blueprints:
-            logger.info(f"Character contract blueprints: {len(contract_blueprints)} items")
-            # Process blueprints in parallel
-            await process_blueprints_parallel(
-                contract_blueprints,
-                update_blueprint_from_asset_in_wp,
-                wp_post_id_cache,
-                char_id,
-                access_token,
-                blueprint_cache,
-                location_cache,
-                structure_cache,
-                failed_structures
-            )
-
-        # Process contracts themselves
-        for contract in char_contracts:
-            contract_status = contract.get('status', '')
-            if contract_status in ['finished', 'deleted']:
-                # Skip finished/deleted contracts to improve performance
-                continue
-            elif contract_status == 'expired':
-                logger.info(f"EXPIRED CHARACTER CONTRACT TO DELETE MANUALLY: {contract['contract_id']}")
-            update_contract_in_wp(contract['contract_id'], contract, for_corp=False, entity_id=char_id, access_token=access_token, blueprint_cache=blueprint_cache)
-
 
 async def fetch_type_icon(type_id, size=512):
     """
@@ -1984,51 +1119,6 @@ def save_failed_structures(failed_structures: Dict[str, Any]) -> None:
         failed_structures: Failed structures cache dictionary to save.
     """
     save_cache(FAILED_STRUCTURES_FILE, failed_structures)
-
-def cleanup_contract_posts(allowed_corp_ids: set, allowed_issuer_ids: set) -> None:
-    """
-    Clean up contract posts that don't match filtering criteria.
-
-    Removes contract posts from unauthorized issuers or with finished/deleted status.
-    Lists expired contracts for manual deletion to preserve private contract visibility.
-
-    Args:
-        allowed_corp_ids: Set of corporation IDs allowed for contract processing.
-        allowed_issuer_ids: Set of character IDs allowed as contract issuers.
-
-    Note:
-        Preserves private contracts that may still be visible to authorized characters.
-        Only removes contracts from unauthorized sources or completed contracts.
-    """
-    logger.info("Cleaning up contract posts...")
-    
-    response = requests.get(f"{WP_BASE_URL}/wp-json/wp/v2/eve_contract", auth=get_wp_auth(), params={'per_page': WP_PER_PAGE})
-    if response.status_code == 200:
-        contracts = response.json()
-        for contract in contracts:
-            meta = contract.get('meta', {})
-            status = meta.get('_eve_contract_status')
-            issuer_corp_id = meta.get('_eve_contract_issuer_corp_id')
-            issuer_id = meta.get('_eve_contract_issuer_id')
-            contract_id = meta.get('_eve_contract_id')
-            
-            should_delete = False
-            # Don't delete private contracts - they may still be visible to authorized characters
-            # Only delete contracts from unauthorized issuers or finished/deleted contracts
-            if status in ['finished', 'deleted']:
-                should_delete = True
-                logger.info(f"Deleting {status} contract: {contract_id}")
-            elif issuer_corp_id and int(issuer_corp_id) not in allowed_corp_ids and issuer_id and int(issuer_id) not in allowed_issuer_ids:
-                should_delete = True
-                logger.info(f"Deleting contract from unauthorized issuer: {contract_id}")
-            elif status == 'expired':
-                # List expired contracts for manual deletion
-                title = contract.get('title', {}).get('rendered', f'Contract {contract_id}')
-                logger.info(f"EXPIRED CONTRACT TO DELETE MANUALLY: {title} (ID: {contract_id})")
-            
-            if should_delete:
-                delete_wp_post('eve_contract', contract['id'])
-
 
 def cleanup_blueprint_posts() -> None:
     """

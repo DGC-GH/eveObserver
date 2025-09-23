@@ -620,3 +620,129 @@ def fetch_corporation_contract_items(corp_id: int, contract_id: int, access_toke
     """
     endpoint = f"/corporations/{corp_id}/contracts/{contract_id}/items/"
     return fetch_esi(endpoint, None, access_token)  # Corp endpoint doesn't need char_id
+
+async def fetch_character_contracts(char_id: int, access_token: str) -> Optional[List[Dict[str, Any]]]:
+    """
+    Fetch character contracts from ESI.
+
+    Retrieves all contracts the character is involved in, including contracts
+    they've issued, accepted, or have access to.
+
+    Args:
+        char_id: EVE character ID to fetch contracts for.
+        access_token: Valid OAuth2 access token for authentication.
+
+    Returns:
+        Optional[List[Dict[str, Any]]]: Contracts data array if successful.
+    """
+    endpoint = f"/characters/{char_id}/contracts/"
+    return await fetch_esi(endpoint, char_id, access_token)
+
+async def fetch_corporation_contracts(corp_id: int, access_token: str) -> Optional[List[Dict[str, Any]]]:
+    """
+    Fetch corporation contracts from ESI.
+
+    Retrieves all contracts issued by the corporation, including item exchanges,
+    auctions, courier contracts, and other contract types.
+
+    Args:
+        corp_id: EVE corporation ID to fetch contracts for.
+        access_token: Valid OAuth2 access token for authentication.
+
+    Returns:
+        Optional[List[Dict[str, Any]]]: Contracts data array if successful.
+    """
+    endpoint = f"/corporations/{corp_id}/contracts/"
+    return await fetch_esi(endpoint, None, access_token)  # Corp contracts don't need char_id
+
+async def process_character_contracts(char_id: int, access_token: str, char_name: str, wp_post_id_cache: Dict[str, Any], blueprint_cache: Dict[str, Any], location_cache: Dict[str, Any], structure_cache: Dict[str, Any], failed_structures: Dict[str, Any]) -> None:
+    """
+    Process contracts for a character.
+
+    Fetches character contracts, processes blueprints from contract items,
+    and creates/updates contract posts in WordPress.
+
+    Args:
+        char_id: Character ID to process contracts for.
+        access_token: Valid access token for character data.
+        char_name: Character name for logging.
+        wp_post_id_cache: WordPress post ID cache.
+        blueprint_cache: Blueprint name cache.
+        location_cache: Location name cache.
+        structure_cache: Structure name cache.
+        failed_structures: Failed structure fetch cache.
+    """
+    char_contracts = await fetch_character_contracts(char_id, access_token)
+    if char_contracts:
+        logger.info(f"Character contracts for {char_name}: {len(char_contracts)} items")
+        
+        # Process blueprints from contracts
+        contract_blueprints = extract_blueprints_from_contracts(char_contracts, 'char', char_id)
+        if contract_blueprints:
+            logger.info(f"Character contract blueprints: {len(contract_blueprints)} items")
+            # Process blueprints in parallel
+            await process_blueprints_parallel(
+                contract_blueprints,
+                update_blueprint_from_asset_in_wp,
+                wp_post_id_cache,
+                char_id,
+                access_token,
+                blueprint_cache,
+                location_cache,
+                structure_cache,
+                failed_structures
+            )
+
+        # Process contracts themselves
+        for contract in char_contracts:
+            contract_status = contract.get('status', '')
+            if contract_status in ['finished', 'deleted']:
+                # Skip finished/deleted contracts to improve performance
+                continue
+            elif contract_status == 'expired':
+                logger.info(f"EXPIRED CHARACTER CONTRACT TO DELETE MANUALLY: {contract['contract_id']}")
+            update_contract_in_wp(contract['contract_id'], contract, for_corp=False, entity_id=char_id, access_token=access_token, blueprint_cache=blueprint_cache)
+
+def cleanup_contract_posts(allowed_corp_ids: set, allowed_issuer_ids: set) -> None:
+    """
+    Clean up contract posts that don't match filtering criteria.
+
+    Removes contract posts from unauthorized issuers or with finished/deleted status.
+    Lists expired contracts for manual deletion to preserve private contract visibility.
+
+    Args:
+        allowed_corp_ids: Set of corporation IDs allowed for contract processing.
+        allowed_issuer_ids: Set of character IDs allowed as contract issuers.
+
+    Note:
+        Preserves private contracts that may still be visible to authorized characters.
+        Only removes contracts from unauthorized sources or completed contracts.
+    """
+    logger.info("Cleaning up contract posts...")
+    
+    response = requests.get(f"{WP_BASE_URL}/wp-json/wp/v2/eve_contract", auth=get_wp_auth(), params={'per_page': WP_PER_PAGE})
+    if response.status_code == 200:
+        contracts = response.json()
+        for contract in contracts:
+            meta = contract.get('meta', {})
+            status = meta.get('_eve_contract_status')
+            issuer_corp_id = meta.get('_eve_contract_issuer_corp_id')
+            issuer_id = meta.get('_eve_contract_issuer_id')
+            contract_id = meta.get('_eve_contract_id')
+            
+            should_delete = False
+            # Don't delete private contracts - they may still be visible to authorized characters
+            # Only delete contracts from unauthorized issuers or finished/deleted contracts
+            if status in ['finished', 'deleted']:
+                should_delete = True
+                logger.info(f"Deleting {status} contract: {contract_id}")
+            elif issuer_corp_id and int(issuer_corp_id) not in allowed_corp_ids and issuer_id and int(issuer_id) not in allowed_issuer_ids:
+                should_delete = True
+                logger.info(f"Deleting contract from unauthorized issuer: {contract_id}")
+            elif status == 'expired':
+                # List expired contracts for manual deletion
+                title = contract.get('title', {}).get('rendered', f'Contract {contract_id}')
+                logger.info(f"EXPIRED CONTRACT TO DELETE MANUALLY: {title} (ID: {contract_id})")
+            
+            if should_delete:
+                delete_wp_post('eve_contract', contract['id'])

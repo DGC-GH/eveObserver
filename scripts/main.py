@@ -15,9 +15,10 @@ from config import *
 from api_client import refresh_token, get_session
 from cache_manager import load_wp_post_id_cache
 from data_processors import (
-    collect_corporation_members, process_corporation_data, process_character_data,
+    collect_corporation_members, process_character_data,
     cleanup_old_posts, clear_log_file, initialize_caches, get_allowed_entities
 )
+from corporation_processor import process_corporation_data
 
 load_dotenv()
 
@@ -63,7 +64,7 @@ def parse_arguments() -> argparse.Namespace:
     
     return args
 
-def process_all_data(corp_members: Dict[int, List[Tuple[int, str, str]]], caches: Tuple[Dict[str, Any], ...], args: argparse.Namespace, tokens: Dict[str, Any]) -> None:
+async def process_all_data(corp_members: Dict[int, List[Tuple[int, str, str]]], caches: Tuple[Dict[str, Any], ...], args: argparse.Namespace, tokens: Dict[str, Any]) -> None:
     """Process all corporation and character data."""
     blueprint_cache, location_cache, structure_cache, failed_structures, wp_post_id_cache = caches
     
@@ -75,7 +76,7 @@ def process_all_data(corp_members: Dict[int, List[Tuple[int, str, str]]], caches
 
         # Process data for the corporation and its members
         if args.all or args.corporations or args.blueprints:
-            process_corporation_data(corp_id, members, wp_post_id_cache, blueprint_cache, location_cache, structure_cache, failed_structures, args)
+            await process_corporation_data(corp_id, members, wp_post_id_cache, blueprint_cache, location_cache, structure_cache, failed_structures, args)
 
         processed_corps.add(corp_id)
 
@@ -84,7 +85,7 @@ def process_all_data(corp_members: Dict[int, List[Tuple[int, str, str]]], caches
         if args.all or args.characters or args.skills or args.blueprints or args.planets or args.contracts:
             process_character_data(char_id, token_data, wp_post_id_cache, blueprint_cache, location_cache, structure_cache, failed_structures, args)
 
-def main() -> None:
+async def main() -> None:
     """Main data fetching routine."""
     args = parse_arguments()
     clear_log_file()
@@ -103,7 +104,7 @@ def main() -> None:
         if args.all or args.contracts:
             cleanup_old_posts(allowed_corp_ids, allowed_issuer_ids)
 
-        process_all_data(corp_members, caches, args, tokens)
+        await process_all_data(corp_members, caches, args, tokens)
     finally:
         # Flush any pending cache saves and log performance
         from cache_manager import flush_pending_saves, log_cache_performance
@@ -112,4 +113,5 @@ def main() -> None:
 
 if __name__ == "__main__":
     import argparse
-    main()
+    import asyncio
+    asyncio.run(main())

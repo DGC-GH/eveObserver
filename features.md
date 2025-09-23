@@ -95,3 +95,41 @@ This document describes the general features implemented in this data aggregatio
 - Profile data synchronization with change detection
 - Activity monitoring and automated reporting capabilities
 - **Key Functions**: `fetch_character_data`, `fetch_character_skills`, `fetch_character_planets`, `fetch_corporation_data`, `collect_corporation_members`, `process_corporation_data`, `process_character_data`
+
+## Key Learnings for Similar Projects
+
+### Architecture Patterns
+- **Modular Design**: Separate concerns into focused modules (API client, data processing, caching, configuration)
+- **Async-First Approach**: Use asyncio for I/O-bound operations to maximize concurrency and performance
+- **Configuration Management**: Environment-based config with validation prevents runtime errors
+- **Comprehensive Testing**: Async-aware testing with mocking ensures reliability
+
+### Performance Optimizations
+- **Intelligent Caching**: Multi-level caching with compression and TTL reduces API calls
+- **Connection Pooling**: Reuse HTTP connections to minimize overhead
+- **Batch Operations**: Group related operations to reduce I/O and improve throughput
+- **Benchmarking**: Decorate critical functions for performance monitoring
+
+### Resilience Patterns
+- **Circuit Breaker**: Automatic failure detection and recovery for external APIs
+- **Retry Mechanisms**: Exponential backoff for transient failures
+- **Graceful Degradation**: Continue operation when non-critical components fail
+- **Resource Management**: Proper cleanup of connections and sessions
+
+### Development Best Practices
+- **Type Hints**: Improve code readability and catch errors early
+- **Error Handling**: Comprehensive exception handling with appropriate logging
+- **Security**: Input validation, secure credential storage, audit logging
+- **Documentation**: Clear docstrings and comments for maintainability
+
+### Testing Strategies
+- **Unit Tests**: Test individual functions with mocked dependencies
+- **Integration Tests**: Verify component interactions
+- **Async Testing**: Use pytest-asyncio for coroutine testing
+- **Coverage Analysis**: Maintain high test coverage for confidence
+
+### Deployment Considerations
+- **Environment Configuration**: Separate dev/staging/production configs
+- **Logging**: Structured logging for production monitoring
+- **Health Checks**: Implement endpoints for system monitoring
+- **Scalability**: Design for horizontal scaling from the start

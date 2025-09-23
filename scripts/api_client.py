@@ -881,6 +881,26 @@ async def fetch_type_icon(type_id: int, size: int = 512) -> str:
     # If no icon found, return placeholder
     return f"https://via.placeholder.com/{size}x{size}/cccccc/000000?text=No+Icon"
 
+@validate_api_response
+@validate_input_params(int)
+async def fetch_planet_details(char_id: int, planet_id: int, access_token: str) -> Optional[Dict[str, Any]]:
+    """
+    Fetch detailed planetary colony information from ESI.
+
+    Retrieves detailed information about a specific planetary colony,
+    including resource extraction, factory setups, and colony status.
+
+    Args:
+        char_id: EVE character ID that owns the colony.
+        planet_id: Specific planet ID to fetch details for.
+        access_token: Valid OAuth2 access token for authentication.
+
+    Returns:
+        Optional[Dict[str, Any]]: Detailed planet colony data if successful.
+    """
+    endpoint = f"/characters/{char_id}/planets/{planet_id}/"
+    return await fetch_esi(endpoint, char_id, access_token)
+
 @validate_input_params((str, type(None)))
 def sanitize_string(value: str) -> str:
     return re.sub(r'[^\w\s\-.,]', '', value) if isinstance(value, str) else str(value)
