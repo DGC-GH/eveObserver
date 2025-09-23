@@ -244,12 +244,15 @@ class EVEDashboard {
     }
 
     async syncSection(section, button) {
+        console.log(`EVE Observer: Starting sync for section: ${section}`);
+
         // Disable button and show loading state
         const originalText = button.innerHTML;
         button.disabled = true;
         button.innerHTML = '<span class="dashicons dashicons-update dashicons-spin"></span> Syncing...';
 
         try {
+            console.log(`EVE Observer: Making API request to sync ${section}`);
             const response = await fetch(`/wp-json/eve-observer/v1/sync/${section}`, {
                 method: 'POST',
                 headers: {
@@ -259,14 +262,21 @@ class EVEDashboard {
             });
 
             if (!response.ok) {
-                throw new Error(`HTTP ${response.status}`);
+                const errorData = await response.json().catch(() => ({ message: 'Unknown error' }));
+                throw new Error(`HTTP ${response.status}: ${errorData.message || response.statusText}`);
             }
 
             const result = await response.json();
+            console.log(`EVE Observer: Sync response for ${section}:`, result);
 
             if (result.success) {
-                this.showNotification(`Successfully synced ${section}`, 'success');
+                const message = result.execution_time
+                    ? `Successfully synced ${section} in ${result.execution_time}s`
+                    : `Successfully synced ${section}`;
+                this.showNotification(message, 'success');
+
                 // Reload data after successful sync
+                console.log(`EVE Observer: Reloading data after successful sync of ${section}`);
                 await this.loadAllData();
                 this.renderAllTables();
                 this.renderChart();
@@ -274,12 +284,13 @@ class EVEDashboard {
                 throw new Error(result.message || 'Sync failed');
             }
         } catch (error) {
-            console.error('Sync error:', error);
+            console.error(`EVE Observer: Sync error for ${section}:`, error);
             this.showNotification(`Failed to sync ${section}: ${error.message}`, 'error');
         } finally {
             // Restore button state
             button.disabled = false;
             button.innerHTML = originalText;
+            console.log(`EVE Observer: Sync operation completed for ${section}`);
         }
     }
 

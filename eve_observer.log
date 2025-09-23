@@ -1,0 +1,2 @@
+2025-09-23 20:22:32,347 - ERROR - ESI_CLIENT_ID and ESI_CLIENT_SECRET must be set in .env file
+2025-09-23 20:22:32,347 - ERROR - Get them from https://developers.eveonline.com/

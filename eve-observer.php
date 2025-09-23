@@ -190,11 +190,15 @@ class EVE_Observer {
     public function handle_sync_request($request) {
         $section = $request->get_param('section');
 
+        // Log the sync request
+        error_log("EVE Observer: Sync request started for section: {$section}");
+
         // Get the path to the scripts directory
         $plugin_dir = plugin_dir_path(__FILE__);
         $scripts_dir = dirname($plugin_dir) . '/scripts/';
 
         if (!is_dir($scripts_dir)) {
+            error_log("EVE Observer: Scripts directory not found: {$scripts_dir}");
             return new WP_Error('scripts_dir_not_found', 'Scripts directory not found: ' . $scripts_dir, array('status' => 500));
         }
 
@@ -209,29 +213,40 @@ class EVE_Observer {
         );
 
         if (!isset($script_map[$section])) {
+            error_log("EVE Observer: Invalid section specified: {$section}");
             return new WP_Error('invalid_section', 'Invalid section specified', array('status' => 400));
         }
 
-        // Change to scripts directory and run the command
+        // Change to scripts directory and run the command synchronously
         $command = 'cd ' . escapeshellarg($scripts_dir) . ' && /usr/bin/python3 ' . escapeshellarg($script_map[$section]) . ' 2>&1';
 
-        // Execute the command with timeout
-        $output = shell_exec($command . ' &'); // Run in background
+        // Set execution time limit for long-running syncs
+        set_time_limit(300); // 5 minutes
 
-        if ($output === null) {
-            // For background processes, we can't get immediate output
-            return array(
-                'success' => true,
-                'section' => $section,
-                'message' => 'Sync started in background',
-                'timestamp' => current_time('mysql')
-            );
+        // Execute the command and capture output
+        $start_time = microtime(true);
+        $output = shell_exec($command);
+        $execution_time = microtime(true) - $start_time;
+
+        // Check if command was successful (exit code 0)
+        $exit_code = 0;
+        if (function_exists('exec')) {
+            $last_line = exec($command, $output_lines, $exit_code);
         }
+
+        if ($exit_code !== 0) {
+            error_log("EVE Observer: Sync failed for section {$section}. Exit code: {$exit_code}. Output: " . substr($output, 0, 1000));
+            return new WP_Error('sync_failed', 'Sync failed with exit code: ' . $exit_code, array('status' => 500));
+        }
+
+        // Log successful completion
+        error_log("EVE Observer: Sync completed successfully for section {$section} in " . round($execution_time, 2) . " seconds");
 
         return array(
             'success' => true,
             'section' => $section,
-            'output' => $output,
+            'message' => 'Sync completed successfully',
+            'execution_time' => round($execution_time, 2),
             'timestamp' => current_time('mysql')
         );
     }
