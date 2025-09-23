@@ -14,7 +14,7 @@ from typing import Any, Dict, List, Tuple
 
 from dotenv import load_dotenv
 
-from api_client import get_session, refresh_token
+from api_client import get_session, refresh_token, cleanup_session
 from cache_manager import load_wp_post_id_cache
 from config import LOG_FILE, LOG_LEVEL, TOKENS_FILE
 from corporation_processor import process_corporation_data
@@ -151,6 +151,9 @@ async def main() -> None:
 
         total_time = time.time() - start_time
         logger.info(f"Total execution completed in {total_time:.2f}s")
+        
+        # Cleanup session
+        await cleanup_session()
     finally:
         # Flush any pending cache saves and log performance
         from cache_manager import flush_pending_saves, log_cache_performance

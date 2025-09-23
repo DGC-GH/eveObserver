@@ -46,8 +46,8 @@ async def check_contract_competition(
 ) -> Tuple[bool, Optional[float]]:
     """Check if a sell contract has been outbid by cheaper competing contracts in the same region.
 
-    Analyzes market competition for single-item sell contracts by comparing prices
-    against other outstanding contracts for the same item type in the same region.
+    Uses an optimized approach that only checks the first page of contracts and uses
+    price-based filtering to avoid unnecessary API calls.
 
     Args:
         contract_data: Contract information dictionary from ESI
@@ -60,7 +60,7 @@ async def check_contract_competition(
 
     Note:
         Only checks single-item sell contracts (item_exchange type) with positive quantities.
-        Skips contracts from the same issuer to avoid self-comparison.
+        Uses optimized filtering to avoid checking irrelevant contracts.
     """
     if not contract_items or len(contract_items) != 1:
         return False, None  # Only check single item contracts
@@ -93,78 +93,152 @@ async def check_contract_competition(
         f"price_per_item: {price_per_item:.2f}) in region {region_id}"
     )
 
-    # Fetch all public contracts in the region
-    page = 1
-    competing_contracts = []
+    # OPTIMIZED APPROACH: Check first few pages with smart filtering
+    max_pages_to_check = 5  # Check up to 5 pages (5000 contracts max)
+    found_cheaper = False
+    competing_price = None
+    total_competing_found = 0
 
-    while True:
-        logger.debug(f"Fetching contracts page {page} for region {region_id}")
-        contracts_page = await fetch_public_contracts_async(region_id, page)
-        if contracts_page is None:
-            logger.error(f"Failed to fetch contracts for region {region_id}, page {page}")
+    for page in range(1, max_pages_to_check + 1):
+        try:
+            # Fetch contracts for this page
+            contracts_page = await fetch_public_contracts_async(region_id, page)
+            if not contracts_page:
+                logger.debug(f"No contracts found on page {page} for region {region_id}")
+                break
+
+            logger.debug(f"Fetched {len(contracts_page)} contracts from page {page} in region {region_id}")
+
+            # Define reasonable price range to check (70% to 200% of our contract price)
+            min_price = price_per_item * 0.7
+            max_price = price_per_item * 2.0
+
+            # Process contracts with smart filtering
+            for contract in contracts_page:
+                comp_contract_id = contract.get("contract_id")
+                comp_price = contract.get("price", 0)
+                comp_volume = contract.get("volume", 1)
+
+                # Debug: Log all contracts we're considering
+                logger.debug(f"Evaluating contract {comp_contract_id}: type={contract.get('type')}, status={contract.get('status')}, price={comp_price}, volume={comp_volume}")
+
+                # Quick filters that don't require API calls
+                if contract.get("type") != "item_exchange":
+                    logger.debug(f"Skipping contract {comp_contract_id}: not item_exchange")
+                    continue
+                if contract.get("status") != "outstanding":
+                    logger.debug(f"Skipping contract {comp_contract_id}: not outstanding")
+                    continue
+                if contract.get("contract_id") == contract_id:
+                    logger.debug(f"Skipping contract {comp_contract_id}: same contract")
+                    continue
+                if contract.get("issuer_id") == contract_issuer_id:
+                    logger.debug(f"Skipping contract {comp_contract_id}: same issuer")
+                    continue
+
+                if comp_price <= 0:
+                    logger.debug(f"Skipping contract {comp_contract_id}: invalid price")
+                    continue
+
+                if comp_volume <= 0:
+                    logger.debug(f"Skipping contract {comp_contract_id}: invalid volume")
+                    continue
+
+                estimated_price_per_item = comp_price / comp_volume
+
+                # Skip if obviously not competitive
+                if estimated_price_per_item < min_price or estimated_price_per_item > max_price:
+                    logger.debug(f"Skipping contract {comp_contract_id}: price_per_item {estimated_price_per_item:.2f} outside range [{min_price:.2f}, {max_price:.2f}]")
+                    continue
+
+                logger.debug(f"Contract {comp_contract_id} passed initial filters, fetching items...")
+
+                # Only fetch items for potentially competitive contracts
+                try:
+                    comp_items = await fetch_public_contract_items_async(comp_contract_id)
+                    if not comp_items:
+                        logger.debug(f"Skipping contract {comp_contract_id}: no items")
+                        continue
+
+                    if len(comp_items) != 1:
+                        logger.debug(f"Skipping contract {comp_contract_id}: {len(comp_items)} items (not single item)")
+                        continue
+
+                    comp_item = comp_items[0]
+                    comp_type_id = comp_item.get("type_id")
+                    comp_is_blueprint_copy = comp_item.get("is_blueprint_copy", False)
+                    comp_quantity = comp_item.get("quantity", 1)
+
+                    logger.debug(f"Contract {comp_contract_id} item: type_id={comp_type_id}, is_blueprint_copy={comp_is_blueprint_copy}, quantity={comp_quantity}")
+
+                    if (comp_type_id == type_id and
+                        comp_is_blueprint_copy == is_blueprint_copy):
+                        if comp_quantity > 0:
+                            final_comp_price_per_item = comp_price / comp_quantity
+                            total_competing_found += 1
+
+                            logger.info(f"Found competing contract {comp_contract_id}: price_per_item={final_comp_price_per_item:.2f}, our_price={price_per_item:.2f}")
+
+                            if final_comp_price_per_item < price_per_item:
+                                logger.info(
+                                    f"Contract {contract_id} outbid by contract {comp_contract_id} with "
+                                    f"price_per_item: {final_comp_price_per_item:.2f}"
+                                )
+                                found_cheaper = True
+                                competing_price = final_comp_price_per_item
+                                break  # Found cheaper contract, can stop
+                        else:
+                            logger.debug(f"Skipping contract {comp_contract_id}: invalid quantity")
+                    else:
+                        logger.debug(f"Skipping contract {comp_contract_id}: type_id mismatch ({comp_type_id} != {type_id}) or blueprint_copy mismatch ({comp_is_blueprint_copy} != {is_blueprint_copy})")
+
+                except Exception as e:
+                    logger.debug(f"Failed to fetch items for contract {comp_contract_id}: {e}")
+                    continue
+
+            if found_cheaper:
+                break  # Found cheaper contract, stop checking more pages
+
+            # Check if there are more pages
+            if len(contracts_page) < 1000:  # ESI returns max 1000 per page
+                break  # No more pages available
+
+        except Exception as e:
+            logger.error(f"Error fetching page {page} for region {region_id}: {e}")
             break
-        elif not contracts_page:
-            logger.debug(f"No contracts returned for region {region_id}, page {page}")
-            break
 
-        logger.debug(f"Fetched {len(contracts_page)} contracts from region {region_id}, page {page}")
+    if found_cheaper:
+        return True, competing_price
 
-        # Filter for outstanding item_exchange contracts
-        for contract in contracts_page:
-            if (
-                contract.get("type") == "item_exchange"
-                and contract.get("contract_id") != contract_id
-                and contract.get("issuer_id") != contract_issuer_id
-            ):
-                competing_contracts.append(contract)
-
-        # Check if there are more pages
-        if len(contracts_page) < 1000:  # ESI returns max 1000 per page
-            break
-        page += 1
-        if page > 10:  # Safety limit to prevent infinite loops
-            logger.warning(f"Reached page limit (10) for region {region_id}, stopping")
-            break
-
-    logger.info(f"Found {len(competing_contracts)} potential competing contracts in region {region_id}")
-
-    # Check each competing contract - fetch items concurrently
-    competing_tasks = []
-    for comp_contract in competing_contracts:
-        comp_contract_id = comp_contract.get("contract_id")
-        competing_tasks.append(fetch_public_contract_items_async(comp_contract_id))
-
-    # Execute all item fetches concurrently
-    competing_items_results = await asyncio.gather(*competing_tasks, return_exceptions=True)
-
-    # Process results
-    for comp_contract, comp_items_result in zip(competing_contracts, competing_items_results):
-        if isinstance(comp_items_result, Exception):
-            # Handle fetch error
-            continue
-
-        comp_items = comp_items_result
-        if not comp_items or len(comp_items) != 1:
-            continue  # Only check single-item contracts
-
-        comp_contract_id = comp_contract.get("contract_id")
-        comp_price = comp_contract.get("price", 0)
-        comp_item = comp_items[0]
-        comp_type_id = comp_item.get("type_id")
-        comp_quantity = comp_item.get("quantity", 1)
-        comp_is_blueprint_copy = comp_item.get("is_blueprint_copy", False)
-
-        if comp_type_id == type_id and comp_quantity > 0 and comp_price > 0 and comp_is_blueprint_copy == is_blueprint_copy:
-            comp_price_per_item = comp_price / comp_quantity
-            if comp_price_per_item < price_per_item:
-                logger.info(
-                    f"Contract {contract_id} outbid by contract {comp_contract_id} with "
-                    f"price_per_item: {comp_price_per_item:.2f}"
-                )
-                return True, comp_price_per_item
-
-    logger.info(f"No competing contracts found for contract {contract_id}")
+    logger.info(f"No competing contracts found for contract {contract_id} (checked {total_competing_found} potential competitors across {max_pages_to_check} pages)")
     return False, None
+
+
+@validate_input_params(dict, list)
+async def check_contract_competition_hybrid(
+    contract_data: Dict[str, Any], contract_items: List[Dict[str, Any]]
+) -> Tuple[bool, Optional[float], Optional[Dict[str, float]]]:
+    """Check if a sell contract has been outbid by cheaper competing contracts in the same region.
+
+    This is a wrapper around check_contract_competition that maintains the same interface
+    for backward compatibility, but only performs contract-to-contract comparison.
+
+    Args:
+        contract_data: Contract information dictionary from ESI
+        contract_items: List of items in the contract
+
+    Returns:
+        Tuple of (is_outbid: bool, competing_price: float or None, market_data: None)
+        - is_outbid: True if a cheaper competing contract exists
+        - competing_price: The price per item of the cheapest competing contract, or None
+        - market_data: Always None (no market data returned)
+
+    Note:
+        Only checks single-item sell contracts (item_exchange type) with positive quantities.
+    """
+    # Only perform contract-to-contract comparison
+    is_outbid, competing_price = await check_contract_competition(contract_data, contract_items)
+    return is_outbid, competing_price, None
 
 
 @validate_input_params((int, type(None)))

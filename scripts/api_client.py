@@ -21,7 +21,10 @@ import aiohttp
 import requests
 from dotenv import load_dotenv
 
+from cache_manager import load_contract_items_cache, save_contract_items_cache
 from config import (
+    CACHE_DIR,
+    CONTRACT_ITEMS_CACHE_FILE,
     EMAIL_FROM,
     EMAIL_PASSWORD,
     EMAIL_SMTP_PORT,
@@ -31,6 +34,7 @@ from config import (
     ESI_BASE_URL,
     LOG_FILE,
     LOG_LEVEL,
+    TOKENS_FILE,
     WP_APP_PASSWORD,
     WP_BASE_URL,
     WP_USERNAME,
@@ -480,6 +484,7 @@ async def get_session():
     """Get or create aiohttp session with proper cleanup registration."""
     global session, _session_cleanup_registered
     if session is None or session.closed:
+        # Create session with logging disabled to prevent cleanup issues
         session = aiohttp.ClientSession(
             timeout=aiohttp.ClientTimeout(total=api_config.esi_timeout),
             connector=aiohttp.TCPConnector(limit=api_config.esi_max_workers * 2),
@@ -499,24 +504,34 @@ def _sync_cleanup_session():
         # Try to get the current event loop
         loop = asyncio.get_event_loop()
         if loop.is_running():
-            # If loop is running, we can't await, so just close synchronously if possible
+            # If loop is running, we can't await, so just mark for cleanup later
             if session and not session.closed:
                 # This is not ideal but prevents the error
-                logger.warning("Session cleanup attempted while event loop is running")
+                pass  # Don't log here to avoid issues
         else:
             # Create a new task to cleanup
             loop.run_until_complete(_cleanup_session())
     except RuntimeError:
-        # No event loop, try synchronous cleanup
-        logger.warning("No event loop available for session cleanup")
+        # No event loop available, try to cleanup synchronously
+        # Don't log here as it might cause the NameError
+        pass
 
 
 async def _cleanup_session():
     """Cleanup the global session."""
     global session
     if session and not session.closed:
-        await session.close()
-        session = None
+        try:
+            await session.close()
+            session = None
+        except Exception as e:
+            # Avoid logging here as it might cause issues during shutdown
+            pass
+
+
+async def cleanup_session():
+    """Explicitly cleanup the global session. Call this at the end of scripts."""
+    await _cleanup_session()
 
 
 # Initialize API configuration
@@ -944,8 +959,10 @@ async def fetch_public_contracts_async(
 
 
 @validate_input_params(int, int)
-async def fetch_public_contract_items_async(contract_id: int, max_retries: int = 3) -> Optional[List[Dict[str, Any]]]:
-    """Fetch items contained in a public contract asynchronously with retry logic.
+async def fetch_public_contract_items_async(
+    contract_id: int, max_retries: int = 3
+) -> Optional[List[Dict[str, Any]]]:
+    """Fetch items contained in a public contract asynchronously with retry logic and caching.
 
     Retrieves the list of items and their quantities for a specific public contract.
     Only works for contracts that are publicly visible (not private courier contracts).
@@ -959,7 +976,15 @@ async def fetch_public_contract_items_async(contract_id: int, max_retries: int =
 
     Note:
         Item quantities are negative for blueprint originals (BPOs) and positive for copies (BPCs).
+        Results are cached to avoid repeated API calls for the same contract.
     """
+    # Check cache first
+    cache = load_contract_items_cache()
+    cache_key = str(contract_id)
+    if cache_key in cache:
+        logger.debug(f"Using cached contract items for contract {contract_id}")
+        return cache[cache_key]
+
     endpoint = f"/contracts/public/items/{contract_id}/"
     url = f"{ESI_BASE_URL}{endpoint}"
     headers = {"Accept": "application/json"}
@@ -976,7 +1001,12 @@ async def fetch_public_contract_items_async(contract_id: int, max_retries: int =
                 if int(remaining) < 20:
                     logger.warning(f"ESI rate limit low: {remaining} requests remaining, resets in {reset_time}s")
 
-                return await response.json()
+                items = await response.json()
+                # Cache the result
+                cache[cache_key] = items
+                save_contract_items_cache(cache)
+                logger.debug(f"Cached contract items for contract {contract_id}")
+                return items
         except (aiohttp.ClientError, asyncio.TimeoutError) as e:
             if attempt < max_retries - 1:
                 wait_time = 2**attempt  # Exponential backoff

@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
 Debug script for contract competition checking functionality.
-Manually tests the competition logic to verify we're getting real contracts and comparing prices correctly.
+Tests 3 of the user's contracts to check if they have been outbid.
 """
 
 import asyncio
@@ -9,17 +9,23 @@ import json
 import logging
 import os
 import sys
-from typing import Dict, List, Any, Optional
+from typing import Dict, List, Any, Optional, Tuple
 
 # Add the scripts directory to the path so we can import our modules
 sys.path.insert(0, os.path.dirname(__file__))
 
 from api_client import (
+    fetch_esi,
+    fetch_public_esi,
     fetch_public_contracts_async,
     fetch_public_contract_items_async,
-    get_session
+    get_session,
+    wp_request,
+    refresh_token,
+    cleanup_session
 )
-from contract_processor import get_region_from_location
+from contract_processor import check_contract_competition_hybrid, get_region_from_location
+from config import TOKENS_FILE
 
 # Configure logging
 logging.basicConfig(
@@ -29,250 +35,242 @@ logging.basicConfig(
 logger = logging.getLogger(__name__)
 
 
-async def check_specific_contract_exists(contract_id: int, region_id: int):
-    """
-    Check if a specific contract exists and get its details.
-    """
-    print(f"\nChecking if contract {contract_id} exists in region {region_id}...")
+def load_tokens():
+    """Load stored tokens."""
+    if os.path.exists(TOKENS_FILE):
+        with open(TOKENS_FILE, "r") as f:
+            return json.load(f)
+    return {}
 
-    page = 1
-    while True:
-        contracts_page = await fetch_public_contracts_async(region_id, page)
-        if contracts_page is None:
-            print(f"ERROR: Failed to fetch contracts for region {region_id}, page {page}")
+
+async def get_user_contracts():
+    """Fetch contracts for debugging - try corporation contracts first, fallback to public"""
+    from esi_oauth import load_tokens, save_tokens
+    from datetime import datetime, timezone
+
+    tokens = load_tokens()
+    if not tokens:
+        logger.warning("No tokens found, falling back to public contracts")
+        return await get_public_contracts_for_debug()
+
+    # Find Dr FiLiN's token (assuming it's the first one or we can identify by name)
+    dr_filin_token = None
+    dr_filin_char_id = None
+    for char_id, token_data in tokens.items():
+        if token_data.get("name", "").lower() == "dr filin":
+            dr_filin_token = token_data
+            dr_filin_char_id = int(char_id)
             break
 
-        for contract in contracts_page:
-            if contract.get("contract_id") == contract_id:
-                print(f"FOUND contract {contract_id}:")
-                print(f"  Type: {contract.get('type')}")
-                print(f"  Status: {contract.get('status')}")
-                print(f"  Price: {contract.get('price', 0):,.2f} ISK")
-                print(f"  Issuer ID: {contract.get('issuer_id')}")
-                print(f"  Start Location: {contract.get('start_location_id')}")
+    if not dr_filin_token:
+        logger.warning("Dr FiLiN's token not found, falling back to public contracts")
+        return await get_public_contracts_for_debug()
 
-                # Fetch items for this contract
-                items = await fetch_public_contract_items_async(contract_id)
-                if items:
-                    print(f"  Items: {len(items)}")
-                    for item in items:
-                        print(f"    - Type ID: {item.get('type_id')}, Quantity: {item.get('quantity')}")
-                else:
-                    print("  Items: None found")
+    # Check if token is expired and refresh if needed
+    try:
+        expired = datetime.now(timezone.utc) > datetime.fromisoformat(
+            dr_filin_token.get("expires_at", "2000-01-01T00:00:00+00:00")
+        )
+    except (ValueError, TypeError):
+        expired = True
 
-                return contract
+    if expired:
+        logger.info("Dr FiLiN's token expired, refreshing...")
+        new_token = refresh_token(dr_filin_token["refresh_token"])
+        if new_token:
+            dr_filin_token.update(new_token)
+            save_tokens(tokens)
+            logger.info("Token refreshed successfully")
+        else:
+            logger.warning("Failed to refresh token, falling back to public contracts")
+            return await get_public_contracts_for_debug()
 
-        if len(contracts_page) < 1000:
-            break
-        page += 1
-        if page > 10:  # Safety limit
-            break
+    access_token = dr_filin_token["access_token"]
+    char_name = dr_filin_token["name"]
 
-    print(f"Contract {contract_id} not found in region {region_id}")
-    return None
+    # Try to get corporation contracts
+    try:
+        # First get character data to find corporation
+        char_data = await fetch_esi(f"/characters/{dr_filin_char_id}/", dr_filin_char_id, access_token)
+        if not char_data or 'corporation_id' not in char_data:
+            logger.warning("Could not get corporation ID, falling back to public contracts")
+            return await get_public_contracts_for_debug()
+
+        corp_id = char_data['corporation_id']
+        logger.info(f"Fetching corporation contracts for {char_name} (corp ID: {corp_id})")
+
+        # Fetch corporation contracts
+        corp_contracts = await fetch_esi(f"/corporations/{corp_id}/contracts/", corp_id, access_token)
+        if corp_contracts:
+            # Filter for outstanding item_exchange contracts from this corporation
+            outstanding_item_exchange = [
+                c for c in corp_contracts
+                if c.get("status") == "outstanding" and c.get("type") == "item_exchange" and c.get("issuer_corporation_id") == corp_id
+            ]
+            logger.info(f"Found {len(outstanding_item_exchange)} outstanding item exchange contracts from corporation {corp_id}")
+            return outstanding_item_exchange[:10]  # Limit to first 10 for debugging
+        else:
+            logger.warning("No corporation contracts found, falling back to public contracts")
+            return await get_public_contracts_for_debug()
+
+    except Exception as e:
+        logger.warning(f"Failed to fetch corporation contracts: {e}, falling back to public contracts")
+        return await get_public_contracts_for_debug()
 
 
-async def debug_contract_competition(contract_id: int, type_id: int, contract_price: float, quantity: int, start_location_id: int, is_blueprint_copy: bool = False):
-    print(f"\n{'='*80}")
-    print(f"DEBUGGING CONTRACT COMPETITION FOR CONTRACT {contract_id}")
-    print(f"{'='*80}")
+async def get_public_contracts_for_debug():
+    """Fallback function to get some public contracts for debugging when corporation access fails."""
+    logger.info("Fetching public contracts for debugging...")
 
-    print(f"Contract details:")
-    print(f"  Contract ID: {contract_id}")
-    print(f"  Type ID: {type_id}")
-    print(f"  Total Price: {contract_price:,.2f} ISK")
-    print(f"  Quantity: {quantity}")
-    print(f"  Price per item: {contract_price/quantity:,.2f} ISK")
-    print(f"  Start Location ID: {start_location_id}")
+    # Get some public contracts from a busy region (like The Forge)
+    region_id = 10000002  # The Forge region
+    public_contracts = await fetch_public_contracts_async(region_id, page=1)
 
-    # Get the region
-    print(f"\nGetting region from location {start_location_id}...")
-    region_id = await get_region_from_location(start_location_id)
-    if not region_id:
-        print(f"ERROR: Could not determine region for location {start_location_id}")
-        return
+    if not public_contracts:
+        logger.warning("No public contracts found")
+        return []
 
-    print(f"Region ID: {region_id}")
+    # Filter for item exchange contracts and get first 3
+    item_exchange_contracts = [
+        c for c in public_contracts
+        if c.get("type") == "item_exchange"
+    ][:3]
 
-    # Calculate our price per item
-    price_per_item = contract_price / quantity
-    print(f"\nOur contract price per item: {price_per_item:,.2f} ISK")
+    detailed_contracts = []
+    for contract in item_exchange_contracts:
+        contract_id = contract["contract_id"]
 
-    # Fetch competing contracts
-    print(f"\nFetching competing contracts in region {region_id}...")
-    page = 1
-    competing_contracts = []
-    total_pages_checked = 0
+        # Get contract items
+        contract_items = await fetch_public_contract_items_async(contract_id)
+        if not contract_items:
+            continue
 
-    while True:
-        print(f"  Fetching page {page}...")
-        contracts_page = await fetch_public_contracts_async(region_id, page)
-        if contracts_page is None:
-            print(f"    ERROR: Failed to fetch contracts for region {region_id}, page {page}")
-            break
-        elif not contracts_page:
-            print(f"    No contracts returned for region {region_id}, page {page}")
-            break
+        # Get first item details
+        first_item = contract_items[0]
+        type_id = first_item.get("type_id")
+        quantity = first_item.get("quantity", 1)
+        is_blueprint_copy = first_item.get("is_blueprint_copy", False)
 
-        print(f"    Fetched {len(contracts_page)} contracts from page {page}")
+        # Get item name
+        type_data = await fetch_public_esi(f"/universe/types/{type_id}/")
+        item_name = type_data.get("name", f"Type {type_id}") if type_data else f"Type {type_id}"
 
-        # Filter for outstanding item_exchange contracts (excluding our own)
-        page_competing = []
-        for contract in contracts_page:
-            if (
-                contract.get("type") == "item_exchange"
-                and contract.get("contract_id") != contract_id
-                and contract.get("issuer_id") != 90045731  # Our character ID from logs
-            ):
-                page_competing.append(contract)
+        detailed_contracts.append({
+            'contract_data': contract,
+            'contract_items': contract_items,
+            'item_name': item_name,
+            'type_id': type_id,
+            'quantity': quantity,
+            'is_blueprint_copy': is_blueprint_copy,
+            'total_items': len(contract_items),
+            'price_per_item': contract.get("price", 0) / quantity if quantity > 0 else 0,
+            'contract_id': contract_id
+        })
 
-        competing_contracts.extend(page_competing)
-        print(f"    Found {len(page_competing)} potential competing contracts on this page")
+    logger.info(f"Found {len(detailed_contracts)} public contracts for debugging")
+    return detailed_contracts
 
-        # Check if there are more pages
-        if len(contracts_page) < 1000:  # ESI returns max 1000 per page
-            break
-        page += 1
-        total_pages_checked += 1
 
-        # Safety limit to prevent infinite loops (same as real function)
-        if page > 10:
-            print(f"    Reached page limit (10) for debugging, stopping")
-            break
-
-    print(f"\nTotal competing contracts found: {len(competing_contracts)}")
-    print(f"Total pages checked: {total_pages_checked + 1}")
-
-    # Now fetch items for competing contracts and check prices
-    print(f"\nAnalyzing competing contracts...")
-    cheaper_contracts = []
-    target_contract_found = False
-
-    # OPTIMIZATION: Filter contracts by price first - only check contracts cheaper than ours
-    price_filtered_contracts = []
-    for contract in competing_contracts:
-        contract_price = contract.get("price", 0)
-        if contract_price > 0 and contract_price < price_per_item:  # Only check cheaper contracts
-            price_filtered_contracts.append(contract)
-
-    print(f"After price filtering: {len(price_filtered_contracts)} contracts cheaper than ours (from {len(competing_contracts)} total)")
-
-    # Use concurrent fetching like the real implementation
-    contracts_to_check = price_filtered_contracts[:100]  # Limit for debugging but use concurrent approach
-
-    if contracts_to_check:
-        print(f"Fetching items for {len(contracts_to_check)} price-filtered contracts concurrently...")
-
-        # Fetch items concurrently (like the real check_contract_competition function)
-        competing_tasks = []
-        for comp_contract in contracts_to_check:
-            comp_contract_id = comp_contract.get("contract_id")
-            competing_tasks.append(fetch_public_contract_items_async(comp_contract_id))
-
-        competing_items_results = await asyncio.gather(*competing_tasks, return_exceptions=True)
-
-        # Process results
-        for comp_contract, comp_items_result in zip(contracts_to_check, competing_items_results):
-            if isinstance(comp_items_result, Exception):
-                continue
-
-            comp_items = comp_items_result
-            if not comp_items or len(comp_items) != 1:
-                continue  # Only check single-item contracts
-
-            comp_contract_id = comp_contract.get("contract_id")
-            comp_price = comp_contract.get("price", 0)
-            comp_item = comp_items[0]
-            comp_type_id = comp_item.get("type_id")
-            comp_quantity = comp_item.get("quantity", 1)
-            comp_is_blueprint_copy = comp_item.get("is_blueprint_copy", False)
-
-            # Check if this is the specific contract that outbid ours
-            if comp_contract_id == 222262092:
-                print(f"    *** FOUND THE KNOWN COMPETITOR CONTRACT {comp_contract_id} ***")
-                print(f"    Item: type_id={comp_type_id}, quantity={comp_quantity}, is_blueprint_copy={comp_is_blueprint_copy}")
-                target_contract_found = True
-
-            if comp_type_id == type_id and comp_quantity > 0 and comp_price > 0 and comp_is_blueprint_copy == is_blueprint_copy:
-                comp_price_per_item = comp_price / comp_quantity
-                print(f"  Found matching competitor: Contract {comp_contract_id} at {comp_price_per_item:,.2f} ISK per item")
-
-                if comp_price_per_item < price_per_item:
-                    print(f"    *** THIS CONTRACT UNDERCUTS OURS! ***")
-                    cheaper_contracts.append({
-                        'contract_id': comp_contract_id,
-                        'price_per_item': comp_price_per_item,
-                        'total_price': comp_price,
-                        'quantity': comp_quantity
-                    })
-                    # In real implementation, we could return here, but for debugging let's collect all
-                else:
-                    print(f"    This contract is more expensive than ours")
-            else:
-                if comp_contract_id == 222262092:
-                    print(f"    Contract doesn't match our criteria (wrong type_id, quantity, or blueprint type)")
-
-    print(f"\nChecked {len(contracts_to_check)} price-filtered contracts concurrently")
-
-    print(f"\n{'='*80}")
-    print(f"SUMMARY")
-    print(f"{'='*80}")
-    print(f"Our contract {contract_id}: {price_per_item:,.2f} ISK per item")
-    print(f"Target competitor contract 222262092 found: {target_contract_found}")
-    print(f"Found {len(cheaper_contracts)} cheaper competing contracts:")
-
-    for comp in cheaper_contracts:
-        print(f"  Contract {comp['contract_id']}: {comp['price_per_item']:,.2f} ISK per item "
-              f"(total: {comp['total_price']:,.2f} ISK, qty: {comp['quantity']})")
-
-    if cheaper_contracts:
-        best_competitor = min(cheaper_contracts, key=lambda x: x['price_per_item'])
-        print(f"\nBest competitor: Contract {best_competitor['contract_id']} at "
-              f"{best_competitor['price_per_item']:,.2f} ISK per item")
-        print(f"Our contract is outbid by {price_per_item - best_competitor['price_per_item']:,.2f} ISK per item")
-    else:
-        print("  No cheaper contracts found - our contract is the cheapest!")
+async def check_contract_outbid_status(contract_data: Dict[str, Any], contract_items: List[Dict[str, Any]]) -> Tuple[bool, Optional[float]]:
+    """Check if a contract has been outbid."""
+    try:
+        is_outbid, competing_price, debug_info = await check_contract_competition_hybrid(contract_data, contract_items)
+        if debug_info:
+            print(f"  Debug: Found {len(debug_info)} total competing contracts in region")
+        return is_outbid, competing_price
+    except Exception as e:
+        logger.error(f"Error checking contract competition: {e}")
+        return False, None
 
 
 async def main():
     """
-    Main debug function. Test with a specific contract from the logs.
+    Main debug function. Test contracts for outbidding.
     """
-    # Test with contract 222641828 from the logs
-    # Contract details from logs:
-    # - Contract ID: 222641828
-    # - Type ID: 29050
-    # - Price per item: 248990000.00
-    # - Region: 10000002 (The Forge)
-    # - Was outbid by contract 222262092 with price_per_item: 7760000.00
+    print("=" * 80)
+    print("DEBUGGING CONTRACT COMPETITION")
+    print("=" * 80)
 
-    # We need to estimate the original contract details
-    # From logs: price_per_item was 248990000.00, let's assume quantity = 1 for BPO
-    contract_id = 222641828
-    type_id = 29050
-    price_per_item = 248990000.00
-    quantity = 1  # Assuming BPO
-    contract_price = price_per_item * quantity
-    start_location_id = 60003760  # Jita IV - Moon 4 - Caldari Navy Assembly Plant (common location)
-    is_blueprint_copy = False  # This is a BPO, not a BPC
+    # Get contracts (try corporation first, fallback to public)
+    contracts = await get_user_contracts()
 
-    # First check if the competitor contract still exists
-    region_id = 10000002  # The Forge
-    competitor_contract = await check_specific_contract_exists(222262092, region_id)
-    if competitor_contract:
-        print(f"\nCompetitor contract 222262092 still exists!")
-    else:
-        print(f"\nCompetitor contract 222262092 no longer exists (expired/fulfilled/deleted)")
+    if not contracts:
+        print("No contracts found to test.")
+        return
 
-    # Now run the competition analysis
-    await debug_contract_competition(
-        contract_id=contract_id,
-        type_id=type_id,
-        contract_price=contract_price,
-        quantity=quantity,
-        start_location_id=start_location_id,
-        is_blueprint_copy=is_blueprint_copy
-    )
+    print(f"Testing {len(contracts)} contracts:")
+    print()
+
+    for i, contract in enumerate(contracts, 1):
+        contract_id = contract.get("contract_id")
+
+        print(f"Contract {i}: Contract ID {contract_id}")
+        print(f"  Type: {contract.get('type', 'unknown')}")
+        print(f"  Status: {contract.get('status', 'unknown')}")
+        print(f"  Price: {contract.get('price', 0):,.2f} ISK")
+
+        # Get contract items to check competition
+        try:
+            # For corporation contracts, we need to get items
+            if 'issuer_corporation_id' in contract:
+                corp_id = contract['issuer_corporation_id']
+                # We need a token to get items - this might fail if we don't have proper access
+                tokens = load_tokens()
+                access_token = None
+                for char_id, token_data in tokens.items():
+                    if token_data.get("name", "").lower() == "dr filin":
+                        access_token = token_data.get("access_token")
+                        break
+
+                if access_token:
+                    contract_items = await fetch_esi(f"/corporations/{corp_id}/contracts/{contract_id}/items/", corp_id, access_token)
+                else:
+                    contract_items = None
+            else:
+                # Public contract
+                contract_items = await fetch_public_contract_items_async(contract_id)
+
+            if not contract_items:
+                print(f"  Could not get items for contract {contract_id} (may not have proper corporation roles)")
+                print("-" * 60)
+                continue
+
+            # Check if single item
+            if len(contract_items) == 1:
+                item = contract_items[0]
+                type_id = item.get("type_id")
+                quantity = item.get("quantity", 1)
+
+                # Get item name
+                type_data = await fetch_public_esi(f"/universe/types/{type_id}/")
+                item_name = type_data.get("name", f"Type {type_id}") if type_data else f"Type {type_id}"
+
+                price_per_item = contract.get("price", 0) / quantity if quantity > 0 else 0
+
+                print(f"  Item: {item_name}")
+                print(f"  Quantity: {quantity}")
+                print(f"  Price per item: {price_per_item:,.2f} ISK")
+
+                # Check competition
+                print(f"  Checking for competitors...")
+                is_outbid, competing_price = await check_contract_outbid_status(contract, contract_items)
+
+                if is_outbid:
+                    print(f"  ❌ OUTBID! Cheapest competitor: {competing_price:,.2f} ISK per item")
+                    print(f"  Difference: {price_per_item - competing_price:,.2f} ISK per item")
+                else:
+                    print(f"  ✅ Not outbid - appears to be the cheapest!")
+            else:
+                print(f"  📦 Multi-item contract ({len(contract_items)} items) - competition check designed for single-item contracts")
+
+        except Exception as e:
+            print(f"  Error processing contract {contract_id}: {e}")
+
+        print("-" * 60)
+        print()
+
+    # Cleanup session
+    await cleanup_session()
 
 
 if __name__ == "__main__":

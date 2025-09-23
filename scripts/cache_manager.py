@@ -19,6 +19,7 @@ from config import (
     BLUEPRINT_CACHE_FILE,
     BLUEPRINT_TYPE_CACHE_FILE,
     CACHE_DIR,
+    CONTRACT_ITEMS_CACHE_FILE,
     FAILED_STRUCTURES_FILE,
     LOCATION_CACHE_FILE,
     STRUCTURE_CACHE_FILE,
@@ -397,6 +398,16 @@ def load_wp_post_id_cache() -> Dict[str, Any]:
 def save_wp_post_id_cache(cache: Dict[str, Any]) -> None:
     """Save WordPress post ID cache."""
     save_cache(WP_POST_ID_CACHE_FILE, cache)
+
+
+def load_contract_items_cache() -> Dict[str, Any]:
+    """Load contract items cache."""
+    return load_cache(CONTRACT_ITEMS_CACHE_FILE)
+
+
+def save_contract_items_cache(cache: Dict[str, Any]) -> None:
+    """Save contract items cache."""
+    save_cache(CONTRACT_ITEMS_CACHE_FILE, cache)
 
 
 def get_cached_wp_post_id(cache: Dict[str, Any], post_type: str, item_id: int) -> Optional[int]:
