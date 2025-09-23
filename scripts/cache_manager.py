@@ -15,6 +15,22 @@ from datetime import datetime, timezone
 from functools import lru_cache
 from config import CACHE_DIR, BLUEPRINT_CACHE_FILE, BLUEPRINT_TYPE_CACHE_FILE, LOCATION_CACHE_FILE, STRUCTURE_CACHE_FILE, FAILED_STRUCTURES_FILE, WP_POST_ID_CACHE_FILE
 
+# Prometheus-style metrics for monitoring
+try:
+    from prometheus_client import Counter, Histogram, Gauge
+    
+    CACHE_HITS = Counter('eve_cache_hits_total', 'Total cache hits', ['cache_type'])
+    CACHE_MISSES = Counter('eve_cache_misses_total', 'Total cache misses', ['cache_type'])
+    CACHE_SIZE = Gauge('eve_cache_size', 'Current cache size', ['cache_type'])
+    API_REQUEST_DURATION = Histogram('eve_api_request_duration_seconds', 'API request duration', ['endpoint_type'])
+    CACHE_OPERATION_DURATION = Histogram('eve_cache_operation_duration_seconds', 'Cache operation duration', ['operation'])
+    
+    METRICS_ENABLED = True
+except ImportError:
+    # Fallback if prometheus_client is not available
+    METRICS_ENABLED = False
+    CACHE_HITS = CACHE_MISSES = CACHE_SIZE = API_REQUEST_DURATION = CACHE_OPERATION_DURATION = None
+
 logger = logging.getLogger(__name__)
 
 # Cache configuration
@@ -262,13 +278,21 @@ def log_cache_performance() -> None:
                 f"Compressed Saves: {stats['compressed_saves']}, Batch Saves: {stats['batch_saves']}, "
                 f"Expired Cleanups: {stats['expired_cleanups']}")
 
-def get_cached_value_with_stats(cache: Dict[str, Any], key: str) -> Any:
-    """Get a value from cache with statistics tracking."""
+def get_cached_value_with_stats(cache: Dict[str, Any], key: str, cache_type: str = 'unknown') -> Any:
+    """Get a value from cache with statistics and metrics tracking."""
+    start_time = time.time()
+    
     if key in cache:
         _cache_stats['hits'] += 1
+        if METRICS_ENABLED:
+            CACHE_HITS.labels(cache_type=cache_type).inc()
+            CACHE_OPERATION_DURATION.labels(operation='get_hit').observe(time.time() - start_time)
         return cache[key]
     else:
         _cache_stats['misses'] += 1
+        if METRICS_ENABLED:
+            CACHE_MISSES.labels(cache_type=cache_type).inc()
+            CACHE_OPERATION_DURATION.labels(operation='get_miss').observe(time.time() - start_time)
         return None
 
 @lru_cache(maxsize=1000)

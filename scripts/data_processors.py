@@ -16,7 +16,7 @@ import time
 import asyncio
 
 from config import *
-from api_client import fetch_public_esi, fetch_esi, wp_request, send_email, refresh_token, fetch_type_icon, sanitize_string, WordPressAuthError, WordPressRequestError, ESIAuthError, ESIRequestError, log_audit_event, benchmark
+from api_client import fetch_public_esi, fetch_esi, wp_request, send_email, refresh_token, fetch_type_icon, sanitize_string, WordPressAuthError, WordPressRequestError, ESIAuthError, ESIRequestError, log_audit_event, benchmark, format_error_message
 from cache_manager import (
     load_blueprint_cache, save_blueprint_cache, load_blueprint_type_cache, save_blueprint_type_cache,
     load_location_cache, save_location_cache, load_structure_cache, save_structure_cache,
@@ -232,7 +232,7 @@ def fetch_character_data(char_id: int, access_token: str) -> Optional[Dict[str, 
         endpoint = f"/characters/{char_id}/"
         return fetch_esi(endpoint, char_id, access_token)
     except (ESIAuthError, ESIRequestError) as e:
-        logger.error(f"Failed to fetch character data for {char_id}: {e}")
+        logger.error(format_error_message("fetch_character_data", char_id, e))
         return None
 
 def fetch_character_skills(char_id: int, access_token: str) -> Optional[Dict[str, Any]]:
@@ -241,7 +241,7 @@ def fetch_character_skills(char_id: int, access_token: str) -> Optional[Dict[str
         endpoint = f"/characters/{char_id}/skills/"
         return fetch_esi(endpoint, char_id, access_token)
     except (ESIAuthError, ESIRequestError) as e:
-        logger.error(f"Failed to fetch character skills for {char_id}: {e}")
+        logger.error(format_error_message("fetch_character_skills", char_id, e))
         return None
 
 def fetch_character_blueprints(char_id: int, access_token: str) -> Optional[Dict[str, Any]]:
@@ -250,7 +250,7 @@ def fetch_character_blueprints(char_id: int, access_token: str) -> Optional[Dict
         endpoint = f"/characters/{char_id}/blueprints/"
         return fetch_esi(endpoint, char_id, access_token)
     except (ESIAuthError, ESIRequestError) as e:
-        logger.error(f"Failed to fetch character blueprints for {char_id}: {e}")
+        logger.error(format_error_message("fetch_character_blueprints", char_id, e))
         return None
 
 def fetch_character_planets(char_id: int, access_token: str) -> Optional[Dict[str, Any]]:
@@ -259,7 +259,7 @@ def fetch_character_planets(char_id: int, access_token: str) -> Optional[Dict[st
         endpoint = f"/characters/{char_id}/planets/"
         return fetch_esi(endpoint, char_id, access_token)
     except (ESIAuthError, ESIRequestError) as e:
-        logger.error(f"Failed to fetch character planets for {char_id}: {e}")
+        logger.error(format_error_message("fetch_character_planets", char_id, e))
         return None
 
 def fetch_corporation_data(corp_id: int, access_token: str) -> Optional[Dict[str, Any]]:
@@ -268,34 +268,11 @@ def fetch_corporation_data(corp_id: int, access_token: str) -> Optional[Dict[str
         endpoint = f"/corporations/{corp_id}/"
         return fetch_esi(endpoint, None, access_token)  # No char_id needed for corp data
     except (ESIAuthError, ESIRequestError) as e:
-        logger.error(f"Failed to fetch corporation data for {corp_id}: {e}")
+        logger.error(format_error_message("fetch_corporation_data", corp_id, e))
         return None
 
-async def update_blueprint_in_wp(blueprint_data: Dict[str, Any], char_id: int, access_token: str, wp_post_id_cache: Optional[Dict[str, Any]] = None, blueprint_cache: Optional[Dict[str, Any]] = None, location_cache: Optional[Dict[str, Any]] = None, structure_cache: Optional[Dict[str, Any]] = None, failed_structures: Optional[Dict[str, Any]] = None) -> None:
-    """
-    Update or create a blueprint post in WordPress from direct blueprint endpoint data.
-
-    Processes blueprint information including ME/TE levels, location, and type details.
-    Only tracks BPOs (quantity == -1), skipping BPCs. Caches location and type data
-    for performance.
-
-    Args:
-        blueprint_data: Blueprint data from ESI API.
-        wp_post_id_cache: Cache of WordPress post IDs.
-        char_id: Character ID for auth.
-        access_token: Valid OAuth access token.
-        blueprint_cache: Optional cache for blueprint names.
-        location_cache: Optional cache for location names.
-        structure_cache: Optional cache for structure names.
-        failed_structures: Optional cache for failed structure fetches.
-
-    Returns:
-        None
-
-    Raises:
-        No explicit raises; logs errors internally.
-    """
-    start_time = time.time()
+async def _initialize_blueprint_caches(blueprint_cache: Optional[Dict[str, Any]], location_cache: Optional[Dict[str, Any]], structure_cache: Optional[Dict[str, Any]], failed_structures: Optional[Dict[str, Any]], wp_post_id_cache: Optional[Dict[str, Any]]) -> Tuple[Dict[str, Any], Dict[str, Any], Dict[str, Any], Dict[str, Any], Dict[str, Any]]:
+    """Initialize all caches needed for blueprint processing."""
     if blueprint_cache is None:
         blueprint_cache = load_blueprint_cache()
     if location_cache is None:
@@ -306,18 +283,26 @@ async def update_blueprint_in_wp(blueprint_data: Dict[str, Any], char_id: int, a
         failed_structures = load_failed_structures()
     if wp_post_id_cache is None:
         wp_post_id_cache = load_wp_post_id_cache()
+    
+    return blueprint_cache, location_cache, structure_cache, failed_structures, wp_post_id_cache
 
+async def _validate_and_filter_blueprint(blueprint_data: Dict[str, Any]) -> Optional[int]:
+    """Validate blueprint data and filter out BPCs. Returns item_id if valid BPO, None otherwise."""
     item_id = blueprint_data.get('item_id')
     if not item_id:
         logger.error(f"Blueprint data missing item_id: {blueprint_data}")
-        return
+        return None
 
     # Skip BPCs - only track BPOs (quantity == -1 indicates a BPO)
     quantity = blueprint_data.get('quantity', -1)
     if quantity != -1:
         logger.info(f"Skipping BPC (quantity={quantity}) for item_id: {item_id}")
-        return
+        return None
+    
+    return item_id
 
+async def _find_existing_blueprint_post(item_id: int, wp_post_id_cache: Dict[str, Any]) -> Optional[Dict[str, Any]]:
+    """Find existing blueprint post by item_id. Returns post data or None."""
     slug = f"blueprint-{item_id}"
 
     # Try to get post ID from cache first
@@ -344,18 +329,67 @@ async def update_blueprint_in_wp(blueprint_data: Dict[str, Any], char_id: int, a
         except (WordPressAuthError, WordPressRequestError) as e:
             logger.error(f"Failed to fetch blueprint posts by slug {slug}: {e}")
             existing_post = None
+    
+    return existing_post
 
+async def _prepare_blueprint_data(blueprint_data: Dict[str, Any], char_id: int, access_token: str, blueprint_cache: Dict[str, Any], location_cache: Dict[str, Any], structure_cache: Dict[str, Any], failed_structures: Dict[str, Any]) -> Tuple[Dict[str, Any], str, str, str]:
+    """Prepare blueprint post data with all required information."""
     # Fetch blueprint details
     type_name, location_name, bp_type = await fetch_blueprint_details(blueprint_data, char_id, access_token, blueprint_cache, location_cache, structure_cache, failed_structures)
     
-    me = blueprint_data.get('material_efficiency', 0)
-    te = blueprint_data.get('time_efficiency', 0)
-    quantity = blueprint_data.get('quantity', -1)
-
+    item_id = blueprint_data['item_id']
     post_data = construct_blueprint_post_data(blueprint_data, type_name, location_name, bp_type, char_id, item_id)
+    
+    return post_data, type_name, location_name, bp_type
 
+async def update_blueprint_in_wp(blueprint_data: Dict[str, Any], char_id: int, access_token: str, wp_post_id_cache: Optional[Dict[str, Any]] = None, blueprint_cache: Optional[Dict[str, Any]] = None, location_cache: Optional[Dict[str, Any]] = None, structure_cache: Optional[Dict[str, Any]] = None, failed_structures: Optional[Dict[str, Any]] = None) -> None:
+    """
+    Update or create a blueprint post in WordPress from direct blueprint endpoint data.
+
+    Processes blueprint information including ME/TE levels, location, and type details.
+    Only tracks BPOs (quantity == -1), skipping BPCs. Caches location and type data
+    for performance.
+
+    Args:
+        blueprint_data: Blueprint data from ESI API.
+        wp_post_id_cache: Cache of WordPress post IDs.
+        char_id: Character ID for auth.
+        access_token: Valid OAuth access token.
+        blueprint_cache: Optional cache for blueprint names.
+        location_cache: Optional cache for location names.
+        structure_cache: Optional cache for structure names.
+        failed_structures: Optional cache for failed structure fetches.
+
+    Returns:
+        None
+
+    Raises:
+        No explicit raises; logs errors internally.
+    """
+    start_time = time.time()
+    
+    # Initialize caches
+    blueprint_cache, location_cache, structure_cache, failed_structures, wp_post_id_cache = await _initialize_blueprint_caches(
+        blueprint_cache, location_cache, structure_cache, failed_structures, wp_post_id_cache
+    )
+    
+    # Validate and filter blueprint
+    item_id = await _validate_and_filter_blueprint(blueprint_data)
+    if item_id is None:
+        return
+    
+    # Find existing post
+    existing_post = await _find_existing_blueprint_post(item_id, wp_post_id_cache)
+    
+    # Prepare blueprint data
+    post_data, type_name, location_name, bp_type = await _prepare_blueprint_data(
+        blueprint_data, char_id, access_token, blueprint_cache, location_cache, structure_cache, failed_structures
+    )
+    
     # Update or create the blueprint post in WordPress
-    await update_or_create_blueprint_post(post_data, existing_post, wp_post_id_cache, item_id, blueprint_data, type_name, location_name, me, te, quantity, char_id)
+    await update_or_create_blueprint_post(post_data, existing_post, wp_post_id_cache, item_id, blueprint_data, type_name, location_name, 
+                                        blueprint_data.get('material_efficiency', 0), blueprint_data.get('time_efficiency', 0), 
+                                        blueprint_data.get('quantity', -1), char_id)
 
     elapsed = time.time() - start_time
     logger.info(f"Blueprint processing completed for item {item_id} in {elapsed:.2f}s")
@@ -396,7 +430,7 @@ async def get_blueprint_type_name(type_id: Optional[int], item_id: int, blueprin
         The blueprint type name
     """
     if type_id:
-        cached_name = get_cached_value_with_stats(blueprint_cache, str(type_id))
+        cached_name = get_cached_value_with_stats(blueprint_cache, str(type_id), 'blueprint')
         if cached_name:
             return cached_name
         else:
@@ -444,7 +478,7 @@ async def get_location_name(location_id: Optional[int], char_id: int, access_tok
     """
     if location_id:
         location_id_str = str(location_id)
-        cached_location = get_cached_value_with_stats(location_cache, location_id_str)
+        cached_location = get_cached_value_with_stats(location_cache, location_id_str, 'location')
         if cached_location:
             return cached_location
         elif location_id >= 1000000000000:  # Structures (citadels, etc.)
@@ -469,11 +503,11 @@ async def get_structure_location_name(location_id: int, location_id_str: str, ch
     Returns:
         Structure name or fallback
     """
-    cached_failed = get_cached_value_with_stats(failed_structures, location_id_str)
+    cached_failed = get_cached_value_with_stats(failed_structures, location_id_str, 'failed_structures')
     if cached_failed:
         return f"Citadel {location_id}"
     
-    cached_structure = get_cached_value_with_stats(structure_cache, location_id_str)
+    cached_structure = get_cached_value_with_stats(structure_cache, location_id_str, 'structure')
     if cached_structure:
         return cached_structure
     
@@ -509,7 +543,7 @@ async def get_station_location_name(location_id: int, location_id_str: str, loca
     Returns:
         Station name or fallback
     """
-    cached_station = get_cached_value_with_stats(location_cache, location_id_str)
+    cached_station = get_cached_value_with_stats(location_cache, location_id_str, 'location')
     if cached_station:
         return cached_station
     

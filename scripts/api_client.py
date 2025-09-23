@@ -114,6 +114,74 @@ def validate_input_params(*param_types):
         return wrapper
     return decorator
 
+def validate_api_response_structure(*required_fields):
+    """
+    Decorator to validate that API response contains required fields.
+    
+    Args:
+        *required_fields: Field names that must be present in the response dict
+    """
+    def decorator(func):
+        @functools.wraps(func)
+        async def async_wrapper(*args, **kwargs):
+            result = await func(*args, **kwargs)
+            
+            if result is None:
+                logger.warning(f"{func.__name__} returned None - possible API failure")
+                return result
+            
+            if isinstance(result, dict):
+                missing_fields = [field for field in required_fields if field not in result]
+                if missing_fields:
+                    logger.error(f"{func.__name__} response missing required fields: {missing_fields}")
+                    raise ESIRequestError(f"API response missing required fields: {missing_fields}")
+            
+            return result
+        
+        @functools.wraps(func)
+        def sync_wrapper(*args, **kwargs):
+            result = func(*args, **kwargs)
+            
+            if result is None:
+                logger.warning(f"{func.__name__} returned None - possible API failure")
+                return result
+            
+            if isinstance(result, dict):
+                missing_fields = [field for field in required_fields if field not in result]
+                if missing_fields:
+                    logger.error(f"{func.__name__} response missing required fields: {missing_fields}")
+                    raise ESIRequestError(f"API response missing required fields: {missing_fields}")
+            
+            return result
+        
+        return async_wrapper if asyncio.iscoroutinefunction(func) else sync_wrapper
+    return decorator
+
+def validate_numeric_bounds(min_value=None, max_value=None):
+    """
+    Decorator to validate that numeric parameters are within specified bounds.
+    
+    Args:
+        min_value: Minimum allowed value (inclusive), None for no minimum
+        max_value: Maximum allowed value (inclusive), None for no maximum
+    """
+    def decorator(func):
+        @functools.wraps(func)
+        def wrapper(*args, **kwargs):
+            # Skip 'self' or 'cls' for methods/classmethods
+            start_idx = 1 if args and hasattr(args[0], func.__name__) else 0
+            
+            for i, arg in enumerate(args[start_idx:], start_idx):
+                if isinstance(arg, (int, float)):
+                    if min_value is not None and arg < min_value:
+                        raise ValueError(f"{func.__name__} argument {i} must be >= {min_value}, got {arg}")
+                    if max_value is not None and arg > max_value:
+                        raise ValueError(f"{func.__name__} argument {i} must be <= {max_value}, got {arg}")
+            
+            return func(*args, **kwargs)
+        return wrapper
+    return decorator
+
 # Circuit Breaker implementation for better error handling
 class CircuitBreakerState(Enum):
     CLOSED = "closed"      # Normal operation
@@ -359,9 +427,41 @@ audit_handler = logging.FileHandler('audit.log')
 audit_handler.setFormatter(logging.Formatter('%(asctime)s - %(levelname)s - %(message)s'))
 audit_logger.addHandler(audit_handler)
 
+# Prometheus-style metrics for API monitoring
+try:
+    from prometheus_client import Counter, Histogram
+    
+    ESI_REQUESTS_TOTAL = Counter('eve_esi_requests_total', 'Total ESI API requests', ['endpoint_type', 'status'])
+    ESI_REQUEST_DURATION = Histogram('eve_esi_request_duration_seconds', 'ESI API request duration', ['endpoint_type'])
+    WP_REQUESTS_TOTAL = Counter('eve_wp_requests_total', 'Total WordPress API requests', ['method', 'status'])
+    WP_REQUEST_DURATION = Histogram('eve_wp_request_duration_seconds', 'WordPress API request duration', ['method'])
+    
+    API_METRICS_ENABLED = True
+except ImportError:
+    API_METRICS_ENABLED = False
+    ESI_REQUESTS_TOTAL = ESI_REQUEST_DURATION = WP_REQUESTS_TOTAL = WP_REQUEST_DURATION = None
+
 def log_audit_event(event: str, user: str, details: Dict[str, Any]) -> None:
     """Log audit events for security monitoring."""
     audit_logger.info(f"EVENT: {event} | USER: {user} | DETAILS: {details}")
+
+def format_error_message(operation: str, resource_id: Any, error: Exception, context: Dict = None) -> str:
+    """Format error messages consistently across the application.
+    
+    Args:
+        operation: The operation that failed (e.g., 'fetch_character_data')
+        resource_id: The resource identifier (e.g., character ID, endpoint)
+        error: The exception that occurred
+        context: Optional additional context information
+        
+    Returns:
+        Formatted error message string
+    """
+    base_msg = f"{operation} failed for {resource_id}: {str(error)}"
+    if context:
+        context_str = ", ".join(f"{k}={v}" for k, v in context.items())
+        return f"{base_msg} ({context_str})"
+    return base_msg
 
 @benchmark
 async def _fetch_esi_with_retry(endpoint: str, headers: Optional[Dict[str, str]] = None, max_retries: int = None, is_public: bool = True) -> Dict[str, Any]:
@@ -385,19 +485,28 @@ async def _fetch_esi_with_retry(endpoint: str, headers: Optional[Dict[str, str]]
                         elapsed = time.time() - start_time
                         endpoint_type = "public" if is_public else "authenticated"
                         logger.info(f"ESI {endpoint_type} fetch successful: {endpoint} in {elapsed:.2f}s")
+                        if API_METRICS_ENABLED:
+                            ESI_REQUESTS_TOTAL.labels(endpoint_type=endpoint_type, status='success').inc()
+                            ESI_REQUEST_DURATION.labels(endpoint_type=endpoint_type).observe(elapsed)
                         return result
                     elif response.status == 401 and not is_public:
                         elapsed = time.time() - start_time
                         logger.error(f"Authentication failed for endpoint {endpoint} in {elapsed:.2f}s")
+                        if API_METRICS_ENABLED:
+                            ESI_REQUESTS_TOTAL.labels(endpoint_type="authenticated", status='auth_error').inc()
                         raise ESIAuthError(f"Authentication failed: {endpoint}")
                     elif response.status == 403 and not is_public:
                         elapsed = time.time() - start_time
                         logger.error(f"Access forbidden for endpoint {endpoint} in {elapsed:.2f}s")
+                        if API_METRICS_ENABLED:
+                            ESI_REQUESTS_TOTAL.labels(endpoint_type="authenticated", status='forbidden').inc()
                         raise ESIRequestError(f"Access forbidden: {endpoint}")
                     elif response.status == 404:
                         elapsed = time.time() - start_time
                         endpoint_type = "public" if is_public else ""
                         logger.warning(f"Resource not found for {endpoint_type} endpoint {endpoint} in {elapsed:.2f}s")
+                        if API_METRICS_ENABLED:
+                            ESI_REQUESTS_TOTAL.labels(endpoint_type=endpoint_type or "unknown", status='not_found').inc()
                         raise ESIRequestError(f"Resource not found: {endpoint}")
                     elif response.status == 429:  # Rate limited
                         # Check for X-ESI-Error-Limit-Remain header
@@ -495,6 +604,13 @@ async def fetch_public_esi(endpoint: str, max_retries: int = None) -> Optional[D
     Example:
         >>> data = await fetch_public_esi('/universe/types/123')
         >>> print(data['name'])  # 'Rifter'
+        >>> 
+        >>> # Fetch multiple types concurrently
+        >>> import asyncio
+        >>> async def get_types(type_ids):
+        ...     tasks = [fetch_public_esi(f'/universe/types/{tid}') for tid in type_ids]
+        ...     return await asyncio.gather(*tasks)
+        >>> types = asyncio.run(get_types([123, 456, 789]))
     """
     return await _fetch_esi_with_retry(endpoint, headers=None, max_retries=max_retries, is_public=True)
 
@@ -522,6 +638,16 @@ async def fetch_esi(endpoint: str, char_id: Optional[int], access_token: str, ma
     Example:
         >>> assets = await fetch_esi('/characters/123/assets', 123, 'token')
         >>> print(len(assets))  # Number of assets
+        150
+        >>> 
+        >>> # Fetch character skills
+        >>> skills = await fetch_esi('/characters/123/skills', 123, 'token')
+        >>> print(skills['total_sp'])  # Total skill points
+        12345678
+        >>> 
+        >>> # Fetch corporation data (char_id can be None for corp endpoints)
+        >>> corp = await fetch_esi('/corporations/456', None, 'token')
+        >>> print(corp['name'])  # Corporation name
     """
     headers = {'Authorization': f'Bearer {access_token}'}
     return await _fetch_esi_with_retry(endpoint, headers=headers, max_retries=max_retries, is_public=False)
