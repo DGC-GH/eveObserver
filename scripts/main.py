@@ -104,8 +104,9 @@ async def process_all_data(
 
     # Now process individual character data (skills, blueprints, etc.)
     for char_id, token_data in tokens.items():
+        char_id = int(char_id)  # Ensure char_id is an integer
         if args.all or args.characters or args.skills or args.blueprints or args.planets or args.contracts:
-            process_character_data(
+            await process_character_data(
                 char_id,
                 token_data,
                 wp_post_id_cache,
