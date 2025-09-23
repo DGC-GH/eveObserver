@@ -273,7 +273,8 @@ class EVE_Observer {
             'section' => $section,
             'message' => 'Sync completed successfully',
             'execution_time' => round($execution_time, 2),
-            'timestamp' => current_time('mysql')
+            'timestamp' => current_time('mysql'),
+            'output' => $output
         );
         error_log("✅ [PHP STEP 23] Success response prepared: " . print_r($response, true));
 
@@ -404,6 +405,12 @@ class EVE_Observer {
                         <?php _e('Sync All Data', 'eve-observer'); ?>
                     </button>
                 </div>
+            </div>
+
+            <!-- Sync Progress Area -->
+            <div id="sync-progress" style="display: none; margin-top: 20px; padding: 15px; background: #f9f9f9; border: 1px solid #ddd; border-radius: 4px; max-height: 400px; overflow-y: auto;">
+                <h3><?php _e('Sync Progress', 'eve-observer'); ?></h3>
+                <pre id="sync-progress-content" style="font-family: monospace; font-size: 12px; white-space: pre-wrap; margin: 0;"></pre>
             </div>
 
             <!-- Overview Cards -->

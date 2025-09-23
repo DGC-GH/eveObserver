@@ -313,11 +313,18 @@ class EVEDashboard {
         console.log(`🔄 [STEP 6] Button element:`, button);
         console.log(`🔄 [STEP 7] Button original text:`, button.innerHTML);
 
+        // Show progress area
+        const progressDiv = document.getElementById('sync-progress');
+        const progressContent = document.getElementById('sync-progress-content');
+        progressDiv.style.display = 'block';
+        progressContent.textContent = `Starting sync for ${section}...\n`;
+
         console.log('🔄 [STEP 8] Checking eveObserverApi availability...');
         console.log('🔄 [STEP 9] eveObserverApi available at sync time:', typeof eveObserverApi !== 'undefined');
 
         if (typeof eveObserverApi === 'undefined') {
             console.error('❌ [ERROR] eveObserverApi is not defined!');
+            progressContent.textContent += '❌ API configuration error - please refresh the page\n';
             console.log('❌ [STEP 10] Showing error notification...');
             this.showNotification('API configuration error - please refresh the page', 'error');
             return;
@@ -364,10 +371,12 @@ class EVEDashboard {
                 // Check for specific error types
                 if (errorData.code === 'function_disabled') {
                     console.log('❌ [STEP 25] Detected shell_exec disabled error');
+                    progressContent.textContent += `❌ Server configuration error: ${errorData.message}. Please contact your hosting provider to enable shell_exec function.\n`;
                     throw new Error(`Server configuration error: ${errorData.message}. Please contact your hosting provider to enable shell_exec function.`);
                 }
 
                 console.log('❌ [STEP 26] Generic HTTP error');
+                progressContent.textContent += `❌ HTTP ${response.status}: ${errorData.message || response.statusText}\n`;
                 throw new Error(`HTTP ${response.status}: ${errorData.message || response.statusText}`);
             }
 
@@ -385,6 +394,13 @@ class EVEDashboard {
                 console.log('🔄 [STEP 32] Showing success notification...');
                 this.showNotification(message, 'success');
 
+                // Show sync output in progress area
+                if (result.output) {
+                    progressContent.textContent += `✅ Sync completed successfully!\n\nOutput:\n${result.output}\n`;
+                } else {
+                    progressContent.textContent += '✅ Sync completed successfully!\n';
+                }
+
                 // Reload data after successful sync
                 console.log(`🔄 [STEP 33] Reloading data after successful sync of ${section}`);
                 console.log('🔄 [STEP 34] Calling loadAllData()...');
@@ -398,12 +414,14 @@ class EVEDashboard {
                 console.log('✅ [STEP 39] Chart rendered');
             } else {
                 console.log('❌ [STEP 40] Sync reported failure in response');
+                progressContent.textContent += `❌ Sync failed: ${result.message}\n`;
                 throw new Error(result.message || 'Sync failed');
             }
         } catch (error) {
             console.error(`❌ [ERROR] EVE Observer: Sync error for ${section}:`, error);
             console.log('🔄 [STEP 41] Showing error notification...');
             this.showNotification(`Failed to sync ${section}: ${error.message}`, 'error');
+            progressContent.textContent += `❌ Error: ${error.message}\n`;
         } finally {
             // Restore button state
             console.log('🔄 [STEP 42] Restoring button state...');
@@ -411,6 +429,11 @@ class EVEDashboard {
             button.innerHTML = originalText;
             console.log('✅ [STEP 43] Button state restored');
             console.log(`🔄 [STEP 44] EVE Observer: Sync operation completed for ${section}`);
+
+            // Hide progress after 10 seconds
+            setTimeout(() => {
+                progressDiv.style.display = 'none';
+            }, 10000);
         }
     }
 
