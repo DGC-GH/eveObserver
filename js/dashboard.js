@@ -206,12 +206,117 @@ class EVEDashboard {
         const cards = document.querySelectorAll('.eve-card-clickable');
         console.log('Found cards:', cards.length);
         cards.forEach(card => {
-            card.addEventListener('click', () => {
+            card.addEventListener('click', (e) => {
+                // Don't trigger card click if sync button was clicked
+                if (e.target.closest('.eve-sync-btn')) {
+                    return;
+                }
                 const section = card.getAttribute('data-section');
                 console.log('Card clicked, section:', section);
                 this.scrollToSection(section);
             });
         });
+
+        // Setup sync button clicks
+        this.setupSyncButtons();
+    }
+
+    setupSyncButtons() {
+        console.log('setupSyncButtons called');
+        const syncButtons = document.querySelectorAll('.eve-sync-btn');
+        const syncAllButton = document.getElementById('eve-sync-all');
+
+        syncButtons.forEach(button => {
+            button.addEventListener('click', (e) => {
+                e.stopPropagation();
+                const section = button.getAttribute('data-section');
+                console.log('Sync button clicked for section:', section);
+                this.syncSection(section, button);
+            });
+        });
+
+        if (syncAllButton) {
+            syncAllButton.addEventListener('click', () => {
+                console.log('Sync all button clicked');
+                this.syncSection('all', syncAllButton);
+            });
+        }
+    }
+
+    async syncSection(section, button) {
+        // Disable button and show loading state
+        const originalText = button.innerHTML;
+        button.disabled = true;
+        button.innerHTML = '<span class="dashicons dashicons-update dashicons-spin"></span> Syncing...';
+
+        try {
+            const response = await fetch(`/wp-json/eve-observer/v1/sync/${section}`, {
+                method: 'POST',
+                headers: {
+                    'X-WP-Nonce': eveObserverApi.nonce,
+                    'Content-Type': 'application/json'
+                }
+            });
+
+            if (!response.ok) {
+                throw new Error(`HTTP ${response.status}`);
+            }
+
+            const result = await response.json();
+
+            if (result.success) {
+                this.showNotification(`Successfully synced ${section}`, 'success');
+                // Reload data after successful sync
+                await this.loadAllData();
+                this.renderAllTables();
+                this.renderChart();
+            } else {
+                throw new Error(result.message || 'Sync failed');
+            }
+        } catch (error) {
+            console.error('Sync error:', error);
+            this.showNotification(`Failed to sync ${section}: ${error.message}`, 'error');
+        } finally {
+            // Restore button state
+            button.disabled = false;
+            button.innerHTML = originalText;
+        }
+    }
+
+    showNotification(message, type = 'info') {
+        const notification = document.createElement('div');
+        notification.className = `eve-notification eve-notification-${type}`;
+        notification.innerHTML = `
+            <span class="dashicons ${type === 'success' ? 'dashicons-yes' : 'dashicons-no'}"></span>
+            ${message}
+        `;
+
+        // Style the notification
+        Object.assign(notification.style, {
+            position: 'fixed',
+            top: '20px',
+            right: '20px',
+            background: type === 'success' ? '#28a745' : '#dc3545',
+            color: 'white',
+            padding: '12px 16px',
+            borderRadius: '4px',
+            boxShadow: '0 2px 10px rgba(0,0,0,0.2)',
+            zIndex: '9999',
+            maxWidth: '400px',
+            fontWeight: 'bold',
+            display: 'flex',
+            alignItems: 'center',
+            gap: '8px'
+        });
+
+        document.body.appendChild(notification);
+
+        // Auto-remove after 5 seconds
+        setTimeout(() => {
+            if (notification.parentNode) {
+                notification.parentNode.removeChild(notification);
+            }
+        }, 5000);
     }
 
     copyOutbidContracts() {

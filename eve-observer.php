@@ -160,8 +160,80 @@ class EVE_Observer {
         add_filter('manage_edit-eve_contract_sortable_columns', array($this, 'make_outbid_column_sortable'));
         add_action('pre_get_posts', array($this, 'sort_outbid_column'));
 
+        // Register REST API routes
+        add_action('rest_api_init', array($this, 'register_rest_routes'));
+
         // Register custom post types
         $this->register_custom_post_types();
+    }
+
+    public function register_rest_routes() {
+        register_rest_route('eve-observer/v1', '/sync/(?P<section>[a-zA-Z_]+)', array(
+            'methods' => 'POST',
+            'callback' => array($this, 'handle_sync_request'),
+            'permission_callback' => array($this, 'check_sync_permissions'),
+            'args' => array(
+                'section' => array(
+                    'required' => true,
+                    'validate_callback' => function($param) {
+                        return in_array($param, array('characters', 'blueprints', 'planets', 'corporations', 'contracts', 'all'));
+                    }
+                )
+            )
+        ));
+    }
+
+    public function check_sync_permissions() {
+        return current_user_can('manage_options');
+    }
+
+    public function handle_sync_request($request) {
+        $section = $request->get_param('section');
+
+        // Get the path to the scripts directory
+        $plugin_dir = plugin_dir_path(__FILE__);
+        $scripts_dir = dirname($plugin_dir) . '/scripts/';
+
+        if (!is_dir($scripts_dir)) {
+            return new WP_Error('scripts_dir_not_found', 'Scripts directory not found: ' . $scripts_dir, array('status' => 500));
+        }
+
+        // Map sections to Python scripts
+        $script_map = array(
+            'characters' => 'main.py --characters',
+            'blueprints' => 'main.py --blueprints',
+            'planets' => 'main.py --planets',
+            'corporations' => 'main.py --corporations',
+            'contracts' => 'main.py --contracts',
+            'all' => 'main.py --all'
+        );
+
+        if (!isset($script_map[$section])) {
+            return new WP_Error('invalid_section', 'Invalid section specified', array('status' => 400));
+        }
+
+        // Change to scripts directory and run the command
+        $command = 'cd ' . escapeshellarg($scripts_dir) . ' && /usr/bin/python3 ' . escapeshellarg($script_map[$section]) . ' 2>&1';
+
+        // Execute the command with timeout
+        $output = shell_exec($command . ' &'); // Run in background
+
+        if ($output === null) {
+            // For background processes, we can't get immediate output
+            return array(
+                'success' => true,
+                'section' => $section,
+                'message' => 'Sync started in background',
+                'timestamp' => current_time('mysql')
+            );
+        }
+
+        return array(
+            'success' => true,
+            'section' => $section,
+            'output' => $output,
+            'timestamp' => current_time('mysql')
+        );
     }
 
     public function add_admin_menu() {
@@ -190,6 +262,12 @@ class EVE_Observer {
             wp_enqueue_style('eve-observer-dashboard', plugin_dir_url(__FILE__) . 'css/dashboard.css', array(), '1.0.0');
             wp_enqueue_script('chart-js', 'https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.js', array(), '4.4.0', true);
             wp_enqueue_script('eve-observer-dashboard', plugin_dir_url(__FILE__) . 'js/dashboard.js', array('chart-js'), '1.0.5', true);
+
+            // Localize script with nonce
+            wp_localize_script('eve-observer-dashboard', 'eveObserverApi', array(
+                'nonce' => wp_create_nonce('wp_rest'),
+                'restUrl' => rest_url('eve-observer/v1/')
+            ));
 
             // Add clipboard functionality for dashboard
             wp_add_inline_script('eve-observer-dashboard', '
@@ -276,46 +354,77 @@ class EVE_Observer {
             <div class="eve-dashboard-header">
                 <h1><?php _e('EVE Observer Dashboard', 'eve-observer'); ?></h1>
                 <p><?php _e('Monitor your EVE Online assets and activities with real-time insights.', 'eve-observer'); ?></p>
+                <div class="eve-dashboard-actions">
+                    <button id="eve-sync-all" class="button button-primary">
+                        <span class="dashicons dashicons-update"></span>
+                        <?php _e('Sync All Data', 'eve-observer'); ?>
+                    </button>
+                </div>
             </div>
 
             <!-- Overview Cards -->
             <div class="eve-overview-grid">
                 <div class="eve-card eve-card-clickable" data-section="characters">
                     <div class="eve-card-header">
-                        <div class="eve-card-icon" style="background: rgba(0, 122, 255, 0.1); color: var(--primary-color);">👤</div>
-                        <h3 class="eve-card-title"><?php _e('Characters', 'eve-observer'); ?></h3>
+                        <div class="eve-card-title-group">
+                            <div class="eve-card-icon" style="background: rgba(0, 122, 255, 0.1); color: var(--primary-color);">👤</div>
+                            <h3 class="eve-card-title"><?php _e('Characters', 'eve-observer'); ?></h3>
+                        </div>
+                        <button class="eve-sync-btn" data-section="characters" title="Sync Characters">
+                            <span class="dashicons dashicons-update"></span>
+                        </button>
                     </div>
                     <p class="eve-card-value"><?php echo esc_html($character_count); ?></p>
                 </div>
 
                 <div class="eve-card eve-card-clickable" data-section="blueprints">
                     <div class="eve-card-header">
-                        <div class="eve-card-icon" style="background: rgba(255, 149, 0, 0.1); color: var(--warning-color);">📋</div>
-                        <h3 class="eve-card-title"><?php _e('Blueprints', 'eve-observer'); ?></h3>
+                        <div class="eve-card-title-group">
+                            <div class="eve-card-icon" style="background: rgba(255, 149, 0, 0.1); color: var(--warning-color);">📋</div>
+                            <h3 class="eve-card-title"><?php _e('Blueprints', 'eve-observer'); ?></h3>
+                        </div>
+                        <button class="eve-sync-btn" data-section="blueprints" title="Sync Blueprints">
+                            <span class="dashicons dashicons-update"></span>
+                        </button>
                     </div>
                     <p class="eve-card-value"><?php echo esc_html($blueprint_count); ?></p>
                 </div>
 
                 <div class="eve-card eve-card-clickable" data-section="planets">
                     <div class="eve-card-header">
-                        <div class="eve-card-icon" style="background: rgba(52, 199, 89, 0.1); color: var(--success-color);">🌍</div>
-                        <h3 class="eve-card-title"><?php _e('Planets', 'eve-observer'); ?></h3>
+                        <div class="eve-card-title-group">
+                            <div class="eve-card-icon" style="background: rgba(52, 199, 89, 0.1); color: var(--success-color);">🌍</div>
+                            <h3 class="eve-card-title"><?php _e('Planets', 'eve-observer'); ?></h3>
+                        </div>
+                        <button class="eve-sync-btn" data-section="planets" title="Sync Planets">
+                            <span class="dashicons dashicons-update"></span>
+                        </button>
                     </div>
                     <p class="eve-card-value"><?php echo esc_html($planet_count); ?></p>
                 </div>
 
                 <div class="eve-card eve-card-clickable" data-section="corporations">
                     <div class="eve-card-header">
-                        <div class="eve-card-icon" style="background: rgba(255, 59, 48, 0.1); color: var(--danger-color);">🏢</div>
-                        <h3 class="eve-card-title"><?php _e('Corporations', 'eve-observer'); ?></h3>
+                        <div class="eve-card-title-group">
+                            <div class="eve-card-icon" style="background: rgba(255, 59, 48, 0.1); color: var(--danger-color);">🏢</div>
+                            <h3 class="eve-card-title"><?php _e('Corporations', 'eve-observer'); ?></h3>
+                        </div>
+                        <button class="eve-sync-btn" data-section="corporations" title="Sync Corporations">
+                            <span class="dashicons dashicons-update"></span>
+                        </button>
                     </div>
                     <p class="eve-card-value"><?php echo esc_html($corporation_count); ?></p>
                 </div>
 
                 <div class="eve-card eve-card-clickable" data-section="contracts">
                     <div class="eve-card-header">
-                        <div class="eve-card-icon" style="background: rgba(142, 142, 147, 0.1); color: #8e8e93;">📄</div>
-                        <h3 class="eve-card-title"><?php _e('Contracts', 'eve-observer'); ?></h3>
+                        <div class="eve-card-title-group">
+                            <div class="eve-card-icon" style="background: rgba(142, 142, 147, 0.1); color: #8e8e93;">📄</div>
+                            <h3 class="eve-card-title"><?php _e('Contracts', 'eve-observer'); ?></h3>
+                        </div>
+                        <button class="eve-sync-btn" data-section="contracts" title="Sync Contracts">
+                            <span class="dashicons dashicons-update"></span>
+                        </button>
                     </div>
                     <p class="eve-card-value"><?php echo esc_html($contract_count); ?></p>
                 </div>

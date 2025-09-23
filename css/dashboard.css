@@ -89,6 +89,12 @@ body {
     display: flex;
     align-items: center;
     margin-bottom: 16px;
+    justify-content: space-between;
+}
+
+.eve-card-title-group {
+    display: flex;
+    align-items: center;
 }
 
 .eve-card-icon {
@@ -371,6 +377,85 @@ th:hover .sort-indicator {
 .eve-search-input:focus {
     outline: 2px solid var(--primary-color);
     outline-offset: 2px;
+}
+
+.eve-dashboard-actions {
+    margin-top: 16px;
+    display: flex;
+    justify-content: center;
+}
+
+.eve-sync-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 8px;
+    border-radius: 6px;
+    color: var(--text-secondary);
+    transition: var(--transition);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-left: auto;
+}
+
+.eve-sync-btn:hover {
+    background: rgba(0, 122, 255, 0.1);
+    color: var(--primary-color);
+}
+
+.eve-sync-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.eve-sync-btn .dashicons {
+    font-size: 16px;
+    width: 16px;
+    height: 16px;
+}
+
+.eve-sync-btn .dashicons-spin {
+    animation: spin 1s linear infinite;
+}
+
+.eve-notification {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    background: var(--success-color);
+    color: white;
+    padding: 12px 16px;
+    border-radius: 4px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+    z-index: 9999;
+    max-width: 400px;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    animation: slideIn 0.3s ease-out;
+}
+
+.eve-notification-error {
+    background: var(--danger-color);
+}
+
+.eve-notification .dashicons {
+    font-size: 16px;
+    width: 16px;
+    height: 16px;
+}
+
+@keyframes slideIn {
+    from {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
 }
 
 .eve-chart-container canvas {
