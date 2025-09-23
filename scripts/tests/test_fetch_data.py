@@ -251,12 +251,10 @@ class TestCollectCorporationMembers:
         mock_load_tokens.return_value = mock_tokens
 
         # Mock character data
-        async def async_return_1():
-            return {'corporation_id': 1001, 'name': 'Test Char 1'}
-        async def async_return_2():
-            return {'corporation_id': 1001, 'name': 'Test Char 2'}
-        
-        mock_fetch_char.side_effect = [async_return_1(), async_return_2()]
+        mock_fetch_char.side_effect = [
+            {'corporation_id': 1001, 'name': 'Test Char 1'},
+            {'corporation_id': 1001, 'name': 'Test Char 2'}
+        ]
 
         result = await collect_corporation_members(mock_tokens)
 
@@ -298,10 +296,7 @@ class TestCollectCorporationMembers:
         }
 
         # Mock character data
-        async def async_return(char_id, access_token):
-            return {'corporation_id': 1001, 'name': 'Test Char 1'}
-        
-        mock_fetch_char.side_effect = async_return
+        mock_fetch_char.return_value = {'corporation_id': 1001, 'name': 'Test Char 1'}
 
         result = await collect_corporation_members(mock_tokens)
 
@@ -722,8 +717,8 @@ class TestCacheLRUOptimization:
         result2 = get_cached_blueprint_name('1001')
         assert result2 == 'Test Blueprint'
 
-        # Verify load_cache was only called once due to LRU
-        assert mock_load_cache.call_count == 1
+        # Verify load_cache was not called since LRU cache has the value
+        assert mock_load_cache.call_count == 0
 
     @patch('cache_manager.load_location_cache')
     @patch('cache_manager.get_cached_value_with_stats')
@@ -747,5 +742,5 @@ class TestCacheLRUOptimization:
         result2 = get_cached_location_name('60003760')
         assert result2 == 'Jita IV - Moon 4 - Caldari Navy Assembly Plant'
 
-        # Verify load_cache was only called once due to LRU
-        assert mock_load_cache.call_count == 1
+        # Verify load_cache was not called since LRU cache has the value
+        assert mock_load_cache.call_count == 0

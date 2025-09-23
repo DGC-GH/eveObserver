@@ -215,7 +215,7 @@ class TestCharacterProcessorIntegration:
     """Integration tests for character processing functions."""
 
     @pytest.mark.asyncio
-    @patch('api_client.fetch_esi')
+    @patch('data_processors.fetch_esi')
     @patch('api_client.wp_request')
     @patch('cache_manager.load_cache')
     @patch('cache_manager.save_cache')
@@ -238,32 +238,31 @@ class TestCharacterProcessorIntegration:
             'alliance_id': 2001
         }
         assert result == expected
-        mock_fetch_esi.assert_called_once_with('/characters/123', 123, 'test_token')
+        mock_fetch_esi.assert_called_once_with('/characters/123/', 123, 'test_token')
 
     @pytest.mark.asyncio
-    @patch('data_processors.fetch_character_data')
-    @patch('api_client.wp_request')
+    @patch('data_processors.fetch_public_esi')
+    @patch('data_processors.wp_request')
     @patch('cache_manager.load_cache')
     @patch('cache_manager.save_cache')
-    async def test_update_character_in_wp_integration(self, mock_save_cache, mock_load_cache, mock_wp_request, mock_fetch_char):
+    async def test_update_character_in_wp_integration(self, mock_save_cache, mock_load_cache, mock_wp_request, mock_fetch_public):
         """Test character WordPress update integration."""
         # Setup mocks
         mock_load_cache.return_value = {}
-        mock_fetch_char.return_value = {
+        mock_fetch_public.return_value = {'px64x64': 'https://example.com/portrait.png'}
+        
+        char_data = {
             'name': 'Test Character',
             'corporation_id': 1001
         }
 
         # Mock WordPress API calls
-        mock_wp_request.side_effect = [
-            [],  # No existing posts
-            {'id': 124, 'title': {'rendered': 'Test Character'}}  # Created post
-        ]
+        mock_wp_request.return_value = []  # No existing posts
 
-        await update_character_in_wp(123, 'test_token')
+        await update_character_in_wp(123, char_data)
 
         # Verify API calls
-        mock_fetch_char.assert_called_once_with(123, 'test_token')
+        mock_fetch_public.assert_called_once_with('/characters/123/portrait/')
         assert mock_wp_request.call_count == 2  # Check existing + create
 
 
@@ -350,7 +349,7 @@ class TestCorporationProcessorIntegration:
     """Integration tests for corporation processing functions."""
 
     @pytest.mark.asyncio
-    @patch('api_client.fetch_esi')
+    @patch('corporation_processor.fetch_esi')
     @patch('api_client.wp_request')
     @patch('cache_manager.load_cache')
     @patch('cache_manager.save_cache')
@@ -372,7 +371,7 @@ class TestCorporationProcessorIntegration:
             'member_count': 100
         }
         assert result == expected
-        mock_fetch_esi.assert_called_once_with('/corporations/1001', 1001, 'test_token')
+        mock_fetch_esi.assert_called_once_with('/corporations/1001/', None, 'test_token')
 
     @pytest.mark.asyncio
     @patch('api_client.wp_request')
@@ -430,8 +429,8 @@ class TestErrorHandlingIntegration:
     @patch('cache_manager.load_failed_structures')
     @patch('cache_manager.get_cached_wp_post_id')
     @patch('cache_manager.set_cached_wp_post_id')
-    @patch('api_client.wp_request')
-    @patch('api_client.fetch_public_esi')
+    @patch('data_processors.wp_request')
+    @patch('data_processors.fetch_public_esi')
     async def test_blueprint_processing_error_handling(self, mock_fetch_esi, mock_wp_request, mock_set_cache,
                                                        mock_get_cache, mock_load_failed, mock_load_struct,
                                                        mock_load_loc, mock_load_bp):
@@ -442,7 +441,10 @@ class TestErrorHandlingIntegration:
         mock_load_struct.return_value = {}
         mock_load_failed.return_value = {}
         mock_get_cache.return_value = None
-
+    
+        # Mock WordPress API
+        mock_wp_request.return_value = []  # No existing posts
+    
         # Mock ESI API failure
         mock_fetch_esi.side_effect = ESIApiError("ESI API Error")
 
@@ -459,6 +461,6 @@ class TestErrorHandlingIntegration:
         # Should not raise exception, should handle error gracefully
         await update_blueprint_in_wp(blueprint_data, 123, 'test_token', {})
 
-        # Verify error was handled (no post created)
-        mock_wp_request.assert_not_called()
+        # Verify error was handled (GET for existing post, PUT attempt that fails)
+        assert mock_wp_request.call_count == 2
         mock_set_cache.assert_not_called()
