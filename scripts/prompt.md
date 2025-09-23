@@ -25,7 +25,7 @@ Based on the analysis, suggest targeted improvements to make the code and wait f
 Use emojis and format the text for better readability and output in this exact format for easy adoption in VS Code:
 - **Agent Preferences:** [Bulleted list summarizing your biases above]
 - **Repo Analysis Summary:** [Concise yet detailed overview, including key insights from the structured analysis steps]
-- **Improvements:** [Numbered list; for each: 1. Brief explanation and rationale. 2. Code snippet or diff (use Git-style diff format if changing existing code). 3. Copilot-friendly suggestion (e.g., "Paste this into VS Code and use Copilot to refactor: [prompt]"). 4. Expected benefits tied to preferences]
+- **Improvements:** [Numbered list; for each: 1. Brief explanation and rationale. 2. Code snippet or diff (use Git-style diff format if changing existing code). 3. Copilot-friendly suggestion. 4. Expected benefits tied to preferences]
 
 After Implementation:
 
