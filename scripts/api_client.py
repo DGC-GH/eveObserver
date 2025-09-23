@@ -376,15 +376,15 @@ class DynamicRateLimiter:
         error_rate = len(recent_errors) / max(len(recent_responses) + len(recent_errors), 1)
 
         # Adjust based on response time (slower = reduce rate)
-        if avg_response_time > 1.0:  # If average response > 1 second
+        if avg_response_time > 0.2:  # If average response > 0.2 seconds (95th percentile from logs)
             self.adjustment_factor = max(0.5, self.adjustment_factor * 0.9)  # Reduce by 10%
-        elif avg_response_time < 0.3:  # If average response < 0.3 seconds
+        elif avg_response_time < 0.1:  # If average response < 0.1 seconds (fast responses)
             self.adjustment_factor = min(2.0, self.adjustment_factor * 1.05)  # Increase by 5%
 
         # Adjust based on error rate
-        if error_rate > 0.1:  # More than 10% errors
+        if error_rate > 0.05:  # More than 5% errors (reduced from 10%)
             self.adjustment_factor = max(0.3, self.adjustment_factor * 0.8)  # Reduce significantly
-        elif error_rate < 0.01:  # Less than 1% errors
+        elif error_rate < 0.005:  # Less than 0.5% errors (reduced from 1%)
             self.adjustment_factor = min(1.5, self.adjustment_factor * 1.02)  # Slight increase
 
         # Calculate new rate
@@ -1060,6 +1060,20 @@ async def wp_request(method: str, endpoint: str, data: Optional[Dict] = None) ->
                         wp_rate_limiter.record_error()
                         # For 500 errors, retry with exponential backoff
                         raise WordPressRequestError(f"WordPress server error {response.status}: {endpoint}")
+                    elif response.status == 404:
+                        elapsed = time.time() - start_time
+                        error_text = await response.text()
+                        # Check if this is a "rest_no_route" error (endpoint doesn't exist)
+                        if "rest_no_route" in error_text:
+                            logger.info(f"WordPress endpoint not found (expected): {endpoint} in {elapsed:.2f}s")
+                            wp_rate_limiter.record_response_time(elapsed)  # Record as successful response time
+                            return None  # Return None for missing endpoints
+                        else:
+                            logger.error(
+                                f"WordPress API error: {response.status} - {error_text} (took {elapsed:.2f}s)"
+                            )
+                            wp_rate_limiter.record_error()
+                            raise WordPressRequestError(f"WordPress API error {response.status}: {endpoint}")
                     else:
                         elapsed = time.time() - start_time
                         logger.error(
@@ -1092,6 +1106,20 @@ async def wp_request(method: str, endpoint: str, data: Optional[Dict] = None) ->
                         )
                         wp_rate_limiter.record_error()
                         raise WordPressRequestError(f"WordPress server error {response.status}: {endpoint}")
+                    elif response.status == 404:
+                        elapsed = time.time() - start_time
+                        error_text = await response.text()
+                        # Check if this is a "rest_no_route" error (endpoint doesn't exist)
+                        if "rest_no_route" in error_text:
+                            logger.info(f"WordPress endpoint not found (expected): {endpoint} in {elapsed:.2f}s")
+                            wp_rate_limiter.record_response_time(elapsed)  # Record as successful response time
+                            return None  # Return None for missing endpoints
+                        else:
+                            logger.error(
+                                f"WordPress API error: {response.status} - {error_text} (took {elapsed:.2f}s)"
+                            )
+                            wp_rate_limiter.record_error()
+                            raise WordPressRequestError(f"WordPress API error {response.status}: {endpoint}")
                     else:
                         elapsed = time.time() - start_time
                         logger.error(
@@ -1124,6 +1152,20 @@ async def wp_request(method: str, endpoint: str, data: Optional[Dict] = None) ->
                         )
                         wp_rate_limiter.record_error()
                         raise WordPressRequestError(f"WordPress server error {response.status}: {endpoint}")
+                    elif response.status == 404:
+                        elapsed = time.time() - start_time
+                        error_text = await response.text()
+                        # Check if this is a "rest_no_route" error (endpoint doesn't exist)
+                        if "rest_no_route" in error_text:
+                            logger.info(f"WordPress endpoint not found (expected): {endpoint} in {elapsed:.2f}s")
+                            wp_rate_limiter.record_response_time(elapsed)  # Record as successful response time
+                            return None  # Return None for missing endpoints
+                        else:
+                            logger.error(
+                                f"WordPress API error: {response.status} - {error_text} (took {elapsed:.2f}s)"
+                            )
+                            wp_rate_limiter.record_error()
+                            raise WordPressRequestError(f"WordPress API error {response.status}: {endpoint}")
                     else:
                         elapsed = time.time() - start_time
                         logger.error(
@@ -1155,6 +1197,20 @@ async def wp_request(method: str, endpoint: str, data: Optional[Dict] = None) ->
                         )
                         wp_rate_limiter.record_error()
                         raise WordPressRequestError(f"WordPress server error {response.status}: {endpoint}")
+                    elif response.status == 404:
+                        elapsed = time.time() - start_time
+                        error_text = await response.text()
+                        # Check if this is a "rest_no_route" error (endpoint doesn't exist)
+                        if "rest_no_route" in error_text:
+                            logger.info(f"WordPress endpoint not found (expected): {endpoint} in {elapsed:.2f}s")
+                            wp_rate_limiter.record_response_time(elapsed)  # Record as successful response time
+                            return None  # Return None for missing endpoints
+                        else:
+                            logger.error(
+                                f"WordPress API error: {response.status} - {error_text} (took {elapsed:.2f}s)"
+                            )
+                            wp_rate_limiter.record_error()
+                            raise WordPressRequestError(f"WordPress API error {response.status}: {endpoint}")
                     else:
                         elapsed = time.time() - start_time
                         logger.error(
