@@ -256,7 +256,7 @@ The project is divided into phases for manageable implementation. Each phase bui
 - **Setup Progress**: WordPress site with free ACF plugin set up, ESI OAuth and data fetcher scripts ready.
 - **Authorization**: ESI application registered, characters authorized.
 - **Issues Fixed**: Function order in fetch_data.py, dependencies installed, token refresh, null meta handling, unique post slugs, cron automation.
-- **Next Steps**: 
+- **Next Steps**:
   - Test dashboard display with live data.
   - Monitor automated data refreshes.
   - Begin Phase 2: BPO Research Module.

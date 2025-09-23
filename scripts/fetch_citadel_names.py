@@ -93,7 +93,7 @@ def fetch_public_esi(endpoint, max_retries=ESI_MAX_RETRIES):
                     continue
                 else:
                     # Fallback: wait 60 seconds if no reset header
-                    logger.info(f"RATE LIMIT: Waiting 60 seconds for public endpoint (no reset header)...")
+                    logger.info("RATE LIMIT: Waiting 60 seconds for public endpoint (no reset header)...")
                     time.sleep(60)
                     continue
             elif response.status_code == 420:  # Error limited
@@ -106,7 +106,7 @@ def fetch_public_esi(endpoint, max_retries=ESI_MAX_RETRIES):
                     time.sleep(wait_time)
                     continue
                 else:
-                    logger.info(f"ERROR LIMIT: Waiting 60 seconds for public endpoint...")
+                    logger.info("ERROR LIMIT: Waiting 60 seconds for public endpoint...")
                     time.sleep(60)
                     continue
             elif response.status_code >= 500:
@@ -177,7 +177,7 @@ def fetch_esi(endpoint, char_id, access_token, max_retries=ESI_MAX_RETRIES):
                     time.sleep(wait_time)
                     continue
                 else:
-                    logger.info(f"RATE LIMIT: Waiting 60 seconds (no reset header)...")
+                    logger.info("RATE LIMIT: Waiting 60 seconds (no reset header)...")
                     time.sleep(60)
                     continue
             elif response.status_code == 420:  # Error limited
@@ -190,7 +190,7 @@ def fetch_esi(endpoint, char_id, access_token, max_retries=ESI_MAX_RETRIES):
                     time.sleep(wait_time)
                     continue
                 else:
-                    logger.info(f"ERROR LIMIT: Waiting 60 seconds...")
+                    logger.info("ERROR LIMIT: Waiting 60 seconds...")
                     time.sleep(60)
                     continue
             elif response.status_code >= 500:

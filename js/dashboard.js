@@ -39,17 +39,17 @@ class EVEDashboard {
 
     async loadAllData() {
         const sections = ['characters', 'blueprints', 'planets', 'corporations', 'contracts'];
-        
+
         for (const section of sections) {
             try {
                 const url = `/wp-json/wp/v2/${this.postTypeMap[section]}?per_page=100&_embed`;
                 const response = await fetch(url);
                 if (!response.ok) throw new Error(`HTTP ${response.status}`);
                 const data = await response.json();
-                
+
                 this.data[section] = Array.isArray(data) ? data : [];
                 this.filteredData[section] = [...this.data[section]];
-                
+
                 console.log(`Loaded ${this.data[section].length} ${section}`);
             } catch (error) {
                 console.error(`Error loading ${section}:`, error);
@@ -57,7 +57,7 @@ class EVEDashboard {
                 this.filteredData[section] = [];
             }
         }
-        
+
         console.log('All data loaded');
     }
 
@@ -216,7 +216,7 @@ class EVEDashboard {
 
     copyOutbidContracts() {
         console.log('copyOutbidContracts called, contracts count:', this.data.contracts.length);
-        const outbidContracts = this.data.contracts.filter(contract => 
+        const outbidContracts = this.data.contracts.filter(contract =>
             contract.meta && contract.meta._eve_contract_outbid === '1'
         );
         console.log('outbidContracts found:', outbidContracts.length);
@@ -230,9 +230,9 @@ class EVEDashboard {
             const contractId = contract.meta._eve_contract_id;
             const regionId = contract.meta._eve_contract_region_id;
             const title = contract.title?.rendered || `Contract ${contractId}`;
-            
+
             console.log('Contract:', contractId, 'Region:', regionId, 'Title:', title);
-            
+
             if (regionId && contractId) {
                 return `<font size="14" color="#bfffffff"></font><font size="14" color="#ffd98d00"><a href="contract:${regionId}//${contractId}">[Contract ${contractId}]</a></font>`;
             }
@@ -597,11 +597,11 @@ class EVEDashboard {
 
     decodeHtml(text) {
         if (!text) return text;
-        
+
         const temp = document.createElement('div');
         temp.innerHTML = text;
         const decoded = temp.textContent || temp.innerText || text;
-        
+
         // Replace en dash with hyphen
         return decoded.replace(/–/g, '-');
     }

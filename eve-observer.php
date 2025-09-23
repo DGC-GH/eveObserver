@@ -141,16 +141,16 @@ class EVE_Observer {
         // Add thumbnail columns to admin list tables
         add_filter('manage_eve_character_posts_columns', array($this, 'add_thumbnail_column'));
         add_action('manage_eve_character_posts_custom_column', array($this, 'display_thumbnail_column'), 10, 2);
-        
+
         add_filter('manage_eve_blueprint_posts_columns', array($this, 'add_thumbnail_column'));
         add_action('manage_eve_blueprint_posts_custom_column', array($this, 'display_thumbnail_column'), 10, 2);
-        
+
         add_filter('manage_eve_planet_posts_columns', array($this, 'add_thumbnail_column'));
         add_action('manage_eve_planet_posts_custom_column', array($this, 'display_thumbnail_column'), 10, 2);
-        
+
         add_filter('manage_eve_corporation_posts_columns', array($this, 'add_thumbnail_column'));
         add_action('manage_eve_corporation_posts_custom_column', array($this, 'display_thumbnail_column'), 10, 2);
-        
+
         add_filter('manage_eve_contract_posts_columns', array($this, 'add_thumbnail_column'));
         add_action('manage_eve_contract_posts_custom_column', array($this, 'display_thumbnail_column'), 10, 2);
 
@@ -207,7 +207,7 @@ class EVE_Observer {
                         fallbackCopyTextToClipboard(text);
                     }
                 }
-                
+
                 function fallbackCopyTextToClipboard(text) {
                     var textArea = document.createElement("textarea");
                     textArea.value = text;
@@ -229,19 +229,19 @@ class EVE_Observer {
                     }
                     document.body.removeChild(textArea);
                 }
-                
+
                 function showCopyFeedback(message, isError) {
                     var existing = document.querySelector(".copy-feedback");
                     if (existing) {
                         existing.remove();
                     }
-                    
+
                     var feedback = document.createElement("div");
                     feedback.className = "copy-feedback";
                     feedback.innerHTML = message;
                     feedback.style.cssText = "position:fixed;top:20px;right:20px;background:" + (isError ? "#dc3545" : "#28a745") + ";color:white;padding:10px 15px;border-radius:4px;z-index:9999;font-weight:bold;box-shadow:0 2px 10px rgba(0,0,0,0.2);";
                     document.body.appendChild(feedback);
-                    
+
                     setTimeout(function() {
                         if (feedback.parentNode) {
                             feedback.parentNode.removeChild(feedback);
@@ -251,7 +251,7 @@ class EVE_Observer {
                 console.log("Clipboard functions loaded");
             ');
         }
-        
+
         // Add CSS for thumbnail column width
         wp_add_inline_style('wp-admin', '
             .column-thumbnail { width: 60px; text-align: center; }
@@ -1212,7 +1212,7 @@ class EVE_Observer {
             // Return a dummy ID to indicate external image exists
             return 'external';
         }
-        
+
         return $thumbnail_id;
     }
 
@@ -1220,13 +1220,13 @@ class EVE_Observer {
         // Check if this is an external image (our dummy ID)
         if ($post_thumbnail_id === 'external') {
             $external_url = get_post_meta($post_id, '_thumbnail_external_url', true);
-            
+
             if (!empty($external_url)) {
                 $alt = get_the_title($post_id);
                 $class = isset($attr['class']) ? $attr['class'] : 'wp-post-image';
                 $width = isset($attr['width']) ? $attr['width'] : '';
                 $height = isset($attr['height']) ? $attr['height'] : '';
-                
+
                 $html = sprintf(
                     '<img src="%s" alt="%s" class="%s" width="%s" height="%s" />',
                     esc_url($external_url),
@@ -1237,13 +1237,13 @@ class EVE_Observer {
                 );
             }
         }
-        
+
         return $html;
     }
 
     public function add_thumbnail_column($columns) {
         $new_columns = array();
-        
+
         // Insert thumbnail column before title
         foreach ($columns as $key => $value) {
             if ($key === 'title') {
@@ -1251,14 +1251,14 @@ class EVE_Observer {
             }
             $new_columns[$key] = $value;
         }
-        
+
         return $new_columns;
     }
 
     public function display_thumbnail_column($column, $post_id) {
         if ($column === 'thumbnail') {
             $thumbnail_url = get_post_meta($post_id, '_thumbnail_external_url', true);
-            
+
             if (!empty($thumbnail_url)) {
                 echo '<img src="' . esc_url($thumbnail_url) . '" alt="' . esc_attr(get_the_title($post_id)) . '" style="width: 50px; height: 50px; object-fit: cover; border-radius: 4px;" />';
             } else {
@@ -1269,7 +1269,7 @@ class EVE_Observer {
 
     public function add_outbid_column($columns) {
         $new_columns = array();
-        
+
         // Insert outbid column after title
         foreach ($columns as $key => $value) {
             $new_columns[$key] = $value;
@@ -1277,7 +1277,7 @@ class EVE_Observer {
                 $new_columns['outbid'] = __('Outbid', 'eve-observer');
             }
         }
-        
+
         return $new_columns;
     }
 
@@ -1288,7 +1288,7 @@ class EVE_Observer {
             $contract_title = get_post_meta($post_id, '_eve_contract_title', true);
             $start_location_id = get_post_meta($post_id, '_eve_contract_location_id', true);
             $competing_price = get_post_meta($post_id, '_eve_contract_competing_price', true);
-            
+
             if ($is_outbid) {
                 $status_text = 'Outbid';
                 $color = '#dc3545'; // Red
@@ -1298,7 +1298,7 @@ class EVE_Observer {
                 $color = '#28a745'; // Green
                 $icon = '✅';
             }
-            
+
             // Build EVE chat link for clipboard copying
             $eve_link = '';
             $link_title = !empty($contract_title) ? esc_html($contract_title) : 'Contract';
@@ -1318,9 +1318,9 @@ class EVE_Observer {
                     $eve_link = '<font size="14" color="#bfffffff"><br></font><font size="14" color="#ffd98d00"><a href="contract://' . $contract_id . '">[Contract ' . $contract_id . ']</a></font>';
                 }
             }
-            
+
             echo "<div style='display: flex; align-items: center; gap: 8px;'>";
-            
+
             // Make status always clickable for clipboard copy if we have contract data
             if (!empty($eve_link)) {
                 echo "<span style='color: " . esc_attr($color) . "; font-weight: bold; cursor: pointer;' onclick='copyToClipboard(" . json_encode($eve_link) . ")' title='Click to copy EVE chat link'>" . esc_html($icon . ' ' . $status_text) . "</span>";
@@ -1330,12 +1330,12 @@ class EVE_Observer {
             } else {
                 echo "<span style='color: " . esc_attr($color) . "; font-weight: bold;'>" . esc_html($icon . ' ' . $status_text) . "</span>";
             }
-            
+
             if ($is_outbid && !empty($competing_price) && is_numeric($competing_price)) {
                 $formatted_price = number_format((float)$competing_price, 2);
                 echo "<span style='color: #666; font-size: 12px; cursor: pointer;' onclick='copyToClipboard(" . json_encode($formatted_price) . ")' title='Click to copy competing price'>Competing: " . esc_html($formatted_price) . " ISK</span>";
             }
-            
+
             echo "</div>";
         }
     }
@@ -1349,7 +1349,7 @@ class EVE_Observer {
         if (!is_admin() || !$query->is_main_query()) {
             return;
         }
-        
+
         if ($query->get('orderby') === 'outbid') {
             $query->set('meta_key', '_eve_contract_outbid');
             $query->set('orderby', 'meta_value_num');

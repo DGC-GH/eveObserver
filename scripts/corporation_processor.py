@@ -185,7 +185,7 @@ async def select_corporation_token(
                 break
 
         if dr_filin_token:
-            logger.info(f"Using Dr FiLiN's CEO token for No Mercy Incorporated")
+            logger.info("Using Dr FiLiN's CEO token for No Mercy Incorporated")
             corp_data = await fetch_corporation_data(corp_id, dr_filin_token)
             if corp_data:
                 return dr_filin_token, dr_filin_name, dr_filin_char_id, corp_data
