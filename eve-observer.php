@@ -206,7 +206,7 @@ class EVE_Observer {
         // Get the path to the scripts directory
         error_log("🔄 [PHP STEP 6] Getting plugin and scripts directory paths...");
         $plugin_dir = plugin_dir_path(__FILE__);
-        $scripts_dir = dirname($plugin_dir) . '/scripts/';
+        $scripts_dir = $plugin_dir . 'scripts/';
         error_log("🔄 [PHP STEP 7] Plugin dir: {$plugin_dir}");
         error_log("🔄 [PHP STEP 8] Scripts dir: {$scripts_dir}");
 
