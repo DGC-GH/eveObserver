@@ -444,7 +444,9 @@ class TestBlueprintProcessing:
         mock_fetch_esi.return_value = {'name': 'Test Blueprint'}
 
         # Mock icon fetch
-        mock_fetch_icon.return_value = 'https://example.com/icon.png'
+        async def mock_icon_func(*args, **kwargs):
+            return 'https://example.com/icon.png'
+        mock_fetch_icon.side_effect = mock_icon_func
 
         blueprint_data = {
             'item_id': 12345,

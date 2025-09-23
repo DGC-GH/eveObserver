@@ -373,10 +373,32 @@ async def fetch_blueprint_details(blueprint_data: Dict[str, Any], char_id: int, 
     quantity = blueprint_data.get('quantity', -1)
     
     # Get blueprint name from cache or API
+    type_name = await get_blueprint_type_name(type_id, item_id, blueprint_cache)
+    
+    # Determine BPO or BPC
+    bp_type = determine_blueprint_type(quantity)
+    
+    # Get location name from cache or API
+    location_name = await get_location_name(location_id, char_id, access_token, location_cache, structure_cache, failed_structures)
+    
+    return type_name, location_name, bp_type
+
+async def get_blueprint_type_name(type_id: Optional[int], item_id: int, blueprint_cache: Dict[str, Any]) -> str:
+    """
+    Get blueprint type name from cache or API.
+    
+    Args:
+        type_id: The blueprint type ID
+        item_id: The blueprint item ID (fallback)
+        blueprint_cache: Cache for blueprint names
+        
+    Returns:
+        The blueprint type name
+    """
     if type_id:
         cached_name = get_cached_value_with_stats(blueprint_cache, str(type_id))
         if cached_name:
-            type_name = cached_name
+            return cached_name
         else:
             try:
                 type_data = await fetch_public_esi(f"/universe/types/{type_id}")
@@ -384,67 +406,125 @@ async def fetch_blueprint_details(blueprint_data: Dict[str, Any], char_id: int, 
                     type_name = type_data.get('name', f"Blueprint {item_id}").replace(" Blueprint", "").strip()
                     blueprint_cache[str(type_id)] = type_name
                     save_blueprint_cache(blueprint_cache)
+                    return type_name
                 else:
-                    type_name = f"Blueprint {item_id}".replace(" Blueprint", "").strip()
+                    return f"Blueprint {item_id}".replace(" Blueprint", "").strip()
             except ESIRequestError as e:
                 logger.error(f"Failed to fetch type data for {type_id}: {e}")
-                type_name = f"Blueprint {item_id}".replace(" Blueprint", "").strip()
+                return f"Blueprint {item_id}".replace(" Blueprint", "").strip()
     else:
-        type_name = f"Blueprint {item_id}".replace(" Blueprint", "").strip()
+        return f"Blueprint {item_id}".replace(" Blueprint", "").strip()
 
-    # Determine BPO or BPC
-    bp_type = "BPO" if quantity == -1 else "BPC"
+def determine_blueprint_type(quantity: int) -> str:
+    """
+    Determine if blueprint is BPO or BPC based on quantity.
+    
+    Args:
+        quantity: Blueprint quantity (-1 for BPO, > -1 for BPC)
+        
+    Returns:
+        "BPO" or "BPC"
+    """
+    return "BPO" if quantity == -1 else "BPC"
 
-    # Get location name from cache or API
+async def get_location_name(location_id: Optional[int], char_id: int, access_token: str, location_cache: Dict[str, Any], structure_cache: Dict[str, Any], failed_structures: Dict[str, Any]) -> str:
+    """
+    Get location name from cache or API.
+    
+    Args:
+        location_id: The location ID
+        char_id: Character ID for auth
+        access_token: Access token for auth
+        location_cache: Cache for location names
+        structure_cache: Cache for structure names
+        failed_structures: Cache for failed structure fetches
+        
+    Returns:
+        The location name
+    """
     if location_id:
         location_id_str = str(location_id)
         cached_location = get_cached_value_with_stats(location_cache, location_id_str)
         if cached_location:
-            location_name = cached_location
+            return cached_location
         elif location_id >= 1000000000000:  # Structures (citadels, etc.)
-            cached_failed = get_cached_value_with_stats(failed_structures, location_id_str)
-            if cached_failed:
-                location_name = f"Citadel {location_id}"
-            else:
-                cached_structure = get_cached_value_with_stats(structure_cache, location_id_str)
-                if cached_structure:
-                    location_name = cached_structure
-                else:
-                    # Try auth fetch for private structures
-                    try:
-                        struct_data = await fetch_esi(f"/universe/structures/{location_id}", char_id, access_token)
-                        if struct_data:
-                            location_name = struct_data.get('name', f"Citadel {location_id}")
-                            structure_cache[location_id_str] = location_name
-                            save_structure_cache(structure_cache)
-                        else:
-                            location_name = f"Citadel {location_id}"
-                            failed_structures[location_id_str] = True
-                            save_failed_structures(failed_structures)
-                    except (ESIAuthError, ESIRequestError) as e:
-                        logger.error(f"Failed to fetch structure data for {location_id}: {e}")
-                        location_name = f"Citadel {location_id}"
-                        failed_structures[location_id_str] = True
-                        save_failed_structures(failed_structures)
+            return await get_structure_location_name(location_id, location_id_str, char_id, access_token, structure_cache, failed_structures)
         else:  # Stations - public data
-            cached_station = get_cached_value_with_stats(location_cache, location_id_str)
-            if cached_station:
-                location_name = cached_station
-            else:
-                try:
-                    loc_data = await fetch_public_esi(f"/universe/stations/{location_id}")
-                    location_name = loc_data.get('name', f"Station {location_id}") if loc_data else f"Station {location_id}"
-                    location_cache[location_id_str] = location_name
-                    save_location_cache(location_cache)
-                except ESIRequestError as e:
-                    logger.error(f"Failed to fetch station data for {location_id}: {e}")
-                    location_name = f"Station {location_id}"
-                    location_cache[location_id_str] = location_name
-                    save_location_cache(location_cache)
+            return await get_station_location_name(location_id, location_id_str, location_cache)
     else:
-        location_name = "Unknown Location"
+        return "Unknown Location"
+
+async def get_structure_location_name(location_id: int, location_id_str: str, char_id: int, access_token: str, structure_cache: Dict[str, Any], failed_structures: Dict[str, Any]) -> str:
+    """
+    Get structure location name from cache or API.
     
-    return type_name, location_name, bp_type
+    Args:
+        location_id: Structure location ID
+        location_id_str: String version of location ID
+        char_id: Character ID for auth
+        access_token: Access token
+        structure_cache: Cache for structure names
+        failed_structures: Cache for failed fetches
+        
+    Returns:
+        Structure name or fallback
+    """
+    cached_failed = get_cached_value_with_stats(failed_structures, location_id_str)
+    if cached_failed:
+        return f"Citadel {location_id}"
+    
+    cached_structure = get_cached_value_with_stats(structure_cache, location_id_str)
+    if cached_structure:
+        return cached_structure
+    
+    # Try auth fetch for private structures
+    try:
+        struct_data = await fetch_esi(f"/universe/structures/{location_id}", char_id, access_token)
+        if struct_data:
+            location_name = struct_data.get('name', f"Citadel {location_id}")
+            structure_cache[location_id_str] = location_name
+            save_structure_cache(structure_cache)
+            return location_name
+        else:
+            location_name = f"Citadel {location_id}"
+            failed_structures[location_id_str] = True
+            save_failed_structures(failed_structures)
+            return location_name
+    except (ESIAuthError, ESIRequestError) as e:
+        logger.error(f"Failed to fetch structure data for {location_id}: {e}")
+        location_name = f"Citadel {location_id}"
+        failed_structures[location_id_str] = True
+        save_failed_structures(failed_structures)
+        return location_name
+
+async def get_station_location_name(location_id: int, location_id_str: str, location_cache: Dict[str, Any]) -> str:
+    """
+    Get station location name from cache or API.
+    
+    Args:
+        location_id: Station location ID
+        location_id_str: String version of location ID
+        location_cache: Cache for location names
+        
+    Returns:
+        Station name or fallback
+    """
+    cached_station = get_cached_value_with_stats(location_cache, location_id_str)
+    if cached_station:
+        return cached_station
+    
+    try:
+        loc_data = await fetch_public_esi(f"/universe/stations/{location_id}")
+        location_name = loc_data.get('name', f"Station {location_id}") if loc_data else f"Station {location_id}"
+        location_cache[location_id_str] = location_name
+        save_location_cache(location_cache)
+        return location_name
+    except ESIRequestError as e:
+        logger.error(f"Failed to fetch station data for {location_id}: {e}")
+        location_name = f"Station {location_id}"
+        location_cache[location_id_str] = location_name
+        save_location_cache(location_cache)
+        return location_name
 
 def construct_blueprint_post_data(blueprint_data: Dict[str, Any], type_name: str, location_name: str, bp_type: str, char_id: int, item_id: int) -> Dict[str, Any]:
     """

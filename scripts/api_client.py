@@ -43,6 +43,77 @@ def benchmark(func):
     
     return async_wrapper if asyncio.iscoroutinefunction(func) else sync_wrapper
 
+# Input validation decorators
+def validate_api_response(func):
+    """
+    Decorator to validate API response data.
+    
+    Checks for common issues like None responses, empty data, 
+    and ensures response is a dictionary when expected.
+    """
+    @functools.wraps(func)
+    async def async_wrapper(*args, **kwargs):
+        result = await func(*args, **kwargs)
+        
+        if result is None:
+            logger.warning(f"{func.__name__} returned None - possible API failure")
+            return result
+            
+        if isinstance(result, dict):
+            if not result:
+                logger.warning(f"{func.__name__} returned empty dictionary")
+            # Validate common EVE API response patterns
+            elif 'error' in result:
+                logger.error(f"{func.__name__} returned error response: {result['error']}")
+            elif 'message' in result and 'error' in result.get('message', '').lower():
+                logger.error(f"{func.__name__} returned error message: {result['message']}")
+        
+        return result
+    
+    @functools.wraps(func)
+    def sync_wrapper(*args, **kwargs):
+        result = func(*args, **kwargs)
+        
+        if result is None:
+            logger.warning(f"{func.__name__} returned None - possible API failure")
+            return result
+            
+        if isinstance(result, dict):
+            if not result:
+                logger.warning(f"{func.__name__} returned empty dictionary")
+            elif 'error' in result:
+                logger.error(f"{func.__name__} returned error response: {result['error']}")
+            elif 'message' in result and 'error' in result.get('message', '').lower():
+                logger.error(f"{func.__name__} returned error message: {result['message']}")
+        
+        return result
+    
+    return async_wrapper if asyncio.iscoroutinefunction(func) else sync_wrapper
+
+def validate_input_params(*param_types):
+    """
+    Decorator to validate input parameter types.
+    
+    Args:
+        *param_types: Expected types for positional arguments (excluding self/cls)
+    """
+    def decorator(func):
+        @functools.wraps(func)
+        def wrapper(*args, **kwargs):
+            # Skip 'self' or 'cls' for methods/classmethods
+            start_idx = 1 if args and hasattr(args[0], func.__name__) else 0
+            
+            for i, expected_type in enumerate(param_types):
+                arg_idx = start_idx + i
+                if arg_idx < len(args):
+                    actual_value = args[arg_idx]
+                    if not isinstance(actual_value, expected_type):
+                        raise TypeError(f"{func.__name__} argument {i+1} must be {expected_type.__name__}, got {type(actual_value).__name__}")
+            
+            return func(*args, **kwargs)
+        return wrapper
+    return decorator
+
 # Circuit Breaker implementation for better error handling
 class CircuitBreakerState(Enum):
     CLOSED = "closed"      # Normal operation
@@ -403,26 +474,92 @@ async def _fetch_esi_with_retry(endpoint: str, headers: Optional[Dict[str, str]]
     # Use circuit breaker to protect the API call
     return await _esi_circuit_breaker.call(_do_request)
 
+@validate_api_response
 async def fetch_public_esi(endpoint: str, max_retries: int = None) -> Optional[Dict[str, Any]]:
-    """Fetch data from ESI API (public endpoints, no auth) with rate limiting and error handling."""
+    """
+    Fetch data from ESI API (public endpoints, no auth) with rate limiting and error handling.
+    
+    This function handles public EVE Online ESI API endpoints that don't require authentication.
+    It includes automatic retry logic, rate limiting, and circuit breaker protection.
+    
+    Args:
+        endpoint: ESI API endpoint path (e.g., '/universe/types/123')
+        max_retries: Maximum number of retry attempts (default: from config)
+        
+    Returns:
+        Dictionary containing the API response data, or None if request failed
+        
+    Raises:
+        ESIRequestError: If the API request fails after all retries
+        
+    Example:
+        >>> data = await fetch_public_esi('/universe/types/123')
+        >>> print(data['name'])  # 'Rifter'
+    """
     return await _fetch_esi_with_retry(endpoint, headers=None, max_retries=max_retries, is_public=True)
 
+@validate_api_response
 async def fetch_esi(endpoint: str, char_id: Optional[int], access_token: str, max_retries: int = None) -> Optional[Dict[str, Any]]:
-    """Fetch data from ESI API with rate limiting and error handling."""
+    """
+    Fetch data from ESI API with authentication, rate limiting and error handling.
+    
+    This function handles authenticated EVE Online ESI API endpoints that require OAuth tokens.
+    It includes automatic token validation, retry logic, rate limiting, and circuit breaker protection.
+    
+    Args:
+        endpoint: ESI API endpoint path (e.g., '/characters/123/assets')
+        char_id: Character ID for authentication context (can be None for some endpoints)
+        access_token: Valid OAuth2 access token
+        max_retries: Maximum number of retry attempts (default: from config)
+        
+    Returns:
+        Dictionary containing the API response data, or None if request failed
+        
+    Raises:
+        ESIAuthError: If authentication fails
+        ESIRequestError: If the API request fails after all retries
+        
+    Example:
+        >>> assets = await fetch_esi('/characters/123/assets', 123, 'token')
+        >>> print(len(assets))  # Number of assets
+    """
     headers = {'Authorization': f'Bearer {access_token}'}
     return await _fetch_esi_with_retry(endpoint, headers=headers, max_retries=max_retries, is_public=False)
 
+@validate_input_params(str, type(None), str)
 def fetch_esi_sync(endpoint: str, char_id: Optional[int], access_token: str, max_retries: int = None) -> Optional[Dict[str, Any]]:
     """Synchronous version of fetch_esi for compatibility with existing scripts."""
     return asyncio.run(fetch_esi(endpoint, char_id, access_token, max_retries))
 
+@validate_input_params(str)
 def fetch_public_esi_sync(endpoint: str, max_retries: int = None) -> Optional[Dict[str, Any]]:
     """Synchronous version of fetch_public_esi for compatibility with existing scripts."""
     return asyncio.run(fetch_public_esi(endpoint, max_retries))
 
 @benchmark
 async def wp_request(method: str, endpoint: str, data: Optional[Dict] = None) -> Optional[Dict]:
-    """Make async request to WordPress REST API with circuit breaker protection."""
+    """
+    Make authenticated request to WordPress REST API with circuit breaker protection.
+    
+    This function handles all WordPress REST API interactions with automatic authentication,
+    rate limiting, retry logic, and circuit breaker protection.
+    
+    Args:
+        method: HTTP method ('GET', 'POST', 'PUT', 'DELETE')
+        endpoint: WordPress API endpoint path (e.g., '/wp-json/wp/v2/posts')
+        data: Request payload for POST/PUT requests
+        
+    Returns:
+        Dictionary containing the API response data, or None if request failed
+        
+    Raises:
+        WordPressAuthError: If WordPress authentication fails
+        WordPressRequestError: If the API request fails
+        
+    Example:
+        >>> post = await wp_request('POST', '/wp-json/wp/v2/posts', {'title': 'New Post', 'status': 'publish'})
+        >>> print(post['id'])  # 123
+    """
     
     async def _do_wp_request():
         start_time = time.time()
@@ -507,6 +644,7 @@ async def wp_request(method: str, endpoint: str, data: Optional[Dict] = None) ->
     # Use circuit breaker to protect WordPress API calls
     return await _wp_circuit_breaker.call(_do_wp_request)
 
+@validate_input_params(str, str)
 def send_email(subject: str, body: str) -> None:
     """Send an email alert."""
     if not all([EMAIL_SMTP_SERVER, EMAIL_USERNAME, EMAIL_PASSWORD, EMAIL_FROM, EMAIL_TO]):
@@ -528,8 +666,34 @@ def send_email(subject: str, body: str) -> None:
     except Exception as e:
         logger.error(f"Failed to send email: {e}")
 
+@validate_input_params(str)
 def refresh_token(refresh_token: str) -> Optional[Dict[str, Any]]:
-    """Refresh an access token."""
+    """
+    Refresh an OAuth2 access token using a refresh token.
+    
+    Exchanges a valid refresh token for a new access token from EVE Online's OAuth server.
+    Automatically calculates the token expiration time and logs audit events.
+    
+    Args:
+        refresh_token: Valid OAuth2 refresh token
+        
+    Returns:
+        Dictionary with token data:
+        {
+            'access_token': str,
+            'refresh_token': str,  # May be the same or new
+            'expires_at': str  # ISO format datetime
+        }
+        Returns None if refresh fails
+        
+    Raises:
+        No explicit raises; logs errors internally
+        
+    Example:
+        >>> tokens = refresh_token('refresh_token_123')
+        >>> if tokens:
+        ...     print(f"New token expires: {tokens['expires_at']}")
+    """
     data = {
         'grant_type': 'refresh_token',
         'refresh_token': refresh_token
@@ -554,9 +718,26 @@ def refresh_token(refresh_token: str) -> Optional[Dict[str, Any]]:
         logger.error(f"Failed to refresh token: {response.status_code} - {response.text}")
         return None
 
-@benchmark
+@validate_api_response
+@validate_input_params(int)
 async def fetch_type_icon(type_id: int, size: int = 512) -> str:
-    """Fetch type icon URL from images.evetech.net with fallback."""
+    """
+    Fetch type icon URL from EVE Online image servers with fallback logic.
+    
+    Attempts to retrieve item type icons from images.evetech.net, trying multiple
+    variations (regular icon, blueprint icon) and falling back to placeholder if needed.
+    
+    Args:
+        type_id: EVE item type ID
+        size: Icon size in pixels (default: 512)
+        
+    Returns:
+        URL string pointing to the icon image
+        
+    Example:
+        >>> icon_url = await fetch_type_icon(12345, size=256)
+        >>> print(icon_url)  # 'https://images.evetech.net/types/12345/icon?size=256'
+    """
     # Try the 'bp' variation first for blueprints, then fallback to regular icon
     variations = ['bp', 'icon']
 
@@ -574,9 +755,11 @@ async def fetch_type_icon(type_id: int, size: int = 512) -> str:
     # If no icon found, return placeholder
     return f"https://via.placeholder.com/{size}x{size}/cccccc/000000?text=No+Icon"
 
+@validate_input_params((str, type(None)))
 def sanitize_string(value: str) -> str:
     return re.sub(r'[^\w\s\-.,]', '', value) if isinstance(value, str) else str(value)
 
+@validate_input_params()
 def sanitize_api_response(data: Any) -> Any:
     """Sanitize API response data recursively to prevent injection and ensure type safety."""
     if isinstance(data, dict):
