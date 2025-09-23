@@ -191,24 +191,33 @@ class EVE_Observer {
         $section = $request->get_param('section');
 
         // Log the sync request
-        error_log("EVE Observer: Sync request started for section: {$section}");
+        error_log("🔄 [PHP STEP 1] EVE Observer: Sync request started for section: {$section}");
+        error_log("🔄 [PHP STEP 2] Request parameters: " . print_r($request->get_params(), true));
 
         // Check if required functions are available
+        error_log("🔄 [PHP STEP 3] Checking if shell_exec function is available...");
         if (!function_exists('shell_exec')) {
-            error_log("EVE Observer: shell_exec function is disabled");
+            error_log("❌ [PHP ERROR] shell_exec function is disabled");
+            error_log("🔄 [PHP STEP 4] Returning error response for disabled function");
             return new WP_Error('function_disabled', 'shell_exec function is disabled by server configuration', array('status' => 500));
         }
+        error_log("✅ [PHP STEP 5] shell_exec function is available");
 
         // Get the path to the scripts directory
+        error_log("🔄 [PHP STEP 6] Getting plugin and scripts directory paths...");
         $plugin_dir = plugin_dir_path(__FILE__);
         $scripts_dir = dirname($plugin_dir) . '/scripts/';
+        error_log("🔄 [PHP STEP 7] Plugin dir: {$plugin_dir}");
+        error_log("🔄 [PHP STEP 8] Scripts dir: {$scripts_dir}");
 
         if (!is_dir($scripts_dir)) {
-            error_log("EVE Observer: Scripts directory not found: {$scripts_dir}");
+            error_log("❌ [PHP ERROR] Scripts directory not found: {$scripts_dir}");
             return new WP_Error('scripts_dir_not_found', 'Scripts directory not found: ' . $scripts_dir, array('status' => 500));
         }
+        error_log("✅ [PHP STEP 9] Scripts directory exists");
 
         // Map sections to Python scripts
+        error_log("🔄 [PHP STEP 10] Mapping section to Python script...");
         $script_map = array(
             'characters' => 'main.py --characters',
             'blueprints' => 'main.py --blueprints',
@@ -219,42 +228,56 @@ class EVE_Observer {
         );
 
         if (!isset($script_map[$section])) {
-            error_log("EVE Observer: Invalid section specified: {$section}");
+            error_log("❌ [PHP ERROR] Invalid section specified: {$section}");
             return new WP_Error('invalid_section', 'Invalid section specified', array('status' => 400));
         }
+        error_log("✅ [PHP STEP 11] Section mapped to script: {$script_map[$section]}");
 
         // Change to scripts directory and run the command synchronously
+        error_log("🔄 [PHP STEP 12] Preparing shell command...");
         $command = 'cd ' . escapeshellarg($scripts_dir) . ' && /usr/bin/python3 ' . escapeshellarg($script_map[$section]) . ' 2>&1';
+        error_log("🔄 [PHP STEP 13] Full command: {$command}");
 
         // Set execution time limit for long-running syncs
+        error_log("🔄 [PHP STEP 14] Setting PHP execution time limit to 300 seconds...");
         set_time_limit(300); // 5 minutes
+        error_log("✅ [PHP STEP 15] Time limit set");
 
         // Execute the command and capture output
+        error_log("🔄 [PHP STEP 16] Starting command execution...");
         $start_time = microtime(true);
         $output = shell_exec($command);
         $execution_time = microtime(true) - $start_time;
+        error_log("✅ [PHP STEP 17] Command execution completed in " . round($execution_time, 2) . " seconds");
 
         // Check if command was successful (exit code 0)
+        error_log("🔄 [PHP STEP 18] Checking command exit code...");
         $exit_code = 0;
         if (function_exists('exec')) {
             $last_line = exec($command, $output_lines, $exit_code);
+            error_log("🔄 [PHP STEP 19] Exit code from exec(): {$exit_code}");
         }
 
         if ($exit_code !== 0) {
-            error_log("EVE Observer: Sync failed for section {$section}. Exit code: {$exit_code}. Output: " . substr($output, 0, 1000));
+            error_log("❌ [PHP ERROR] Sync failed for section {$section}. Exit code: {$exit_code}. Output: " . substr($output, 0, 1000));
+            error_log("🔄 [PHP STEP 20] Returning error response for failed command");
             return new WP_Error('sync_failed', 'Sync failed with exit code: ' . $exit_code, array('status' => 500));
         }
 
         // Log successful completion
-        error_log("EVE Observer: Sync completed successfully for section {$section} in " . round($execution_time, 2) . " seconds");
+        error_log("✅ [PHP STEP 21] Sync completed successfully for section {$section} in " . round($execution_time, 2) . " seconds");
+        error_log("🔄 [PHP STEP 22] Preparing success response...");
 
-        return array(
+        $response = array(
             'success' => true,
             'section' => $section,
             'message' => 'Sync completed successfully',
             'execution_time' => round($execution_time, 2),
             'timestamp' => current_time('mysql')
         );
+        error_log("✅ [PHP STEP 23] Success response prepared: " . print_r($response, true));
+
+        return $response;
     }
 
     public function add_admin_menu() {

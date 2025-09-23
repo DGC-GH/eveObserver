@@ -258,79 +258,121 @@ class EVEDashboard {
 
         if (syncAllButton) {
             syncAllButton.addEventListener('click', (e) => {
-                console.log('Sync all button clicked - event detected!');
+                console.log('🔄 [STEP 1] Sync All button clicked - event detected!');
+                console.log('🔄 [STEP 2] Event object:', e);
+                console.log('🔄 [STEP 3] Button element:', syncAllButton);
                 alert('Sync All button clicked! Check console for details.');
+                console.log('🔄 [STEP 4] Alert dismissed, proceeding with sync...');
                 this.syncSection('all', syncAllButton);
             });
         } else {
-            console.error('Sync all button not found!');
+            console.error('❌ [ERROR] Sync all button not found!');
         }
     }
 
     async syncSection(section, button) {
-        console.log(`EVE Observer: Starting sync for section: ${section}`);
-        console.log('eveObserverApi available at sync time:', typeof eveObserverApi !== 'undefined');
+        console.log(`🔄 [STEP 5] EVE Observer: Starting sync for section: ${section}`);
+        console.log(`🔄 [STEP 6] Button element:`, button);
+        console.log(`🔄 [STEP 7] Button original text:`, button.innerHTML);
+
+        console.log('🔄 [STEP 8] Checking eveObserverApi availability...');
+        console.log('🔄 [STEP 9] eveObserverApi available at sync time:', typeof eveObserverApi !== 'undefined');
 
         if (typeof eveObserverApi === 'undefined') {
-            console.error('eveObserverApi is not defined!');
+            console.error('❌ [ERROR] eveObserverApi is not defined!');
+            console.log('❌ [STEP 10] Showing error notification...');
             this.showNotification('API configuration error - please refresh the page', 'error');
             return;
         }
 
+        console.log('✅ [STEP 11] eveObserverApi is available');
+        console.log('🔄 [STEP 12] API configuration:', {
+            nonce: eveObserverApi.nonce ? 'present' : 'missing',
+            restUrl: eveObserverApi.restUrl
+        });
+
         // Disable button and show loading state
+        console.log('🔄 [STEP 13] Disabling button and setting loading state...');
         const originalText = button.innerHTML;
         button.disabled = true;
         button.innerHTML = '<span class="dashicons dashicons-update dashicons-spin"></span> Syncing...';
+        console.log('✅ [STEP 14] Button disabled and loading state set');
 
         try {
-            console.log(`EVE Observer: Making API request to sync ${section}`);
-            console.log('API URL:', eveObserverApi.restUrl + 'sync/' + section);
-            console.log('Nonce:', eveObserverApi.nonce);
+            console.log(`🔄 [STEP 15] Preparing API request to sync ${section}`);
+            console.log('🔄 [STEP 16] API URL:', eveObserverApi.restUrl + 'sync/' + section);
+            console.log('🔄 [STEP 17] Nonce:', eveObserverApi.nonce);
 
-            const response = await fetch(`${eveObserverApi.restUrl}sync/${section}`, {
+            const requestData = {
                 method: 'POST',
                 headers: {
                     'X-WP-Nonce': eveObserverApi.nonce,
                     'Content-Type': 'application/json'
                 }
-            });
+            };
+            console.log('🔄 [STEP 18] Request configuration:', requestData);
+
+            console.log(`🔄 [STEP 19] Making fetch request to: ${eveObserverApi.restUrl}sync/${section}`);
+            const response = await fetch(`${eveObserverApi.restUrl}sync/${section}`, requestData);
+            console.log('✅ [STEP 20] Fetch request completed');
+            console.log('🔄 [STEP 21] Response status:', response.status);
+            console.log('🔄 [STEP 22] Response ok:', response.ok);
 
             if (!response.ok) {
+                console.log('❌ [STEP 23] Response not ok, processing error...');
                 const errorData = await response.json().catch(() => ({ message: 'Unknown error' }));
+                console.log('🔄 [STEP 24] Error data:', errorData);
 
                 // Check for specific error types
                 if (errorData.code === 'function_disabled') {
+                    console.log('❌ [STEP 25] Detected shell_exec disabled error');
                     throw new Error(`Server configuration error: ${errorData.message}. Please contact your hosting provider to enable shell_exec function.`);
                 }
 
+                console.log('❌ [STEP 26] Generic HTTP error');
                 throw new Error(`HTTP ${response.status}: ${errorData.message || response.statusText}`);
             }
 
+            console.log('✅ [STEP 27] Response ok, parsing JSON...');
             const result = await response.json();
-            console.log(`EVE Observer: Sync response for ${section}:`, result);
+            console.log(`✅ [STEP 28] JSON parsed successfully`);
+            console.log(`🔄 [STEP 29] EVE Observer: Sync response for ${section}:`, result);
 
             if (result.success) {
+                console.log('✅ [STEP 30] Sync was successful');
                 const message = result.execution_time
                     ? `Successfully synced ${section} in ${result.execution_time}s`
                     : `Successfully synced ${section}`;
+                console.log('🔄 [STEP 31] Success message:', message);
+                console.log('🔄 [STEP 32] Showing success notification...');
                 this.showNotification(message, 'success');
 
                 // Reload data after successful sync
-                console.log(`EVE Observer: Reloading data after successful sync of ${section}`);
+                console.log(`🔄 [STEP 33] Reloading data after successful sync of ${section}`);
+                console.log('🔄 [STEP 34] Calling loadAllData()...');
                 await this.loadAllData();
+                console.log('✅ [STEP 35] Data reloaded successfully');
+                console.log('🔄 [STEP 36] Calling renderAllTables()...');
                 this.renderAllTables();
+                console.log('✅ [STEP 37] Tables rendered');
+                console.log('🔄 [STEP 38] Calling renderChart()...');
                 this.renderChart();
+                console.log('✅ [STEP 39] Chart rendered');
             } else {
+                console.log('❌ [STEP 40] Sync reported failure in response');
                 throw new Error(result.message || 'Sync failed');
             }
         } catch (error) {
-            console.error(`EVE Observer: Sync error for ${section}:`, error);
+            console.error(`❌ [ERROR] EVE Observer: Sync error for ${section}:`, error);
+            console.log('🔄 [STEP 41] Showing error notification...');
             this.showNotification(`Failed to sync ${section}: ${error.message}`, 'error');
         } finally {
             // Restore button state
+            console.log('🔄 [STEP 42] Restoring button state...');
             button.disabled = false;
             button.innerHTML = originalText;
-            console.log(`EVE Observer: Sync operation completed for ${section}`);
+            console.log('✅ [STEP 43] Button state restored');
+            console.log(`🔄 [STEP 44] EVE Observer: Sync operation completed for ${section}`);
         }
     }
 
