@@ -662,6 +662,91 @@ def fetch_public_esi_sync(endpoint: str, max_retries: int = None) -> Optional[Di
     """Synchronous version of fetch_public_esi for compatibility with existing scripts."""
     return asyncio.run(fetch_public_esi(endpoint, max_retries))
 
+@validate_input_params(int, int)
+def fetch_public_contracts(region_id: int, page: int = 1, max_retries: int = 3) -> Optional[List[Dict[str, Any]]]:
+    """Fetch public contracts for a specific region with retry logic and rate limiting.
+    
+    This function retrieves public contracts from the EVE ESI API for a given region,
+    implementing exponential backoff retry logic and monitoring ESI rate limits.
+    
+    Args:
+        region_id: The EVE region ID to fetch contracts from
+        page: Page number for pagination (default: 1)
+        max_retries: Maximum number of retry attempts on failure (default: 3)
+        
+    Returns:
+        List of contract dictionaries if successful, None if all retries failed
+        
+    Note:
+        ESI returns a maximum of 1000 contracts per page. Use pagination for complete results.
+    """
+    endpoint = f"/contracts/public/{region_id}/?page={page}"
+    url = f"{ESI_BASE_URL}{endpoint}"
+    headers = {'Accept': 'application/json'}
+    
+    for attempt in range(max_retries):
+        try:
+            response = requests.get(url, headers=headers, timeout=30)
+            response.raise_for_status()
+            
+            # Check rate limiting
+            remaining = response.headers.get('X-ESI-Error-Limit-Remain', '100')
+            reset_time = response.headers.get('X-ESI-Error-Limit-Reset', '60')
+            if int(remaining) < 20:
+                logger.warning(f"ESI rate limit low: {remaining} requests remaining, resets in {reset_time}s")
+            
+            return response.json()
+        except requests.exceptions.RequestException as e:
+            if attempt < max_retries - 1:
+                wait_time = 2 ** attempt  # Exponential backoff
+                logger.warning(f"ESI request failed (attempt {attempt + 1}/{max_retries}): {e}. Retrying in {wait_time}s")
+                time.sleep(wait_time)
+            else:
+                logger.error(f"ESI request failed after {max_retries} attempts: {e}")
+                return None
+
+@validate_input_params(int, int)
+def fetch_public_contract_items(contract_id: int, max_retries: int = 3) -> Optional[List[Dict[str, Any]]]:
+    """Fetch items contained in a public contract with retry logic.
+    
+    Retrieves the list of items and their quantities for a specific public contract.
+    Only works for contracts that are publicly visible (not private courier contracts).
+    
+    Args:
+        contract_id: The EVE contract ID to fetch items for
+        max_retries: Maximum number of retry attempts on failure (default: 3)
+        
+    Returns:
+        List of contract item dictionaries if successful, None if failed
+        
+    Note:
+        Item quantities are negative for blueprint originals (BPOs) and positive for copies (BPCs).
+    """
+    endpoint = f"/contracts/public/items/{contract_id}/"
+    url = f"{ESI_BASE_URL}{endpoint}"
+    headers = {'Accept': 'application/json'}
+    
+    for attempt in range(max_retries):
+        try:
+            response = requests.get(url, headers=headers, timeout=30)
+            response.raise_for_status()
+            
+            # Check rate limiting
+            remaining = response.headers.get('X-ESI-Error-Limit-Remain', '100')
+            reset_time = response.headers.get('X-ESI-Error-Limit-Reset', '60')
+            if int(remaining) < 20:
+                logger.warning(f"ESI rate limit low: {remaining} requests remaining, resets in {reset_time}s")
+            
+            return response.json()
+        except requests.exceptions.RequestException as e:
+            if attempt < max_retries - 1:
+                wait_time = 2 ** attempt  # Exponential backoff
+                logger.warning(f"ESI request failed (attempt {attempt + 1}/{max_retries}): {e}. Retrying in {wait_time}s")
+                time.sleep(wait_time)
+            else:
+                logger.error(f"ESI request failed after {max_retries} attempts: {e}")
+                return None
+
 @benchmark
 async def wp_request(method: str, endpoint: str, data: Optional[Dict] = None) -> Optional[Dict]:
     """

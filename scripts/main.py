@@ -10,6 +10,7 @@ import logging
 from typing import Dict, List, Tuple
 from datetime import datetime, timezone
 from dotenv import load_dotenv
+import time
 
 from config import *
 from api_client import refresh_token, get_session
@@ -87,6 +88,7 @@ async def process_all_data(corp_members: Dict[int, List[Tuple[int, str, str]]], 
 
 async def main() -> None:
     """Main data fetching routine."""
+    start_time = time.time()
     args = parse_arguments()
     clear_log_file()
     caches = initialize_caches()
@@ -97,14 +99,26 @@ async def main() -> None:
 
     try:
         # Collect all corporations and their member characters
+        collect_start = time.time()
         corp_members = collect_corporation_members(tokens)
         allowed_corp_ids, allowed_issuer_ids = get_allowed_entities(corp_members)
+        collect_time = time.time() - collect_start
+        logger.info(f"Corporation collection completed in {collect_time:.2f}s")
 
         # Clean up old posts with filtering (only if doing full fetch or contracts)
         if args.all or args.contracts:
+            cleanup_start = time.time()
             cleanup_old_posts(allowed_corp_ids, allowed_issuer_ids)
+            cleanup_time = time.time() - cleanup_start
+            logger.info(f"Post cleanup completed in {cleanup_time:.2f}s")
 
+        process_start = time.time()
         await process_all_data(corp_members, caches, args, tokens)
+        process_time = time.time() - process_start
+        logger.info(f"Data processing completed in {process_time:.2f}s")
+        
+        total_time = time.time() - start_time
+        logger.info(f"Total execution completed in {total_time:.2f}s")
     finally:
         # Flush any pending cache saves and log performance
         from cache_manager import flush_pending_saves, log_cache_performance

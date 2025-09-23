@@ -13,7 +13,7 @@ from datetime import datetime, timezone, timedelta
 from requests.adapters import HTTPAdapter
 from urllib3.util.retry import Retry
 from config import *
-from api_client import fetch_esi_sync as fetch_esi, fetch_public_esi_sync as fetch_public_esi
+from api_client import fetch_public_esi, fetch_esi, wp_request, send_email, fetch_type_icon, sanitize_string, WordPressAuthError, WordPressRequestError, fetch_public_contracts, fetch_public_contract_items
 
 # Additional configuration
 ESI_VERSION = 'latest'
@@ -93,16 +93,6 @@ def save_tokens(tokens):
     """Save tokens to file."""
     with open(TOKENS_FILE, 'w') as f:
         json.dump(tokens, f, indent=2)
-
-def fetch_public_contracts(region_id):
-    """Fetch public contracts for a specific region."""
-    endpoint = f"/contracts/public/{region_id}/"
-    return fetch_public_esi(endpoint)
-
-def fetch_public_contract_items(contract_id):
-    """Fetch items for a public contract."""
-    endpoint = f"/contracts/public/items/{contract_id}/"
-    return fetch_public_esi(endpoint)
 
 def check_contract_competition(contract_data, contract_items):
     """Check if a sell contract has been outbid by cheaper competing contracts in the same region."""

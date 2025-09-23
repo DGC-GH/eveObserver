@@ -29,7 +29,7 @@ This document describes the general features implemented in this data aggregatio
 - Configurable alerting for market condition changes and opportunities
 - Historical data tracking for trend analysis and decision support
 - Exclusion logic for same-entity comparisons to prevent false alerts
-- **Key Functions**: `check_contract_outbid`, `process_contracts`, `cleanup_old_posts`, `send_email`
+- **Key Functions**: `check_contract_outbid`, `process_contracts`, `cleanup_old_posts`, `send_email`, `fetch_public_contracts`, `fetch_public_contract_items`, `check_contract_competition`, `update_contract_outbid_status`
 
 ### Asynchronous Notification and Alerting System
 - Email-based alerting for time-sensitive events and system notifications
