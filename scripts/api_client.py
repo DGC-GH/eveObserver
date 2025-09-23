@@ -911,7 +911,7 @@ def fetch_public_contract_items(contract_id: int, max_retries: int = 3) -> Optio
 
 @validate_input_params(int, int)
 async def fetch_public_contracts_async(
-    region_id: int, page: int = 1, max_retries: int = 3
+    region_id: int, page: int = 1, max_retries: int = 3, sort_by_price: bool = False
 ) -> Optional[List[Dict[str, Any]]]:
     """Fetch public contracts for a specific region asynchronously with retry logic and rate limiting.
 
@@ -922,12 +922,14 @@ async def fetch_public_contracts_async(
         region_id: The EVE region ID to fetch contracts from
         page: Page number for pagination (default: 1)
         max_retries: Maximum number of retry attempts on failure (default: 3)
+        sort_by_price: Whether to sort contracts by price per item (cheapest first) (default: False)
 
     Returns:
         List of contract dictionaries if successful, None if all retries failed
 
     Note:
         ESI returns a maximum of 1000 contracts per page. Use pagination for complete results.
+        When sort_by_price is True, contracts are sorted by price per item (ascending).
     """
     endpoint = f"/contracts/public/{region_id}/?page={page}"
     url = f"{ESI_BASE_URL}{endpoint}"
@@ -945,7 +947,25 @@ async def fetch_public_contracts_async(
                 if int(remaining) < 20:
                     logger.warning(f"ESI rate limit low: {remaining} requests remaining, resets in {reset_time}s")
 
-                return await response.json()
+                contracts = await response.json()
+
+                # Sort by price per item if requested
+                if sort_by_price and contracts:
+                    # Filter out contracts with invalid prices before sorting
+                    valid_contracts = [
+                        contract for contract in contracts
+                        if contract.get("price", 0) > 0 and contract.get("volume", 1) > 0
+                    ]
+
+                    for contract in valid_contracts:
+                        price = contract.get("price", 0)
+                        volume = contract.get("volume", 1)
+                        contract["_price_per_item"] = price / volume
+
+                    valid_contracts.sort(key=lambda x: x.get("_price_per_item", 0))
+                    contracts = valid_contracts
+
+                return contracts
         except (aiohttp.ClientError, asyncio.TimeoutError) as e:
             if attempt < max_retries - 1:
                 wait_time = 2**attempt  # Exponential backoff

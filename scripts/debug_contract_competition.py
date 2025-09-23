@@ -24,7 +24,7 @@ from api_client import (
     refresh_token,
     cleanup_session
 )
-from contract_processor import check_contract_competition_hybrid, get_region_from_location
+from contract_processor import check_contract_competition_hybrid, get_region_from_location, get_issuer_names
 from config import TOKENS_FILE
 
 # Configure logging
@@ -183,7 +183,345 @@ async def check_contract_outbid_status(contract_data: Dict[str, Any], contract_i
         return False, None
 
 
+async def check_contract_outbid_status_with_filter(contract_data: Dict[str, Any], contract_items: List[Dict[str, Any]], issuer_name_filter: str) -> Tuple[bool, Optional[float]]:
+    """Check if a contract has been outbid, filtering by issuer name."""
+    try:
+        is_outbid, competing_price, debug_info = await check_contract_competition_hybrid(contract_data, contract_items, issuer_name_filter=issuer_name_filter)
+        if debug_info:
+            print(f"  Debug: Found {len(debug_info)} total competing contracts in region (filtered by '{issuer_name_filter}')")
+        return is_outbid, competing_price
+    except Exception as e:
+        logger.error(f"Error checking contract competition with filter: {e}")
+        return False, None
+
+
+async def find_capital_ion_thruster_contract():
+    """Find any Capital Ion Thruster Blueprint contract for testing."""
+    print("🔍 Searching for any Capital Ion Thruster Blueprint contract...")
+
+    # First, let's try to find the type ID by searching for known capital thruster blueprints
+    # Common capital thruster blueprint type IDs
+    possible_type_ids = [23713, 23714, 23715, 23716, 23717]  # Some capital thruster BPOs
+
+    capital_ion_type_id = None
+    for type_id in possible_type_ids:
+        try:
+            type_data = await fetch_public_esi(f'/universe/types/{type_id}')
+            if type_data:
+                name = type_data.get('name', '')
+                print(f'Checking {type_id}: {name}')
+                if 'Capital Ion Thruster' in name and 'Blueprint' in name:
+                    capital_ion_type_id = type_id
+                    print(f'*** FOUND: {name} = {type_id} ***')
+                    break
+        except:
+            continue
+
+    if not capital_ion_type_id:
+        print("❌ Could not find Capital Ion Thruster Blueprint type ID")
+        return None
+
+    print(f"📋 Found Capital Ion Thruster Blueprint type ID: {capital_ion_type_id}")
+
+    # Search for contracts containing this blueprint
+    regions_to_check = [
+        10000002,  # The Forge (Jita)
+    ]
+
+    for region_id in regions_to_check:
+        print(f"🔍 Checking region {region_id} for Capital Ion Thruster Blueprint contracts...")
+
+        # Check first few pages
+        for page in range(1, 6):
+            try:
+                contracts = await fetch_public_contracts_async(region_id, page)
+                if not contracts:
+                    break
+
+                for contract in contracts:
+                    if contract.get("type") != "item_exchange" or contract.get("status") != "outstanding":
+                        continue
+
+                    contract_id = contract.get("contract_id")
+
+                    # Get contract items
+                    contract_items = await fetch_public_contract_items_async(contract_id)
+                    if not contract_items or len(contract_items) != 1:
+                        continue
+
+                    item = contract_items[0]
+                    if item.get("type_id") == capital_ion_type_id and item.get("quantity") == -1:  # BPO
+                        print(f"🎯 Found Capital Ion Thruster Blueprint contract: {contract_id}")
+                        print(f"   Region: {region_id}")
+                        print(f"   Price: {contract.get('price', 0):,.2f} ISK")
+                        print(f"   Issuer ID: {contract.get('issuer_id')}")
+                        print(f"   Issuer Corp ID: {contract.get('issuer_corporation_id')}")
+                        print(f"   Title: {contract.get('title', 'N/A')}")
+
+                        return {
+                            'contract_data': contract,
+                            'contract_items': contract_items,
+                            'region_id': region_id,
+                            'type_id': capital_ion_type_id
+                        }
+
+            except Exception as e:
+                print(f"Error checking page {page} in region {region_id}: {e}")
+                break
+
+    print("❌ No Capital Ion Thruster Blueprint contracts found in major trade hubs")
+    return None
+
+
+async def test_issuer_name_filtering():
+    """Test the issuer name filtering functionality."""
+    print("\n" + "=" * 80)
+    print("TESTING ISSUER NAME FILTERING")
+    print("=" * 80)
+
+    # Find the Capital Ion Thruster Blueprint contract
+    contract_info = await find_capital_ion_thruster_contract()
+    if not contract_info:
+        print("Could not find the Capital Ion Thruster Blueprint contract to test with.")
+        return
+
+    contract_data = contract_info['contract_data']
+    contract_items = contract_info['contract_items']
+    contract_id = contract_data.get('contract_id')
+
+    print(f"\n📋 Testing with Capital Ion Thruster Blueprint contract {contract_id}")
+    print(f"   Price: {contract_data.get('price', 0):,.2f} ISK")
+
+    # Test 1: Check competition without filtering
+    print(f"\n🔍 Test 1: Checking competition WITHOUT issuer name filtering...")
+    is_outbid, competing_price = await check_contract_outbid_status(contract_data, contract_items)
+
+    if is_outbid:
+        print(f"   ❌ OUTBID! Cheapest competitor: {competing_price:,.2f} ISK")
+    else:
+        print(f"   ✅ Not outbid - appears to be the cheapest!")
+
+    # Test 2: Check competition with "Research Magic" filtering
+    print(f"\n🔍 Test 2: Checking competition WITH 'Research Magic' issuer name filtering...")
+    is_outbid_filtered, competing_price_filtered = await check_contract_outbid_status_with_filter(
+        contract_data, contract_items, "Research Magic"
+    )
+
+    if is_outbid_filtered:
+        print(f"   ❌ OUTBID by Research Magic! Cheapest competitor: {competing_price_filtered:,.2f} ISK")
+        print(f"   This confirms the contract is outbid by Research Magic traders!")
+    else:
+        print(f"   ✅ Not outbid by Research Magic - no cheaper Research Magic contracts found")
+
+    # Test 3: Show detailed competitor analysis
+    print(f"\n🔍 Test 3: Detailed competitor analysis for Research Magic...")
+    await detailed_competitor_analysis(contract_data, contract_items, "Research Magic")
+
+
+async def detailed_competitor_analysis(contract_data: Dict[str, Any], contract_items: List[Dict[str, Any]], issuer_name_filter: str):
+    """Perform detailed analysis of competitors with issuer name filtering."""
+    from contract_processor import check_contract_competition
+
+    if not contract_items or len(contract_items) != 1:
+        print("   Detailed analysis only works for single-item contracts")
+        return
+
+    item = contract_items[0]
+    type_id = item.get("type_id")
+    quantity = item.get("quantity", 1)
+    contract_price = contract_data.get("price", 0)
+    contract_id = contract_data.get("contract_id")
+
+    if quantity <= 0 or contract_price <= 0:
+        print("   Invalid contract data for analysis")
+        return
+
+    price_per_item = contract_price / quantity
+
+    # Get contract region
+    region_id = await get_region_from_location(contract_data.get("start_location_id"))
+    if not region_id:
+        print("   Could not determine contract region")
+        return
+
+    print(f"   Contract region: {region_id}")
+    print(f"   Contract price per item: {price_per_item:,.2f} ISK")
+    print(f"   Looking for competitors from issuers containing '{issuer_name_filter}'...")
+
+    # Manually check competitors with detailed logging
+    found_research_magic_competitors = []
+
+    for page in range(1, 6):  # Check first 5 pages
+        try:
+            contracts_page = await fetch_public_contracts_async(region_id, page, sort_by_price=True)
+            if not contracts_page:
+                break
+
+            for contract in contracts_page:
+                comp_contract_id = contract.get("contract_id")
+                comp_price = contract.get("price", 0)
+                comp_issuer_id = contract.get("issuer_id")
+                comp_issuer_corp_id = contract.get("issuer_corporation_id")
+                comp_title = contract.get("title", "")
+
+                # Quick filters
+                if contract.get("type") != "item_exchange" or contract.get("status") != "outstanding":
+                    continue
+                if comp_contract_id == contract_id:
+                    continue
+
+                # Check if issuer name contains our filter
+                issuer_names = await get_issuer_names([comp_issuer_id, comp_issuer_corp_id] if comp_issuer_corp_id else [comp_issuer_id])
+                issuer_name = issuer_names.get(comp_issuer_id, "")
+                corp_name = issuer_names.get(comp_issuer_corp_id, "") if comp_issuer_corp_id else ""
+
+                name_matches = (
+                    issuer_name_filter.lower() in issuer_name.lower() or
+                    issuer_name_filter.lower() in corp_name.lower() or
+                    issuer_name_filter.lower() in comp_title.lower()
+                )
+
+                if not name_matches:
+                    continue
+
+                # Get contract items to verify it's the same blueprint
+                try:
+                    comp_items = await fetch_public_contract_items_async(comp_contract_id)
+                    if not comp_items or len(comp_items) != 1:
+                        continue
+
+                    comp_item = comp_items[0]
+                    if (comp_item.get("type_id") == type_id and
+                        comp_item.get("is_blueprint_copy") == item.get("is_blueprint_copy")):
+
+                        if comp_price > 0:
+                            comp_price_per_item = comp_price / comp_item.get("quantity", 1)
+                            found_research_magic_competitors.append({
+                                'contract_id': comp_contract_id,
+                                'price_per_item': comp_price_per_item,
+                                'issuer_name': issuer_name,
+                                'corp_name': corp_name,
+                                'title': comp_title,
+                                'issuer_id': comp_issuer_id,
+                                'issuer_corp_id': comp_issuer_corp_id
+                            })
+
+                except Exception as e:
+                    continue
+
+        except Exception as e:
+            break
+
+    if found_research_magic_competitors:
+        print(f"   🎯 Found {len(found_research_magic_competitors)} Research Magic competitors:")
+        for comp in sorted(found_research_magic_competitors, key=lambda x: x['price_per_item']):
+            print(f"      Contract {comp['contract_id']}: {comp['price_per_item']:,.2f} ISK")
+            print(f"         Issuer: {comp['issuer_name']} (ID: {comp['issuer_id']})")
+            if comp['corp_name']:
+                print(f"         Corp: {comp['corp_name']} (ID: {comp['issuer_corp_id']})")
+            if comp['title']:
+                print(f"         Title: {comp['title']}")
+            print(f"         Cheaper by: {price_per_item - comp['price_per_item']:,.2f} ISK")
+            print()
+    else:
+        print(f"   ✅ No Research Magic competitors found for this contract")
+
+
 async def main():
+    """
+    Main debug function. Test contracts for outbidding and issuer name filtering.
+    """
+    print("=" * 80)
+    print("DEBUGGING CONTRACT COMPETITION - CAPITAL ION THRUSTER BLUEPRINT")
+    print("=" * 80)
+
+    # Test the issuer name filtering functionality
+    await test_issuer_name_filtering()
+
+    print("\n" + "=" * 80)
+    print("GENERAL CONTRACT COMPETITION TESTING")
+    print("=" * 80)
+
+    # Get contracts (try corporation first, fallback to public)
+    contracts = await get_user_contracts()
+
+    if not contracts:
+        print("No contracts found to test.")
+        return
+
+    print(f"Testing {len(contracts)} contracts:")
+    print()
+
+    for i, contract in enumerate(contracts, 1):
+        contract_id = contract.get("contract_id")
+
+        print(f"Contract {i}: Contract ID {contract_id}")
+        print(f"  Type: {contract.get('type', 'unknown')}")
+        print(f"  Status: {contract.get('status', 'unknown')}")
+        print(f"  Price: {contract.get('price', 0):,.2f} ISK")
+
+        # Get contract items to check competition
+        try:
+            # For corporation contracts, we need to get items
+            if 'issuer_corporation_id' in contract:
+                corp_id = contract['issuer_corporation_id']
+                # We need a token to get items - this might fail if we don't have proper access
+                tokens = load_tokens()
+                access_token = None
+                for char_id, token_data in tokens.items():
+                    if token_data.get("name", "").lower() == "dr filin":
+                        access_token = token_data.get("access_token")
+                        break
+
+                if access_token:
+                    contract_items = await fetch_esi(f"/corporations/{corp_id}/contracts/{contract_id}/items/", corp_id, access_token)
+                else:
+                    contract_items = None
+            else:
+                # Public contract
+                contract_items = await fetch_public_contract_items_async(contract_id)
+
+            if not contract_items:
+                print(f"  Could not get items for contract {contract_id} (may not have proper corporation roles)")
+                print("-" * 60)
+                continue
+
+            # Check if single item
+            if len(contract_items) == 1:
+                item = contract_items[0]
+                type_id = item.get("type_id")
+                quantity = item.get("quantity", 1)
+
+                # Get item name
+                type_data = await fetch_public_esi(f"/universe/types/{type_id}/")
+                item_name = type_data.get("name", f"Type {type_id}") if type_data else f"Type {type_id}"
+
+                price_per_item = contract.get("price", 0) / quantity if quantity > 0 else 0
+
+                print(f"  Item: {item_name}")
+                print(f"  Quantity: {quantity}")
+                print(f"  Price per item: {price_per_item:,.2f} ISK")
+
+                # Check competition
+                print(f"  Checking for competitors...")
+                is_outbid, competing_price = await check_contract_outbid_status(contract, contract_items)
+
+                if is_outbid:
+                    print(f"  ❌ OUTBID! Cheapest competitor: {competing_price:,.2f} ISK per item")
+                    print(f"  Difference: {price_per_item - competing_price:,.2f} ISK per item")
+                else:
+                    print(f"  ✅ Not outbid - appears to be the cheapest!")
+            else:
+                print(f"  📦 Multi-item contract ({len(contract_items)} items) - competition check designed for single-item contracts")
+
+        except Exception as e:
+            print(f"  Error processing contract {contract_id}: {e}")
+
+        print("-" * 60)
+        print()
+
+    # Cleanup session
+    await cleanup_session()
     """
     Main debug function. Test contracts for outbidding.
     """

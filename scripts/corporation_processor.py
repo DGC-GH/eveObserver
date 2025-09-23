@@ -535,6 +535,7 @@ async def process_corporation_contracts(
                 entity_id=corp_id,
                 access_token=access_token,
                 blueprint_cache=blueprint_cache,
+                all_expanded_contracts=None,
             )
 
 
