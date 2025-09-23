@@ -456,7 +456,7 @@ class TestBlueprintProcessing:
             'runs': -1
         }
 
-        await update_blueprint_in_wp(blueprint_data, {}, 123, 'token')
+        await update_blueprint_in_wp(blueprint_data, 123, 'token')
 
         # Verify WP requests
         assert mock_wp_request.call_count == 2
@@ -510,7 +510,7 @@ class TestBlueprintProcessing:
             'runs': -1
         }
 
-        await update_blueprint_in_wp(blueprint_data, {}, 123, 'token')
+        await update_blueprint_in_wp(blueprint_data, 123, 'token')
 
         # Verify structure fetch was called
         mock_fetch_esi_auth.assert_called_once_with('/universe/structures/1035469615808', 123, 'token')

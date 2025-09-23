@@ -29,7 +29,7 @@ Use emojis and format the text for better readebility and output in this exact f
 
 When you are done:
 - **Upadate Roadmap:** update the existing roadmap.md file (or create new if it doesnt exis) based on your findings and plan it step by step in an optimal order, keep track of your progress by editing this file.
-- **Upadate Features** update or create features.md to include a list of features used in this code, dont use project specific names or descriptions but describe  it in a general yet specific way that can be used for learnings and inspiration in another project coded with Grok Code Fat 1, note function names in examples for beter code and context inferring
+- **Upadate Features** update or create features.md to include a list of features used in this code, dont use project specific names or descriptions but describe it in a general yet specific way that can be used for learnings and inspiration in another project coded with Grok Code Fat 1, per feature, note the function names specific for the feature
 - **Commit Title:** prepare title text to copy and paste in the inputfield in VS Code, output it as last thing every step so i can use it for commiting the changes if i choose to implement your suggestions, formated in a way i can copy it easaly
 
 Tests:
