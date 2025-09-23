@@ -13,6 +13,7 @@ from datetime import datetime, timezone, timedelta
 from requests.adapters import HTTPAdapter
 from urllib3.util.retry import Retry
 from config import *
+from api_client import fetch_esi_sync as fetch_esi, fetch_public_esi_sync as fetch_public_esi
 
 # Additional configuration
 ESI_VERSION = 'latest'
@@ -66,51 +67,6 @@ def load_tokens():
 def get_wp_auth():
     """Get WordPress authentication tuple."""
     return (WP_USERNAME, WP_APP_PASSWORD)
-
-def fetch_public_esi(endpoint):
-    """Fetch data from ESI public endpoints."""
-    url = f"{ESI_BASE_URL}{endpoint}"
-    headers = {'Accept': 'application/json'}
-
-    try:
-        response = session.get(url, headers=headers, timeout=30)
-        response.raise_for_status()
-
-        # Handle rate limiting
-        if response.status_code == 200:
-            remaining = response.headers.get('X-ESI-Error-Limit-Remain', '100')
-            reset_time = response.headers.get('X-ESI-Error-Limit-Reset', '60')
-            if int(remaining) < 20:
-                logger.warning(f"ESI rate limit low: {remaining} requests remaining, resets in {reset_time}s")
-
-        return response.json()
-    except requests.exceptions.RequestException as e:
-        logger.error(f"ESI request failed: {e}")
-        return None
-
-def fetch_esi(endpoint, char_id, access_token):
-    """Fetch data from ESI authenticated endpoints."""
-    url = f"{ESI_BASE_URL}{endpoint}"
-    headers = {
-        'Accept': 'application/json',
-        'Authorization': f'Bearer {access_token}'
-    }
-
-    try:
-        response = session.get(url, headers=headers, timeout=30)
-        response.raise_for_status()
-
-        # Handle rate limiting
-        if response.status_code == 200:
-            remaining = response.headers.get('X-ESI-Error-Limit-Remain', '100')
-            reset_time = response.headers.get('X-ESI-Error-Limit-Reset', '60')
-            if int(remaining) < 20:
-                logger.warning(f"ESI rate limit low: {remaining} requests remaining, resets in {reset_time}s")
-
-        return response.json()
-    except requests.exceptions.RequestException as e:
-        logger.error(f"ESI request failed for char {char_id}: {e}")
-        return None
 
 def refresh_token(refresh_token):
     """Refresh an access token."""

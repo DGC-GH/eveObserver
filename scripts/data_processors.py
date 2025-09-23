@@ -13,7 +13,6 @@ from typing import Dict, List, Any, Optional, Tuple, Callable
 import logging
 from concurrent.futures import ThreadPoolExecutor, as_completed, TimeoutError
 import time
-import time
 import asyncio
 
 from config import *
@@ -116,9 +115,6 @@ async def update_or_create_blueprint_post(post_data: Dict[str, Any], existing_po
                 logger.error(f"Failed to create blueprint {item_id}: No result")
         except (WordPressAuthError, WordPressRequestError) as e:
             logger.error(f"Failed to create blueprint {item_id}: {e}")
-
-async def fetch_blueprint_details(blueprint_data: Dict[str, Any], char_id: int, access_token: str, blueprint_cache: Dict[str, Any], location_cache: Dict[str, Any], structure_cache: Dict[str, Any], failed_structures: Dict[str, Any]) -> Tuple[str, str, str]:
-    return results
 
 async def update_character_in_wp(char_id: int, char_data: Dict[str, Any]) -> None:
     """

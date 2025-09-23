@@ -405,6 +405,14 @@ async def fetch_esi(endpoint: str, char_id: Optional[int], access_token: str, ma
     headers = {'Authorization': f'Bearer {access_token}'}
     return await _fetch_esi_with_retry(endpoint, headers=headers, max_retries=max_retries, is_public=False)
 
+def fetch_esi_sync(endpoint: str, char_id: Optional[int], access_token: str, max_retries: int = None) -> Optional[Dict[str, Any]]:
+    """Synchronous version of fetch_esi for compatibility with existing scripts."""
+    return asyncio.run(fetch_esi(endpoint, char_id, access_token, max_retries))
+
+def fetch_public_esi_sync(endpoint: str, max_retries: int = None) -> Optional[Dict[str, Any]]:
+    """Synchronous version of fetch_public_esi for compatibility with existing scripts."""
+    return asyncio.run(fetch_public_esi(endpoint, max_retries))
+
 @benchmark
 async def wp_request(method: str, endpoint: str, data: Optional[Dict] = None) -> Optional[Dict]:
     """Make async request to WordPress REST API with circuit breaker protection."""

@@ -14,6 +14,7 @@ load_dotenv()
 
 # Import config
 from config import *
+from api_client import fetch_esi_sync as fetch_esi, fetch_public_esi_sync as fetch_public_esi
 
 # Create a requests session
 session = requests.Session()
@@ -28,49 +29,6 @@ def load_tokens():
         with open(TOKENS_FILE, 'r') as f:
             return json.load(f)
     return {}
-
-def fetch_esi(endpoint, access_token, max_retries=ESI_MAX_RETRIES):
-    """Fetch data from ESI API with auth."""
-    import time
-
-    url = f"{ESI_BASE_URL}{endpoint}"
-    headers = {'Authorization': f'Bearer {access_token}'}
-
-    for attempt in range(max_retries):
-        try:
-            response = session.get(url, headers=headers, timeout=ESI_TIMEOUT)
-            if response.status_code == 200:
-                return response.json()
-            elif response.status_code == 401:
-                logger.error(f"Authentication failed for {endpoint}")
-                return None
-            elif response.status_code == 403:
-                logger.error(f"Access forbidden for {endpoint}")
-                return None
-            else:
-                logger.error(f"ESI error for {endpoint}: {response.status_code} - {response.text}")
-                return None
-        except Exception as e:
-            logger.error(f"Error fetching {endpoint}: {e}")
-            return None
-
-def fetch_public_esi(endpoint, max_retries=ESI_MAX_RETRIES):
-    """Fetch data from ESI API (public endpoints)."""
-    import time
-
-    url = f"{ESI_BASE_URL}{endpoint}"
-
-    for attempt in range(max_retries):
-        try:
-            response = session.get(url, timeout=ESI_TIMEOUT)
-            if response.status_code == 200:
-                return response.json()
-            else:
-                logger.error(f"ESI error for {endpoint}: {response.status_code}")
-                return None
-        except Exception as e:
-            logger.error(f"Error fetching {endpoint}: {e}")
-            return None
 
 def main():
     tokens = load_tokens()
