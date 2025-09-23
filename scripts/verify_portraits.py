@@ -3,28 +3,29 @@
 Verify that character posts have featured images set
 """
 
-import requests
 import json
-from config import *
-from dotenv import load_dotenv
 import logging
+
+import requests
+from dotenv import load_dotenv
+
+from config import *
 
 load_dotenv()
 
 # Configure logging
 logging.basicConfig(
     level=getattr(logging, LOG_LEVEL),
-    format='%(asctime)s - %(levelname)s - %(message)s',
-    handlers=[
-        logging.FileHandler(LOG_FILE),
-        logging.StreamHandler()
-    ]
+    format="%(asctime)s - %(levelname)s - %(message)s",
+    handlers=[logging.FileHandler(LOG_FILE), logging.StreamHandler()],
 )
 logger = logging.getLogger(__name__)
+
 
 def get_wp_auth():
     """Get WordPress authentication tuple."""
     return (WP_USERNAME, WP_APP_PASSWORD)
+
 
 def verify_character_featured_images():
     """Fetch character posts and verify they have featured images."""
@@ -38,9 +39,9 @@ def verify_character_featured_images():
     while True:
         posts_url = f"{WP_BASE_URL}/wp-json/wp/v2/eve_character"
         params = {
-            'per_page': per_page,
-            'page': page,
-            '_embed': 'wp:featuredmedia'  # Include featured media in response
+            "per_page": per_page,
+            "page": page,
+            "_embed": "wp:featuredmedia",  # Include featured media in response
         }
         response = requests.get(posts_url, auth=get_wp_auth(), params=params)
 
@@ -56,7 +57,7 @@ def verify_character_featured_images():
         page += 1
 
         # Check if there are more pages
-        total_pages = int(response.headers.get('X-WP-TotalPages', 1))
+        total_pages = int(response.headers.get("X-WP-TotalPages", 1))
         if page > total_pages:
             break
 
@@ -67,19 +68,19 @@ def verify_character_featured_images():
     posts_without_featured = 0
 
     for post in all_posts:
-        post_id = post['id']
-        title = post.get('title', {}).get('rendered', f'Post {post_id}')
-        featured_media = post.get('featured_media', 0)
-        meta = post.get('meta', {})
-        external_thumb = meta.get('_thumbnail_external_url', '')
+        post_id = post["id"]
+        title = post.get("title", {}).get("rendered", f"Post {post_id}")
+        featured_media = post.get("featured_media", 0)
+        meta = post.get("meta", {})
+        external_thumb = meta.get("_thumbnail_external_url", "")
 
         if featured_media and featured_media != 0:
             posts_with_featured += 1
             # Get media details if embedded
-            embedded = post.get('_embedded', {})
-            media_details = embedded.get('wp:featuredmedia', [])
+            embedded = post.get("_embedded", {})
+            media_details = embedded.get("wp:featuredmedia", [])
             if media_details:
-                media_url = media_details[0].get('source_url', 'N/A')
+                media_url = media_details[0].get("source_url", "N/A")
                 logger.info(f"✅ {title} (ID: {post_id}) - Featured Image: {media_url}")
             else:
                 logger.info(f"✅ {title} (ID: {post_id}) - Featured Image ID: {featured_media}")
@@ -97,7 +98,8 @@ def verify_character_featured_images():
 
     return posts_with_featured == len(all_posts)
 
-if __name__ == '__main__':
+
+if __name__ == "__main__":
     success = verify_character_featured_images()
     if success:
         print("\n🎉 All character posts have featured images!")

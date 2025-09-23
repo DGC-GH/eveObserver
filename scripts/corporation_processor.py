@@ -4,18 +4,26 @@ EVE Observer Corporation Processor
 Handles processing of corporation-specific data.
 """
 
-import requests
 import argparse
-from datetime import datetime, timezone
-from typing import Dict, Any, Optional, List, Tuple
 import logging
+from datetime import datetime, timezone
+from typing import Any, Dict, List, Optional, Tuple
+
+import requests
+
+from api_client import WordPressAuthError, WordPressRequestError, fetch_esi, fetch_public_esi, wp_request
+from blueprint_processor import (
+    extract_blueprints_from_assets,
+    extract_blueprints_from_contracts,
+    extract_blueprints_from_industry_jobs,
+    update_blueprint_from_asset_in_wp,
+    update_blueprint_in_wp,
+)
 from config import *
-from api_client import fetch_esi, fetch_public_esi, wp_request, WordPressAuthError, WordPressRequestError
-from data_processors import get_wp_auth
-from blueprint_processor import extract_blueprints_from_assets, extract_blueprints_from_industry_jobs, extract_blueprints_from_contracts, update_blueprint_in_wp, update_blueprint_from_asset_in_wp
-from data_processors import process_blueprints_parallel
+from data_processors import get_wp_auth, process_blueprints_parallel
 
 logger = logging.getLogger(__name__)
+
 
 async def fetch_corporation_data(corp_id: int, access_token: str) -> Optional[Dict[str, Any]]:
     """
@@ -34,6 +42,7 @@ async def fetch_corporation_data(corp_id: int, access_token: str) -> Optional[Di
     endpoint = f"/corporations/{corp_id}/"
     return await fetch_esi(endpoint, None, access_token)  # No char_id needed for corp data
 
+
 async def fetch_corporation_blueprints(corp_id: int, access_token: str) -> Optional[Dict[str, Any]]:
     """
     Fetch corporation blueprint collection from ESI.
@@ -51,6 +60,7 @@ async def fetch_corporation_blueprints(corp_id: int, access_token: str) -> Optio
     endpoint = f"/corporations/{corp_id}/blueprints/"
     return await fetch_esi(endpoint, corp_id, access_token)
 
+
 async def fetch_corporation_contracts(corp_id: int, access_token: str) -> Optional[Dict[str, Any]]:
     """
     Fetch corporation contracts from ESI.
@@ -67,6 +77,7 @@ async def fetch_corporation_contracts(corp_id: int, access_token: str) -> Option
     """
     endpoint = f"/corporations/{corp_id}/contracts/"
     return await fetch_esi(endpoint, None, access_token)  # Corp contracts don't need char_id
+
 
 def fetch_corporation_contract_items(corp_id: int, contract_id: int, access_token: str) -> Optional[Dict[str, Any]]:
     """
@@ -86,6 +97,7 @@ def fetch_corporation_contract_items(corp_id: int, contract_id: int, access_toke
     endpoint = f"/corporations/{corp_id}/contracts/{contract_id}/items/"
     return fetch_esi(endpoint, None, access_token)  # Corp endpoint doesn't need char_id
 
+
 async def fetch_corporation_industry_jobs(corp_id: int, access_token: str) -> Optional[Dict[str, Any]]:
     """
     Fetch corporation industry jobs from ESI.
@@ -103,6 +115,7 @@ async def fetch_corporation_industry_jobs(corp_id: int, access_token: str) -> Op
     endpoint = f"/corporations/{corp_id}/industry/jobs/"
     return await fetch_esi(endpoint, corp_id, access_token)
 
+
 async def fetch_corporation_assets(corp_id: int, access_token: str) -> Optional[Dict[str, Any]]:
     """
     Fetch corporation assets from ESI.
@@ -119,6 +132,7 @@ async def fetch_corporation_assets(corp_id: int, access_token: str) -> Optional[
     """
     endpoint = f"/corporations/{corp_id}/assets/"
     return await fetch_esi(endpoint, None, access_token)  # Corp endpoint doesn't need char_id
+
 
 async def fetch_corporation_logo(corp_id: int) -> Optional[Dict[str, Any]]:
     """
@@ -140,7 +154,10 @@ async def fetch_corporation_logo(corp_id: int) -> Optional[Dict[str, Any]]:
     endpoint = f"/corporations/{corp_id}/logo/"
     return await fetch_public_esi(endpoint)
 
-async def select_corporation_token(corp_id: int, members: List[Tuple[int, str, str]]) -> Tuple[Optional[str], Optional[str], Optional[int], Optional[Dict[str, Any]]]:
+
+async def select_corporation_token(
+    corp_id: int, members: List[Tuple[int, str, str]]
+) -> Tuple[Optional[str], Optional[str], Optional[int], Optional[Dict[str, Any]]]:
     """
     Select the best token for accessing corporation data.
 
@@ -161,12 +178,12 @@ async def select_corporation_token(corp_id: int, members: List[Tuple[int, str, s
         dr_filin_char_id = None
         dr_filin_name = None
         for char_id, access_token, char_name in members:
-            if char_name == 'Dr FiLiN':
+            if char_name == "Dr FiLiN":
                 dr_filin_token = access_token
                 dr_filin_char_id = char_id
                 dr_filin_name = char_name
                 break
-        
+
         if dr_filin_token:
             logger.info(f"Using Dr FiLiN's CEO token for No Mercy Incorporated")
             corp_data = await fetch_corporation_data(corp_id, dr_filin_token)
@@ -174,13 +191,13 @@ async def select_corporation_token(corp_id: int, members: List[Tuple[int, str, s
                 return dr_filin_token, dr_filin_name, dr_filin_char_id, corp_data
             else:
                 logger.warning(f"Dr FiLiN's token failed for corporation {corp_id}, falling back to other members")
-    
+
     # Try each member token until one works
     for char_id, access_token, char_name in members:
         # Skip Dr FiLiN if we already tried them for No Mercy
-        if corp_id == 98092220 and char_name == 'Dr FiLiN':
+        if corp_id == 98092220 and char_name == "Dr FiLiN":
             continue
-            
+
         logger.info(f"Trying to fetch corporation data for corp {corp_id} using {char_name}'s token...")
         corp_data = await fetch_corporation_data(corp_id, access_token)
         if corp_data:
@@ -188,10 +205,20 @@ async def select_corporation_token(corp_id: int, members: List[Tuple[int, str, s
             return access_token, char_name, char_id, corp_data
         else:
             logger.warning(f"Failed to fetch corporation data using {char_name}'s token (likely no access)")
-    
+
     return None, None, None, None
 
-async def process_corporation_data(corp_id: int, members: List[Tuple[int, str, str]], wp_post_id_cache: Dict[str, Any], blueprint_cache: Dict[str, Any], location_cache: Dict[str, Any], structure_cache: Dict[str, Any], failed_structures: Dict[str, Any], args: argparse.Namespace) -> None:
+
+async def process_corporation_data(
+    corp_id: int,
+    members: List[Tuple[int, str, str]],
+    wp_post_id_cache: Dict[str, Any],
+    blueprint_cache: Dict[str, Any],
+    location_cache: Dict[str, Any],
+    structure_cache: Dict[str, Any],
+    failed_structures: Dict[str, Any],
+    args: argparse.Namespace,
+) -> None:
     """
     Process data for a single corporation and its members.
 
@@ -214,11 +241,11 @@ async def process_corporation_data(corp_id: int, members: List[Tuple[int, str, s
     """
     # Select the best token for corporation access
     access_token, char_name, char_id, corp_data = await select_corporation_token(corp_id, members)
-    
+
     if not corp_data:
         return
 
-    corp_name = corp_data.get('name', '')
+    corp_name = corp_data.get("name", "")
     if corp_name.lower() not in ALLOWED_CORPORATIONS:
         logger.info(f"Skipping corporation: {corp_name} (only processing {ALLOWED_CORPORATIONS})")
         return
@@ -228,13 +255,31 @@ async def process_corporation_data(corp_id: int, members: List[Tuple[int, str, s
 
     # Process corporation blueprints from various sources
     if args.all or args.blueprints:
-        await process_corporation_blueprints(corp_id, access_token, char_id, wp_post_id_cache, blueprint_cache, location_cache, structure_cache, failed_structures)
+        await process_corporation_blueprints(
+            corp_id,
+            access_token,
+            char_id,
+            wp_post_id_cache,
+            blueprint_cache,
+            location_cache,
+            structure_cache,
+            failed_structures,
+        )
 
     # Corporation contracts are processed via character contracts (issued by corp members)
     if args.all or args.contracts:
         await process_corporation_contracts(corp_id, access_token, corp_data, blueprint_cache)
 
-async def process_corporation_blueprints_from_endpoint(corp_id: int, access_token: str, wp_post_id_cache: Dict[str, Any], blueprint_cache: Dict[str, Any], location_cache: Dict[str, Any], structure_cache: Dict[str, Any], failed_structures: Dict[str, Any]) -> None:
+
+async def process_corporation_blueprints_from_endpoint(
+    corp_id: int,
+    access_token: str,
+    wp_post_id_cache: Dict[str, Any],
+    blueprint_cache: Dict[str, Any],
+    location_cache: Dict[str, Any],
+    structure_cache: Dict[str, Any],
+    failed_structures: Dict[str, Any],
+) -> None:
     """
     Process corporation blueprints from the direct blueprints endpoint.
 
@@ -251,11 +296,11 @@ async def process_corporation_blueprints_from_endpoint(corp_id: int, access_toke
         failed_structures: Failed structure fetch cache.
     """
     logger.info(f"Fetching corporation blueprints for {corp_id}...")
-    
+
     corp_blueprints = await fetch_corporation_blueprints(corp_id, access_token)
     if corp_blueprints:
         # Filter to only BPOs (quantity == -1)
-        bpo_blueprints = [bp for bp in corp_blueprints if bp.get('quantity', 1) == -1]
+        bpo_blueprints = [bp for bp in corp_blueprints if bp.get("quantity", 1) == -1]
         logger.info(f"Corporation blueprints: {len(corp_blueprints)} total, {len(bpo_blueprints)} BPOs")
         if bpo_blueprints:
             # Process blueprints in parallel
@@ -268,10 +313,19 @@ async def process_corporation_blueprints_from_endpoint(corp_id: int, access_toke
                 blueprint_cache,
                 location_cache,
                 structure_cache,
-                failed_structures
+                failed_structures,
             )
 
-async def process_corporation_blueprints_from_assets(corp_id: int, access_token: str, wp_post_id_cache: Dict[str, Any], blueprint_cache: Dict[str, Any], location_cache: Dict[str, Any], structure_cache: Dict[str, Any], failed_structures: Dict[str, Any]) -> None:
+
+async def process_corporation_blueprints_from_assets(
+    corp_id: int,
+    access_token: str,
+    wp_post_id_cache: Dict[str, Any],
+    blueprint_cache: Dict[str, Any],
+    location_cache: Dict[str, Any],
+    structure_cache: Dict[str, Any],
+    failed_structures: Dict[str, Any],
+) -> None:
     """
     Process corporation blueprints from corporation assets.
 
@@ -291,11 +345,11 @@ async def process_corporation_blueprints_from_assets(corp_id: int, access_token:
     if SKIP_CORPORATION_ASSETS:
         logger.info("Skipping corporation assets processing (SKIP_CORPORATION_ASSETS=true)")
         return
-        
+
     corp_assets = await fetch_corporation_assets(corp_id, access_token)
     if corp_assets:
         logger.info(f"Fetched {len(corp_assets)} corporation assets")
-        asset_blueprints = extract_blueprints_from_assets(corp_assets, 'corp', corp_id, access_token)
+        asset_blueprints = extract_blueprints_from_assets(corp_assets, "corp", corp_id, access_token)
         if asset_blueprints:
             logger.info(f"Corporation asset blueprints: {len(asset_blueprints)} items")
             # Process blueprints in parallel
@@ -308,14 +362,23 @@ async def process_corporation_blueprints_from_assets(corp_id: int, access_token:
                 blueprint_cache,
                 location_cache,
                 structure_cache,
-                failed_structures
+                failed_structures,
             )
         else:
             logger.info("No blueprints found in corporation assets")
     else:
         logger.info("No corporation assets found or access denied")
 
-async def process_corporation_blueprints_from_industry_jobs(corp_id: int, access_token: str, wp_post_id_cache: Dict[str, Any], blueprint_cache: Dict[str, Any], location_cache: Dict[str, Any], structure_cache: Dict[str, Any], failed_structures: Dict[str, Any]) -> None:
+
+async def process_corporation_blueprints_from_industry_jobs(
+    corp_id: int,
+    access_token: str,
+    wp_post_id_cache: Dict[str, Any],
+    blueprint_cache: Dict[str, Any],
+    location_cache: Dict[str, Any],
+    structure_cache: Dict[str, Any],
+    failed_structures: Dict[str, Any],
+) -> None:
     """
     Process corporation blueprints from corporation industry jobs.
 
@@ -332,7 +395,7 @@ async def process_corporation_blueprints_from_industry_jobs(corp_id: int, access
     """
     corp_industry_jobs = await fetch_corporation_industry_jobs(corp_id, access_token)
     if corp_industry_jobs:
-        job_blueprints = extract_blueprints_from_industry_jobs(corp_industry_jobs, 'corp', corp_id)
+        job_blueprints = extract_blueprints_from_industry_jobs(corp_industry_jobs, "corp", corp_id)
         if job_blueprints:
             logger.info(f"Corporation industry job blueprints: {len(job_blueprints)} items")
             # Process blueprints in parallel
@@ -345,10 +408,19 @@ async def process_corporation_blueprints_from_industry_jobs(corp_id: int, access
                 blueprint_cache,
                 location_cache,
                 structure_cache,
-                failed_structures
+                failed_structures,
             )
 
-async def process_corporation_blueprints_from_contracts(corp_id: int, access_token: str, wp_post_id_cache: Dict[str, Any], blueprint_cache: Dict[str, Any], location_cache: Dict[str, Any], structure_cache: Dict[str, Any], failed_structures: Dict[str, Any]) -> None:
+
+async def process_corporation_blueprints_from_contracts(
+    corp_id: int,
+    access_token: str,
+    wp_post_id_cache: Dict[str, Any],
+    blueprint_cache: Dict[str, Any],
+    location_cache: Dict[str, Any],
+    structure_cache: Dict[str, Any],
+    failed_structures: Dict[str, Any],
+) -> None:
     """
     Process corporation blueprints from corporation contracts.
 
@@ -365,7 +437,7 @@ async def process_corporation_blueprints_from_contracts(corp_id: int, access_tok
     """
     corp_contracts = await fetch_corporation_contracts(corp_id, access_token)
     if corp_contracts:
-        contract_blueprints = extract_blueprints_from_contracts(corp_contracts, 'corp', corp_id)
+        contract_blueprints = extract_blueprints_from_contracts(corp_contracts, "corp", corp_id)
         if contract_blueprints:
             logger.info(f"Corporation contract blueprints: {len(contract_blueprints)} items")
             # Process blueprints in parallel
@@ -378,10 +450,20 @@ async def process_corporation_blueprints_from_contracts(corp_id: int, access_tok
                 blueprint_cache,
                 location_cache,
                 structure_cache,
-                failed_structures
+                failed_structures,
             )
 
-async def process_corporation_blueprints(corp_id: int, access_token: str, char_id: int, wp_post_id_cache: Dict[str, Any], blueprint_cache: Dict[str, Any], location_cache: Dict[str, Any], structure_cache: Dict[str, Any], failed_structures: Dict[str, Any]) -> None:
+
+async def process_corporation_blueprints(
+    corp_id: int,
+    access_token: str,
+    char_id: int,
+    wp_post_id_cache: Dict[str, Any],
+    blueprint_cache: Dict[str, Any],
+    location_cache: Dict[str, Any],
+    structure_cache: Dict[str, Any],
+    failed_structures: Dict[str, Any],
+) -> None:
     """
     Process all blueprint sources for a corporation.
 
@@ -402,20 +484,23 @@ async def process_corporation_blueprints(corp_id: int, access_token: str, char_i
     await process_corporation_blueprints_from_endpoint(
         corp_id, access_token, wp_post_id_cache, blueprint_cache, location_cache, structure_cache, failed_structures
     )
-    
+
     await process_corporation_blueprints_from_assets(
         corp_id, access_token, wp_post_id_cache, blueprint_cache, location_cache, structure_cache, failed_structures
     )
-    
+
     await process_corporation_blueprints_from_industry_jobs(
         corp_id, access_token, wp_post_id_cache, blueprint_cache, location_cache, structure_cache, failed_structures
     )
-    
+
     await process_corporation_blueprints_from_contracts(
         corp_id, access_token, wp_post_id_cache, blueprint_cache, location_cache, structure_cache, failed_structures
     )
 
-async def process_corporation_contracts(corp_id: int, access_token: str, corp_data: Dict[str, Any], blueprint_cache: Dict[str, Any]) -> None:
+
+async def process_corporation_contracts(
+    corp_id: int, access_token: str, corp_data: Dict[str, Any], blueprint_cache: Dict[str, Any]
+) -> None:
     """
     Process contracts for a corporation.
 
@@ -434,71 +519,79 @@ async def process_corporation_contracts(corp_id: int, access_token: str, corp_da
     if corp_contracts:
         logger.info(f"Corporation contracts for {corp_data.get('name', corp_id)}: {len(corp_contracts)} items")
         for contract in corp_contracts:
-            contract_status = contract.get('status', '')
-            if contract_status in ['finished', 'deleted']:
+            contract_status = contract.get("status", "")
+            if contract_status in ["finished", "deleted"]:
                 # Skip finished/deleted contracts to improve performance
                 continue
-            elif contract_status == 'expired':
+            elif contract_status == "expired":
                 logger.info(f"EXPIRED CORPORATION CONTRACT TO DELETE MANUALLY: {contract['contract_id']}")
-            
+
             # Only process contracts issued by this corporation
-            if contract.get('issuer_corporation_id') != corp_id:
+            if contract.get("issuer_corporation_id") != corp_id:
                 continue
-                
-            await update_contract_in_wp(contract['contract_id'], contract, for_corp=True, entity_id=corp_id, access_token=access_token, blueprint_cache=blueprint_cache)
+
+            await update_contract_in_wp(
+                contract["contract_id"],
+                contract,
+                for_corp=True,
+                entity_id=corp_id,
+                access_token=access_token,
+                blueprint_cache=blueprint_cache,
+            )
+
 
 async def update_corporation_in_wp(corp_id: int, corp_data: Dict[str, Any]) -> None:
     """Update or create corporation post in WordPress with corporation details.
-    
+
     Creates or updates WordPress posts for EVE corporations with comprehensive
     metadata including member count, CEO, alliance affiliation, and other details.
-    
+
     Args:
         corp_id: EVE corporation ID
         corp_data: Corporation information dictionary from ESI API
-        
+
     Returns:
         None
-        
+
     Note:
         Stores corporation details as post metadata in WordPress.
         Removes null values from metadata to avoid WordPress validation issues.
         Updates existing posts or creates new ones based on slug lookup.
     """
     from api_client import wp_request
-    
+
     slug = f"corporation-{corp_id}"
     # Check if post exists by slug
-    existing_posts = await wp_request('GET', f"/wp/v2/eve_corporation?slug={slug}")
+    existing_posts = await wp_request("GET", f"/wp/v2/eve_corporation?slug={slug}")
     existing_post = existing_posts[0] if existing_posts else None
 
     post_data = {
-        'title': corp_data.get('name', f'Corporation {corp_id}'),
-        'slug': slug,
-        'status': 'publish',
-        'meta': {
-            '_eve_corp_id': corp_id,
-            '_eve_corp_name': corp_data.get('name'),
-            '_eve_corp_ticker': corp_data.get('ticker'),
-            '_eve_corp_member_count': corp_data.get('member_count'),
-            '_eve_corp_ceo_id': corp_data.get('ceo_id'),
-            '_eve_corp_alliance_id': corp_data.get('alliance_id'),
-            '_eve_corp_date_founded': corp_data.get('date_founded'),
-            '_eve_corp_tax_rate': corp_data.get('tax_rate'),
-            '_eve_last_updated': datetime.now(timezone.utc).isoformat()
-        }
+        "title": corp_data.get("name", f"Corporation {corp_id}"),
+        "slug": slug,
+        "status": "publish",
+        "meta": {
+            "_eve_corp_id": corp_id,
+            "_eve_corp_name": corp_data.get("name"),
+            "_eve_corp_ticker": corp_data.get("ticker"),
+            "_eve_corp_member_count": corp_data.get("member_count"),
+            "_eve_corp_ceo_id": corp_data.get("ceo_id"),
+            "_eve_corp_alliance_id": corp_data.get("alliance_id"),
+            "_eve_corp_date_founded": corp_data.get("date_founded"),
+            "_eve_corp_tax_rate": corp_data.get("tax_rate"),
+            "_eve_last_updated": datetime.now(timezone.utc).isoformat(),
+        },
     }
 
     # Remove null values
-    post_data['meta'] = {k: v for k, v in post_data['meta'].items() if v is not None}
+    post_data["meta"] = {k: v for k, v in post_data["meta"].items() if v is not None}
 
     if existing_post:
         # Update existing
-        post_id = existing_post['id']
-        result = await wp_request('PUT', f"/wp/v2/eve_corporation/{post_id}", post_data)
+        post_id = existing_post["id"]
+        result = await wp_request("PUT", f"/wp/v2/eve_corporation/{post_id}", post_data)
     else:
         # Create new
-        result = await wp_request('POST', "/wp/v2/eve_corporation", post_data)
+        result = await wp_request("POST", "/wp/v2/eve_corporation", post_data)
 
     if result:
         logger.info(f"Updated corporation: {corp_data.get('name', corp_id)}")

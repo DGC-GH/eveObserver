@@ -5,11 +5,13 @@ Removes all Blueprint Copies (BPCs) from WordPress database.
 BPCs are identified by having quantity != -1 (BPOs have quantity = -1).
 """
 
-import os
 import json
+import logging
+import os
+
 import requests
 from dotenv import load_dotenv
-import logging
+
 from config import *
 
 load_dotenv()
@@ -17,23 +19,22 @@ load_dotenv()
 # Configure logging
 logging.basicConfig(
     level=getattr(logging, LOG_LEVEL),
-    format='%(asctime)s - %(levelname)s - %(message)s',
-    handlers=[
-        logging.FileHandler(LOG_FILE),
-        logging.StreamHandler()
-    ]
+    format="%(asctime)s - %(levelname)s - %(message)s",
+    handlers=[logging.FileHandler(LOG_FILE), logging.StreamHandler()],
 )
 logger = logging.getLogger(__name__)
 
+
 def get_wordpress_auth():
     """Get WordPress authentication tuple for requests."""
-    username = os.getenv('WP_USERNAME')
-    password = os.getenv('WP_APP_PASSWORD')
+    username = os.getenv("WP_USERNAME")
+    password = os.getenv("WP_APP_PASSWORD")
 
     if not username or not password:
         raise ValueError("WP_USERNAME and WP_APP_PASSWORD environment variables must be set")
 
     return (username, password)
+
 
 def get_all_blueprint_posts():
     """Get all blueprint posts from WordPress with pagination."""
@@ -45,9 +46,7 @@ def get_all_blueprint_posts():
 
     while True:
         response = requests.get(
-            f"{WP_BASE_URL}/wp-json/wp/v2/eve_blueprint",
-            auth=auth,
-            params={'per_page': 100, 'page': page}
+            f"{WP_BASE_URL}/wp-json/wp/v2/eve_blueprint", auth=auth, params={"per_page": 100, "page": page}
         )
 
         if response.status_code != 200:
@@ -65,6 +64,7 @@ def get_all_blueprint_posts():
     logger.info(f"Found {len(posts)} blueprint posts total")
     return posts
 
+
 def delete_bpc_posts(posts):
     """Delete BPC posts (quantity != -1)."""
     auth = get_wordpress_auth()
@@ -72,8 +72,8 @@ def delete_bpc_posts(posts):
     bpo_count = 0
 
     for post in posts:
-        post_id = post['id']
-        title = post['title']['rendered']
+        post_id = post["id"]
+        title = post["title"]["rendered"]
 
         # Get the quantity meta field
         meta_url = f"{WP_BASE_URL}/wp-json/wp/v2/eve_blueprint/{post_id}"
@@ -84,7 +84,7 @@ def delete_bpc_posts(posts):
             continue
 
         meta_data = meta_response.json()
-        quantity = meta_data.get('meta', {}).get('_eve_bp_quantity', -1)
+        quantity = meta_data.get("meta", {}).get("_eve_bp_quantity", -1)
 
         # Convert to int if it's a string
         try:
@@ -95,13 +95,15 @@ def delete_bpc_posts(posts):
         if quantity != -1:
             # This is a BPC, delete it
             delete_url = f"{WP_BASE_URL}/wp-json/wp/v2/eve_blueprint/{post_id}"
-            delete_response = requests.delete(delete_url, auth=auth, params={'force': True})
+            delete_response = requests.delete(delete_url, auth=auth, params={"force": True})
 
             if delete_response.status_code == 200:
                 logger.info(f"Deleted BPC post: {title} (ID: {post_id}, quantity: {quantity})")
                 deleted_count += 1
             else:
-                logger.error(f"Failed to delete BPC post {post_id}: {delete_response.status_code} - {delete_response.text}")
+                logger.error(
+                    f"Failed to delete BPC post {post_id}: {delete_response.status_code} - {delete_response.text}"
+                )
         else:
             # This is a BPO, keep it
             logger.debug(f"Keeping BPO post: {title} (ID: {post_id}, quantity: {quantity})")
@@ -109,6 +111,7 @@ def delete_bpc_posts(posts):
 
     logger.info(f"Cleanup complete: Deleted {deleted_count} BPCs, kept {bpo_count} BPOs")
     return deleted_count, bpo_count
+
 
 def main():
     """Main cleanup function."""
@@ -130,6 +133,7 @@ def main():
     except Exception as e:
         logger.error(f"Error during BPC cleanup: {str(e)}")
         raise
+
 
 if __name__ == "__main__":
     main()

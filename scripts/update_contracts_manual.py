@@ -4,86 +4,88 @@ Update existing contracts with proper titles and thumbnails.
 This script fetches contract items and generates descriptive titles for existing contracts.
 """
 
-import os
 import json
-import requests
-from datetime import datetime, timezone
-from dotenv import load_dotenv
 import logging
+import os
+from datetime import datetime, timezone
+
+import requests
+from dotenv import load_dotenv
+
+from api_client import fetch_esi, fetch_public_esi, fetch_type_icon
 from config import *
-from api_client import fetch_public_esi, fetch_esi, fetch_type_icon
 
 load_dotenv()
 
 # Configure logging
 logging.basicConfig(
     level=getattr(logging, LOG_LEVEL),
-    format='%(asctime)s - %(levelname)s - %(message)s',
-    handlers=[
-        logging.FileHandler(LOG_FILE),
-        logging.StreamHandler()
-    ]
+    format="%(asctime)s - %(levelname)s - %(message)s",
+    handlers=[logging.FileHandler(LOG_FILE), logging.StreamHandler()],
 )
 logger = logging.getLogger(__name__)
+
 
 def load_tokens():
     """Load stored tokens."""
     if os.path.exists(TOKENS_FILE):
-        with open(TOKENS_FILE, 'r') as f:
+        with open(TOKENS_FILE, "r") as f:
             return json.load(f)
     return {}
+
 
 def get_wp_auth():
     """Get WordPress authentication tuple."""
     return (WP_USERNAME, WP_APP_PASSWORD)
+
 
 def fetch_character_contract_items(char_id, contract_id, access_token):
     """Fetch items in a specific character contract."""
     endpoint = f"/characters/{char_id}/contracts/{contract_id}/items/"
     return fetch_esi(endpoint, char_id, access_token)
 
+
 def fetch_corporation_contract_items(corp_id, contract_id, access_token):
     """Fetch items in a specific corporation contract."""
     endpoint = f"/corporations/{corp_id}/contracts/{contract_id}/items/"
     return fetch_esi(endpoint, None, access_token)  # Corp endpoint doesn't need char_id
 
+
 def load_blueprint_cache():
     """Load blueprint name cache."""
     return load_cache(BLUEPRINT_CACHE_FILE)
+
 
 def load_cache(cache_file):
     """Load cache from file."""
     ensure_cache_dir()
     if os.path.exists(cache_file):
         try:
-            with open(cache_file, 'r') as f:
+            with open(cache_file, "r") as f:
                 return json.load(f)
         except:
             return {}
     return {}
+
 
 def ensure_cache_dir():
     """Ensure cache directory exists."""
     if not os.path.exists(CACHE_DIR):
         os.makedirs(CACHE_DIR)
 
+
 def generate_contract_title(contract_data, contract_items=None, blueprint_cache=None):
     """Generate a descriptive contract title based on items."""
     if blueprint_cache is None:
         blueprint_cache = load_blueprint_cache()
 
-    contract_id = contract_data.get('contract_id')
-    contract_type = contract_data.get('type', 'unknown')
-    status = contract_data.get('status', 'unknown').title()
+    contract_id = contract_data.get("contract_id")
+    contract_type = contract_data.get("type", "unknown")
+    status = contract_data.get("status", "unknown").title()
 
     # If no items, use default format
     if not contract_items:
-        type_names = {
-            'item_exchange': 'Item Exchange',
-            'auction': 'Auction',
-            'courier': 'Courier',
-            'loan': 'Loan'
-        }
+        type_names = {"item_exchange": "Item Exchange", "auction": "Auction", "courier": "Courier", "loan": "Loan"}
         type_name = type_names.get(contract_type, contract_type.title())
         return f"Contract {contract_id} - {type_name} ({status})"
 
@@ -91,8 +93,8 @@ def generate_contract_title(contract_data, contract_items=None, blueprint_cache=
     if len(contract_items) == 1:
         # Single item contract
         item = contract_items[0]
-        type_id = item.get('type_id')
-        quantity = item.get('quantity', 1)
+        type_id = item.get("type_id")
+        quantity = item.get("quantity", 1)
 
         if type_id:
             # Get item name
@@ -101,9 +103,9 @@ def generate_contract_title(contract_data, contract_items=None, blueprint_cache=
             else:
                 type_data = fetch_public_esi(f"/universe/types/{type_id}")
                 if type_data:
-                    item_name = type_data.get('name', f"Item {type_id}")
+                    item_name = type_data.get("name", f"Item {type_id}")
                     # Only cache if it's actually a blueprint
-                    if 'Blueprint' in item_name:
+                    if "Blueprint" in item_name:
                         cleaned_name = item_name.replace(" Blueprint", "").strip()
                         blueprint_cache[str(type_id)] = cleaned_name
                         save_blueprint_cache(blueprint_cache)
@@ -115,7 +117,7 @@ def generate_contract_title(contract_data, contract_items=None, blueprint_cache=
             if not is_blueprint:
                 # Double-check with ESI if not in cache
                 type_data = fetch_public_esi(f"/universe/types/{type_id}")
-                is_blueprint = type_data and 'Blueprint' in type_data.get('name', '')
+                is_blueprint = type_data and "Blueprint" in type_data.get("name", "")
 
             if is_blueprint:
                 bp_type = "BPO" if quantity == -1 else "BPC"
@@ -130,11 +132,11 @@ def generate_contract_title(contract_data, contract_items=None, blueprint_cache=
         total_quantity = 0
 
         for item in contract_items:
-            quantity = item.get('quantity', 1)
+            quantity = item.get("quantity", 1)
             total_quantity += abs(quantity)  # Use abs in case of BPOs
 
             # Check if it's a blueprint
-            type_id = item.get('type_id')
+            type_id = item.get("type_id")
             if type_id:
                 # First check if it's in blueprint cache
                 if str(type_id) in blueprint_cache:
@@ -142,7 +144,7 @@ def generate_contract_title(contract_data, contract_items=None, blueprint_cache=
                 else:
                     # Check with ESI
                     type_data = fetch_public_esi(f"/universe/types/{type_id}")
-                    if type_data and 'Blueprint' in type_data.get('name', ''):
+                    if type_data and "Blueprint" in type_data.get("name", ""):
                         blueprint_count += 1
 
         if blueprint_count == len(contract_items):
@@ -150,90 +152,97 @@ def generate_contract_title(contract_data, contract_items=None, blueprint_cache=
             return f"{blueprint_count} Blueprints - Contract {contract_id}"
         elif blueprint_count > 0:
             # Mix of blueprints and other items
-            return f"{blueprint_count} Blueprints + {len(contract_items) - blueprint_count} Items - Contract {contract_id}"
+            return (
+                f"{blueprint_count} Blueprints + {len(contract_items) - blueprint_count} Items - Contract {contract_id}"
+            )
         else:
             # No blueprints, just regular items
             return f"{len(contract_items)} Items (x{total_quantity}) - Contract {contract_id}"
+
 
 def save_blueprint_cache(cache):
     """Save blueprint name cache."""
     save_cache(BLUEPRINT_CACHE_FILE, cache)
 
+
 def get_region_from_location(location_id):
     """Get region_id from a location_id (station or structure)."""
     if not location_id:
         return None
-    
+
     region_id = None
     if location_id >= 1000000000000:  # Structure
         # For structures, we need to fetch structure info to get solar_system_id, then region
         struct_data = fetch_public_esi(f"/universe/structures/{location_id}")
         if struct_data:
-            solar_system_id = struct_data.get('solar_system_id')
+            solar_system_id = struct_data.get("solar_system_id")
             if solar_system_id:
                 system_data = fetch_public_esi(f"/universe/systems/{solar_system_id}")
                 if system_data:
-                    constellation_id = system_data.get('constellation_id')
+                    constellation_id = system_data.get("constellation_id")
                     if constellation_id:
                         constellation_data = fetch_public_esi(f"/universe/constellations/{constellation_id}")
                         if constellation_data:
-                            region_id = constellation_data.get('region_id')
+                            region_id = constellation_data.get("region_id")
     else:  # Station
         station_data = fetch_public_esi(f"/universe/stations/{location_id}")
         if station_data:
-            system_id = station_data.get('system_id')
+            system_id = station_data.get("system_id")
             if system_id:
                 system_data = fetch_public_esi(f"/universe/systems/{system_id}")
                 if system_data:
-                    constellation_id = system_data.get('constellation_id')
+                    constellation_id = system_data.get("constellation_id")
                     if constellation_id:
                         constellation_data = fetch_public_esi(f"/universe/constellations/{constellation_id}")
                         if constellation_data:
-                            region_id = constellation_data.get('region_id')
-    
+                            region_id = constellation_data.get("region_id")
+
     return region_id
+
 
 def update_existing_contract(contract_post, tokens):
     """Update an existing contract post with proper title and thumbnail."""
-    meta = contract_post.get('meta', {})
-    contract_id = meta.get('_eve_contract_id')
-    for_corp = meta.get('_eve_contract_for_corp', 'false').lower() == 'true'
-    
+    meta = contract_post.get("meta", {})
+    contract_id = meta.get("_eve_contract_id")
+    for_corp = meta.get("_eve_contract_for_corp", "false").lower() == "true"
+
     # Determine entity_id based on contract type
     if for_corp:
-        entity_id = meta.get('_eve_contract_issuer_corp_id')
+        entity_id = meta.get("_eve_contract_issuer_corp_id")
     else:
-        entity_id = meta.get('_eve_contract_issuer_id')
+        entity_id = meta.get("_eve_contract_issuer_id")
 
     if not contract_id or not entity_id:
-        logger.warning(f"Contract post {contract_post['id']} missing contract_id or entity_id (contract_id: {contract_id}, entity_id: {entity_id})")
+        logger.warning(
+            f"Contract post {contract_post['id']} missing contract_id or entity_id (contract_id: {contract_id}, entity_id: {entity_id})"
+        )
         return
 
     # Reconstruct contract data from meta
     contract_data = {
-        'contract_id': contract_id,
-        'type': meta.get('_eve_contract_type'),
-        'status': meta.get('_eve_contract_status'),
-        'issuer_id': meta.get('_eve_contract_issuer_id'),
-        'issuer_corporation_id': meta.get('_eve_contract_issuer_corp_id'),
-        'assignee_id': meta.get('_eve_contract_assignee_id'),
-        'acceptor_id': meta.get('_eve_contract_acceptor_id'),
-        'date_issued': meta.get('_eve_contract_date_issued'),
-        'date_expired': meta.get('_eve_contract_date_expired'),
-        'date_accepted': meta.get('_eve_contract_date_accepted'),
-        'date_completed': meta.get('_eve_contract_date_completed'),
-        'price': meta.get('_eve_contract_price'),
-        'reward': meta.get('_eve_contract_reward'),
-        'collateral': meta.get('_eve_contract_collateral'),
-        'buyout': meta.get('_eve_contract_buyout'),
-        'volume': meta.get('_eve_contract_volume'),
-        'days_to_complete': meta.get('_eve_contract_days_to_complete'),
-        'title': meta.get('_eve_contract_title')
+        "contract_id": contract_id,
+        "type": meta.get("_eve_contract_type"),
+        "status": meta.get("_eve_contract_status"),
+        "issuer_id": meta.get("_eve_contract_issuer_id"),
+        "issuer_corporation_id": meta.get("_eve_contract_issuer_corp_id"),
+        "assignee_id": meta.get("_eve_contract_assignee_id"),
+        "acceptor_id": meta.get("_eve_contract_acceptor_id"),
+        "date_issued": meta.get("_eve_contract_date_issued"),
+        "date_expired": meta.get("_eve_contract_date_expired"),
+        "date_accepted": meta.get("_eve_contract_date_accepted"),
+        "date_completed": meta.get("_eve_contract_date_completed"),
+        "price": meta.get("_eve_contract_price"),
+        "reward": meta.get("_eve_contract_reward"),
+        "collateral": meta.get("_eve_contract_collateral"),
+        "buyout": meta.get("_eve_contract_buyout"),
+        "volume": meta.get("_eve_contract_volume"),
+        "days_to_complete": meta.get("_eve_contract_days_to_complete"),
+        "title": meta.get("_eve_contract_title"),
     }
 
     # Get region ID from start location if not already set
-    start_location_id = meta.get('_eve_contract_start_location_id')
-    region_id = meta.get('_eve_contract_region_id')
+    start_location_id = meta.get("_eve_contract_start_location_id")
+    region_id = meta.get("_eve_contract_region_id")
     if start_location_id and not region_id:
         region_id = get_region_from_location(int(start_location_id))
         if region_id:
@@ -244,32 +253,40 @@ def update_existing_contract(contract_post, tokens):
     if for_corp:
         # For corporation contracts, try to find a token that can access corp contract items
         # Prioritize Dr FiLiN's token for No Mercy Incorporated
-        if str(entity_id) == '98092220':  # No Mercy Incorporated
+        if str(entity_id) == "98092220":  # No Mercy Incorporated
             # Find Dr FiLiN's token
             for char_id, token_data in tokens.items():
                 try:
-                    expired = datetime.now(timezone.utc) > datetime.fromisoformat(token_data.get('expires_at', '2000-01-01T00:00:00+00:00'))
-                    if not expired and token_data.get('name') == 'Dr FiLiN':
+                    expired = datetime.now(timezone.utc) > datetime.fromisoformat(
+                        token_data.get("expires_at", "2000-01-01T00:00:00+00:00")
+                    )
+                    if not expired and token_data.get("name") == "Dr FiLiN":
                         # Test if this token can access corporation contract items
-                        test_items = fetch_corporation_contract_items(entity_id, contract_id, token_data['access_token'])
+                        test_items = fetch_corporation_contract_items(
+                            entity_id, contract_id, token_data["access_token"]
+                        )
                         if test_items is not None:  # Could be empty list, but not None (which means error)
-                            access_token = token_data['access_token']
+                            access_token = token_data["access_token"]
                             logger.info(f"Using Dr FiLiN's CEO token for No Mercy Incorporated contract {contract_id}")
                             break
                 except:
                     continue
-        
+
         # If Dr FiLiN's token didn't work or this isn't No Mercy, try other tokens
         if not access_token:
             for char_id, token_data in tokens.items():
                 try:
-                    expired = datetime.now(timezone.utc) > datetime.fromisoformat(token_data.get('expires_at', '2000-01-01T00:00:00+00:00'))
+                    expired = datetime.now(timezone.utc) > datetime.fromisoformat(
+                        token_data.get("expires_at", "2000-01-01T00:00:00+00:00")
+                    )
                     if not expired:
                         # Test if this token can access corporation contract items
-                        test_items = fetch_corporation_contract_items(entity_id, contract_id, token_data['access_token'])
+                        test_items = fetch_corporation_contract_items(
+                            entity_id, contract_id, token_data["access_token"]
+                        )
                         if test_items is not None:  # Could be empty list, but not None (which means error)
-                            access_token = token_data['access_token']
-                            char_name = token_data.get('name', f'Character {char_id}')
+                            access_token = token_data["access_token"]
+                            char_name = token_data.get("name", f"Character {char_id}")
                             logger.info(f"Using {char_name}'s token for corporation contract {contract_id}")
                             break
                 except:
@@ -279,9 +296,11 @@ def update_existing_contract(contract_post, tokens):
         if str(entity_id) in tokens:
             token_data = tokens[str(entity_id)]
             try:
-                expired = datetime.now(timezone.utc) > datetime.fromisoformat(token_data.get('expires_at', '2000-01-01T00:00:00+00:00'))
+                expired = datetime.now(timezone.utc) > datetime.fromisoformat(
+                    token_data.get("expires_at", "2000-01-01T00:00:00+00:00")
+                )
                 if not expired:
-                    access_token = token_data['access_token']
+                    access_token = token_data["access_token"]
             except:
                 pass
 
@@ -300,32 +319,27 @@ def update_existing_contract(contract_post, tokens):
     new_title = generate_contract_title(contract_data, contract_items, blueprint_cache)
 
     # Prepare update data
-    update_data = {
-        'title': new_title,
-        'meta': {
-            '_eve_last_updated': datetime.now(timezone.utc).isoformat()
-        }
-    }
+    update_data = {"title": new_title, "meta": {"_eve_last_updated": datetime.now(timezone.utc).isoformat()}}
 
     # Set region_id if we got it
-    if region_id and not meta.get('_eve_contract_region_id'):
-        update_data['meta']['_eve_contract_region_id'] = str(region_id)
+    if region_id and not meta.get("_eve_contract_region_id"):
+        update_data["meta"]["_eve_contract_region_id"] = str(region_id)
 
     # Add items data if available
     if contract_items:
-        update_data['meta']['_eve_contract_items'] = json.dumps(contract_items)
+        update_data["meta"]["_eve_contract_items"] = json.dumps(contract_items)
 
         # Set thumbnail based on blueprint items in contract
         thumbnail_url = None
         for item in contract_items:
-            type_id = item.get('type_id')
+            type_id = item.get("type_id")
             if type_id:
                 # Check if this is a blueprint
                 type_data = fetch_public_esi(f"/universe/types/{type_id}")
-                if type_data and 'Blueprint' in type_data.get('name', ''):
+                if type_data and "Blueprint" in type_data.get("name", ""):
                     # Use the improved fetch_type_icon function
                     thumbnail_url = fetch_type_icon(type_id, size=512)
-                    if thumbnail_url and not thumbnail_url.startswith('https://via.placeholder.com'):
+                    if thumbnail_url and not thumbnail_url.startswith("https://via.placeholder.com"):
                         break
 
         # If no blueprint icon found, use contract placeholder
@@ -333,12 +347,12 @@ def update_existing_contract(contract_post, tokens):
             thumbnail_url = "https://via.placeholder.com/512x512/e74c3c/ffffff?text=Contract"
 
         # Check if thumbnail changed before updating
-        existing_thumbnail = meta.get('_thumbnail_external_url')
+        existing_thumbnail = meta.get("_thumbnail_external_url")
         if existing_thumbnail != thumbnail_url:
-            update_data['meta']['_thumbnail_external_url'] = thumbnail_url
+            update_data["meta"]["_thumbnail_external_url"] = thumbnail_url
 
     # Update the post
-    post_id = contract_post['id']
+    post_id = contract_post["id"]
     url = f"{WP_BASE_URL}/wp-json/wp/v2/eve_contract/{post_id}"
     response = requests.put(url, json=update_data, auth=get_wp_auth())
 
@@ -346,6 +360,7 @@ def update_existing_contract(contract_post, tokens):
         logger.info(f"Updated contract {contract_id}: '{new_title}'")
     else:
         logger.error(f"Failed to update contract {contract_id}: {response.status_code} - {response.text}")
+
 
 def main():
     """Update all existing contracts with proper titles and thumbnails."""
@@ -363,9 +378,7 @@ def main():
 
     while True:
         response = requests.get(
-            f"{WP_BASE_URL}/wp-json/wp/v2/eve_contract",
-            auth=get_wp_auth(),
-            params={'per_page': per_page, 'page': page}
+            f"{WP_BASE_URL}/wp-json/wp/v2/eve_contract", auth=get_wp_auth(), params={"per_page": per_page, "page": page}
         )
 
         if response.status_code != 200:
@@ -382,17 +395,18 @@ def main():
             try:
                 update_existing_contract(contract, tokens)
             except Exception as e:
-                contract_id = contract.get('meta', {}).get('_eve_contract_id', 'unknown')
+                contract_id = contract.get("meta", {}).get("_eve_contract_id", "unknown")
                 logger.error(f"Error updating contract {contract_id}: {e}")
 
         page += 1
 
         # Check if we've reached the last page
-        total_pages = int(response.headers.get('X-WP-TotalPages', 1))
+        total_pages = int(response.headers.get("X-WP-TotalPages", 1))
         if page > total_pages:
             break
 
     logger.info("Contract update completed!")
+
 
 if __name__ == "__main__":
     main()

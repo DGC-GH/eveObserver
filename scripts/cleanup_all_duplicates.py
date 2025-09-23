@@ -1,17 +1,20 @@
-import requests
 import os
+
+import requests
 from dotenv import load_dotenv
 
 load_dotenv()
 
-WP_BASE_URL = os.getenv('WP_URL')
-WP_USERNAME = os.getenv('WP_USERNAME')
-WP_APP_PASSWORD = os.getenv('WP_APP_PASSWORD')
+WP_BASE_URL = os.getenv("WP_URL")
+WP_USERNAME = os.getenv("WP_USERNAME")
+WP_APP_PASSWORD = os.getenv("WP_APP_PASSWORD")
+
 
 def get_wp_auth():
     return (WP_USERNAME, WP_APP_PASSWORD)
 
-post_types = ['eve_character', 'eve_blueprint', 'eve_planet']
+
+post_types = ["eve_character", "eve_blueprint", "eve_planet"]
 
 for post_type in post_types:
     print(f"Cleaning up {post_type}...")
@@ -30,21 +33,22 @@ for post_type in post_types:
 
     # Group by base slug
     from collections import defaultdict
+
     grouped = defaultdict(list)
     for post in posts:
-        slug = post['slug']
-        if post_type == 'eve_character' and slug.startswith('character-'):
+        slug = post["slug"]
+        if post_type == "eve_character" and slug.startswith("character-"):
             # Extract base slug, remove -number
-            parts = slug.split('-')
+            parts = slug.split("-")
             if len(parts) == 2 or (len(parts) == 3 and parts[2].isdigit()):
                 base_slug = f"character-{parts[1]}"
             else:
                 base_slug = slug
-        elif post_type == 'eve_blueprint' and slug.startswith('blueprint-'):
-            parts = slug.split('-')
+        elif post_type == "eve_blueprint" and slug.startswith("blueprint-"):
+            parts = slug.split("-")
             if len(parts) >= 2:
                 base_slug = f"blueprint-{parts[1]}"
-        elif post_type == 'eve_planet' and slug.startswith('planet-'):
+        elif post_type == "eve_planet" and slug.startswith("planet-"):
             base_slug = slug
         else:
             continue
@@ -55,15 +59,17 @@ for post_type in post_types:
         correct_post = None
         to_delete = []
         for post in posts_list:
-            if post['slug'] == base_slug:
+            if post["slug"] == base_slug:
                 correct_post = post
             else:
                 to_delete.append(post)
-        
+
         if correct_post:
             for post in to_delete:
                 print(f"Deleting duplicate post ID {post['id']} with slug {post['slug']}")
-                delete_response = requests.delete(f"{WP_BASE_URL}/wp-json/wp/v2/{post_type}/{post['id']}?force=true", auth=get_wp_auth())
+                delete_response = requests.delete(
+                    f"{WP_BASE_URL}/wp-json/wp/v2/{post_type}/{post['id']}?force=true", auth=get_wp_auth()
+                )
                 if delete_response.status_code == 200:
                     print(f"Deleted post {post['id']}")
                 else:

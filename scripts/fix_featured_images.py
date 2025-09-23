@@ -3,12 +3,14 @@
 Fix featured images for existing posts - convert external URLs to proper WordPress featured images.
 """
 
-import os
 import json
-import requests
-from datetime import datetime, timezone
-from dotenv import load_dotenv
 import logging
+import os
+from datetime import datetime, timezone
+
+import requests
+from dotenv import load_dotenv
+
 from config import *
 
 load_dotenv()
@@ -16,21 +18,20 @@ load_dotenv()
 # Configure logging
 logging.basicConfig(
     level=getattr(logging, LOG_LEVEL),
-    format='%(asctime)s - %(levelname)s - %(message)s',
-    handlers=[
-        logging.FileHandler(LOG_FILE),
-        logging.StreamHandler()
-    ]
+    format="%(asctime)s - %(levelname)s - %(message)s",
+    handlers=[logging.FileHandler(LOG_FILE), logging.StreamHandler()],
 )
 logger = logging.getLogger(__name__)
 
+
 def get_wp_auth():
     """Get WordPress authentication."""
-    wp_user = os.getenv('WP_USER')
-    wp_app_password = os.getenv('WP_APP_PASSWORD')
+    wp_user = os.getenv("WP_USER")
+    wp_app_password = os.getenv("WP_APP_PASSWORD")
     if not wp_user or not wp_app_password:
         raise ValueError("WP_USER and WP_APP_PASSWORD environment variables must be set")
     return (wp_user, wp_app_password)
+
 
 def upload_image_to_wordpress(image_url, filename, alt_text=""):
     """Upload an image to WordPress media library and return the media ID."""
@@ -42,13 +43,8 @@ def upload_image_to_wordpress(image_url, filename, alt_text=""):
             return None
 
         # Prepare the file for upload
-        files = {
-            'file': (filename, response.content, response.headers.get('content-type', 'image/png'))
-        }
-        data = {
-            'alt_text': alt_text,
-            'caption': alt_text
-        }
+        files = {"file": (filename, response.content, response.headers.get("content-type", "image/png"))}
+        data = {"alt_text": alt_text, "caption": alt_text}
 
         # Upload to WordPress
         upload_url = f"{WP_BASE_URL}/wp-json/wp/v2/media"
@@ -56,21 +52,24 @@ def upload_image_to_wordpress(image_url, filename, alt_text=""):
 
         if upload_response.status_code in [200, 201]:
             media_data = upload_response.json()
-            return media_data['id']
+            return media_data["id"]
         else:
-            logger.warning(f"Failed to upload image to WordPress: {upload_response.status_code} - {upload_response.text}")
+            logger.warning(
+                f"Failed to upload image to WordPress: {upload_response.status_code} - {upload_response.text}"
+            )
             return None
 
     except Exception as e:
         logger.error(f"Error uploading image {image_url}: {e}")
         return None
 
+
 def fix_featured_images_for_post_type(post_type, post_type_name):
     """Fix featured images for a specific post type."""
     logger.info(f"Fixing featured images for {post_type_name} posts...")
 
     # Get all posts of this type
-    response = requests.get(f"{WP_BASE_URL}/wp-json/wp/v2/{post_type}", auth=get_wp_auth(), params={'per_page': 100})
+    response = requests.get(f"{WP_BASE_URL}/wp-json/wp/v2/{post_type}", auth=get_wp_auth(), params={"per_page": 100})
     if response.status_code != 200:
         logger.error(f"Failed to fetch {post_type_name} posts: {response.status_code}")
         return
@@ -79,12 +78,12 @@ def fix_featured_images_for_post_type(post_type, post_type_name):
     logger.info(f"Found {len(posts)} {post_type_name} posts")
 
     for post in posts:
-        post_id = post['id']
-        meta = post.get('meta', {})
-        featured_media = post.get('featured_media', 0)
+        post_id = post["id"]
+        meta = post.get("meta", {})
+        featured_media = post.get("featured_media", 0)
 
         # Check if post has external URL but no featured media
-        external_url = meta.get('_thumbnail_external_url')
+        external_url = meta.get("_thumbnail_external_url")
         if external_url and not featured_media:
             logger.info(f"Fixing featured image for {post_type_name} post {post_id}: {external_url}")
 
@@ -92,13 +91,15 @@ def fix_featured_images_for_post_type(post_type, post_type_name):
             filename = f"{post_type}_{post_id}.png"
 
             # Upload image and get media ID
-            media_id = upload_image_to_wordpress(external_url, filename, post.get('title', {}).get('rendered', ''))
+            media_id = upload_image_to_wordpress(external_url, filename, post.get("title", {}).get("rendered", ""))
 
             if media_id:
                 # Update post with featured media
                 update_data = {
-                    'featured_media': media_id,
-                    'meta': {k: v for k, v in meta.items() if k != '_thumbnail_external_url'}  # Remove the custom field
+                    "featured_media": media_id,
+                    "meta": {
+                        k: v for k, v in meta.items() if k != "_thumbnail_external_url"
+                    },  # Remove the custom field
                 }
 
                 update_url = f"{WP_BASE_URL}/wp-json/wp/v2/{post_type}/{post_id}"
@@ -107,15 +108,15 @@ def fix_featured_images_for_post_type(post_type, post_type_name):
                 if update_response.status_code in [200, 201]:
                     logger.info(f"Successfully set featured image for {post_type_name} post {post_id}")
                 else:
-                    logger.error(f"Failed to update {post_type_name} post {post_id}: {update_response.status_code} - {update_response.text}")
+                    logger.error(
+                        f"Failed to update {post_type_name} post {post_id}: {update_response.status_code} - {update_response.text}"
+                    )
             else:
                 logger.warning(f"Failed to upload image for {post_type_name} post {post_id}")
         elif external_url and featured_media:
             # Has both - just remove the custom field
             logger.info(f"Removing unnecessary custom field from {post_type_name} post {post_id}")
-            update_data = {
-                'meta': {k: v for k, v in meta.items() if k != '_thumbnail_external_url'}
-            }
+            update_data = {"meta": {k: v for k, v in meta.items() if k != "_thumbnail_external_url"}}
 
             update_url = f"{WP_BASE_URL}/wp-json/wp/v2/{post_type}/{post_id}"
             update_response = requests.put(update_url, json=update_data, auth=get_wp_auth())
@@ -123,7 +124,10 @@ def fix_featured_images_for_post_type(post_type, post_type_name):
             if update_response.status_code in [200, 201]:
                 logger.info(f"Removed custom field from {post_type_name} post {post_id}")
             else:
-                logger.error(f"Failed to update {post_type_name} post {post_id}: {update_response.status_code} - {update_response.text}")
+                logger.error(
+                    f"Failed to update {post_type_name} post {post_id}: {update_response.status_code} - {update_response.text}"
+                )
+
 
 def main():
     """Fix featured images for all post types."""
@@ -131,11 +135,11 @@ def main():
 
     # Fix different post types
     post_types = [
-        ('eve_blueprint', 'blueprint'),
-        ('eve_planet', 'planet'),
-        ('eve_corporation', 'corporation'),
-        ('eve_character', 'character'),
-        ('eve_contract', 'contract')
+        ("eve_blueprint", "blueprint"),
+        ("eve_planet", "planet"),
+        ("eve_corporation", "corporation"),
+        ("eve_character", "character"),
+        ("eve_contract", "contract"),
     ]
 
     for post_type, name in post_types:
@@ -146,5 +150,6 @@ def main():
 
     logger.info("Featured image fix completed!")
 
-if __name__ == '__main__':
+
+if __name__ == "__main__":
     main()

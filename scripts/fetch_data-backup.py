@@ -4,74 +4,112 @@ EVE Observer Data Fetcher
 Fetches data from EVE ESI API and stores in WordPress database via REST API.
 """
 
-import os
-import json
-import aiohttp
-import asyncio
-from datetime import datetime, timedelta, timezone
-from dotenv import load_dotenv
-import smtplib
-from email.mime.text import MIMEText
-import logging
 import argparse
-from typing import Optional, Dict, List, Any, Tuple
+import asyncio
+import json
+import logging
+import os
+import smtplib
 from dataclasses import dataclass
-from config import *
-from esi_oauth import save_tokens
+from datetime import datetime, timedelta, timezone
+from email.mime.text import MIMEText
+from typing import Any, Dict, List, Optional, Tuple
+
+import aiohttp
+from dotenv import load_dotenv
+
+from api_client import (
+    delete_wp_post,
+    fetch_esi,
+    fetch_public_esi,
+    fetch_type_icon,
+    refresh_token,
+    send_email,
+    wp_request,
+)
 from blueprint_processor import (
-    update_blueprint_in_wp, extract_blueprints_from_assets, extract_blueprints_from_industry_jobs,
-    extract_blueprints_from_contracts, update_blueprint_from_asset_in_wp, cleanup_blueprint_posts
+    cleanup_blueprint_posts,
+    extract_blueprints_from_assets,
+    extract_blueprints_from_contracts,
+    extract_blueprints_from_industry_jobs,
+    update_blueprint_from_asset_in_wp,
+    update_blueprint_in_wp,
 )
-from character_processor import update_character_skills_in_wp, check_industry_job_completions, update_planet_in_wp
-from contract_processor import (
-    fetch_character_contracts, fetch_corporation_contracts, process_character_contracts, cleanup_contract_posts,
-    generate_contract_title, update_contract_in_wp
-)
-from data_processors import fetch_character_data, update_character_in_wp, get_wp_auth
 from cache_manager import (
-    load_blueprint_cache, save_blueprint_cache, load_location_cache, save_location_cache,
-    load_structure_cache, save_structure_cache, load_failed_structures, save_failed_structures,
-    load_wp_post_id_cache, save_wp_post_id_cache, get_cached_wp_post_id, set_cached_wp_post_id
+    get_cached_wp_post_id,
+    load_blueprint_cache,
+    load_failed_structures,
+    load_location_cache,
+    load_structure_cache,
+    load_wp_post_id_cache,
+    save_blueprint_cache,
+    save_failed_structures,
+    save_location_cache,
+    save_structure_cache,
+    save_wp_post_id_cache,
+    set_cached_wp_post_id,
 )
-from api_client import fetch_public_esi, fetch_esi, wp_request, send_email, refresh_token, fetch_type_icon, delete_wp_post
+from character_processor import check_industry_job_completions, update_character_skills_in_wp, update_planet_in_wp
+from config import *
+from contract_processor import (
+    cleanup_contract_posts,
+    fetch_character_contracts,
+    fetch_corporation_contracts,
+    generate_contract_title,
+    process_character_contracts,
+    update_contract_in_wp,
+)
+from data_processors import fetch_character_data, get_wp_auth, update_character_in_wp
+from esi_oauth import save_tokens
 from utils import get_region_from_location
+
+
 class ESIApiError(Exception):
     """Base exception for ESI API errors."""
+
     pass
+
 
 class ESIAuthError(ESIApiError):
     """Exception raised for authentication failures."""
+
     pass
+
 
 class ESIRequestError(ESIApiError):
     """Exception raised for general ESI request errors."""
+
     pass
+
 
 @dataclass
 class ApiConfig:
     """Centralized configuration for API settings and limits."""
-    esi_base_url: str = 'https://esi.evetech.net/latest'
+
+    esi_base_url: str = "https://esi.evetech.net/latest"
     esi_timeout: int = 30
     esi_max_retries: int = 3
     esi_max_workers: int = 10
     wp_per_page: int = 100
     rate_limit_buffer: int = 1
-    
+
     @classmethod
-    def from_env(cls) -> 'ApiConfig':
+    def from_env(cls) -> "ApiConfig":
         """Create ApiConfig instance from environment variables."""
         return cls(
-            esi_base_url=os.getenv('ESI_BASE_URL', 'https://esi.evetech.net/latest'),
-            esi_timeout=int(os.getenv('ESI_TIMEOUT', 30)),
-            esi_max_retries=int(os.getenv('ESI_MAX_RETRIES', 3)),
-            esi_max_workers=int(os.getenv('ESI_MAX_WORKERS', 10)),
-            wp_per_page=int(os.getenv('WP_PER_PAGE', 100)),
+            esi_base_url=os.getenv("ESI_BASE_URL", "https://esi.evetech.net/latest"),
+            esi_timeout=int(os.getenv("ESI_TIMEOUT", 30)),
+            esi_max_retries=int(os.getenv("ESI_MAX_RETRIES", 3)),
+            esi_max_workers=int(os.getenv("ESI_MAX_WORKERS", 10)),
+            wp_per_page=int(os.getenv("WP_PER_PAGE", 100)),
         )
+
 
 load_dotenv()
 
 # Create a global aiohttp session for connection reuse
 session = None
+
 
 async def get_session():
     """
@@ -88,9 +126,10 @@ async def get_session():
     if session is None or session.closed:
         session = aiohttp.ClientSession(
             timeout=aiohttp.ClientTimeout(total=api_config.esi_timeout),
-            connector=aiohttp.TCPConnector(limit=api_config.esi_max_workers * 2)
+            connector=aiohttp.TCPConnector(limit=api_config.esi_max_workers * 2),
         )
     return session
+
 
 # Initialize API configuration
 api_config = ApiConfig.from_env()
@@ -98,15 +137,13 @@ api_config = ApiConfig.from_env()
 # Configure logging
 logging.basicConfig(
     level=getattr(logging, LOG_LEVEL),
-    format='%(asctime)s - %(levelname)s - %(message)s',
-    handlers=[
-        logging.FileHandler(LOG_FILE),
-        logging.StreamHandler()
-    ]
+    format="%(asctime)s - %(levelname)s - %(message)s",
+    handlers=[logging.FileHandler(LOG_FILE), logging.StreamHandler()],
 )
 logger = logging.getLogger(__name__)
 # WordPress post ID cache
-WP_POST_ID_CACHE_FILE = os.path.join(CACHE_DIR, 'wp_post_ids.json')
+WP_POST_ID_CACHE_FILE = os.path.join(CACHE_DIR, "wp_post_ids.json")
+
 
 def load_tokens() -> Dict[str, Any]:
     """
@@ -120,10 +157,9 @@ def load_tokens() -> Dict[str, Any]:
                        Empty dict if file doesn't exist or can't be read.
     """
     if os.path.exists(TOKENS_FILE):
-        with open(TOKENS_FILE, 'r') as f:
+        with open(TOKENS_FILE, "r") as f:
             return json.load(f)
     return {}
-
 
 
 def send_email(subject: str, body: str) -> None:
@@ -146,9 +182,9 @@ def send_email(subject: str, body: str) -> None:
         return
 
     msg = MIMEText(body)
-    msg['Subject'] = subject
-    msg['From'] = EMAIL_FROM
-    msg['To'] = EMAIL_TO
+    msg["Subject"] = subject
+    msg["From"] = EMAIL_FROM
+    msg["To"] = EMAIL_TO
 
     try:
         server = smtplib.SMTP(EMAIL_SMTP_SERVER, EMAIL_SMTP_PORT)
@@ -159,6 +195,7 @@ def send_email(subject: str, body: str) -> None:
         logger.info(f"Alert email sent: {subject}")
     except Exception as e:
         logger.error(f"Failed to send email: {e}")
+
 
 async def fetch_public_esi(endpoint: str, max_retries: int = None) -> Optional[Dict[str, Any]]:
     """
@@ -181,7 +218,7 @@ async def fetch_public_esi(endpoint: str, max_retries: int = None) -> Optional[D
     """
     if max_retries is None:
         max_retries = api_config.esi_max_retries
-    
+
     import time
 
     sess = await get_session()
@@ -197,8 +234,8 @@ async def fetch_public_esi(endpoint: str, max_retries: int = None) -> Optional[D
                     return None
                 elif response.status == 429:  # Rate limited
                     # Check for X-ESI-Error-Limit-Remain header
-                    error_limit_remain = response.headers.get('X-ESI-Error-Limit-Remain')
-                    error_limit_reset = response.headers.get('X-ESI-Error-Limit-Reset')
+                    error_limit_remain = response.headers.get("X-ESI-Error-Limit-Remain")
+                    error_limit_reset = response.headers.get("X-ESI-Error-Limit-Reset")
 
                     if error_limit_reset:
                         wait_time = int(error_limit_reset) + 1  # Add 1 second buffer
@@ -211,8 +248,8 @@ async def fetch_public_esi(endpoint: str, max_retries: int = None) -> Optional[D
                         await asyncio.sleep(60)
                         continue
                 elif response.status == 420:  # Error limited
-                    error_limit_remain = response.headers.get('X-ESI-Error-Limit-Remain')
-                    error_limit_reset = response.headers.get('X-ESI-Error-Limit-Reset')
+                    error_limit_remain = response.headers.get("X-ESI-Error-Limit-Remain")
+                    error_limit_reset = response.headers.get("X-ESI-Error-Limit-Reset")
 
                     if error_limit_reset:
                         wait_time = int(error_limit_reset) + 1
@@ -226,7 +263,7 @@ async def fetch_public_esi(endpoint: str, max_retries: int = None) -> Optional[D
                 elif response.status >= 500:
                     # Server error, retry
                     if attempt < max_retries - 1:
-                        wait_time = 2 ** attempt  # Exponential backoff
+                        wait_time = 2**attempt  # Exponential backoff
                         logger.warning(f"SERVER ERROR {response.status}: Retrying in {wait_time} seconds...")
                         await asyncio.sleep(wait_time)
                         continue
@@ -239,7 +276,7 @@ async def fetch_public_esi(endpoint: str, max_retries: int = None) -> Optional[D
 
         except asyncio.TimeoutError:
             if attempt < max_retries - 1:
-                wait_time = 2 ** attempt
+                wait_time = 2**attempt
                 logger.warning(f"TIMEOUT: Retrying in {wait_time} seconds...")
                 await asyncio.sleep(wait_time)
                 continue
@@ -248,7 +285,7 @@ async def fetch_public_esi(endpoint: str, max_retries: int = None) -> Optional[D
                 return None
         except aiohttp.ClientError as e:
             if attempt < max_retries - 1:
-                wait_time = 2 ** attempt
+                wait_time = 2**attempt
                 logger.warning(f"NETWORK ERROR: {e}. Retrying in {wait_time} seconds...")
                 await asyncio.sleep(wait_time)
                 continue
@@ -258,7 +295,10 @@ async def fetch_public_esi(endpoint: str, max_retries: int = None) -> Optional[D
 
     return None
 
-async def fetch_esi(endpoint: str, char_id: Optional[int], access_token: str, max_retries: int = None) -> Optional[Dict[str, Any]]:
+
+async def fetch_esi(
+    endpoint: str, char_id: Optional[int], access_token: str, max_retries: int = None
+) -> Optional[Dict[str, Any]]:
     """
     Fetch data from ESI API authenticated endpoints with rate limiting and error handling.
 
@@ -281,12 +321,12 @@ async def fetch_esi(endpoint: str, char_id: Optional[int], access_token: str, ma
     """
     if max_retries is None:
         max_retries = api_config.esi_max_retries
-    
+
     import time
 
     sess = await get_session()
     url = f"{api_config.esi_base_url}{endpoint}"
-    headers = {'Authorization': f'Bearer {access_token}'}
+    headers = {"Authorization": f"Bearer {access_token}"}
 
     for attempt in range(max_retries):
         try:
@@ -304,8 +344,8 @@ async def fetch_esi(endpoint: str, char_id: Optional[int], access_token: str, ma
                     return None
                 elif response.status == 429:  # Rate limited
                     # Check for X-ESI-Error-Limit-Remain header
-                    error_limit_remain = response.headers.get('X-ESI-Error-Limit-Remain')
-                    error_limit_reset = response.headers.get('X-ESI-Error-Limit-Reset')
+                    error_limit_remain = response.headers.get("X-ESI-Error-Limit-Remain")
+                    error_limit_reset = response.headers.get("X-ESI-Error-Limit-Reset")
 
                     if error_limit_reset:
                         wait_time = int(error_limit_reset) + 1  # Add 1 second buffer
@@ -318,8 +358,8 @@ async def fetch_esi(endpoint: str, char_id: Optional[int], access_token: str, ma
                         await asyncio.sleep(60)
                         continue
                 elif response.status == 420:  # Error limited
-                    error_limit_remain = response.headers.get('X-ESI-Error-Limit-Remain')
-                    error_limit_reset = response.headers.get('X-ESI-Error-Limit-Reset')
+                    error_limit_remain = response.headers.get("X-ESI-Error-Limit-Remain")
+                    error_limit_reset = response.headers.get("X-ESI-Error-Limit-Reset")
 
                     if error_limit_reset:
                         wait_time = int(error_limit_reset) + 1
@@ -333,7 +373,7 @@ async def fetch_esi(endpoint: str, char_id: Optional[int], access_token: str, ma
                 elif response.status >= 500:
                     # Server error, retry
                     if attempt < max_retries - 1:
-                        wait_time = 2 ** attempt  # Exponential backoff
+                        wait_time = 2**attempt  # Exponential backoff
                         logger.warning(f"SERVER ERROR {response.status}: Retrying in {wait_time} seconds...")
                         await asyncio.sleep(wait_time)
                         continue
@@ -346,7 +386,7 @@ async def fetch_esi(endpoint: str, char_id: Optional[int], access_token: str, ma
 
         except asyncio.TimeoutError:
             if attempt < max_retries - 1:
-                wait_time = 2 ** attempt
+                wait_time = 2**attempt
                 logger.warning(f"TIMEOUT: Retrying in {wait_time} seconds...")
                 await asyncio.sleep(wait_time)
                 continue
@@ -355,7 +395,7 @@ async def fetch_esi(endpoint: str, char_id: Optional[int], access_token: str, ma
                 return None
         except aiohttp.ClientError as e:
             if attempt < max_retries - 1:
-                wait_time = 2 ** attempt
+                wait_time = 2**attempt
                 logger.warning(f"NETWORK ERROR: {e}. Retrying in {wait_time} seconds...")
                 await asyncio.sleep(wait_time)
                 continue
@@ -364,6 +404,7 @@ async def fetch_esi(endpoint: str, char_id: Optional[int], access_token: str, ma
                 return None
 
     return None
+
 
 async def wp_request(method: str, endpoint: str, data: Optional[Dict] = None) -> Optional[Dict]:
     """
@@ -387,38 +428,39 @@ async def wp_request(method: str, endpoint: str, data: Optional[Dict] = None) ->
     sess = await get_session()
     url = f"{WP_BASE_URL}{endpoint}"
     auth = aiohttp.BasicAuth(WP_USERNAME, WP_APP_PASSWORD)
-    
+
     try:
-        if method.upper() == 'GET':
+        if method.upper() == "GET":
             async with sess.get(url, auth=auth) as response:
                 if response.status == 200:
                     return await response.json()
                 else:
                     logger.error(f"WordPress API error: {response.status} - {await response.text()}")
                     return None
-        elif method.upper() == 'POST':
+        elif method.upper() == "POST":
             async with sess.post(url, json=data, auth=auth) as response:
                 if response.status in [200, 201]:
                     return await response.json()
                 else:
                     logger.error(f"WordPress API error: {response.status} - {await response.text()}")
                     return None
-        elif method.upper() == 'PUT':
+        elif method.upper() == "PUT":
             async with sess.put(url, json=data, auth=auth) as response:
                 if response.status in [200, 201]:
                     return await response.json()
                 else:
                     logger.error(f"WordPress API error: {response.status} - {await response.text()}")
                     return None
-        elif method.upper() == 'DELETE':
-            params = {'force': 'true'} if data and data.get('force') else None
+        elif method.upper() == "DELETE":
+            params = {"force": "true"} if data and data.get("force") else None
             async with sess.delete(url, auth=auth, params=params) as response:
                 return response.status == 200
     except Exception as e:
         logger.error(f"WordPress API request failed: {e}")
         return None
-    
+
     return None
+
 
 async def fetch_corporation_blueprints(corp_id, access_token):
     """
@@ -437,6 +479,7 @@ async def fetch_corporation_blueprints(corp_id, access_token):
     endpoint = f"/corporations/{corp_id}/blueprints/"
     return await fetch_esi(endpoint, corp_id, access_token)
 
+
 def fetch_corporation_contract_items(corp_id, contract_id, access_token):
     """
     Fetch items in a specific corporation contract from ESI.
@@ -454,6 +497,7 @@ def fetch_corporation_contract_items(corp_id, contract_id, access_token):
     """
     endpoint = f"/corporations/{corp_id}/contracts/{contract_id}/items/"
     return fetch_esi(endpoint, None, access_token)  # Corp endpoint doesn't need char_id
+
 
 async def fetch_corporation_industry_jobs(corp_id, access_token):
     """
@@ -490,6 +534,7 @@ async def fetch_corporation_assets(corp_id, access_token):
     endpoint = f"/corporations/{corp_id}/assets/"
     return await fetch_esi(endpoint, None, access_token)  # Corp endpoint doesn't need char_id
 
+
 def get_region_from_location(location_id):
     """
     Get region_id from a location_id (station or structure) with caching.
@@ -509,111 +554,113 @@ def get_region_from_location(location_id):
     """
     if not location_id:
         return None
-    
+
     # Load cache
-    cache_file = 'cache/region_cache.json'
+    cache_file = "cache/region_cache.json"
     try:
-        with open(cache_file, 'r') as f:
+        with open(cache_file, "r") as f:
             region_cache = json.load(f)
     except (FileNotFoundError, json.JSONDecodeError):
         region_cache = {}
-    
+
     location_id_str = str(location_id)
     if location_id_str in region_cache:
         return region_cache[location_id_str]
-    
+
     region_id = None
     import requests
+
     if location_id >= 1000000000000:  # Structure
         # For structures, we need to fetch structure info to get solar_system_id, then region
         try:
-            response = requests.get(f"{ESI_BASE_URL}/universe/structures/{location_id}", headers={'Accept': 'application/json'}, timeout=30)
+            response = requests.get(
+                f"{ESI_BASE_URL}/universe/structures/{location_id}", headers={"Accept": "application/json"}, timeout=30
+            )
             response.raise_for_status()
             struct_data = response.json()
         except requests.exceptions.RequestException:
             struct_data = None
-        
+
         if struct_data:
-            solar_system_id = struct_data.get('solar_system_id')
+            solar_system_id = struct_data.get("solar_system_id")
             if solar_system_id:
                 try:
-                    response = requests.get(f"{ESI_BASE_URL}/universe/systems/{solar_system_id}", headers={'Accept': 'application/json'}, timeout=30)
+                    response = requests.get(
+                        f"{ESI_BASE_URL}/universe/systems/{solar_system_id}",
+                        headers={"Accept": "application/json"},
+                        timeout=30,
+                    )
                     response.raise_for_status()
                     system_data = response.json()
                 except requests.exceptions.RequestException:
                     system_data = None
-                
+
                 if system_data:
-                    constellation_id = system_data.get('constellation_id')
+                    constellation_id = system_data.get("constellation_id")
                     if constellation_id:
                         try:
-                            response = requests.get(f"{ESI_BASE_URL}/universe/constellations/{constellation_id}", headers={'Accept': 'application/json'}, timeout=30)
+                            response = requests.get(
+                                f"{ESI_BASE_URL}/universe/constellations/{constellation_id}",
+                                headers={"Accept": "application/json"},
+                                timeout=30,
+                            )
                             response.raise_for_status()
                             constellation_data = response.json()
                         except requests.exceptions.RequestException:
                             constellation_data = None
-                        
+
                         if constellation_data:
-                            region_id = constellation_data.get('region_id')
+                            region_id = constellation_data.get("region_id")
     else:  # Station
         try:
-            response = requests.get(f"{ESI_BASE_URL}/universe/stations/{location_id}", headers={'Accept': 'application/json'}, timeout=30)
+            response = requests.get(
+                f"{ESI_BASE_URL}/universe/stations/{location_id}", headers={"Accept": "application/json"}, timeout=30
+            )
             response.raise_for_status()
             station_data = response.json()
         except requests.exceptions.RequestException:
             station_data = None
-        
+
         if station_data:
-            system_id = station_data.get('system_id')
+            system_id = station_data.get("system_id")
             if system_id:
                 try:
-                    response = requests.get(f"{ESI_BASE_URL}/universe/systems/{system_id}", headers={'Accept': 'application/json'}, timeout=30)
+                    response = requests.get(
+                        f"{ESI_BASE_URL}/universe/systems/{system_id}",
+                        headers={"Accept": "application/json"},
+                        timeout=30,
+                    )
                     response.raise_for_status()
                     system_data = response.json()
                 except requests.exceptions.RequestException:
                     system_data = None
-                
+
                 if system_data:
-                    constellation_id = system_data.get('constellation_id')
+                    constellation_id = system_data.get("constellation_id")
                     if constellation_id:
                         try:
-                            response = requests.get(f"{ESI_BASE_URL}/universe/constellations/{constellation_id}", headers={'Accept': 'application/json'}, timeout=30)
+                            response = requests.get(
+                                f"{ESI_BASE_URL}/universe/constellations/{constellation_id}",
+                                headers={"Accept": "application/json"},
+                                timeout=30,
+                            )
                             response.raise_for_status()
                             constellation_data = response.json()
                         except requests.exceptions.RequestException:
                             constellation_data = None
-                        
+
                         if constellation_data:
-                            region_id = constellation_data.get('region_id')
-    
+                            region_id = constellation_data.get("region_id")
+
     # Cache the result
     if region_id:
         region_cache[location_id_str] = region_id
         os.makedirs(os.path.dirname(cache_file), exist_ok=True)
-        with open(cache_file, 'w') as f:
+        with open(cache_file, "w") as f:
             json.dump(region_cache, f, indent=2)
-    
+
     return region_id
 
-async def fetch_corporation_logo(corp_id):
-    """
-    Fetch corporation logo image URLs from ESI.
-
-    Retrieves corporation logo URLs in multiple sizes (64x64, 128x128, 256x256, 512x512)
-    for use as featured images in WordPress corporation posts.
-
-    Args:
-        corp_id: EVE corporation ID to fetch logo for.
-
-    Returns:
-        Optional[Dict[str, Any]]: Logo URLs dictionary with size keys if successful,
-                                 None if fetch failed.
-
-    Note:
-        This is a public endpoint that doesn't require authentication.
-    """
-    endpoint = f"/corporations/{corp_id}/logo/"
-    return await fetch_public_esi(endpoint)
 
 async def fetch_corporation_logo(corp_id):
     """
@@ -634,6 +681,28 @@ async def fetch_corporation_logo(corp_id):
     """
     endpoint = f"/corporations/{corp_id}/logo/"
     return await fetch_public_esi(endpoint)
+
+
+async def fetch_corporation_logo(corp_id):
+    """
+    Fetch corporation logo image URLs from ESI.
+
+    Retrieves corporation logo URLs in multiple sizes (64x64, 128x128, 256x256, 512x512)
+    for use as featured images in WordPress corporation posts.
+
+    Args:
+        corp_id: EVE corporation ID to fetch logo for.
+
+    Returns:
+        Optional[Dict[str, Any]]: Logo URLs dictionary with size keys if successful,
+                                 None if fetch failed.
+
+    Note:
+        This is a public endpoint that doesn't require authentication.
+    """
+    endpoint = f"/corporations/{corp_id}/logo/"
+    return await fetch_public_esi(endpoint)
+
 
 def refresh_token(refresh_token):
     """
@@ -652,24 +721,22 @@ def refresh_token(refresh_token):
     Note:
         Requires ESI_CLIENT_ID and ESI_CLIENT_SECRET environment variables.
     """
-    data = {
-        'grant_type': 'refresh_token',
-        'refresh_token': refresh_token
-    }
-    client_id = os.getenv('ESI_CLIENT_ID')
-    client_secret = os.getenv('ESI_CLIENT_SECRET')
-    response = requests.post('https://login.eveonline.com/v2/oauth/token', data=data, auth=(client_id, client_secret))
+    data = {"grant_type": "refresh_token", "refresh_token": refresh_token}
+    client_id = os.getenv("ESI_CLIENT_ID")
+    client_secret = os.getenv("ESI_CLIENT_SECRET")
+    response = requests.post("https://login.eveonline.com/v2/oauth/token", data=data, auth=(client_id, client_secret))
     if response.status_code == 200:
         token_data = response.json()
-        expires_at = datetime.now(timezone.utc) + timedelta(seconds=token_data['expires_in'])
+        expires_at = datetime.now(timezone.utc) + timedelta(seconds=token_data["expires_in"])
         return {
-            'access_token': token_data['access_token'],
-            'refresh_token': token_data.get('refresh_token', refresh_token),
-            'expires_at': expires_at.isoformat()
+            "access_token": token_data["access_token"],
+            "refresh_token": token_data.get("refresh_token", refresh_token),
+            "expires_at": expires_at.isoformat(),
         }
     else:
         logger.error(f"Failed to refresh token: {response.status_code} - {response.text}")
         return None
+
 
 async def collect_corporation_members(tokens):
     """
@@ -692,11 +759,13 @@ async def collect_corporation_members(tokens):
     corp_members = {}
     for char_id, token_data in tokens.items():
         try:
-            expired = datetime.now(timezone.utc) > datetime.fromisoformat(token_data.get('expires_at', '2000-01-01T00:00:00+00:00'))
+            expired = datetime.now(timezone.utc) > datetime.fromisoformat(
+                token_data.get("expires_at", "2000-01-01T00:00:00+00:00")
+            )
         except:
             expired = True
         if expired:
-            new_token = refresh_token(token_data['refresh_token'])
+            new_token = refresh_token(token_data["refresh_token"])
             if new_token:
                 token_data.update(new_token)
                 save_tokens(tokens)
@@ -704,20 +773,21 @@ async def collect_corporation_members(tokens):
                 logger.warning(f"Failed to refresh token for {token_data['name']}")
                 continue
 
-        access_token = token_data['access_token']
-        char_name = token_data['name']
+        access_token = token_data["access_token"]
+        char_name = token_data["name"]
 
         # Fetch basic character data to get corporation
         char_data = await fetch_character_data(char_id, access_token)
         if char_data:
             await update_character_in_wp(char_id, char_data)
-            corp_id = char_data.get('corporation_id')
+            corp_id = char_data.get("corporation_id")
             if corp_id:
                 if corp_id not in corp_members:
                     corp_members[corp_id] = []
                 corp_members[corp_id].append((char_id, access_token, char_name))
 
     return corp_members
+
 
 def parse_arguments() -> argparse.Namespace:
     """
@@ -738,22 +808,23 @@ def parse_arguments() -> argparse.Namespace:
         --characters: Fetch character data
         --all: Fetch all data types (default)
     """
-    parser = argparse.ArgumentParser(description='Fetch EVE Online data from ESI API')
-    parser.add_argument('--contracts', action='store_true', help='Fetch contracts data')
-    parser.add_argument('--planets', action='store_true', help='Fetch planets data')
-    parser.add_argument('--blueprints', action='store_true', help='Fetch blueprints data')
-    parser.add_argument('--skills', action='store_true', help='Fetch skills data')
-    parser.add_argument('--corporations', action='store_true', help='Fetch corporation data')
-    parser.add_argument('--characters', action='store_true', help='Fetch character data')
-    parser.add_argument('--all', action='store_true', help='Fetch all data (default)')
-    
+    parser = argparse.ArgumentParser(description="Fetch EVE Online data from ESI API")
+    parser.add_argument("--contracts", action="store_true", help="Fetch contracts data")
+    parser.add_argument("--planets", action="store_true", help="Fetch planets data")
+    parser.add_argument("--blueprints", action="store_true", help="Fetch blueprints data")
+    parser.add_argument("--skills", action="store_true", help="Fetch skills data")
+    parser.add_argument("--corporations", action="store_true", help="Fetch corporation data")
+    parser.add_argument("--characters", action="store_true", help="Fetch character data")
+    parser.add_argument("--all", action="store_true", help="Fetch all data (default)")
+
     args = parser.parse_args()
-    
+
     # If no specific flags set, default to --all
     if not any([args.contracts, args.planets, args.blueprints, args.skills, args.corporations, args.characters]):
         args.all = True
-    
+
     return args
+
 
 def clear_log_file() -> None:
     """
@@ -762,8 +833,9 @@ def clear_log_file() -> None:
     Truncates the log file to ensure clean logging output for each execution,
     preventing log files from growing indefinitely.
     """
-    with open(LOG_FILE, 'w') as f:
+    with open(LOG_FILE, "w") as f:
         f.truncate(0)
+
 
 def initialize_caches() -> Tuple[Dict[str, Any], Dict[str, Any], Dict[str, Any], Dict[str, Any], Dict[str, Any]]:
     """
@@ -784,6 +856,7 @@ def initialize_caches() -> Tuple[Dict[str, Any], Dict[str, Any], Dict[str, Any],
     wp_post_id_cache = load_wp_post_id_cache()
     return blueprint_cache, location_cache, structure_cache, failed_structures, wp_post_id_cache
 
+
 def get_allowed_entities(corp_members: Dict[int, List[Tuple[int, str, str]]]) -> Tuple[set, set]:
     """
     Define allowed corporations and issuers for contract filtering.
@@ -803,13 +876,20 @@ def get_allowed_entities(corp_members: Dict[int, List[Tuple[int, str, str]]]) ->
     """
     allowed_corp_ids = {98092220}  # No Mercy Incorporated
     allowed_issuer_ids = {
-        char_id for corp_id, members in corp_members.items()
+        char_id
+        for corp_id, members in corp_members.items()
         if corp_id == 98092220  # No Mercy Incorporated
         for char_id, access_token, char_name in members
     }
     return allowed_corp_ids, allowed_issuer_ids
 
-async def process_all_data(corp_members: Dict[int, List[Tuple[int, str, str]]], caches: Tuple[Dict[str, Any], ...], args: argparse.Namespace, tokens: Dict[str, Any]) -> None:
+
+async def process_all_data(
+    corp_members: Dict[int, List[Tuple[int, str, str]]],
+    caches: Tuple[Dict[str, Any], ...],
+    args: argparse.Namespace,
+    tokens: Dict[str, Any],
+) -> None:
     """
     Process all character data based on command line arguments.
 
@@ -827,11 +907,21 @@ async def process_all_data(corp_members: Dict[int, List[Tuple[int, str, str]]], 
         Corporation data is now handled separately in corporation_processor.py.
     """
     blueprint_cache, location_cache, structure_cache, failed_structures, wp_post_id_cache = caches
-    
+
     # Process individual character data (skills, blueprints, planets, contracts)
     for char_id, token_data in tokens.items():
         if args.all or args.characters or args.skills or args.blueprints or args.planets or args.contracts:
-            await process_character_data(char_id, token_data, wp_post_id_cache, blueprint_cache, location_cache, structure_cache, failed_structures, args)
+            await process_character_data(
+                char_id,
+                token_data,
+                wp_post_id_cache,
+                blueprint_cache,
+                location_cache,
+                structure_cache,
+                failed_structures,
+                args,
+            )
+
 
 async def main() -> None:
     """
@@ -866,6 +956,7 @@ async def main() -> None:
 
     await process_all_data(corp_members, caches, args, tokens)
 
+
 async def fetch_type_icon(type_id, size=512):
     """
     Fetch type icon URL from images.evetech.net with fallback.
@@ -884,8 +975,8 @@ async def fetch_type_icon(type_id, size=512):
         Tests icon availability with HEAD requests to avoid broken images.
     """
     # Try the 'bp' variation first for blueprints, then fallback to regular icon
-    variations = ['bp', 'icon']
-    
+    variations = ["bp", "icon"]
+
     sess = await get_session()
     for variation in variations:
         icon_url = f"https://images.evetech.net/types/{type_id}/{variation}?size={size}"
@@ -896,7 +987,7 @@ async def fetch_type_icon(type_id, size=512):
                     return icon_url
         except:
             continue
-    
+
     # If no icon found, return placeholder
     return f"https://via.placeholder.com/{size}x{size}/cccccc/000000?text=No+Icon"
 
@@ -913,6 +1004,7 @@ def save_failed_structures(failed_structures: Dict[str, Any]) -> None:
     """
     save_cache(FAILED_STRUCTURES_FILE, failed_structures)
 
+
 def cleanup_blueprint_posts() -> None:
     """
     Clean up blueprint posts that don't match filtering criteria.
@@ -925,40 +1017,45 @@ def cleanup_blueprint_posts() -> None:
         Currently hardcoded to only allow No Mercy Incorporated corporation blueprints.
     """
     logger.info("Cleaning up blueprint posts...")
-    
-    response = requests.get(f"{WP_BASE_URL}/wp-json/wp/v2/eve_blueprint", auth=get_wp_auth(), params={'per_page': WP_PER_PAGE})
+
+    response = requests.get(
+        f"{WP_BASE_URL}/wp-json/wp/v2/eve_blueprint", auth=get_wp_auth(), params={"per_page": WP_PER_PAGE}
+    )
     if response.status_code == 200:
         blueprints = response.json()
         for bp in blueprints:
-            meta = bp.get('meta', {})
-            quantity = meta.get('_eve_bp_quantity', -1)
-            owner_id = meta.get('_eve_bp_owner_id')
-            source = meta.get('_eve_bp_source', '')
-            char_id = meta.get('_eve_char_id')
-            
+            meta = bp.get("meta", {})
+            quantity = meta.get("_eve_bp_quantity", -1)
+            owner_id = meta.get("_eve_bp_owner_id")
+            source = meta.get("_eve_bp_source", "")
+            char_id = meta.get("_eve_char_id")
+
             # Remove BPCs (we only want to track BPOs now)
             if quantity != -1:
-                bp_id = meta.get('_eve_bp_item_id')
+                bp_id = meta.get("_eve_bp_item_id")
                 logger.info(f"Deleting BPC (quantity={quantity}): {bp_id}")
-                delete_wp_post('eve_blueprint', bp['id'])
+                delete_wp_post("eve_blueprint", bp["id"])
                 continue
-            
+
             # If it's from a corporation, check if it's No Mercy incorporated
-            if owner_id and source.startswith('corp_'):
+            if owner_id and source.startswith("corp_"):
                 # We need to check if this corp_id belongs to No Mercy incorporated
-                corp_response = requests.get(f"{WP_BASE_URL}/wp-json/wp/v2/eve_corporation?meta_key=_eve_corp_id&meta_value={owner_id}", auth=get_wp_auth())
+                corp_response = requests.get(
+                    f"{WP_BASE_URL}/wp-json/wp/v2/eve_corporation?meta_key=_eve_corp_id&meta_value={owner_id}",
+                    auth=get_wp_auth(),
+                )
                 if corp_response.status_code == 200:
                     corp_posts = corp_response.json()
                     if not corp_posts:  # Corporation not found in our records
-                        bp_id = bp.get('meta', {}).get('_eve_bp_item_id')
+                        bp_id = bp.get("meta", {}).get("_eve_bp_item_id")
                         logger.info(f"Deleting blueprint from unknown corporation: {bp_id}")
-                        delete_wp_post('eve_blueprint', bp['id'])
+                        delete_wp_post("eve_blueprint", bp["id"])
                     else:
-                        corp_name = corp_posts[0].get('title', {}).get('rendered', '')
-                        if corp_name.lower() != 'no mercy incorporated':
-                            bp_id = bp.get('meta', {}).get('_eve_bp_item_id')
+                        corp_name = corp_posts[0].get("title", {}).get("rendered", "")
+                        if corp_name.lower() != "no mercy incorporated":
+                            bp_id = bp.get("meta", {}).get("_eve_bp_item_id")
                             logger.info(f"Deleting blueprint from {corp_name}: {bp_id}")
-                            delete_wp_post('eve_blueprint', bp['id'])
+                            delete_wp_post("eve_blueprint", bp["id"])
             # If it's from character assets/industry jobs and we don't have a char_id, it might be orphaned
             elif not char_id and not owner_id:
                 # These are from the direct blueprint endpoints - check if they're corporation blueprints
@@ -982,11 +1079,12 @@ def cleanup_old_posts(allowed_corp_ids, allowed_issuer_ids):
         maintain clean, relevant content in WordPress.
     """
     logger.info("Starting cleanup of old posts...")
-    
+
     cleanup_contract_posts(allowed_corp_ids, allowed_issuer_ids)
     cleanup_blueprint_posts()
-    
+
     logger.info("Cleanup completed.")
+
 
 if __name__ == "__main__":
     asyncio.run(main())
