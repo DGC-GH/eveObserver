@@ -153,10 +153,14 @@ async def update_planet_in_wp(planet_id: int, planet_data: Dict[str, Any], char_
             "_eve_char_id": char_id,
             "_eve_planet_type": planet_data.get("type_id"),
             "_eve_planet_name": planet_data.get("name"),
-            "_eve_planet_solar_system_id": planet_data.get("solar_system_id"),
             "_eve_last_updated": datetime.now(timezone.utc).isoformat(),
         },
     }
+
+    # Add solar_system_id only if it's not None
+    solar_system_id = planet_data.get("solar_system_id")
+    if solar_system_id is not None:
+        post_data["meta"]["_eve_planet_solar_system_id"] = solar_system_id
 
     # Add planet details if available
     if "pins" in planet_data:
@@ -304,6 +308,7 @@ async def process_character_planets(char_id: int, access_token: str, char_name: 
         for planet in planets:
             planet_id = planet.get("planet_id")
             if planet_id:
+                planet_id = int(planet_id)  # Ensure it's an integer
                 planet_details = await fetch_planet_details(char_id, planet_id, access_token)
                 if planet_details:
                     await update_planet_in_wp(planet_id, planet_details, char_id)
@@ -483,7 +488,7 @@ async def process_character_blueprints_from_assets(
     """
     char_assets = await fetch_character_assets(char_id, access_token)
     if char_assets:
-        asset_blueprints = extract_blueprints_from_assets(char_assets, "char", char_id, access_token)
+        asset_blueprints = await extract_blueprints_from_assets(char_assets, "char", char_id, access_token)
         if asset_blueprints:
             logger.info(f"Character asset blueprints: {len(asset_blueprints)} items")
             # Process blueprints in parallel

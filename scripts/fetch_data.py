@@ -30,7 +30,7 @@ from cache_manager import (
     load_structure_cache,
     load_wp_post_id_cache,
 )
-from character_processor import update_character_skills_in_wp, update_planet_in_wp
+from character_processor import fetch_character_skills, process_character_planets, update_character_skills_in_wp
 from config import CACHE_DIR, LOG_FILE, LOG_LEVEL
 from contract_processor import (
     cleanup_contract_posts,
@@ -43,6 +43,7 @@ from esi_oauth import load_tokens, save_tokens
 async def collect_corporation_members(tokens):
     corp_members = {}
     for char_id, token_data in tokens.items():
+        char_id = int(char_id)  # Ensure char_id is an integer
         try:
             expired = datetime.now(timezone.utc) > datetime.fromisoformat(
                 token_data.get("expires_at", "2000-01-01T00:00:00+00:00")
@@ -111,7 +112,9 @@ async def process_character_data(
 
     # Update character skills if requested
     if args.all or args.skills:
-        await update_character_skills_in_wp(char_id, access_token)
+        skills_data = await fetch_character_skills(char_id, access_token)
+        if skills_data:
+            await update_character_skills_in_wp(char_id, skills_data)
 
     # Process blueprints if requested
     if args.all or args.blueprints:
@@ -121,7 +124,7 @@ async def process_character_data(
 
     # Process planets if requested
     if args.all or args.planets:
-        await update_planet_in_wp(char_id, access_token)
+        await process_character_planets(char_id, access_token, char_name)
 
     # Process contracts if requested
     if args.all or args.contracts:
@@ -179,7 +182,7 @@ async def process_character_blueprints(
     # Get blueprints from assets
     assets = await fetch_esi(f"/characters/{char_id}/assets", char_id, access_token)
     if assets:
-        asset_blueprints = extract_blueprints_from_assets(assets, "char", char_id, access_token)
+        asset_blueprints = await extract_blueprints_from_assets(assets, "char", char_id, access_token)
         for bp in asset_blueprints:
             await update_blueprint_from_asset_in_wp(
                 bp,
@@ -341,6 +344,7 @@ async def process_all_data(
 
     # Process individual character data (skills, blueprints, planets, contracts)
     for char_id, token_data in tokens.items():
+        char_id = int(char_id)  # Ensure char_id is an integer
         if args.all or args.characters or args.skills or args.blueprints or args.planets or args.contracts:
             await process_character_data(
                 char_id,

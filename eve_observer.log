@@ -1,2 +1,1118 @@
-2025-09-23 20:22:32,347 - ERROR - ESI_CLIENT_ID and ESI_CLIENT_SECRET must be set in .env file
-2025-09-23 20:22:32,347 - ERROR - Get them from https://developers.eveonline.com/
+2025-09-23 21:11:12,254 - INFO - ESI authenticated fetch successful: /characters/90020513/ in 0.22s
+2025-09-23 21:11:12,254 - INFO - _fetch_esi_with_retry completed in 0.221s
+2025-09-23 21:11:12,639 - INFO - WordPress GET successful: /wp/v2/eve_character?slug=character-90020513 in 0.38s
+2025-09-23 21:11:12,639 - INFO - wp_request completed in 0.385s
+2025-09-23 21:11:12,673 - INFO - ESI public fetch successful: /characters/90020513/portrait/ in 0.03s
+2025-09-23 21:11:12,674 - INFO - _fetch_esi_with_retry completed in 0.034s
+2025-09-23 21:11:12,674 - INFO - Portrait unchanged for character: Mr FiLiN
+2025-09-23 21:11:12,755 - INFO - WordPress PUT successful: /wp/v2/eve_character/56 in 0.08s
+2025-09-23 21:11:12,756 - INFO - wp_request completed in 0.082s
+2025-09-23 21:11:12,756 - INFO - Updated character: Mr FiLiN
+2025-09-23 21:11:12,756 - INFO - EVENT: CHARACTER_UPDATE | USER: 90020513 | DETAILS: {'name': 'Mr FiLiN', 'post_id': 56}
+2025-09-23 21:11:12,805 - INFO - ESI authenticated fetch successful: /characters/90045731/ in 0.05s
+2025-09-23 21:11:12,805 - INFO - _fetch_esi_with_retry completed in 0.049s
+2025-09-23 21:11:12,896 - INFO - WordPress GET successful: /wp/v2/eve_character?slug=character-90045731 in 0.09s
+2025-09-23 21:11:12,896 - INFO - wp_request completed in 0.092s
+2025-09-23 21:11:12,973 - INFO - ESI public fetch successful: /characters/90045731/portrait/ in 0.08s
+2025-09-23 21:11:12,973 - INFO - _fetch_esi_with_retry completed in 0.076s
+2025-09-23 21:11:12,973 - INFO - Portrait unchanged for character: Dr FiLiN
+2025-09-23 21:11:13,064 - INFO - WordPress PUT successful: /wp/v2/eve_character/85 in 0.09s
+2025-09-23 21:11:13,064 - INFO - wp_request completed in 0.091s
+2025-09-23 21:11:13,064 - INFO - Updated character: Dr FiLiN
+2025-09-23 21:11:13,065 - INFO - EVENT: CHARACTER_UPDATE | USER: 90045731 | DETAILS: {'name': 'Dr FiLiN', 'post_id': 85}
+2025-09-23 21:11:13,161 - INFO - ESI authenticated fetch successful: /characters/90522765/ in 0.10s
+2025-09-23 21:11:13,162 - INFO - _fetch_esi_with_retry completed in 0.097s
+2025-09-23 21:11:13,233 - INFO - WordPress GET successful: /wp/v2/eve_character?slug=character-90522765 in 0.07s
+2025-09-23 21:11:13,233 - INFO - wp_request completed in 0.072s
+2025-09-23 21:11:13,297 - INFO - ESI public fetch successful: /characters/90522765/portrait/ in 0.06s
+2025-09-23 21:11:13,297 - INFO - _fetch_esi_with_retry completed in 0.064s
+2025-09-23 21:11:13,298 - INFO - Portrait unchanged for character: Orev Khazar
+2025-09-23 21:11:13,399 - INFO - WordPress PUT successful: /wp/v2/eve_character/86 in 0.10s
+2025-09-23 21:11:13,400 - INFO - wp_request completed in 0.102s
+2025-09-23 21:11:13,400 - INFO - Updated character: Orev Khazar
+2025-09-23 21:11:13,400 - INFO - EVENT: CHARACTER_UPDATE | USER: 90522765 | DETAILS: {'name': 'Orev Khazar', 'post_id': 86}
+2025-09-23 21:11:13,475 - INFO - ESI authenticated fetch successful: /characters/90162477/ in 0.07s
+2025-09-23 21:11:13,475 - INFO - _fetch_esi_with_retry completed in 0.075s
+2025-09-23 21:11:13,570 - INFO - WordPress GET successful: /wp/v2/eve_character?slug=character-90162477 in 0.09s
+2025-09-23 21:11:13,570 - INFO - wp_request completed in 0.095s
+2025-09-23 21:11:13,727 - INFO - ESI public fetch successful: /characters/90162477/portrait/ in 0.16s
+2025-09-23 21:11:13,728 - INFO - _fetch_esi_with_retry completed in 0.157s
+2025-09-23 21:11:13,728 - INFO - Portrait unchanged for character: Sir FiLiN
+2025-09-23 21:11:13,805 - INFO - WordPress PUT successful: /wp/v2/eve_character/87 in 0.08s
+2025-09-23 21:11:13,805 - INFO - wp_request completed in 0.076s
+2025-09-23 21:11:13,805 - INFO - Updated character: Sir FiLiN
+2025-09-23 21:11:13,805 - INFO - EVENT: CHARACTER_UPDATE | USER: 90162477 | DETAILS: {'name': 'Sir FiLiN', 'post_id': 87}
+2025-09-23 21:11:13,875 - INFO - ESI authenticated fetch successful: /characters/95937458/ in 0.07s
+2025-09-23 21:11:13,875 - INFO - _fetch_esi_with_retry completed in 0.070s
+2025-09-23 21:11:13,951 - INFO - WordPress GET successful: /wp/v2/eve_character?slug=character-95937458 in 0.08s
+2025-09-23 21:11:13,952 - INFO - wp_request completed in 0.077s
+2025-09-23 21:11:14,022 - INFO - ESI public fetch successful: /characters/95937458/portrait/ in 0.07s
+2025-09-23 21:11:14,023 - INFO - _fetch_esi_with_retry completed in 0.071s
+2025-09-23 21:11:14,023 - INFO - Portrait unchanged for character: Filin Khan
+2025-09-23 21:11:14,102 - INFO - WordPress PUT successful: /wp/v2/eve_character/88 in 0.08s
+2025-09-23 21:11:14,103 - INFO - wp_request completed in 0.079s
+2025-09-23 21:11:14,103 - INFO - Updated character: Filin Khan
+2025-09-23 21:11:14,103 - INFO - EVENT: CHARACTER_UPDATE | USER: 95937458 | DETAILS: {'name': 'Filin Khan', 'post_id': 88}
+2025-09-23 21:11:14,213 - INFO - ESI authenticated fetch successful: /characters/95985116/ in 0.11s
+2025-09-23 21:11:14,213 - INFO - _fetch_esi_with_retry completed in 0.110s
+2025-09-23 21:11:14,288 - INFO - WordPress GET successful: /wp/v2/eve_character?slug=character-95985116 in 0.07s
+2025-09-23 21:11:14,288 - INFO - wp_request completed in 0.075s
+2025-09-23 21:11:14,347 - INFO - ESI public fetch successful: /characters/95985116/portrait/ in 0.06s
+2025-09-23 21:11:14,348 - INFO - _fetch_esi_with_retry completed in 0.059s
+2025-09-23 21:11:14,348 - INFO - Portrait unchanged for character: Corvin Khan
+2025-09-23 21:11:14,448 - INFO - WordPress PUT successful: /wp/v2/eve_character/89 in 0.10s
+2025-09-23 21:11:14,449 - INFO - wp_request completed in 0.101s
+2025-09-23 21:11:14,449 - INFO - Updated character: Corvin Khan
+2025-09-23 21:11:14,449 - INFO - EVENT: CHARACTER_UPDATE | USER: 95985116 | DETAILS: {'name': 'Corvin Khan', 'post_id': 89}
+2025-09-23 21:11:14,510 - INFO - ESI authenticated fetch successful: /characters/1316070855/ in 0.06s
+2025-09-23 21:11:14,510 - INFO - _fetch_esi_with_retry completed in 0.060s
+2025-09-23 21:11:14,595 - INFO - WordPress GET successful: /wp/v2/eve_character?slug=character-1316070855 in 0.08s
+2025-09-23 21:11:14,595 - INFO - wp_request completed in 0.085s
+2025-09-23 21:11:14,734 - INFO - ESI public fetch successful: /characters/1316070855/portrait/ in 0.14s
+2025-09-23 21:11:14,734 - INFO - _fetch_esi_with_retry completed in 0.139s
+2025-09-23 21:11:14,734 - INFO - Portrait unchanged for character: FiLiN Core
+2025-09-23 21:11:14,865 - INFO - WordPress PUT successful: /wp/v2/eve_character/91 in 0.13s
+2025-09-23 21:11:14,866 - INFO - wp_request completed in 0.131s
+2025-09-23 21:11:14,866 - INFO - Updated character: FiLiN Core
+2025-09-23 21:11:14,866 - INFO - EVENT: CHARACTER_UPDATE | USER: 1316070855 | DETAILS: {'name': 'FiLiN Core', 'post_id': 91}
+2025-09-23 21:11:14,901 - INFO - ESI authenticated fetch successful: /characters/91594850/ in 0.03s
+2025-09-23 21:11:14,902 - INFO - _fetch_esi_with_retry completed in 0.035s
+2025-09-23 21:11:14,994 - INFO - WordPress GET successful: /wp/v2/eve_character?slug=character-91594850 in 0.09s
+2025-09-23 21:11:14,994 - INFO - wp_request completed in 0.092s
+2025-09-23 21:11:15,082 - INFO - ESI public fetch successful: /characters/91594850/portrait/ in 0.09s
+2025-09-23 21:11:15,083 - INFO - _fetch_esi_with_retry completed in 0.088s
+2025-09-23 21:11:15,083 - INFO - Portrait unchanged for character: Raven Madyar
+2025-09-23 21:11:15,160 - INFO - WordPress PUT successful: /wp/v2/eve_character/92 in 0.08s
+2025-09-23 21:11:15,161 - INFO - wp_request completed in 0.078s
+2025-09-23 21:11:15,161 - INFO - Updated character: Raven Madyar
+2025-09-23 21:11:15,162 - INFO - EVENT: CHARACTER_UPDATE | USER: 91594850 | DETAILS: {'name': 'Raven Madyar', 'post_id': 92}
+2025-09-23 21:11:15,259 - INFO - ESI authenticated fetch successful: /characters/90483242/ in 0.10s
+2025-09-23 21:11:15,259 - INFO - _fetch_esi_with_retry completed in 0.097s
+2025-09-23 21:11:15,340 - INFO - WordPress GET successful: /wp/v2/eve_character?slug=character-90483242 in 0.08s
+2025-09-23 21:11:15,341 - INFO - wp_request completed in 0.081s
+2025-09-23 21:11:15,409 - INFO - ESI public fetch successful: /characters/90483242/portrait/ in 0.07s
+2025-09-23 21:11:15,409 - INFO - _fetch_esi_with_retry completed in 0.068s
+2025-09-23 21:11:15,409 - INFO - Portrait unchanged for character: Vran Ruthen
+2025-09-23 21:11:15,493 - INFO - WordPress PUT successful: /wp/v2/eve_character/93 in 0.08s
+2025-09-23 21:11:15,493 - INFO - wp_request completed in 0.084s
+2025-09-23 21:11:15,493 - INFO - Updated character: Vran Ruthen
+2025-09-23 21:11:15,493 - INFO - EVENT: CHARACTER_UPDATE | USER: 90483242 | DETAILS: {'name': 'Vran Ruthen', 'post_id': 93}
+2025-09-23 21:11:15,493 - INFO - Corporation collection completed in 3.46s
+2025-09-23 21:11:15,493 - INFO - Starting cleanup of old posts...
+2025-09-23 21:11:15,493 - INFO - Cleaning up contract posts...
+2025-09-23 21:11:15,590 - INFO - WordPress GET successful: /wp/v2/eve_contract in 0.10s
+2025-09-23 21:11:15,590 - INFO - wp_request completed in 0.097s
+2025-09-23 21:11:15,590 - INFO - Cleaning up blueprint posts...
+2025-09-23 21:11:15,787 - INFO - Cleanup completed.
+2025-09-23 21:11:15,788 - INFO - Post cleanup completed in 0.29s
+2025-09-23 21:11:15,788 - INFO - Trying to fetch corporation data for corp 98644650 using Mr FiLiN's token...
+2025-09-23 21:11:15,822 - INFO - ESI authenticated fetch successful: /corporations/98644650/ in 0.03s
+2025-09-23 21:11:15,823 - INFO - _fetch_esi_with_retry completed in 0.035s
+2025-09-23 21:11:15,823 - INFO - Successfully fetched corporation data using Mr FiLiN's token
+2025-09-23 21:11:15,823 - INFO - Skipping corporation: Kybernauts (only processing ['no mercy incorporated'])
+2025-09-23 21:11:15,823 - INFO - Using Dr FiLiN's CEO token for No Mercy Incorporated
+2025-09-23 21:11:15,859 - INFO - ESI authenticated fetch successful: /corporations/98092220/ in 0.04s
+2025-09-23 21:11:15,860 - INFO - _fetch_esi_with_retry completed in 0.037s
+2025-09-23 21:11:15,945 - INFO - WordPress GET successful: /wp/v2/eve_corporation?slug=corporation-98092220 in 0.08s
+2025-09-23 21:11:15,945 - INFO - wp_request completed in 0.085s
+2025-09-23 21:11:16,019 - INFO - WordPress PUT successful: /wp/v2/eve_corporation/248 in 0.07s
+2025-09-23 21:11:16,020 - INFO - wp_request completed in 0.074s
+2025-09-23 21:11:16,020 - INFO - Updated corporation: No Mercy Incorporated
+2025-09-23 21:11:16,020 - INFO - Fetching corporation blueprints for 98092220...
+2025-09-23 21:11:16,088 - INFO - ESI authenticated fetch successful: /corporations/98092220/blueprints/ in 0.07s
+2025-09-23 21:11:16,088 - INFO - _fetch_esi_with_retry completed in 0.069s
+2025-09-23 21:11:16,089 - INFO - Corporation blueprints: 853 total, 341 BPOs
+2025-09-23 21:11:16,089 - INFO - Starting async processing of 341 blueprints
+2025-09-23 21:12:17,517 - ERROR - Failed to update blueprint 1023121750606: 404 - {"code":"rest_no_route","message":"No route was found matching the URL and request method.","data":{"status":404}}
+2025-09-23 21:12:17,785 - ERROR - Failed to update blueprint 1045441248880: 404 - {"code":"rest_no_route","message":"No route was found matching the URL and request method.","data":{"status":404}}
+2025-09-23 21:12:17,927 - ERROR - Failed to update blueprint 1045441200934: 404 - {"code":"rest_no_route","message":"No route was found matching the URL and request method.","data":{"status":404}}
+2025-09-23 21:12:18,077 - ERROR - Failed to update blueprint 1045441200093: 404 - {"code":"rest_no_route","message":"No route was found matching the URL and request method.","data":{"status":404}}
+2025-09-23 21:12:18,304 - ERROR - Failed to update blueprint 1045441251310: 404 - {"code":"rest_no_route","message":"No route was found matching the URL and request method.","data":{"status":404}}
+2025-09-23 21:12:18,444 - ERROR - Failed to update blueprint 1045441142350: 404 - {"code":"rest_no_route","message":"No route was found matching the URL and request method.","data":{"status":404}}
+2025-09-23 21:12:18,586 - ERROR - Failed to update blueprint 1045441196207: 404 - {"code":"rest_no_route","message":"No route was found matching the URL and request method.","data":{"status":404}}
+2025-09-23 21:12:18,800 - ERROR - Failed to update blueprint 1045441197718: 404 - {"code":"rest_no_route","message":"No route was found matching the URL and request method.","data":{"status":404}}
+2025-09-23 21:12:18,939 - ERROR - Failed to update blueprint 1023121749544: 404 - {"code":"rest_no_route","message":"No route was found matching the URL and request method.","data":{"status":404}}
+2025-09-23 21:12:19,084 - ERROR - Failed to update blueprint 1045441247943: 404 - {"code":"rest_no_route","message":"No route was found matching the URL and request method.","data":{"status":404}}
+2025-09-23 21:12:19,318 - ERROR - Failed to update blueprint 1045441259441: 404 - {"code":"rest_no_route","message":"No route was found matching the URL and request method.","data":{"status":404}}
+2025-09-23 21:12:19,466 - ERROR - Failed to update blueprint 1045441143276: 404 - {"code":"rest_no_route","message":"No route was found matching the URL and request method.","data":{"status":404}}
+2025-09-23 21:12:19,612 - ERROR - Failed to update blueprint 1045441250647: 404 - {"code":"rest_no_route","message":"No route was found matching the URL and request method.","data":{"status":404}}
+2025-09-23 21:12:19,841 - ERROR - Failed to update blueprint 1045441252767: 404 - {"code":"rest_no_route","message":"No route was found matching the URL and request method.","data":{"status":404}}
+2025-09-23 21:12:19,993 - ERROR - Failed to update blueprint 1045441203945: 404 - {"code":"rest_no_route","message":"No route was found matching the URL and request method.","data":{"status":404}}
+2025-09-23 21:12:20,134 - ERROR - Failed to update blueprint 1045441194700: 404 - {"code":"rest_no_route","message":"No route was found matching the URL and request method.","data":{"status":404}}
+2025-09-23 21:12:20,364 - ERROR - Failed to update blueprint 1045441195512: 404 - {"code":"rest_no_route","message":"No route was found matching the URL and request method.","data":{"status":404}}
+2025-09-23 21:12:20,515 - ERROR - Failed to update blueprint 1045441177897: 404 - {"code":"rest_no_route","message":"No route was found matching the URL and request method.","data":{"status":404}}
+2025-09-23 21:12:20,707 - ERROR - Failed to update blueprint 1045441201642: 404 - {"code":"rest_no_route","message":"No route was found matching the URL and request method.","data":{"status":404}}
+2025-09-23 21:12:20,952 - ERROR - Failed to update blueprint 1023593233897: 404 - {"code":"rest_no_route","message":"No route was found matching the URL and request method.","data":{"status":404}}
+2025-09-23 21:12:21,104 - ERROR - Failed to update blueprint 1049576540350: 404 - {"code":"rest_no_route","message":"No route was found matching the URL and request method.","data":{"status":404}}
+2025-09-23 21:12:21,327 - ERROR - Failed to update blueprint 1049576048517: 404 - {"code":"rest_no_route","message":"No route was found matching the URL and request method.","data":{"status":404}}
+2025-09-23 21:12:21,612 - ERROR - Failed to update blueprint 1045441362088: 404 - {"code":"rest_no_route","message":"No route was found matching the URL and request method.","data":{"status":404}}
+2025-09-23 21:12:21,851 - ERROR - Failed to update blueprint 1045441360873: 404 - {"code":"rest_no_route","message":"No route was found matching the URL and request method.","data":{"status":404}}
+2025-09-23 21:12:22,086 - ERROR - Failed to update blueprint 1045441366482: 404 - {"code":"rest_no_route","message":"No route was found matching the URL and request method.","data":{"status":404}}
+2025-09-23 21:12:22,284 - ERROR - Failed to update blueprint 1045441359482: 404 - {"code":"rest_no_route","message":"No route was found matching the URL and request method.","data":{"status":404}}
+2025-09-23 21:12:22,495 - ERROR - Failed to update blueprint 1045441358768: 404 - {"code":"rest_no_route","message":"No route was found matching the URL and request method.","data":{"status":404}}
+2025-09-23 21:12:22,618 - ERROR - Failed to update blueprint 1049576045884: 404 - {"code":"rest_no_route","message":"No route was found matching the URL and request method.","data":{"status":404}}
+2025-09-23 21:12:22,897 - ERROR - Failed to update blueprint 1049576019604: 404 - {"code":"rest_no_route","message":"No route was found matching the URL and request method.","data":{"status":404}}
+2025-09-23 21:12:23,027 - ERROR - Failed to update blueprint 1049576546106: 404 - {"code":"rest_no_route","message":"No route was found matching the URL and request method.","data":{"status":404}}
+2025-09-23 21:12:23,173 - ERROR - Failed to update blueprint 1049576548631: 404 - {"code":"rest_no_route","message":"No route was found matching the URL and request method.","data":{"status":404}}
+2025-09-23 21:12:23,320 - ERROR - Failed to update blueprint 1049576044342: 404 - {"code":"rest_no_route","message":"No route was found matching the URL and request method.","data":{"status":404}}
+2025-09-23 21:12:23,532 - ERROR - Failed to update blueprint 1049576555733: 404 - {"code":"rest_no_route","message":"No route was found matching the URL and request method.","data":{"status":404}}
+2025-09-23 21:12:23,710 - ERROR - Failed to update blueprint 1049576547463: 404 - {"code":"rest_no_route","message":"No route was found matching the URL and request method.","data":{"status":404}}
+2025-09-23 21:12:23,845 - ERROR - Failed to update blueprint 1049576541669: 404 - {"code":"rest_no_route","message":"No route was found matching the URL and request method.","data":{"status":404}}
+2025-09-23 21:12:24,075 - ERROR - Failed to update blueprint 1049576019228: 404 - {"code":"rest_no_route","message":"No route was found matching the URL and request method.","data":{"status":404}}
+2025-09-23 21:12:24,210 - ERROR - Failed to update blueprint 1049576549259: 404 - {"code":"rest_no_route","message":"No route was found matching the URL and request method.","data":{"status":404}}
+2025-09-23 21:12:24,347 - ERROR - Failed to update blueprint 1049576541010: 404 - {"code":"rest_no_route","message":"No route was found matching the URL and request method.","data":{"status":404}}
+2025-09-23 21:12:24,591 - ERROR - Failed to update blueprint 1049576556736: 404 - {"code":"rest_no_route","message":"No route was found matching the URL and request method.","data":{"status":404}}
+2025-09-23 21:12:24,725 - ERROR - Failed to update blueprint 1049576557386: 404 - {"code":"rest_no_route","message":"No route was found matching the URL and request method.","data":{"status":404}}
+2025-09-23 21:12:24,858 - ERROR - Failed to update blueprint 1049576547988: 404 - {"code":"rest_no_route","message":"No route was found matching the URL and request method.","data":{"status":404}}
+2025-09-23 21:12:25,093 - ERROR - Failed to update blueprint 1049576047227: 404 - {"code":"rest_no_route","message":"No route was found matching the URL and request method.","data":{"status":404}}
+2025-09-23 21:12:25,254 - ERROR - Failed to update blueprint 1049576559320: 404 - {"code":"rest_no_route","message":"No route was found matching the URL and request method.","data":{"status":404}}
+2025-09-23 21:12:25,387 - ERROR - Failed to update blueprint 1049576558540: 404 - {"code":"rest_no_route","message":"No route was found matching the URL and request method.","data":{"status":404}}
+2025-09-23 21:12:25,388 - INFO - ESI public fetch successful: /universe/types/81072 in 8.13s
+2025-09-23 21:12:25,623 - ERROR - Failed to update blueprint 1045441367815: 404 - {"code":"rest_no_route","message":"No route was found matching the URL and request method.","data":{"status":404}}
+2025-09-23 21:12:25,765 - ERROR - Failed to update blueprint 1045647832058: 404 - {"code":"rest_no_route","message":"No route was found matching the URL and request method.","data":{"status":404}}
+2025-09-23 21:12:25,909 - ERROR - Failed to update blueprint 1048854337154: 404 - {"code":"rest_no_route","message":"No route was found matching the URL and request method.","data":{"status":404}}
+2025-09-23 21:12:26,123 - ERROR - Failed to update blueprint 1048854331940: 404 - {"code":"rest_no_route","message":"No route was found matching the URL and request method.","data":{"status":404}}
+2025-09-23 21:12:26,258 - ERROR - Failed to update blueprint 1045647832993: 404 - {"code":"rest_no_route","message":"No route was found matching the URL and request method.","data":{"status":404}}
+2025-09-23 21:12:26,395 - ERROR - Failed to update blueprint 1048854333216: 404 - {"code":"rest_no_route","message":"No route was found matching the URL and request method.","data":{"status":404}}
+2025-09-23 21:12:26,571 - ERROR - Failed to update blueprint 1048854334148: 404 - {"code":"rest_no_route","message":"No route was found matching the URL and request method.","data":{"status":404}}
+2025-09-23 21:12:26,722 - ERROR - Failed to update blueprint 1045441360231: 404 - {"code":"rest_no_route","message":"No route was found matching the URL and request method.","data":{"status":404}}
+2025-09-23 21:12:26,881 - ERROR - Failed to update blueprint 1045647832671: 404 - {"code":"rest_no_route","message":"No route was found matching the URL and request method.","data":{"status":404}}
+2025-09-23 21:12:27,092 - ERROR - Failed to update blueprint 1048854332408: 404 - {"code":"rest_no_route","message":"No route was found matching the URL and request method.","data":{"status":404}}
+2025-09-23 21:12:27,222 - ERROR - Failed to update blueprint 1048854321095: 404 - {"code":"rest_no_route","message":"No route was found matching the URL and request method.","data":{"status":404}}
+2025-09-23 21:12:27,366 - ERROR - Failed to update blueprint 1045640479269: 404 - {"code":"rest_no_route","message":"No route was found matching the URL and request method.","data":{"status":404}}
+2025-09-23 21:12:27,512 - ERROR - Failed to update blueprint 1048853918187: 404 - {"code":"rest_no_route","message":"No route was found matching the URL and request method.","data":{"status":404}}
+2025-09-23 21:12:27,728 - ERROR - Failed to update blueprint 1048853934689: 404 - {"code":"rest_no_route","message":"No route was found matching the URL and request method.","data":{"status":404}}
+2025-09-23 21:12:27,881 - ERROR - Failed to update blueprint 1045441361384: 404 - {"code":"rest_no_route","message":"No route was found matching the URL and request method.","data":{"status":404}}
+2025-09-23 21:12:28,026 - ERROR - Failed to update blueprint 1045640479629: 404 - {"code":"rest_no_route","message":"No route was found matching the URL and request method.","data":{"status":404}}
+2025-09-23 21:12:28,245 - ERROR - Failed to update blueprint 1048853935147: 404 - {"code":"rest_no_route","message":"No route was found matching the URL and request method.","data":{"status":404}}
+2025-09-23 21:12:28,404 - ERROR - Failed to update blueprint 1048853933937: 404 - {"code":"rest_no_route","message":"No route was found matching the URL and request method.","data":{"status":404}}
+2025-09-23 21:12:28,553 - ERROR - Failed to update blueprint 1045640479457: 404 - {"code":"rest_no_route","message":"No route was found matching the URL and request method.","data":{"status":404}}
+2025-09-23 21:12:28,762 - ERROR - Failed to update blueprint 1048853934928: 404 - {"code":"rest_no_route","message":"No route was found matching the URL and request method.","data":{"status":404}}
+2025-09-23 21:12:28,892 - ERROR - Failed to update blueprint 1048755478242: 404 - {"code":"rest_no_route","message":"No route was found matching the URL and request method.","data":{"status":404}}
+2025-09-23 21:12:29,037 - ERROR - Failed to update blueprint 1045441365698: 404 - {"code":"rest_no_route","message":"No route was found matching the URL and request method.","data":{"status":404}}
+2025-09-23 21:12:29,265 - ERROR - Failed to update blueprint 1045647052752: 404 - {"code":"rest_no_route","message":"No route was found matching the URL and request method.","data":{"status":404}}
+2025-09-23 21:12:29,408 - ERROR - Failed to update blueprint 1048793172855: 404 - {"code":"rest_no_route","message":"No route was found matching the URL and request method.","data":{"status":404}}
+2025-09-23 21:12:29,725 - ERROR - Failed to update blueprint 1048793182748: 404 - {"code":"rest_no_route","message":"No route was found matching the URL and request method.","data":{"status":404}}
+2025-09-23 21:12:29,877 - ERROR - Failed to update blueprint 1045647052587: 404 - {"code":"rest_no_route","message":"No route was found matching the URL and request method.","data":{"status":404}}
+2025-09-23 21:12:30,028 - ERROR - Failed to update blueprint 1048755477552: 404 - {"code":"rest_no_route","message":"No route was found matching the URL and request method.","data":{"status":404}}
+2025-09-23 21:12:30,533 - ERROR - Failed to update blueprint 1048793172563: 404 - {"code":"rest_no_route","message":"No route was found matching the URL and request method.","data":{"status":404}}
+2025-09-23 21:12:30,830 - ERROR - Failed to update blueprint 1045627284388: 404 - {"code":"rest_no_route","message":"No route was found matching the URL and request method.","data":{"status":404}}
+2025-09-23 21:12:30,968 - ERROR - Failed to update blueprint 1045647052952: 404 - {"code":"rest_no_route","message":"No route was found matching the URL and request method.","data":{"status":404}}
+2025-09-23 21:12:31,102 - ERROR - Failed to update blueprint 1048755472125: 404 - {"code":"rest_no_route","message":"No route was found matching the URL and request method.","data":{"status":404}}
+2025-09-23 21:12:31,285 - ERROR - Failed to update blueprint 1048753789102: 404 - {"code":"rest_no_route","message":"No route was found matching the URL and request method.","data":{"status":404}}
+2025-09-23 21:12:31,456 - ERROR - Failed to update blueprint 1048755473578: 404 - {"code":"rest_no_route","message":"No route was found matching the URL and request method.","data":{"status":404}}
+2025-09-23 21:12:31,591 - ERROR - Failed to update blueprint 1045640388883: 404 - {"code":"rest_no_route","message":"No route was found matching the URL and request method.","data":{"status":404}}
+2025-09-23 21:12:31,720 - ERROR - Failed to update blueprint 1048755475197: 404 - {"code":"rest_no_route","message":"No route was found matching the URL and request method.","data":{"status":404}}
+2025-09-23 21:12:31,925 - ERROR - Failed to update blueprint 1048755474381: 404 - {"code":"rest_no_route","message":"No route was found matching the URL and request method.","data":{"status":404}}
+2025-09-23 21:12:32,057 - ERROR - Failed to update blueprint 1048534164477: 404 - {"code":"rest_no_route","message":"No route was found matching the URL and request method.","data":{"status":404}}
+2025-09-23 21:12:32,196 - ERROR - Failed to update blueprint 1045640413970: 404 - {"code":"rest_no_route","message":"No route was found matching the URL and request method.","data":{"status":404}}
+2025-09-23 21:12:32,413 - ERROR - Failed to update blueprint 1048755472640: 404 - {"code":"rest_no_route","message":"No route was found matching the URL and request method.","data":{"status":404}}
+2025-09-23 21:12:32,552 - ERROR - Failed to update blueprint 1048755456560: 404 - {"code":"rest_no_route","message":"No route was found matching the URL and request method.","data":{"status":404}}
+2025-09-23 21:12:32,759 - ERROR - Failed to update blueprint 1045540470039: 404 - {"code":"rest_no_route","message":"No route was found matching the URL and request method.","data":{"status":404}}
+2025-09-23 21:12:33,024 - ERROR - Failed to update blueprint 1048534182526: 404 - {"code":"rest_no_route","message":"No route was found matching the URL and request method.","data":{"status":404}}
+2025-09-23 21:12:33,161 - ERROR - Failed to update blueprint 1045640400989: 404 - {"code":"rest_no_route","message":"No route was found matching the URL and request method.","data":{"status":404}}
+2025-09-23 21:12:33,385 - ERROR - Failed to update blueprint 1048755459020: 404 - {"code":"rest_no_route","message":"No route was found matching the URL and request method.","data":{"status":404}}
+2025-09-23 21:12:33,529 - ERROR - Failed to update blueprint 1049576017866: 404 - {"code":"rest_no_route","message":"No route was found matching the URL and request method.","data":{"status":404}}
+2025-09-23 21:12:33,726 - ERROR - Failed to update blueprint 1049576018885: 404 - {"code":"rest_no_route","message":"No route was found matching the URL and request method.","data":{"status":404}}
+2025-09-23 21:12:33,910 - ERROR - Failed to update blueprint 1049576017671: 404 - {"code":"rest_no_route","message":"No route was found matching the URL and request method.","data":{"status":404}}
+2025-09-23 21:12:34,094 - ERROR - Failed to update blueprint 1049576018142: 404 - {"code":"rest_no_route","message":"No route was found matching the URL and request method.","data":{"status":404}}
+2025-09-23 21:12:34,244 - ERROR - Failed to update blueprint 1049576018563: 404 - {"code":"rest_no_route","message":"No route was found matching the URL and request method.","data":{"status":404}}
+2025-09-23 21:12:34,432 - ERROR - Failed to update blueprint 1049574869338: 404 - {"code":"rest_no_route","message":"No route was found matching the URL and request method.","data":{"status":404}}
+2025-09-23 21:12:34,594 - ERROR - Failed to update blueprint 1049576017392: 404 - {"code":"rest_no_route","message":"No route was found matching the URL and request method.","data":{"status":404}}
+2025-09-23 21:12:34,748 - ERROR - Failed to update blueprint 1049574816825: 404 - {"code":"rest_no_route","message":"No route was found matching the URL and request method.","data":{"status":404}}
+2025-09-23 21:12:35,012 - ERROR - Failed to update blueprint 1049574815479: 404 - {"code":"rest_no_route","message":"No route was found matching the URL and request method.","data":{"status":404}}
+2025-09-23 21:12:35,146 - ERROR - Failed to update blueprint 1049576016678: 404 - {"code":"rest_no_route","message":"No route was found matching the URL and request method.","data":{"status":404}}
+2025-09-23 21:12:35,331 - ERROR - Failed to update blueprint 1049574817909: 404 - {"code":"rest_no_route","message":"No route was found matching the URL and request method.","data":{"status":404}}
+2025-09-23 21:12:35,772 - ERROR - Failed to update blueprint 1049574812602: 404 - {"code":"rest_no_route","message":"No route was found matching the URL and request method.","data":{"status":404}}
+2025-09-23 21:12:35,921 - ERROR - Failed to update blueprint 1049574805777: 404 - {"code":"rest_no_route","message":"No route was found matching the URL and request method.","data":{"status":404}}
+2025-09-23 21:12:36,133 - ERROR - Failed to update blueprint 1049574790307: 404 - {"code":"rest_no_route","message":"No route was found matching the URL and request method.","data":{"status":404}}
+2025-09-23 21:12:36,295 - ERROR - Failed to update blueprint 1049574788474: 404 - {"code":"rest_no_route","message":"No route was found matching the URL and request method.","data":{"status":404}}
+2025-09-23 21:12:36,530 - ERROR - Failed to update blueprint 1049574814115: 404 - {"code":"rest_no_route","message":"No route was found matching the URL and request method.","data":{"status":404}}
+2025-09-23 21:12:36,673 - ERROR - Failed to update blueprint 1049574781697: 404 - {"code":"rest_no_route","message":"No route was found matching the URL and request method.","data":{"status":404}}
+2025-09-23 21:12:36,817 - ERROR - Failed to update blueprint 1049574787807: 404 - {"code":"rest_no_route","message":"No route was found matching the URL and request method.","data":{"status":404}}
+2025-09-23 21:12:37,054 - ERROR - Failed to update blueprint 1049574769783: 404 - {"code":"rest_no_route","message":"No route was found matching the URL and request method.","data":{"status":404}}
+2025-09-23 21:12:37,188 - ERROR - Failed to update blueprint 1049574784788: 404 - {"code":"rest_no_route","message":"No route was found matching the URL and request method.","data":{"status":404}}
+2025-09-23 21:12:37,316 - ERROR - Failed to update blueprint 1049574771593: 404 - {"code":"rest_no_route","message":"No route was found matching the URL and request method.","data":{"status":404}}
+2025-09-23 21:12:37,456 - ERROR - Failed to update blueprint 1049574783623: 404 - {"code":"rest_no_route","message":"No route was found matching the URL and request method.","data":{"status":404}}
+2025-09-23 21:12:37,687 - ERROR - Failed to update blueprint 1048755461101: 404 - {"code":"rest_no_route","message":"No route was found matching the URL and request method.","data":{"status":404}}
+2025-09-23 21:12:37,822 - ERROR - Failed to update blueprint 1049574768724: 404 - {"code":"rest_no_route","message":"No route was found matching the URL and request method.","data":{"status":404}}
+2025-09-23 21:12:37,955 - ERROR - Failed to update blueprint 1049574763305: 404 - {"code":"rest_no_route","message":"No route was found matching the URL and request method.","data":{"status":404}}
+2025-09-23 21:12:38,184 - ERROR - Failed to update blueprint 1049574767458: 404 - {"code":"rest_no_route","message":"No route was found matching the URL and request method.","data":{"status":404}}
+2025-09-23 21:12:38,321 - ERROR - Failed to update blueprint 1049574764624: 404 - {"code":"rest_no_route","message":"No route was found matching the URL and request method.","data":{"status":404}}
+2025-09-23 21:12:38,466 - ERROR - Failed to update blueprint 1049574725214: 404 - {"code":"rest_no_route","message":"No route was found matching the URL and request method.","data":{"status":404}}
+2025-09-23 21:12:38,625 - ERROR - Failed to update blueprint 1049574753605: 404 - {"code":"rest_no_route","message":"No route was found matching the URL and request method.","data":{"status":404}}
+2025-09-23 21:12:38,765 - ERROR - Failed to update blueprint 1049574756931: 404 - {"code":"rest_no_route","message":"No route was found matching the URL and request method.","data":{"status":404}}
+2025-09-23 21:12:38,902 - ERROR - Failed to update blueprint 1049574755244: 404 - {"code":"rest_no_route","message":"No route was found matching the URL and request method.","data":{"status":404}}
+2025-09-23 21:12:39,036 - ERROR - Failed to update blueprint 1049574751987: 404 - {"code":"rest_no_route","message":"No route was found matching the URL and request method.","data":{"status":404}}
+2025-09-23 21:12:39,276 - ERROR - Failed to update blueprint 1049574759425: 404 - {"code":"rest_no_route","message":"No route was found matching the URL and request method.","data":{"status":404}}
+2025-09-23 21:12:39,426 - ERROR - Failed to update blueprint 1049574694012: 404 - {"code":"rest_no_route","message":"No route was found matching the URL and request method.","data":{"status":404}}
+2025-09-23 21:12:39,680 - ERROR - Failed to update blueprint 1049574712131: 404 - {"code":"rest_no_route","message":"No route was found matching the URL and request method.","data":{"status":404}}
+2025-09-23 21:12:39,872 - ERROR - Failed to update blueprint 1049574695751: 404 - {"code":"rest_no_route","message":"No route was found matching the URL and request method.","data":{"status":404}}
+2025-09-23 21:12:40,010 - ERROR - Failed to update blueprint 1049574708304: 404 - {"code":"rest_no_route","message":"No route was found matching the URL and request method.","data":{"status":404}}
+2025-09-23 21:12:40,208 - ERROR - Failed to update blueprint 1049574685686: 404 - {"code":"rest_no_route","message":"No route was found matching the URL and request method.","data":{"status":404}}
+2025-09-23 21:12:40,357 - ERROR - Failed to update blueprint 1049574692766: 404 - {"code":"rest_no_route","message":"No route was found matching the URL and request method.","data":{"status":404}}
+2025-09-23 21:12:40,539 - ERROR - Failed to update blueprint 1049574688527: 404 - {"code":"rest_no_route","message":"No route was found matching the URL and request method.","data":{"status":404}}
+2025-09-23 21:12:40,726 - ERROR - Failed to update blueprint 1049574682998: 404 - {"code":"rest_no_route","message":"No route was found matching the URL and request method.","data":{"status":404}}
+2025-09-23 21:12:40,880 - ERROR - Failed to update blueprint 1049574687167: 404 - {"code":"rest_no_route","message":"No route was found matching the URL and request method.","data":{"status":404}}
+2025-09-23 21:12:41,024 - ERROR - Failed to update blueprint 1049574690328: 404 - {"code":"rest_no_route","message":"No route was found matching the URL and request method.","data":{"status":404}}
+2025-09-23 21:12:41,249 - ERROR - Failed to update blueprint 1049574582590: 404 - {"code":"rest_no_route","message":"No route was found matching the URL and request method.","data":{"status":404}}
+2025-09-23 21:12:41,400 - ERROR - Failed to update blueprint 1049574449602: 404 - {"code":"rest_no_route","message":"No route was found matching the URL and request method.","data":{"status":404}}
+2025-09-23 21:12:41,544 - ERROR - Failed to update blueprint 1049574579770: 404 - {"code":"rest_no_route","message":"No route was found matching the URL and request method.","data":{"status":404}}
+2025-09-23 21:12:41,772 - ERROR - Failed to update blueprint 1049574447488: 404 - {"code":"rest_no_route","message":"No route was found matching the URL and request method.","data":{"status":404}}
+2025-09-23 21:12:41,915 - ERROR - Failed to update blueprint 1049574451532: 404 - {"code":"rest_no_route","message":"No route was found matching the URL and request method.","data":{"status":404}}
+2025-09-23 21:12:42,055 - ERROR - Failed to update blueprint 1049574677299: 404 - {"code":"rest_no_route","message":"No route was found matching the URL and request method.","data":{"status":404}}
+2025-09-23 21:12:42,297 - ERROR - Failed to update blueprint 1049574444009: 404 - {"code":"rest_no_route","message":"No route was found matching the URL and request method.","data":{"status":404}}
+2025-09-23 21:12:42,434 - ERROR - Failed to update blueprint 1049574314029: 404 - {"code":"rest_no_route","message":"No route was found matching the URL and request method.","data":{"status":404}}
+2025-09-23 21:12:42,570 - ERROR - Failed to update blueprint 1049574103840: 404 - {"code":"rest_no_route","message":"No route was found matching the URL and request method.","data":{"status":404}}
+2025-09-23 21:12:42,706 - ERROR - Failed to update blueprint 1045640331892: 404 - {"code":"rest_no_route","message":"No route was found matching the URL and request method.","data":{"status":404}}
+2025-09-23 21:12:42,927 - ERROR - Failed to update blueprint 1048755470646: 404 - {"code":"rest_no_route","message":"No route was found matching the URL and request method.","data":{"status":404}}
+2025-09-23 21:12:43,060 - ERROR - Failed to update blueprint 1048755471334: 404 - {"code":"rest_no_route","message":"No route was found matching the URL and request method.","data":{"status":404}}
+2025-09-23 21:12:43,201 - ERROR - Failed to update blueprint 1049574442751: 404 - {"code":"rest_no_route","message":"No route was found matching the URL and request method.","data":{"status":404}}
+2025-09-23 21:12:43,438 - ERROR - Failed to update blueprint 1048892825918: 404 - {"code":"rest_no_route","message":"No route was found matching the URL and request method.","data":{"status":404}}
+2025-09-23 21:12:43,575 - ERROR - Failed to update blueprint 1049574441448: 404 - {"code":"rest_no_route","message":"No route was found matching the URL and request method.","data":{"status":404}}
+2025-09-23 21:12:43,728 - ERROR - Failed to update blueprint 1048892820689: 404 - {"code":"rest_no_route","message":"No route was found matching the URL and request method.","data":{"status":404}}
+2025-09-23 21:12:43,969 - ERROR - Failed to update blueprint 1048892823333: 404 - {"code":"rest_no_route","message":"No route was found matching the URL and request method.","data":{"status":404}}
+2025-09-23 21:12:44,139 - ERROR - Failed to update blueprint 1048892824791: 404 - {"code":"rest_no_route","message":"No route was found matching the URL and request method.","data":{"status":404}}
+2025-09-23 21:12:44,294 - ERROR - Failed to update blueprint 1048892821950: 404 - {"code":"rest_no_route","message":"No route was found matching the URL and request method.","data":{"status":404}}
+2025-09-23 21:12:44,564 - ERROR - Failed to update blueprint 1048892819939: 404 - {"code":"rest_no_route","message":"No route was found matching the URL and request method.","data":{"status":404}}
+2025-09-23 21:12:44,709 - ERROR - Failed to update blueprint 1048854467446: 404 - {"code":"rest_no_route","message":"No route was found matching the URL and request method.","data":{"status":404}}
+2025-09-23 21:12:45,006 - ERROR - Failed to update blueprint 1048854468099: 404 - {"code":"rest_no_route","message":"No route was found matching the URL and request method.","data":{"status":404}}
+2025-09-23 21:12:45,175 - ERROR - Failed to update blueprint 1048854468567: 404 - {"code":"rest_no_route","message":"No route was found matching the URL and request method.","data":{"status":404}}
+2025-09-23 21:12:45,332 - ERROR - Failed to update blueprint 1048892615386: 404 - {"code":"rest_no_route","message":"No route was found matching the URL and request method.","data":{"status":404}}
+2025-09-23 21:12:45,583 - ERROR - Failed to update blueprint 1048854416872: 404 - {"code":"rest_no_route","message":"No route was found matching the URL and request method.","data":{"status":404}}
+2025-09-23 21:12:45,769 - ERROR - Failed to update blueprint 1048854418099: 404 - {"code":"rest_no_route","message":"No route was found matching the URL and request method.","data":{"status":404}}
+2025-09-23 21:12:45,968 - ERROR - Failed to update blueprint 1045640476461: 404 - {"code":"rest_no_route","message":"No route was found matching the URL and request method.","data":{"status":404}}
+2025-09-23 21:12:46,108 - ERROR - Failed to update blueprint 1048755457115: 404 - {"code":"rest_no_route","message":"No route was found matching the URL and request method.","data":{"status":404}}
+2025-09-23 21:12:46,247 - ERROR - Failed to update blueprint 1048755448634: 404 - {"code":"rest_no_route","message":"No route was found matching the URL and request method.","data":{"status":404}}
+2025-09-23 21:12:46,385 - ERROR - Failed to update blueprint 1048854416044: 404 - {"code":"rest_no_route","message":"No route was found matching the URL and request method.","data":{"status":404}}
+2025-09-23 21:12:46,641 - ERROR - Failed to update blueprint 1048854415530: 404 - {"code":"rest_no_route","message":"No route was found matching the URL and request method.","data":{"status":404}}
+2025-09-23 21:12:46,777 - ERROR - Failed to update blueprint 1048854401183: 404 - {"code":"rest_no_route","message":"No route was found matching the URL and request method.","data":{"status":404}}
+2025-09-23 21:12:46,909 - ERROR - Failed to update blueprint 1048854369185: 404 - {"code":"rest_no_route","message":"No route was found matching the URL and request method.","data":{"status":404}}
+2025-09-23 21:12:47,139 - ERROR - Failed to update blueprint 1048854384007: 404 - {"code":"rest_no_route","message":"No route was found matching the URL and request method.","data":{"status":404}}
+2025-09-23 21:12:47,269 - ERROR - Failed to update blueprint 1048854398154: 404 - {"code":"rest_no_route","message":"No route was found matching the URL and request method.","data":{"status":404}}
+2025-09-23 21:12:47,406 - ERROR - Failed to update blueprint 1048854359089: 404 - {"code":"rest_no_route","message":"No route was found matching the URL and request method.","data":{"status":404}}
+2025-09-23 21:12:47,642 - ERROR - Failed to update blueprint 1048854360242: 404 - {"code":"rest_no_route","message":"No route was found matching the URL and request method.","data":{"status":404}}
+2025-09-23 21:12:47,785 - ERROR - Failed to update blueprint 1048854336495: 404 - {"code":"rest_no_route","message":"No route was found matching the URL and request method.","data":{"status":404}}
+2025-09-23 21:12:47,929 - ERROR - Failed to update blueprint 1048854337872: 404 - {"code":"rest_no_route","message":"No route was found matching the URL and request method.","data":{"status":404}}
+2025-09-23 21:12:48,162 - ERROR - Failed to update blueprint 1048854354150: 404 - {"code":"rest_no_route","message":"No route was found matching the URL and request method.","data":{"status":404}}
+2025-09-23 21:12:48,293 - ERROR - Failed to update blueprint 1048854335779: 404 - {"code":"rest_no_route","message":"No route was found matching the URL and request method.","data":{"status":404}}
+2025-09-23 21:12:48,434 - ERROR - Failed to update blueprint 1048854334853: 404 - {"code":"rest_no_route","message":"No route was found matching the URL and request method.","data":{"status":404}}
+2025-09-23 21:12:48,656 - ERROR - Failed to update blueprint 1045631897778: 404 - {"code":"rest_no_route","message":"No route was found matching the URL and request method.","data":{"status":404}}
+2025-09-23 21:12:48,789 - ERROR - Failed to update blueprint 1048755452886: 404 - {"code":"rest_no_route","message":"No route was found matching the URL and request method.","data":{"status":404}}
+2025-09-23 21:12:48,930 - ERROR - Failed to update blueprint 1048755455038: 404 - {"code":"rest_no_route","message":"No route was found matching the URL and request method.","data":{"status":404}}
+2025-09-23 21:12:49,113 - ERROR - Failed to update blueprint 1045631898197: 404 - {"code":"rest_no_route","message":"No route was found matching the URL and request method.","data":{"status":404}}
+2025-09-23 21:12:49,250 - ERROR - Failed to update blueprint 1048755455495: 404 - {"code":"rest_no_route","message":"No route was found matching the URL and request method.","data":{"status":404}}
+2025-09-23 21:12:49,389 - ERROR - Failed to update blueprint 1048755449534: 404 - {"code":"rest_no_route","message":"No route was found matching the URL and request method.","data":{"status":404}}
+2025-09-23 21:12:49,516 - ERROR - Failed to update blueprint 1045631898598: 404 - {"code":"rest_no_route","message":"No route was found matching the URL and request method.","data":{"status":404}}
+2025-09-23 21:12:49,738 - ERROR - Failed to update blueprint 1048755453478: 404 - {"code":"rest_no_route","message":"No route was found matching the URL and request method.","data":{"status":404}}
+2025-09-23 21:12:49,931 - ERROR - Failed to update blueprint 1048753820347: 404 - {"code":"rest_no_route","message":"No route was found matching the URL and request method.","data":{"status":404}}
+2025-09-23 21:12:50,162 - ERROR - Failed to update blueprint 1048755430294: 404 - {"code":"rest_no_route","message":"No route was found matching the URL and request method.","data":{"status":404}}
+2025-09-23 21:12:50,346 - ERROR - Failed to update blueprint 1045631898364: 404 - {"code":"rest_no_route","message":"No route was found matching the URL and request method.","data":{"status":404}}
+2025-09-23 21:12:50,490 - ERROR - Failed to update blueprint 1048755430435: 404 - {"code":"rest_no_route","message":"No route was found matching the URL and request method.","data":{"status":404}}
+2025-09-23 21:12:50,689 - ERROR - Failed to update blueprint 1048755430504: 404 - {"code":"rest_no_route","message":"No route was found matching the URL and request method.","data":{"status":404}}
+2025-09-23 21:12:50,838 - ERROR - Failed to update blueprint 1045631898068: 404 - {"code":"rest_no_route","message":"No route was found matching the URL and request method.","data":{"status":404}}
+2025-09-23 21:12:50,980 - ERROR - Failed to update blueprint 1048755430355: 404 - {"code":"rest_no_route","message":"No route was found matching the URL and request method.","data":{"status":404}}
+2025-09-23 21:12:51,117 - ERROR - Failed to update blueprint 1048755137882: 404 - {"code":"rest_no_route","message":"No route was found matching the URL and request method.","data":{"status":404}}
+2025-09-23 21:12:51,358 - ERROR - Failed to update blueprint 1045631821473: 404 - {"code":"rest_no_route","message":"No route was found matching the URL and request method.","data":{"status":404}}
+2025-09-23 21:12:51,494 - ERROR - Failed to update blueprint 1048755138399: 404 - {"code":"rest_no_route","message":"No route was found matching the URL and request method.","data":{"status":404}}
+2025-09-23 21:12:51,633 - ERROR - Failed to update blueprint 1048755140242: 404 - {"code":"rest_no_route","message":"No route was found matching the URL and request method.","data":{"status":404}}
+2025-09-23 21:12:51,855 - ERROR - Failed to update blueprint 1045631821358: 404 - {"code":"rest_no_route","message":"No route was found matching the URL and request method.","data":{"status":404}}
+2025-09-23 21:12:51,984 - ERROR - Failed to update blueprint 1048755428682: 404 - {"code":"rest_no_route","message":"No route was found matching the URL and request method.","data":{"status":404}}
+2025-09-23 21:12:52,119 - ERROR - Failed to update blueprint 1048755137030: 404 - {"code":"rest_no_route","message":"No route was found matching the URL and request method.","data":{"status":404}}
+2025-09-23 21:12:52,340 - ERROR - Failed to update blueprint 1045631821778: 404 - {"code":"rest_no_route","message":"No route was found matching the URL and request method.","data":{"status":404}}
+2025-09-23 21:12:52,489 - ERROR - Failed to update blueprint 1048755128622: 404 - {"code":"rest_no_route","message":"No route was found matching the URL and request method.","data":{"status":404}}
+2025-09-23 21:12:52,649 - ERROR - Failed to update blueprint 1048755129857: 404 - {"code":"rest_no_route","message":"No route was found matching the URL and request method.","data":{"status":404}}
+2025-09-23 21:12:52,868 - ERROR - Failed to update blueprint 1045631856745: 404 - {"code":"rest_no_route","message":"No route was found matching the URL and request method.","data":{"status":404}}
+2025-09-23 21:12:53,047 - ERROR - Failed to update blueprint 1048755136406: 404 - {"code":"rest_no_route","message":"No route was found matching the URL and request method.","data":{"status":404}}
+2025-09-23 21:12:53,175 - ERROR - Failed to update blueprint 1048755128010: 404 - {"code":"rest_no_route","message":"No route was found matching the URL and request method.","data":{"status":404}}
+2025-09-23 21:12:53,403 - ERROR - Failed to update blueprint 1045631821588: 404 - {"code":"rest_no_route","message":"No route was found matching the URL and request method.","data":{"status":404}}
+2025-09-23 21:12:53,537 - ERROR - Failed to update blueprint 1048755129183: 404 - {"code":"rest_no_route","message":"No route was found matching the URL and request method.","data":{"status":404}}
+2025-09-23 21:12:53,664 - ERROR - Failed to update blueprint 1048755133911: 404 - {"code":"rest_no_route","message":"No route was found matching the URL and request method.","data":{"status":404}}
+2025-09-23 21:12:53,834 - ERROR - Failed to update blueprint 1045631820801: 404 - {"code":"rest_no_route","message":"No route was found matching the URL and request method.","data":{"status":404}}
+2025-09-23 21:12:53,979 - ERROR - Failed to update blueprint 1048755121539: 404 - {"code":"rest_no_route","message":"No route was found matching the URL and request method.","data":{"status":404}}
+2025-09-23 21:12:54,119 - ERROR - Failed to update blueprint 1048572180881: 404 - {"code":"rest_no_route","message":"No route was found matching the URL and request method.","data":{"status":404}}
+2025-09-23 21:12:54,270 - ERROR - Failed to update blueprint 1048755122441: 404 - {"code":"rest_no_route","message":"No route was found matching the URL and request method.","data":{"status":404}}
+2025-09-23 21:12:54,509 - ERROR - Failed to update blueprint 1045631820987: 404 - {"code":"rest_no_route","message":"No route was found matching the URL and request method.","data":{"status":404}}
+2025-09-23 21:12:54,689 - ERROR - Failed to update blueprint 1048755116658: 404 - {"code":"rest_no_route","message":"No route was found matching the URL and request method.","data":{"status":404}}
+2025-09-23 21:12:55,304 - ERROR - Failed to update blueprint 1048755117310: 404 - {"code":"rest_no_route","message":"No route was found matching the URL and request method.","data":{"status":404}}
+2025-09-23 21:12:55,516 - ERROR - Failed to update blueprint 1045631820908: 404 - {"code":"rest_no_route","message":"No route was found matching the URL and request method.","data":{"status":404}}
+2025-09-23 21:12:55,637 - ERROR - Failed to update blueprint 1048755120497: 404 - {"code":"rest_no_route","message":"No route was found matching the URL and request method.","data":{"status":404}}
+2025-09-23 21:12:55,797 - ERROR - Failed to update blueprint 1048755120972: 404 - {"code":"rest_no_route","message":"No route was found matching the URL and request method.","data":{"status":404}}
+2025-09-23 21:12:56,027 - ERROR - Failed to update blueprint 1045631821222: 404 - {"code":"rest_no_route","message":"No route was found matching the URL and request method.","data":{"status":404}}
+2025-09-23 21:12:56,176 - ERROR - Failed to update blueprint 1048755110183: 404 - {"code":"rest_no_route","message":"No route was found matching the URL and request method.","data":{"status":404}}
+2025-09-23 21:12:56,342 - ERROR - Failed to update blueprint 1048755112726: 404 - {"code":"rest_no_route","message":"No route was found matching the URL and request method.","data":{"status":404}}
+2025-09-23 21:12:56,561 - ERROR - Failed to update blueprint 1045631821111: 404 - {"code":"rest_no_route","message":"No route was found matching the URL and request method.","data":{"status":404}}
+2025-09-23 21:12:56,697 - ERROR - Failed to update blueprint 1048755113552: 404 - {"code":"rest_no_route","message":"No route was found matching the URL and request method.","data":{"status":404}}
+2025-09-23 21:12:56,836 - ERROR - Failed to update blueprint 1048755111133: 404 - {"code":"rest_no_route","message":"No route was found matching the URL and request method.","data":{"status":404}}
+2025-09-23 21:12:57,056 - ERROR - Failed to update blueprint 1048755114427: 404 - {"code":"rest_no_route","message":"No route was found matching the URL and request method.","data":{"status":404}}
+2025-09-23 21:12:57,224 - ERROR - Failed to update blueprint 1048753835545: 404 - {"code":"rest_no_route","message":"No route was found matching the URL and request method.","data":{"status":404}}
+2025-09-23 21:12:57,358 - ERROR - Failed to update blueprint 1048753834364: 404 - {"code":"rest_no_route","message":"No route was found matching the URL and request method.","data":{"status":404}}
+2025-09-23 21:12:57,586 - ERROR - Failed to update blueprint 1048753835009: 404 - {"code":"rest_no_route","message":"No route was found matching the URL and request method.","data":{"status":404}}
+2025-09-23 21:12:57,726 - ERROR - Failed to update blueprint 1048753836771: 404 - {"code":"rest_no_route","message":"No route was found matching the URL and request method.","data":{"status":404}}
+2025-09-23 21:12:57,852 - ERROR - Failed to update blueprint 1048753837463: 404 - {"code":"rest_no_route","message":"No route was found matching the URL and request method.","data":{"status":404}}
+2025-09-23 21:12:58,030 - ERROR - Failed to update blueprint 1045618098057: 404 - {"code":"rest_no_route","message":"No route was found matching the URL and request method.","data":{"status":404}}
+2025-09-23 21:12:58,172 - ERROR - Failed to update blueprint 1045627298456: 404 - {"code":"rest_no_route","message":"No route was found matching the URL and request method.","data":{"status":404}}
+2025-09-23 21:12:58,339 - ERROR - Failed to update blueprint 1045627299335: 404 - {"code":"rest_no_route","message":"No route was found matching the URL and request method.","data":{"status":404}}
+2025-09-23 21:12:58,552 - ERROR - Failed to update blueprint 1045594582010: 404 - {"code":"rest_no_route","message":"No route was found matching the URL and request method.","data":{"status":404}}
+2025-09-23 21:12:58,688 - ERROR - Failed to update blueprint 1048556399713: 404 - {"code":"rest_no_route","message":"No route was found matching the URL and request method.","data":{"status":404}}
+2025-09-23 21:12:58,811 - ERROR - Failed to update blueprint 1048572211846: 404 - {"code":"rest_no_route","message":"No route was found matching the URL and request method.","data":{"status":404}}
+2025-09-23 21:12:58,956 - ERROR - Failed to update blueprint 1048572208142: 404 - {"code":"rest_no_route","message":"No route was found matching the URL and request method.","data":{"status":404}}
+2025-09-23 21:12:59,192 - ERROR - Failed to update blueprint 1048572214764: 404 - {"code":"rest_no_route","message":"No route was found matching the URL and request method.","data":{"status":404}}
+2025-09-23 21:12:59,330 - ERROR - Failed to update blueprint 1048572206820: 404 - {"code":"rest_no_route","message":"No route was found matching the URL and request method.","data":{"status":404}}
+2025-09-23 21:12:59,476 - ERROR - Failed to update blueprint 1045631743088: 404 - {"code":"rest_no_route","message":"No route was found matching the URL and request method.","data":{"status":404}}
+2025-09-23 21:12:59,732 - ERROR - Failed to update blueprint 1048572205336: 404 - {"code":"rest_no_route","message":"No route was found matching the URL and request method.","data":{"status":404}}
+2025-09-23 21:12:59,881 - ERROR - Failed to update blueprint 1045618042330: 404 - {"code":"rest_no_route","message":"No route was found matching the URL and request method.","data":{"status":404}}
+2025-09-23 21:13:00,022 - ERROR - Failed to update blueprint 1048572180110: 404 - {"code":"rest_no_route","message":"No route was found matching the URL and request method.","data":{"status":404}}
+2025-09-23 21:13:00,240 - ERROR - Failed to update blueprint 1048534163506: 404 - {"code":"rest_no_route","message":"No route was found matching the URL and request method.","data":{"status":404}}
+2025-09-23 21:13:00,419 - ERROR - Failed to update blueprint 1045627298995: 404 - {"code":"rest_no_route","message":"No route was found matching the URL and request method.","data":{"status":404}}
+2025-09-23 21:13:00,651 - ERROR - Failed to update blueprint 1048534174691: 404 - {"code":"rest_no_route","message":"No route was found matching the URL and request method.","data":{"status":404}}
+2025-09-23 21:13:00,845 - ERROR - Failed to update blueprint 1048497400969: 404 - {"code":"rest_no_route","message":"No route was found matching the URL and request method.","data":{"status":404}}
+2025-09-23 21:13:00,991 - ERROR - Failed to update blueprint 1048534147370: 404 - {"code":"rest_no_route","message":"No route was found matching the URL and request method.","data":{"status":404}}
+2025-09-23 21:13:01,173 - ERROR - Failed to update blueprint 1048534148235: 404 - {"code":"rest_no_route","message":"No route was found matching the URL and request method.","data":{"status":404}}
+2025-09-23 21:13:01,322 - ERROR - Failed to update blueprint 1048534157118: 404 - {"code":"rest_no_route","message":"No route was found matching the URL and request method.","data":{"status":404}}
+2025-09-23 21:13:01,481 - ERROR - Failed to update blueprint 1048534160961: 404 - {"code":"rest_no_route","message":"No route was found matching the URL and request method.","data":{"status":404}}
+2025-09-23 21:13:01,699 - ERROR - Failed to update blueprint 1048497347779: 404 - {"code":"rest_no_route","message":"No route was found matching the URL and request method.","data":{"status":404}}
+2025-09-23 21:13:01,859 - ERROR - Failed to update blueprint 1048497353807: 404 - {"code":"rest_no_route","message":"No route was found matching the URL and request method.","data":{"status":404}}
+2025-09-23 21:13:02,000 - ERROR - Failed to update blueprint 1048497394220: 404 - {"code":"rest_no_route","message":"No route was found matching the URL and request method.","data":{"status":404}}
+2025-09-23 21:13:02,125 - ERROR - Failed to update blueprint 1048497397841: 404 - {"code":"rest_no_route","message":"No route was found matching the URL and request method.","data":{"status":404}}
+2025-09-23 21:13:02,361 - ERROR - Failed to update blueprint 1048497398887: 404 - {"code":"rest_no_route","message":"No route was found matching the URL and request method.","data":{"status":404}}
+2025-09-23 21:13:02,503 - ERROR - Failed to update blueprint 1048497174523: 404 - {"code":"rest_no_route","message":"No route was found matching the URL and request method.","data":{"status":404}}
+2025-09-23 21:13:02,657 - ERROR - Failed to update blueprint 1049574786127: 404 - {"code":"rest_no_route","message":"No route was found matching the URL and request method.","data":{"status":404}}
+2025-09-23 21:13:02,907 - ERROR - Failed to update blueprint 1048497346575: 404 - {"code":"rest_no_route","message":"No route was found matching the URL and request method.","data":{"status":404}}
+2025-09-23 21:13:03,053 - ERROR - Failed to update blueprint 1048497316785: 404 - {"code":"rest_no_route","message":"No route was found matching the URL and request method.","data":{"status":404}}
+2025-09-23 21:13:03,273 - ERROR - Failed to update blueprint 1048497133143: 404 - {"code":"rest_no_route","message":"No route was found matching the URL and request method.","data":{"status":404}}
+2025-09-23 21:13:03,429 - ERROR - Failed to update blueprint 1048497132562: 404 - {"code":"rest_no_route","message":"No route was found matching the URL and request method.","data":{"status":404}}
+2025-09-23 21:13:03,572 - ERROR - Failed to update blueprint 1048497139737: 404 - {"code":"rest_no_route","message":"No route was found matching the URL and request method.","data":{"status":404}}
+2025-09-23 21:13:03,796 - ERROR - Failed to update blueprint 1048497137640: 404 - {"code":"rest_no_route","message":"No route was found matching the URL and request method.","data":{"status":404}}
+2025-09-23 21:13:03,961 - ERROR - Failed to update blueprint 1048497171975: 404 - {"code":"rest_no_route","message":"No route was found matching the URL and request method.","data":{"status":404}}
+2025-09-23 21:13:04,123 - ERROR - Failed to update blueprint 1049574705873: 404 - {"code":"rest_no_route","message":"No route was found matching the URL and request method.","data":{"status":404}}
+2025-09-23 21:13:04,323 - ERROR - Failed to update blueprint 1048497103438: 404 - {"code":"rest_no_route","message":"No route was found matching the URL and request method.","data":{"status":404}}
+2025-09-23 21:13:04,488 - ERROR - Failed to update blueprint 1048497114164: 404 - {"code":"rest_no_route","message":"No route was found matching the URL and request method.","data":{"status":404}}
+2025-09-23 21:13:04,645 - ERROR - Failed to update blueprint 1048497118042: 404 - {"code":"rest_no_route","message":"No route was found matching the URL and request method.","data":{"status":404}}
+2025-09-23 21:13:04,865 - ERROR - Failed to update blueprint 1048497131383: 404 - {"code":"rest_no_route","message":"No route was found matching the URL and request method.","data":{"status":404}}
+2025-09-23 21:13:05,001 - ERROR - Failed to update blueprint 1048497120066: 404 - {"code":"rest_no_route","message":"No route was found matching the URL and request method.","data":{"status":404}}
+2025-09-23 21:13:05,195 - ERROR - Failed to update blueprint 1045742495229: 404 - {"code":"rest_no_route","message":"No route was found matching the URL and request method.","data":{"status":404}}
+2025-09-23 21:13:05,754 - ERROR - Failed to update blueprint 1045824284242: 404 - {"code":"rest_no_route","message":"No route was found matching the URL and request method.","data":{"status":404}}
+2025-09-23 21:13:05,984 - ERROR - Failed to update blueprint 1045618045431: 404 - {"code":"rest_no_route","message":"No route was found matching the URL and request method.","data":{"status":404}}
+2025-09-23 21:13:06,105 - ERROR - Failed to update blueprint 1048491192978: 404 - {"code":"rest_no_route","message":"No route was found matching the URL and request method.","data":{"status":404}}
+2025-09-23 21:13:06,241 - ERROR - Failed to update blueprint 1045872934323: 404 - {"code":"rest_no_route","message":"No route was found matching the URL and request method.","data":{"status":404}}
+2025-09-23 21:13:06,418 - ERROR - Failed to update blueprint 1045710417630: 404 - {"code":"rest_no_route","message":"No route was found matching the URL and request method.","data":{"status":404}}
+2025-09-23 21:13:06,570 - ERROR - Failed to update blueprint 1045710384666: 404 - {"code":"rest_no_route","message":"No route was found matching the URL and request method.","data":{"status":404}}
+2025-09-23 21:13:06,739 - ERROR - Failed to update blueprint 1045730159350: 404 - {"code":"rest_no_route","message":"No route was found matching the URL and request method.","data":{"status":404}}
+2025-09-23 21:13:06,939 - ERROR - Failed to update blueprint 1045729548362: 404 - {"code":"rest_no_route","message":"No route was found matching the URL and request method.","data":{"status":404}}
+2025-09-23 21:13:07,119 - ERROR - Failed to update blueprint 1048854399758: 404 - {"code":"rest_no_route","message":"No route was found matching the URL and request method.","data":{"status":404}}
+2025-09-23 21:13:07,252 - ERROR - Failed to update blueprint 1048854415763: 404 - {"code":"rest_no_route","message":"No route was found matching the URL and request method.","data":{"status":404}}
+2025-09-23 21:13:07,469 - ERROR - Failed to update blueprint 1045647833326: 404 - {"code":"rest_no_route","message":"No route was found matching the URL and request method.","data":{"status":404}}
+2025-09-23 21:13:07,620 - ERROR - Failed to update blueprint 1045647834018: 404 - {"code":"rest_no_route","message":"No route was found matching the URL and request method.","data":{"status":404}}
+2025-09-23 21:13:07,835 - ERROR - Failed to update blueprint 1045648045584: 404 - {"code":"rest_no_route","message":"No route was found matching the URL and request method.","data":{"status":404}}
+2025-09-23 21:13:08,061 - ERROR - Failed to update blueprint 1048854358040: 404 - {"code":"rest_no_route","message":"No route was found matching the URL and request method.","data":{"status":404}}
+2025-09-23 21:13:08,194 - ERROR - Failed to update blueprint 1045648317694: 404 - {"code":"rest_no_route","message":"No route was found matching the URL and request method.","data":{"status":404}}
+2025-09-23 21:13:08,338 - ERROR - Failed to update blueprint 1045647831857: 404 - {"code":"rest_no_route","message":"No route was found matching the URL and request method.","data":{"status":404}}
+2025-09-23 21:13:08,514 - ERROR - Failed to update blueprint 1045647832286: 404 - {"code":"rest_no_route","message":"No route was found matching the URL and request method.","data":{"status":404}}
+2025-09-23 21:13:08,660 - ERROR - Failed to update blueprint 1048556396402: 404 - {"code":"rest_no_route","message":"No route was found matching the URL and request method.","data":{"status":404}}
+2025-09-23 21:13:08,809 - ERROR - Failed to update blueprint 1048572209514: 404 - {"code":"rest_no_route","message":"No route was found matching the URL and request method.","data":{"status":404}}
+2025-09-23 21:13:08,949 - ERROR - Failed to update blueprint 1045608044563: 404 - {"code":"rest_no_route","message":"No route was found matching the URL and request method.","data":{"status":404}}
+2025-09-23 21:13:09,170 - ERROR - Failed to update blueprint 1045608045085: 404 - {"code":"rest_no_route","message":"No route was found matching the URL and request method.","data":{"status":404}}
+2025-09-23 21:13:09,320 - ERROR - Failed to update blueprint 1048534171025: 404 - {"code":"rest_no_route","message":"No route was found matching the URL and request method.","data":{"status":404}}
+2025-09-23 21:13:09,459 - ERROR - Failed to update blueprint 1045608045947: 404 - {"code":"rest_no_route","message":"No route was found matching the URL and request method.","data":{"status":404}}
+2025-09-23 21:13:09,694 - ERROR - Failed to update blueprint 1048556397510: 404 - {"code":"rest_no_route","message":"No route was found matching the URL and request method.","data":{"status":404}}
+2025-09-23 21:13:09,824 - ERROR - Failed to update blueprint 1048572181562: 404 - {"code":"rest_no_route","message":"No route was found matching the URL and request method.","data":{"status":404}}
+2025-09-23 21:13:10,154 - ERROR - Failed to update blueprint 1048534178618: 404 - {"code":"rest_no_route","message":"No route was found matching the URL and request method.","data":{"status":404}}
+2025-09-23 21:13:10,329 - ERROR - Failed to update blueprint 1045570493611: 404 - {"code":"rest_no_route","message":"No route was found matching the URL and request method.","data":{"status":404}}
+2025-09-23 21:13:10,481 - ERROR - Failed to update blueprint 1045570597854: 404 - {"code":"rest_no_route","message":"No route was found matching the URL and request method.","data":{"status":404}}
+2025-09-23 21:13:10,775 - ERROR - Failed to update blueprint 1045570497892: 404 - {"code":"rest_no_route","message":"No route was found matching the URL and request method.","data":{"status":404}}
+2025-09-23 21:13:10,916 - ERROR - Failed to update blueprint 1045568294445: 404 - {"code":"rest_no_route","message":"No route was found matching the URL and request method.","data":{"status":404}}
+2025-09-23 21:13:11,136 - ERROR - Failed to update blueprint 1045514378038: 404 - {"code":"rest_no_route","message":"No route was found matching the URL and request method.","data":{"status":404}}
+2025-09-23 21:13:11,269 - ERROR - Failed to update blueprint 1045594580237: 404 - {"code":"rest_no_route","message":"No route was found matching the URL and request method.","data":{"status":404}}
+2025-09-23 21:13:11,416 - ERROR - Failed to update blueprint 1048497312227: 404 - {"code":"rest_no_route","message":"No route was found matching the URL and request method.","data":{"status":404}}
+2025-09-23 21:13:11,550 - ERROR - Failed to update blueprint 1045507077812: 404 - {"code":"rest_no_route","message":"No route was found matching the URL and request method.","data":{"status":404}}
+2025-09-23 21:13:11,802 - ERROR - Failed to update blueprint 1048497178895: 404 - {"code":"rest_no_route","message":"No route was found matching the URL and request method.","data":{"status":404}}
+2025-09-23 21:13:11,925 - ERROR - Failed to update blueprint 1049574762041: 404 - {"code":"rest_no_route","message":"No route was found matching the URL and request method.","data":{"status":404}}
+2025-09-23 21:13:12,055 - ERROR - Failed to update blueprint 1049574760705: 404 - {"code":"rest_no_route","message":"No route was found matching the URL and request method.","data":{"status":404}}
+2025-09-23 21:13:12,292 - ERROR - Failed to update blueprint 1045456976435: 404 - {"code":"rest_no_route","message":"No route was found matching the URL and request method.","data":{"status":404}}
+2025-09-23 21:13:12,437 - ERROR - Failed to update blueprint 1045443207486: 404 - {"code":"rest_no_route","message":"No route was found matching the URL and request method.","data":{"status":404}}
+2025-09-23 21:13:12,582 - ERROR - Failed to update blueprint 1045456972232: 404 - {"code":"rest_no_route","message":"No route was found matching the URL and request method.","data":{"status":404}}
+2025-09-23 21:13:12,800 - ERROR - Failed to update blueprint 1045443208337: 404 - {"code":"rest_no_route","message":"No route was found matching the URL and request method.","data":{"status":404}}
+2025-09-23 21:13:12,957 - ERROR - Failed to update blueprint 1048497113189: 404 - {"code":"rest_no_route","message":"No route was found matching the URL and request method.","data":{"status":404}}
+2025-09-23 21:13:13,091 - ERROR - Failed to update blueprint 1045442726002: 404 - {"code":"rest_no_route","message":"No route was found matching the URL and request method.","data":{"status":404}}
+2025-09-23 21:13:13,319 - ERROR - Failed to update blueprint 1045442724600: 404 - {"code":"rest_no_route","message":"No route was found matching the URL and request method.","data":{"status":404}}
+2025-09-23 21:13:13,454 - ERROR - Failed to update blueprint 1045442721258: 404 - {"code":"rest_no_route","message":"No route was found matching the URL and request method.","data":{"status":404}}
+2025-09-23 21:13:13,605 - ERROR - Failed to update blueprint 1045443017972: 404 - {"code":"rest_no_route","message":"No route was found matching the URL and request method.","data":{"status":404}}
+2025-09-23 21:13:13,825 - ERROR - Failed to update blueprint 1045742495412: 404 - {"code":"rest_no_route","message":"No route was found matching the URL and request method.","data":{"status":404}}
+2025-09-23 21:13:13,978 - ERROR - Failed to update blueprint 1049574317609: 404 - {"code":"rest_no_route","message":"No route was found matching the URL and request method.","data":{"status":404}}
+2025-09-23 21:13:14,134 - ERROR - Failed to update blueprint 1045442719592: 404 - {"code":"rest_no_route","message":"No route was found matching the URL and request method.","data":{"status":404}}
+2025-09-23 21:13:14,350 - ERROR - Failed to update blueprint 1045441369610: 404 - {"code":"rest_no_route","message":"No route was found matching the URL and request method.","data":{"status":404}}
+2025-09-23 21:13:14,477 - ERROR - Failed to update blueprint 1045441374287: 404 - {"code":"rest_no_route","message":"No route was found matching the URL and request method.","data":{"status":404}}
+2025-09-23 21:13:14,613 - ERROR - Failed to update blueprint 1045742494850: 404 - {"code":"rest_no_route","message":"No route was found matching the URL and request method.","data":{"status":404}}
+2025-09-23 21:13:14,806 - ERROR - Failed to update blueprint 1045441376322: 404 - {"code":"rest_no_route","message":"No route was found matching the URL and request method.","data":{"status":404}}
+2025-09-23 21:13:14,980 - ERROR - Failed to update blueprint 1045647833763: 404 - {"code":"rest_no_route","message":"No route was found matching the URL and request method.","data":{"status":404}}
+2025-09-23 21:13:15,125 - ERROR - Failed to update blueprint 1048854413030: 404 - {"code":"rest_no_route","message":"No route was found matching the URL and request method.","data":{"status":404}}
+2025-09-23 21:13:15,377 - ERROR - Failed to update blueprint 1045441378054: 404 - {"code":"rest_no_route","message":"No route was found matching the URL and request method.","data":{"status":404}}
+2025-09-23 21:13:15,511 - ERROR - Failed to update blueprint 1045441377161: 404 - {"code":"rest_no_route","message":"No route was found matching the URL and request method.","data":{"status":404}}
+2025-09-23 21:13:15,694 - ERROR - Failed to update blueprint 1045648319219: 404 - {"code":"rest_no_route","message":"No route was found matching the URL and request method.","data":{"status":404}}
+2025-09-23 21:13:16,403 - ERROR - Failed to update blueprint 1045441375616: 404 - {"code":"rest_no_route","message":"No route was found matching the URL and request method.","data":{"status":404}}
+2025-09-23 21:13:16,408 - INFO - _fetch_esi_with_retry completed in 75.372s
+2025-09-23 21:13:16,553 - ERROR - Failed to update blueprint 1049576631501: 404 - {"code":"rest_no_route","message":"No route was found matching the URL and request method.","data":{"status":404}}
+2025-09-23 21:13:16,711 - ERROR - Failed to update blueprint 1049576630884: 404 - {"code":"rest_no_route","message":"No route was found matching the URL and request method.","data":{"status":404}}
+2025-09-23 21:13:16,903 - ERROR - Failed to update blueprint 1049576632228: 404 - {"code":"rest_no_route","message":"No route was found matching the URL and request method.","data":{"status":404}}
+2025-09-23 21:13:17,070 - ERROR - Failed to update blueprint 1049576627404: 404 - {"code":"rest_no_route","message":"No route was found matching the URL and request method.","data":{"status":404}}
+2025-09-23 21:13:17,207 - ERROR - Failed to update blueprint 1049576629954: 404 - {"code":"rest_no_route","message":"No route was found matching the URL and request method.","data":{"status":404}}
+2025-09-23 21:13:17,337 - ERROR - Failed to update blueprint 1049576644465: 404 - {"code":"rest_no_route","message":"No route was found matching the URL and request method.","data":{"status":404}}
+2025-09-23 21:13:17,569 - ERROR - Failed to update blueprint 1049589409028: 404 - {"code":"rest_no_route","message":"No route was found matching the URL and request method.","data":{"status":404}}
+2025-09-23 21:13:17,740 - ERROR - Failed to update blueprint 1049589408412: 404 - {"code":"rest_no_route","message":"No route was found matching the URL and request method.","data":{"status":404}}
+2025-09-23 21:13:17,952 - ERROR - Failed to update blueprint 1049576645167: 404 - {"code":"rest_no_route","message":"No route was found matching the URL and request method.","data":{"status":404}}
+2025-09-23 21:13:18,086 - ERROR - Failed to update blueprint 1049589409666: 404 - {"code":"rest_no_route","message":"No route was found matching the URL and request method.","data":{"status":404}}
+2025-09-23 21:13:18,227 - ERROR - Failed to update blueprint 1049589412723: 404 - {"code":"rest_no_route","message":"No route was found matching the URL and request method.","data":{"status":404}}
+2025-09-23 21:13:18,369 - ERROR - Failed to update blueprint 1049589413302: 404 - {"code":"rest_no_route","message":"No route was found matching the URL and request method.","data":{"status":404}}
+2025-09-23 21:13:18,586 - ERROR - Failed to update blueprint 1049589451922: 404 - {"code":"rest_no_route","message":"No route was found matching the URL and request method.","data":{"status":404}}
+2025-09-23 21:13:18,848 - ERROR - Failed to update blueprint 1048892818270: 404 - {"code":"rest_no_route","message":"No route was found matching the URL and request method.","data":{"status":404}}
+2025-09-23 21:13:18,851 - INFO - Processed blueprint 1/341
+2025-09-23 21:13:18,851 - INFO - Processed blueprint 2/341
+2025-09-23 21:13:18,852 - INFO - Processed blueprint 3/341
+2025-09-23 21:13:18,852 - INFO - Processed blueprint 4/341
+2025-09-23 21:13:18,852 - INFO - Processed blueprint 5/341
+2025-09-23 21:13:18,852 - INFO - Processed blueprint 6/341
+2025-09-23 21:13:18,852 - INFO - Processed blueprint 7/341
+2025-09-23 21:13:18,852 - INFO - Processed blueprint 8/341
+2025-09-23 21:13:18,852 - INFO - Processed blueprint 9/341
+2025-09-23 21:13:18,853 - INFO - Processed blueprint 10/341
+2025-09-23 21:13:18,853 - INFO - Processed blueprint 11/341
+2025-09-23 21:13:18,853 - INFO - Processed blueprint 12/341
+2025-09-23 21:13:18,853 - INFO - Processed blueprint 13/341
+2025-09-23 21:13:18,853 - INFO - Processed blueprint 14/341
+2025-09-23 21:13:18,853 - INFO - Processed blueprint 15/341
+2025-09-23 21:13:18,853 - INFO - Processed blueprint 16/341
+2025-09-23 21:13:18,853 - INFO - Processed blueprint 17/341
+2025-09-23 21:13:18,853 - INFO - Processed blueprint 18/341
+2025-09-23 21:13:18,853 - INFO - Processed blueprint 19/341
+2025-09-23 21:13:18,853 - INFO - Processed blueprint 20/341
+2025-09-23 21:13:18,853 - INFO - Processed blueprint 21/341
+2025-09-23 21:13:18,853 - INFO - Processed blueprint 22/341
+2025-09-23 21:13:18,853 - INFO - Processed blueprint 23/341
+2025-09-23 21:13:18,854 - INFO - Processed blueprint 24/341
+2025-09-23 21:13:18,854 - INFO - Processed blueprint 25/341
+2025-09-23 21:13:18,854 - INFO - Processed blueprint 26/341
+2025-09-23 21:13:18,854 - INFO - Processed blueprint 27/341
+2025-09-23 21:13:18,854 - INFO - Processed blueprint 28/341
+2025-09-23 21:13:18,854 - INFO - Processed blueprint 29/341
+2025-09-23 21:13:18,854 - INFO - Processed blueprint 30/341
+2025-09-23 21:13:18,854 - INFO - Processed blueprint 31/341
+2025-09-23 21:13:18,854 - INFO - Processed blueprint 32/341
+2025-09-23 21:13:18,854 - INFO - Processed blueprint 33/341
+2025-09-23 21:13:18,854 - INFO - Processed blueprint 34/341
+2025-09-23 21:13:18,854 - INFO - Processed blueprint 35/341
+2025-09-23 21:13:18,854 - INFO - Processed blueprint 36/341
+2025-09-23 21:13:18,854 - INFO - Processed blueprint 37/341
+2025-09-23 21:13:18,854 - INFO - Processed blueprint 38/341
+2025-09-23 21:13:18,854 - INFO - Processed blueprint 39/341
+2025-09-23 21:13:18,855 - INFO - Processed blueprint 40/341
+2025-09-23 21:13:18,855 - INFO - Processed blueprint 41/341
+2025-09-23 21:13:18,855 - INFO - Processed blueprint 42/341
+2025-09-23 21:13:18,855 - INFO - Processed blueprint 43/341
+2025-09-23 21:13:18,855 - INFO - Processed blueprint 44/341
+2025-09-23 21:13:18,855 - INFO - Processed blueprint 45/341
+2025-09-23 21:13:18,855 - INFO - Processed blueprint 46/341
+2025-09-23 21:13:18,855 - INFO - Processed blueprint 47/341
+2025-09-23 21:13:18,855 - INFO - Processed blueprint 48/341
+2025-09-23 21:13:18,855 - INFO - Processed blueprint 49/341
+2025-09-23 21:13:18,855 - INFO - Processed blueprint 50/341
+2025-09-23 21:13:18,855 - INFO - Processed blueprint 51/341
+2025-09-23 21:13:18,855 - INFO - Processed blueprint 52/341
+2025-09-23 21:13:18,855 - INFO - Processed blueprint 53/341
+2025-09-23 21:13:18,855 - INFO - Processed blueprint 54/341
+2025-09-23 21:13:18,855 - INFO - Processed blueprint 55/341
+2025-09-23 21:13:18,855 - INFO - Processed blueprint 56/341
+2025-09-23 21:13:18,855 - INFO - Processed blueprint 57/341
+2025-09-23 21:13:18,855 - INFO - Processed blueprint 58/341
+2025-09-23 21:13:18,855 - INFO - Processed blueprint 59/341
+2025-09-23 21:13:18,855 - INFO - Processed blueprint 60/341
+2025-09-23 21:13:18,855 - INFO - Processed blueprint 61/341
+2025-09-23 21:13:18,855 - INFO - Processed blueprint 62/341
+2025-09-23 21:13:18,855 - INFO - Processed blueprint 63/341
+2025-09-23 21:13:18,855 - INFO - Processed blueprint 64/341
+2025-09-23 21:13:18,855 - INFO - Processed blueprint 65/341
+2025-09-23 21:13:18,855 - INFO - Processed blueprint 66/341
+2025-09-23 21:13:18,855 - INFO - Processed blueprint 67/341
+2025-09-23 21:13:18,855 - INFO - Processed blueprint 68/341
+2025-09-23 21:13:18,855 - INFO - Processed blueprint 69/341
+2025-09-23 21:13:18,855 - INFO - Processed blueprint 70/341
+2025-09-23 21:13:18,856 - INFO - Processed blueprint 71/341
+2025-09-23 21:13:18,856 - INFO - Processed blueprint 72/341
+2025-09-23 21:13:18,856 - INFO - Processed blueprint 73/341
+2025-09-23 21:13:18,856 - INFO - Processed blueprint 74/341
+2025-09-23 21:13:18,856 - INFO - Processed blueprint 75/341
+2025-09-23 21:13:18,856 - INFO - Processed blueprint 76/341
+2025-09-23 21:13:18,856 - INFO - Processed blueprint 77/341
+2025-09-23 21:13:18,856 - INFO - Processed blueprint 78/341
+2025-09-23 21:13:18,856 - INFO - Processed blueprint 79/341
+2025-09-23 21:13:18,856 - INFO - Processed blueprint 80/341
+2025-09-23 21:13:18,856 - INFO - Processed blueprint 81/341
+2025-09-23 21:13:18,856 - INFO - Processed blueprint 82/341
+2025-09-23 21:13:18,856 - INFO - Processed blueprint 83/341
+2025-09-23 21:13:18,856 - INFO - Processed blueprint 84/341
+2025-09-23 21:13:18,856 - INFO - Processed blueprint 85/341
+2025-09-23 21:13:18,856 - INFO - Processed blueprint 86/341
+2025-09-23 21:13:18,856 - INFO - Processed blueprint 87/341
+2025-09-23 21:13:18,856 - INFO - Processed blueprint 88/341
+2025-09-23 21:13:18,856 - INFO - Processed blueprint 89/341
+2025-09-23 21:13:18,856 - INFO - Processed blueprint 90/341
+2025-09-23 21:13:18,856 - INFO - Processed blueprint 91/341
+2025-09-23 21:13:18,856 - INFO - Processed blueprint 92/341
+2025-09-23 21:13:18,856 - INFO - Processed blueprint 93/341
+2025-09-23 21:13:18,856 - INFO - Processed blueprint 94/341
+2025-09-23 21:13:18,856 - INFO - Processed blueprint 95/341
+2025-09-23 21:13:18,856 - INFO - Processed blueprint 96/341
+2025-09-23 21:13:18,856 - INFO - Processed blueprint 97/341
+2025-09-23 21:13:18,856 - INFO - Processed blueprint 98/341
+2025-09-23 21:13:18,856 - INFO - Processed blueprint 99/341
+2025-09-23 21:13:18,856 - INFO - Processed blueprint 100/341
+2025-09-23 21:13:18,856 - INFO - Processed blueprint 101/341
+2025-09-23 21:13:18,857 - INFO - Processed blueprint 102/341
+2025-09-23 21:13:18,857 - INFO - Processed blueprint 103/341
+2025-09-23 21:13:18,857 - INFO - Processed blueprint 104/341
+2025-09-23 21:13:18,857 - INFO - Processed blueprint 105/341
+2025-09-23 21:13:18,857 - INFO - Processed blueprint 106/341
+2025-09-23 21:13:18,857 - INFO - Processed blueprint 107/341
+2025-09-23 21:13:18,857 - INFO - Processed blueprint 108/341
+2025-09-23 21:13:18,857 - INFO - Processed blueprint 109/341
+2025-09-23 21:13:18,857 - INFO - Processed blueprint 110/341
+2025-09-23 21:13:18,857 - INFO - Processed blueprint 111/341
+2025-09-23 21:13:18,857 - INFO - Processed blueprint 112/341
+2025-09-23 21:13:18,857 - INFO - Processed blueprint 113/341
+2025-09-23 21:13:18,857 - INFO - Processed blueprint 114/341
+2025-09-23 21:13:18,857 - INFO - Processed blueprint 115/341
+2025-09-23 21:13:18,857 - INFO - Processed blueprint 116/341
+2025-09-23 21:13:18,857 - INFO - Processed blueprint 117/341
+2025-09-23 21:13:18,857 - INFO - Processed blueprint 118/341
+2025-09-23 21:13:18,857 - INFO - Processed blueprint 119/341
+2025-09-23 21:13:18,858 - INFO - Processed blueprint 120/341
+2025-09-23 21:13:18,858 - INFO - Processed blueprint 121/341
+2025-09-23 21:13:18,858 - INFO - Processed blueprint 122/341
+2025-09-23 21:13:18,858 - INFO - Processed blueprint 123/341
+2025-09-23 21:13:18,858 - INFO - Processed blueprint 124/341
+2025-09-23 21:13:18,858 - INFO - Processed blueprint 125/341
+2025-09-23 21:13:18,858 - INFO - Processed blueprint 126/341
+2025-09-23 21:13:18,858 - INFO - Processed blueprint 127/341
+2025-09-23 21:13:18,858 - INFO - Processed blueprint 128/341
+2025-09-23 21:13:18,858 - INFO - Processed blueprint 129/341
+2025-09-23 21:13:18,858 - INFO - Processed blueprint 130/341
+2025-09-23 21:13:18,858 - INFO - Processed blueprint 131/341
+2025-09-23 21:13:18,858 - INFO - Processed blueprint 132/341
+2025-09-23 21:13:18,858 - INFO - Processed blueprint 133/341
+2025-09-23 21:13:18,858 - INFO - Processed blueprint 134/341
+2025-09-23 21:13:18,858 - INFO - Processed blueprint 135/341
+2025-09-23 21:13:18,858 - INFO - Processed blueprint 136/341
+2025-09-23 21:13:18,858 - INFO - Processed blueprint 137/341
+2025-09-23 21:13:18,858 - INFO - Processed blueprint 138/341
+2025-09-23 21:13:18,858 - INFO - Processed blueprint 139/341
+2025-09-23 21:13:18,858 - INFO - Processed blueprint 140/341
+2025-09-23 21:13:18,858 - INFO - Processed blueprint 141/341
+2025-09-23 21:13:18,858 - INFO - Processed blueprint 142/341
+2025-09-23 21:13:18,858 - INFO - Processed blueprint 143/341
+2025-09-23 21:13:18,858 - INFO - Processed blueprint 144/341
+2025-09-23 21:13:18,858 - INFO - Processed blueprint 145/341
+2025-09-23 21:13:18,858 - INFO - Processed blueprint 146/341
+2025-09-23 21:13:18,858 - INFO - Processed blueprint 147/341
+2025-09-23 21:13:18,858 - INFO - Processed blueprint 148/341
+2025-09-23 21:13:18,858 - INFO - Processed blueprint 149/341
+2025-09-23 21:13:18,858 - INFO - Processed blueprint 150/341
+2025-09-23 21:13:18,858 - INFO - Processed blueprint 151/341
+2025-09-23 21:13:18,858 - INFO - Processed blueprint 152/341
+2025-09-23 21:13:18,859 - INFO - Processed blueprint 153/341
+2025-09-23 21:13:18,859 - INFO - Processed blueprint 154/341
+2025-09-23 21:13:18,859 - INFO - Processed blueprint 155/341
+2025-09-23 21:13:18,859 - INFO - Processed blueprint 156/341
+2025-09-23 21:13:18,859 - INFO - Processed blueprint 157/341
+2025-09-23 21:13:18,859 - INFO - Processed blueprint 158/341
+2025-09-23 21:13:18,859 - INFO - Processed blueprint 159/341
+2025-09-23 21:13:18,859 - INFO - Processed blueprint 160/341
+2025-09-23 21:13:18,859 - INFO - Processed blueprint 161/341
+2025-09-23 21:13:18,859 - INFO - Processed blueprint 162/341
+2025-09-23 21:13:18,859 - INFO - Processed blueprint 163/341
+2025-09-23 21:13:18,859 - INFO - Processed blueprint 164/341
+2025-09-23 21:13:18,859 - INFO - Processed blueprint 165/341
+2025-09-23 21:13:18,859 - INFO - Processed blueprint 166/341
+2025-09-23 21:13:18,859 - INFO - Processed blueprint 167/341
+2025-09-23 21:13:18,859 - INFO - Processed blueprint 168/341
+2025-09-23 21:13:18,859 - INFO - Processed blueprint 169/341
+2025-09-23 21:13:18,859 - INFO - Processed blueprint 170/341
+2025-09-23 21:13:18,859 - INFO - Processed blueprint 171/341
+2025-09-23 21:13:18,859 - INFO - Processed blueprint 172/341
+2025-09-23 21:13:18,859 - INFO - Processed blueprint 173/341
+2025-09-23 21:13:18,859 - INFO - Processed blueprint 174/341
+2025-09-23 21:13:18,859 - INFO - Processed blueprint 175/341
+2025-09-23 21:13:18,859 - INFO - Processed blueprint 176/341
+2025-09-23 21:13:18,859 - INFO - Processed blueprint 177/341
+2025-09-23 21:13:18,859 - INFO - Processed blueprint 178/341
+2025-09-23 21:13:18,859 - INFO - Processed blueprint 179/341
+2025-09-23 21:13:18,859 - INFO - Processed blueprint 180/341
+2025-09-23 21:13:18,859 - INFO - Processed blueprint 181/341
+2025-09-23 21:13:18,859 - INFO - Processed blueprint 182/341
+2025-09-23 21:13:18,859 - INFO - Processed blueprint 183/341
+2025-09-23 21:13:18,859 - INFO - Processed blueprint 184/341
+2025-09-23 21:13:18,860 - INFO - Processed blueprint 185/341
+2025-09-23 21:13:18,860 - INFO - Processed blueprint 186/341
+2025-09-23 21:13:18,860 - INFO - Processed blueprint 187/341
+2025-09-23 21:13:18,860 - INFO - Processed blueprint 188/341
+2025-09-23 21:13:18,860 - INFO - Processed blueprint 189/341
+2025-09-23 21:13:18,860 - INFO - Processed blueprint 190/341
+2025-09-23 21:13:18,860 - INFO - Processed blueprint 191/341
+2025-09-23 21:13:18,860 - INFO - Processed blueprint 192/341
+2025-09-23 21:13:18,860 - INFO - Processed blueprint 193/341
+2025-09-23 21:13:18,860 - INFO - Processed blueprint 194/341
+2025-09-23 21:13:18,860 - INFO - Processed blueprint 195/341
+2025-09-23 21:13:18,860 - INFO - Processed blueprint 196/341
+2025-09-23 21:13:18,860 - INFO - Processed blueprint 197/341
+2025-09-23 21:13:18,860 - INFO - Processed blueprint 198/341
+2025-09-23 21:13:18,860 - INFO - Processed blueprint 199/341
+2025-09-23 21:13:18,860 - INFO - Processed blueprint 200/341
+2025-09-23 21:13:18,860 - INFO - Processed blueprint 201/341
+2025-09-23 21:13:18,860 - INFO - Processed blueprint 202/341
+2025-09-23 21:13:18,860 - INFO - Processed blueprint 203/341
+2025-09-23 21:13:18,860 - INFO - Processed blueprint 204/341
+2025-09-23 21:13:18,860 - INFO - Processed blueprint 205/341
+2025-09-23 21:13:18,860 - INFO - Processed blueprint 206/341
+2025-09-23 21:13:18,860 - INFO - Processed blueprint 207/341
+2025-09-23 21:13:18,860 - INFO - Processed blueprint 208/341
+2025-09-23 21:13:18,860 - INFO - Processed blueprint 209/341
+2025-09-23 21:13:18,860 - INFO - Processed blueprint 210/341
+2025-09-23 21:13:18,860 - INFO - Processed blueprint 211/341
+2025-09-23 21:13:18,860 - INFO - Processed blueprint 212/341
+2025-09-23 21:13:18,860 - INFO - Processed blueprint 213/341
+2025-09-23 21:13:18,860 - INFO - Processed blueprint 214/341
+2025-09-23 21:13:18,860 - INFO - Processed blueprint 215/341
+2025-09-23 21:13:18,860 - INFO - Processed blueprint 216/341
+2025-09-23 21:13:18,861 - INFO - Processed blueprint 217/341
+2025-09-23 21:13:18,861 - INFO - Processed blueprint 218/341
+2025-09-23 21:13:18,861 - INFO - Processed blueprint 219/341
+2025-09-23 21:13:18,861 - INFO - Processed blueprint 220/341
+2025-09-23 21:13:18,861 - INFO - Processed blueprint 221/341
+2025-09-23 21:13:18,861 - INFO - Processed blueprint 222/341
+2025-09-23 21:13:18,861 - INFO - Processed blueprint 223/341
+2025-09-23 21:13:18,861 - INFO - Processed blueprint 224/341
+2025-09-23 21:13:18,861 - INFO - Processed blueprint 225/341
+2025-09-23 21:13:18,861 - INFO - Processed blueprint 226/341
+2025-09-23 21:13:18,861 - INFO - Processed blueprint 227/341
+2025-09-23 21:13:18,861 - INFO - Processed blueprint 228/341
+2025-09-23 21:13:18,861 - INFO - Processed blueprint 229/341
+2025-09-23 21:13:18,861 - INFO - Processed blueprint 230/341
+2025-09-23 21:13:18,861 - INFO - Processed blueprint 231/341
+2025-09-23 21:13:18,861 - INFO - Processed blueprint 232/341
+2025-09-23 21:13:18,861 - INFO - Processed blueprint 233/341
+2025-09-23 21:13:18,861 - INFO - Processed blueprint 234/341
+2025-09-23 21:13:18,861 - INFO - Processed blueprint 235/341
+2025-09-23 21:13:18,861 - INFO - Processed blueprint 236/341
+2025-09-23 21:13:18,861 - INFO - Processed blueprint 237/341
+2025-09-23 21:13:18,861 - INFO - Processed blueprint 238/341
+2025-09-23 21:13:18,861 - INFO - Processed blueprint 239/341
+2025-09-23 21:13:18,861 - INFO - Processed blueprint 240/341
+2025-09-23 21:13:18,861 - INFO - Processed blueprint 241/341
+2025-09-23 21:13:18,861 - INFO - Processed blueprint 242/341
+2025-09-23 21:13:18,861 - INFO - Processed blueprint 243/341
+2025-09-23 21:13:18,861 - INFO - Processed blueprint 244/341
+2025-09-23 21:13:18,861 - INFO - Processed blueprint 245/341
+2025-09-23 21:13:18,861 - INFO - Processed blueprint 246/341
+2025-09-23 21:13:18,861 - INFO - Processed blueprint 247/341
+2025-09-23 21:13:18,862 - INFO - Processed blueprint 248/341
+2025-09-23 21:13:18,862 - INFO - Processed blueprint 249/341
+2025-09-23 21:13:18,862 - INFO - Processed blueprint 250/341
+2025-09-23 21:13:18,862 - INFO - Processed blueprint 251/341
+2025-09-23 21:13:18,862 - INFO - Processed blueprint 252/341
+2025-09-23 21:13:18,862 - INFO - Processed blueprint 253/341
+2025-09-23 21:13:18,862 - INFO - Processed blueprint 254/341
+2025-09-23 21:13:18,862 - INFO - Processed blueprint 255/341
+2025-09-23 21:13:18,862 - INFO - Processed blueprint 256/341
+2025-09-23 21:13:18,862 - INFO - Processed blueprint 257/341
+2025-09-23 21:13:18,862 - INFO - Processed blueprint 258/341
+2025-09-23 21:13:18,862 - INFO - Processed blueprint 259/341
+2025-09-23 21:13:18,862 - INFO - Processed blueprint 260/341
+2025-09-23 21:13:18,862 - INFO - Processed blueprint 261/341
+2025-09-23 21:13:18,862 - INFO - Processed blueprint 262/341
+2025-09-23 21:13:18,862 - INFO - Processed blueprint 263/341
+2025-09-23 21:13:18,862 - INFO - Processed blueprint 264/341
+2025-09-23 21:13:18,862 - INFO - Processed blueprint 265/341
+2025-09-23 21:13:18,862 - INFO - Processed blueprint 266/341
+2025-09-23 21:13:18,862 - INFO - Processed blueprint 267/341
+2025-09-23 21:13:18,862 - INFO - Processed blueprint 268/341
+2025-09-23 21:13:18,862 - INFO - Processed blueprint 269/341
+2025-09-23 21:13:18,862 - INFO - Processed blueprint 270/341
+2025-09-23 21:13:18,862 - INFO - Processed blueprint 271/341
+2025-09-23 21:13:18,862 - INFO - Processed blueprint 272/341
+2025-09-23 21:13:18,862 - INFO - Processed blueprint 273/341
+2025-09-23 21:13:18,862 - INFO - Processed blueprint 274/341
+2025-09-23 21:13:18,862 - INFO - Processed blueprint 275/341
+2025-09-23 21:13:18,862 - INFO - Processed blueprint 276/341
+2025-09-23 21:13:18,862 - INFO - Processed blueprint 277/341
+2025-09-23 21:13:18,862 - INFO - Processed blueprint 278/341
+2025-09-23 21:13:18,863 - INFO - Processed blueprint 279/341
+2025-09-23 21:13:18,863 - INFO - Processed blueprint 280/341
+2025-09-23 21:13:18,863 - INFO - Processed blueprint 281/341
+2025-09-23 21:13:18,863 - INFO - Processed blueprint 282/341
+2025-09-23 21:13:18,863 - INFO - Processed blueprint 283/341
+2025-09-23 21:13:18,863 - INFO - Processed blueprint 284/341
+2025-09-23 21:13:18,863 - INFO - Processed blueprint 285/341
+2025-09-23 21:13:18,863 - INFO - Processed blueprint 286/341
+2025-09-23 21:13:18,863 - INFO - Processed blueprint 287/341
+2025-09-23 21:13:18,863 - INFO - Processed blueprint 288/341
+2025-09-23 21:13:18,863 - INFO - Processed blueprint 289/341
+2025-09-23 21:13:18,863 - INFO - Processed blueprint 290/341
+2025-09-23 21:13:18,863 - INFO - Processed blueprint 291/341
+2025-09-23 21:13:18,863 - INFO - Processed blueprint 292/341
+2025-09-23 21:13:18,863 - INFO - Processed blueprint 293/341
+2025-09-23 21:13:18,863 - INFO - Processed blueprint 294/341
+2025-09-23 21:13:18,863 - INFO - Processed blueprint 295/341
+2025-09-23 21:13:18,863 - INFO - Processed blueprint 296/341
+2025-09-23 21:13:18,863 - INFO - Processed blueprint 297/341
+2025-09-23 21:13:18,863 - INFO - Processed blueprint 298/341
+2025-09-23 21:13:18,864 - INFO - Processed blueprint 299/341
+2025-09-23 21:13:18,864 - INFO - Processed blueprint 300/341
+2025-09-23 21:13:18,864 - INFO - Processed blueprint 301/341
+2025-09-23 21:13:18,864 - INFO - Processed blueprint 302/341
+2025-09-23 21:13:18,864 - INFO - Processed blueprint 303/341
+2025-09-23 21:13:18,864 - INFO - Processed blueprint 304/341
+2025-09-23 21:13:18,864 - INFO - Processed blueprint 305/341
+2025-09-23 21:13:18,864 - INFO - Processed blueprint 306/341
+2025-09-23 21:13:18,864 - INFO - Processed blueprint 307/341
+2025-09-23 21:13:18,864 - INFO - Processed blueprint 308/341
+2025-09-23 21:13:18,864 - INFO - Processed blueprint 309/341
+2025-09-23 21:13:18,864 - INFO - Processed blueprint 310/341
+2025-09-23 21:13:18,864 - INFO - Processed blueprint 311/341
+2025-09-23 21:13:18,864 - INFO - Processed blueprint 312/341
+2025-09-23 21:13:18,864 - INFO - Processed blueprint 313/341
+2025-09-23 21:13:18,864 - INFO - Processed blueprint 314/341
+2025-09-23 21:13:18,864 - INFO - Processed blueprint 315/341
+2025-09-23 21:13:18,864 - INFO - Processed blueprint 316/341
+2025-09-23 21:13:18,864 - INFO - Processed blueprint 317/341
+2025-09-23 21:13:18,864 - INFO - Processed blueprint 318/341
+2025-09-23 21:13:18,864 - INFO - Processed blueprint 319/341
+2025-09-23 21:13:18,864 - INFO - Processed blueprint 320/341
+2025-09-23 21:13:18,864 - INFO - Processed blueprint 321/341
+2025-09-23 21:13:18,864 - INFO - Processed blueprint 322/341
+2025-09-23 21:13:18,864 - INFO - Processed blueprint 323/341
+2025-09-23 21:13:18,864 - INFO - Processed blueprint 324/341
+2025-09-23 21:13:18,864 - INFO - Processed blueprint 325/341
+2025-09-23 21:13:18,864 - INFO - Processed blueprint 326/341
+2025-09-23 21:13:18,864 - INFO - Processed blueprint 327/341
+2025-09-23 21:13:18,864 - INFO - Processed blueprint 328/341
+2025-09-23 21:13:18,865 - INFO - Processed blueprint 329/341
+2025-09-23 21:13:18,865 - INFO - Processed blueprint 330/341
+2025-09-23 21:13:18,865 - INFO - Processed blueprint 331/341
+2025-09-23 21:13:18,865 - INFO - Processed blueprint 332/341
+2025-09-23 21:13:18,865 - INFO - Processed blueprint 333/341
+2025-09-23 21:13:18,865 - INFO - Processed blueprint 334/341
+2025-09-23 21:13:18,865 - INFO - Processed blueprint 335/341
+2025-09-23 21:13:18,865 - INFO - Processed blueprint 336/341
+2025-09-23 21:13:18,865 - INFO - Processed blueprint 337/341
+2025-09-23 21:13:18,865 - INFO - Processed blueprint 338/341
+2025-09-23 21:13:18,865 - INFO - Processed blueprint 339/341
+2025-09-23 21:13:18,865 - INFO - Processed blueprint 340/341
+2025-09-23 21:13:18,865 - INFO - Processed blueprint 341/341
+2025-09-23 21:13:18,865 - INFO - Blueprint processing completed for 341 blueprints in 122.78s
+2025-09-23 21:13:18,865 - INFO - Fetching corporation assets for 98092220...
+2025-09-23 21:13:19,137 - INFO - ESI authenticated fetch successful: /corporations/98092220/assets/ in 0.27s
+2025-09-23 21:13:19,137 - INFO - _fetch_esi_with_retry completed in 0.272s
+2025-09-23 21:13:19,138 - INFO - Fetched 1000 corporation assets
+2025-09-23 21:13:19,139 - INFO - Processing 1000 corp assets for blueprint extraction...
+2025-09-23 21:13:19,173 - INFO - ESI public fetch successful: /universe/types/11379 in 0.03s
+2025-09-23 21:13:19,173 - INFO - _fetch_esi_with_retry completed in 0.034s
+2025-09-23 21:13:19,208 - INFO - ESI public fetch successful: /universe/types/31083 in 0.03s
+2025-09-23 21:13:19,208 - INFO - _fetch_esi_with_retry completed in 0.035s
+2025-09-23 21:13:19,246 - INFO - ESI public fetch successful: /universe/types/24438 in 0.04s
+2025-09-23 21:13:19,246 - INFO - _fetch_esi_with_retry completed in 0.037s
+2025-09-23 21:13:19,278 - INFO - ESI public fetch successful: /universe/types/13984 in 0.03s
+2025-09-23 21:13:19,278 - INFO - _fetch_esi_with_retry completed in 0.032s
+2025-09-23 21:13:19,312 - INFO - ESI public fetch successful: /universe/types/29094 in 0.03s
+2025-09-23 21:13:19,313 - INFO - _fetch_esi_with_retry completed in 0.035s
+2025-09-23 21:13:19,350 - INFO - ESI public fetch successful: /universe/types/87235 in 0.04s
+2025-09-23 21:13:19,350 - INFO - _fetch_esi_with_retry completed in 0.037s
+2025-09-23 21:13:19,384 - INFO - ESI public fetch successful: /universe/types/27 in 0.03s
+2025-09-23 21:13:19,385 - INFO - _fetch_esi_with_retry completed in 0.034s
+2025-09-23 21:13:19,420 - INFO - ESI public fetch successful: /universe/types/5839 in 0.03s
+2025-09-23 21:13:19,421 - INFO - _fetch_esi_with_retry completed in 0.036s
+2025-09-23 21:13:19,523 - INFO - ESI public fetch successful: /universe/types/3552 in 0.10s
+2025-09-23 21:13:19,524 - INFO - _fetch_esi_with_retry completed in 0.102s
+2025-09-23 21:13:19,560 - INFO - ESI public fetch successful: /universe/types/2913 in 0.04s
+2025-09-23 21:13:19,560 - INFO - _fetch_esi_with_retry completed in 0.036s
+2025-09-23 21:13:19,595 - INFO - ESI public fetch successful: /universe/types/48121 in 0.03s
+2025-09-23 21:13:19,596 - INFO - _fetch_esi_with_retry completed in 0.035s
+2025-09-23 21:13:19,630 - INFO - ESI public fetch successful: /universe/types/9521 in 0.03s
+2025-09-23 21:13:19,631 - INFO - _fetch_esi_with_retry completed in 0.035s
+2025-09-23 21:13:19,701 - INFO - ESI public fetch successful: /universe/types/55533 in 0.07s
+2025-09-23 21:13:19,702 - INFO - _fetch_esi_with_retry completed in 0.071s
+2025-09-23 21:13:19,735 - INFO - ESI public fetch successful: /universe/types/29070 in 0.03s
+2025-09-23 21:13:19,738 - INFO - _fetch_esi_with_retry completed in 0.035s
+2025-09-23 21:13:19,773 - INFO - ESI public fetch successful: /universe/types/88176 in 0.04s
+2025-09-23 21:13:19,774 - INFO - _fetch_esi_with_retry completed in 0.035s
+2025-09-23 21:13:19,806 - INFO - ESI public fetch successful: /universe/types/40520 in 0.03s
+2025-09-23 21:13:19,807 - INFO - _fetch_esi_with_retry completed in 0.032s
+2025-09-23 21:13:19,840 - INFO - ESI public fetch successful: /universe/types/55557 in 0.03s
+2025-09-23 21:13:19,841 - INFO - _fetch_esi_with_retry completed in 0.034s
+2025-09-23 21:13:19,877 - INFO - ESI public fetch successful: /universe/types/32772 in 0.04s
+2025-09-23 21:13:19,878 - INFO - _fetch_esi_with_retry completed in 0.037s
+2025-09-23 21:13:19,922 - INFO - ESI public fetch successful: /universe/types/81077 in 0.04s
+2025-09-23 21:13:19,922 - INFO - _fetch_esi_with_retry completed in 0.044s
+2025-09-23 21:13:19,959 - INFO - ESI public fetch successful: /universe/types/88211 in 0.04s
+2025-09-23 21:13:19,959 - INFO - _fetch_esi_with_retry completed in 0.036s
+2025-09-23 21:13:20,077 - INFO - ESI public fetch successful: /universe/types/263 in 0.12s
+2025-09-23 21:13:20,078 - INFO - _fetch_esi_with_retry completed in 0.118s
+2025-09-23 21:13:20,143 - INFO - ESI public fetch successful: /universe/types/529 in 0.06s
+2025-09-23 21:13:20,143 - INFO - _fetch_esi_with_retry completed in 0.065s
+2025-09-23 21:13:20,180 - INFO - ESI public fetch successful: /universe/types/12709 in 0.04s
+2025-09-23 21:13:20,180 - INFO - _fetch_esi_with_retry completed in 0.037s
+2025-09-23 21:13:20,216 - INFO - ESI public fetch successful: /universe/types/3837 in 0.03s
+2025-09-23 21:13:20,216 - INFO - _fetch_esi_with_retry completed in 0.036s
+2025-09-23 21:13:20,249 - INFO - ESI public fetch successful: /universe/types/30906 in 0.03s
+2025-09-23 21:13:20,249 - INFO - _fetch_esi_with_retry completed in 0.033s
+2025-09-23 21:13:20,286 - INFO - ESI public fetch successful: /universe/types/4409 in 0.04s
+2025-09-23 21:13:20,287 - INFO - _fetch_esi_with_retry completed in 0.037s
+2025-09-23 21:13:20,321 - INFO - ESI public fetch successful: /universe/types/16243 in 0.03s
+2025-09-23 21:13:20,322 - INFO - _fetch_esi_with_retry completed in 0.035s
+2025-09-23 21:13:20,363 - INFO - ESI public fetch successful: /universe/types/30420 in 0.04s
+2025-09-23 21:13:20,364 - INFO - _fetch_esi_with_retry completed in 0.042s
+2025-09-23 21:13:20,401 - INFO - ESI public fetch successful: /universe/types/240 in 0.04s
+2025-09-23 21:13:20,401 - INFO - _fetch_esi_with_retry completed in 0.037s
+2025-09-23 21:13:20,446 - INFO - ESI public fetch successful: /universe/types/526 in 0.04s
+2025-09-23 21:13:20,447 - INFO - _fetch_esi_with_retry completed in 0.045s
+2025-09-23 21:13:20,480 - INFO - ESI public fetch successful: /universe/types/17352 in 0.03s
+2025-09-23 21:13:20,481 - INFO - _fetch_esi_with_retry completed in 0.034s
+2025-09-23 21:13:20,613 - INFO - ESI public fetch successful: /universe/types/17328 in 0.13s
+2025-09-23 21:13:20,614 - INFO - _fetch_esi_with_retry completed in 0.133s
+2025-09-23 21:13:20,650 - INFO - ESI public fetch successful: /universe/types/29084 in 0.04s
+2025-09-23 21:13:20,650 - INFO - _fetch_esi_with_retry completed in 0.036s
+2025-09-23 21:13:20,684 - INFO - ESI public fetch successful: /universe/types/45657 in 0.03s
+2025-09-23 21:13:20,685 - INFO - _fetch_esi_with_retry completed in 0.034s
+2025-09-23 21:13:20,720 - INFO - ESI public fetch successful: /universe/types/17339 in 0.03s
+2025-09-23 21:13:20,720 - INFO - _fetch_esi_with_retry completed in 0.035s
+2025-09-23 21:13:20,757 - INFO - ESI public fetch successful: /universe/types/17341 in 0.04s
+2025-09-23 21:13:20,758 - INFO - _fetch_esi_with_retry completed in 0.037s
+2025-09-23 21:13:20,810 - INFO - ESI public fetch successful: /universe/types/54292 in 0.05s
+2025-09-23 21:13:20,811 - INFO - _fetch_esi_with_retry completed in 0.052s
+2025-09-23 21:13:20,844 - INFO - ESI public fetch successful: /universe/types/2488 in 0.03s
+2025-09-23 21:13:20,845 - INFO - _fetch_esi_with_retry completed in 0.034s
+2025-09-23 21:13:20,882 - INFO - ESI public fetch successful: /universe/types/2254 in 0.04s
+2025-09-23 21:13:20,883 - INFO - _fetch_esi_with_retry completed in 0.038s
+2025-09-23 21:13:20,915 - INFO - ESI public fetch successful: /universe/types/82184 in 0.03s
+2025-09-23 21:13:20,915 - INFO - _fetch_esi_with_retry completed in 0.032s
+2025-09-23 21:13:20,950 - INFO - ESI public fetch successful: /universe/types/7083 in 0.03s
+2025-09-23 21:13:20,952 - INFO - _fetch_esi_with_retry completed in 0.036s
+2025-09-23 21:13:20,986 - INFO - ESI public fetch successful: /universe/types/16373 in 0.03s
+2025-09-23 21:13:20,986 - INFO - _fetch_esi_with_retry completed in 0.034s
+2025-09-23 21:13:21,101 - INFO - ESI public fetch successful: /universe/types/5755 in 0.12s
+2025-09-23 21:13:21,102 - INFO - _fetch_esi_with_retry completed in 0.116s
+2025-09-23 21:13:21,138 - INFO - ESI public fetch successful: /universe/types/6925 in 0.04s
+2025-09-23 21:13:21,139 - INFO - _fetch_esi_with_retry completed in 0.037s
+2025-09-23 21:13:21,172 - INFO - ESI public fetch successful: /universe/types/16357 in 0.03s
+2025-09-23 21:13:21,173 - INFO - _fetch_esi_with_retry completed in 0.033s
+2025-09-23 21:13:21,206 - INFO - ESI public fetch successful: /universe/types/16499 in 0.03s
+2025-09-23 21:13:21,206 - INFO - _fetch_esi_with_retry completed in 0.033s
+2025-09-23 21:13:21,244 - INFO - ESI public fetch successful: /universe/types/3356 in 0.04s
+2025-09-23 21:13:21,245 - INFO - _fetch_esi_with_retry completed in 0.039s
+2025-09-23 21:13:21,280 - INFO - ESI public fetch successful: /universe/types/56131 in 0.03s
+2025-09-23 21:13:21,280 - INFO - _fetch_esi_with_retry completed in 0.035s
+2025-09-23 21:13:21,314 - INFO - ESI public fetch successful: /universe/types/47905 in 0.03s
+2025-09-23 21:13:21,315 - INFO - _fetch_esi_with_retry completed in 0.035s
+2025-09-23 21:13:21,349 - INFO - ESI public fetch successful: /universe/types/47829 in 0.03s
+2025-09-23 21:13:21,349 - INFO - _fetch_esi_with_retry completed in 0.034s
+2025-09-23 21:13:21,384 - INFO - ESI public fetch successful: /universe/types/47897 in 0.03s
+2025-09-23 21:13:21,384 - INFO - _fetch_esi_with_retry completed in 0.035s
+2025-09-23 21:13:21,468 - INFO - ESI public fetch successful: /universe/types/34201 in 0.08s
+2025-09-23 21:13:21,469 - INFO - _fetch_esi_with_retry completed in 0.084s
+2025-09-23 21:13:21,505 - INFO - ESI public fetch successful: /universe/types/9826 in 0.04s
+2025-09-23 21:13:21,505 - INFO - _fetch_esi_with_retry completed in 0.036s
+2025-09-23 21:13:21,626 - INFO - ESI public fetch successful: /universe/types/23143 in 0.12s
+2025-09-23 21:13:21,626 - INFO - _fetch_esi_with_retry completed in 0.121s
+2025-09-23 21:13:21,661 - INFO - ESI public fetch successful: /universe/types/21079 in 0.03s
+2025-09-23 21:13:21,661 - INFO - _fetch_esi_with_retry completed in 0.035s
+2025-09-23 21:13:21,694 - INFO - ESI public fetch successful: /universe/types/42909 in 0.03s
+2025-09-23 21:13:21,695 - INFO - _fetch_esi_with_retry completed in 0.033s
+2025-09-23 21:13:21,730 - INFO - ESI public fetch successful: /universe/types/37 in 0.04s
+2025-09-23 21:13:21,731 - INFO - _fetch_esi_with_retry completed in 0.036s
+2025-09-23 21:13:21,731 - INFO - Processed 1000/1000 assets...
+2025-09-23 21:13:21,731 - INFO - Completed asset processing: found 0 BPO blueprints in 1000 assets
+2025-09-23 21:13:21,731 - INFO - No blueprints found in corporation assets
+2025-09-23 21:13:22,038 - INFO - ESI authenticated fetch successful: /corporations/98092220/industry/jobs/ in 0.31s
+2025-09-23 21:13:22,038 - INFO - _fetch_esi_with_retry completed in 0.307s
+2025-09-23 21:13:22,039 - INFO - Corporation industry job blueprints: 82 items
+2025-09-23 21:13:22,039 - INFO - Starting async processing of 82 blueprints
+2025-09-23 21:13:36,216 - ERROR - Failed to update blueprint 1049576632228 from corp_industry_job: 404 - {"code":"rest_no_route","message":"No route was found matching the URL and request method.","data":{"status":404}}
+2025-09-23 21:13:36,428 - ERROR - Failed to update blueprint 1049576558540 from corp_industry_job: 404 - {"code":"rest_no_route","message":"No route was found matching the URL and request method.","data":{"status":404}}
+2025-09-23 21:13:36,577 - ERROR - Failed to update blueprint 1049576631501 from corp_industry_job: 404 - {"code":"rest_no_route","message":"No route was found matching the URL and request method.","data":{"status":404}}
+2025-09-23 21:13:36,701 - ERROR - Failed to update blueprint 1049576018885 from corp_industry_job: 404 - {"code":"rest_no_route","message":"No route was found matching the URL and request method.","data":{"status":404}}
+2025-09-23 21:13:36,927 - ERROR - Failed to update blueprint 1049576559320 from corp_industry_job: 404 - {"code":"rest_no_route","message":"No route was found matching the URL and request method.","data":{"status":404}}
+2025-09-23 21:13:37,061 - ERROR - Failed to update blueprint 1049576016678 from corp_industry_job: 404 - {"code":"rest_no_route","message":"No route was found matching the URL and request method.","data":{"status":404}}
+2025-09-23 21:13:37,218 - ERROR - Failed to update blueprint 1049576555733 from corp_industry_job: 404 - {"code":"rest_no_route","message":"No route was found matching the URL and request method.","data":{"status":404}}
+2025-09-23 21:13:37,450 - ERROR - Failed to update blueprint 1049576017671 from corp_industry_job: 404 - {"code":"rest_no_route","message":"No route was found matching the URL and request method.","data":{"status":404}}
+2025-09-23 21:13:37,606 - ERROR - Failed to update blueprint 1049576018563 from corp_industry_job: 404 - {"code":"rest_no_route","message":"No route was found matching the URL and request method.","data":{"status":404}}
+2025-09-23 21:13:37,737 - ERROR - Failed to update blueprint 1049576017392 from corp_industry_job: 404 - {"code":"rest_no_route","message":"No route was found matching the URL and request method.","data":{"status":404}}
+2025-09-23 21:13:37,967 - ERROR - Failed to update blueprint 1049576556736 from corp_industry_job: 404 - {"code":"rest_no_route","message":"No route was found matching the URL and request method.","data":{"status":404}}
+2025-09-23 21:13:38,094 - ERROR - Failed to update blueprint 1049576018142 from corp_industry_job: 404 - {"code":"rest_no_route","message":"No route was found matching the URL and request method.","data":{"status":404}}
+2025-09-23 21:13:38,253 - ERROR - Failed to update blueprint 1049576017866 from corp_industry_job: 404 - {"code":"rest_no_route","message":"No route was found matching the URL and request method.","data":{"status":404}}
+2025-09-23 21:13:38,489 - ERROR - Failed to update blueprint 1049576630884 from corp_industry_job: 404 - {"code":"rest_no_route","message":"No route was found matching the URL and request method.","data":{"status":404}}
+2025-09-23 21:13:38,635 - ERROR - Failed to update blueprint 1049576629954 from corp_industry_job: 404 - {"code":"rest_no_route","message":"No route was found matching the URL and request method.","data":{"status":404}}
+2025-09-23 21:13:38,772 - ERROR - Failed to update blueprint 1049576019604 from corp_industry_job: 404 - {"code":"rest_no_route","message":"No route was found matching the URL and request method.","data":{"status":404}}
+2025-09-23 21:13:39,027 - ERROR - Failed to update blueprint 1049576557386 from corp_industry_job: 404 - {"code":"rest_no_route","message":"No route was found matching the URL and request method.","data":{"status":404}}
+2025-09-23 21:13:39,163 - ERROR - Failed to update blueprint 1049574869338 from corp_industry_job: 404 - {"code":"rest_no_route","message":"No route was found matching the URL and request method.","data":{"status":404}}
+2025-09-23 21:13:39,304 - ERROR - Failed to update blueprint 1049576627404 from corp_industry_job: 404 - {"code":"rest_no_route","message":"No route was found matching the URL and request method.","data":{"status":404}}
+2025-09-23 21:13:39,525 - ERROR - Failed to update blueprint 1049574582590 from corp_industry_job: 404 - {"code":"rest_no_route","message":"No route was found matching the URL and request method.","data":{"status":404}}
+2025-09-23 21:13:39,681 - ERROR - Failed to update blueprint 1049574677299 from corp_industry_job: 404 - {"code":"rest_no_route","message":"No route was found matching the URL and request method.","data":{"status":404}}
+2025-09-23 21:13:40,008 - ERROR - Failed to update blueprint 1049576019228 from corp_industry_job: 404 - {"code":"rest_no_route","message":"No route was found matching the URL and request method.","data":{"status":404}}
+2025-09-23 21:13:40,133 - ERROR - Failed to update blueprint 1049574725214 from corp_industry_job: 404 - {"code":"rest_no_route","message":"No route was found matching the URL and request method.","data":{"status":404}}
+2025-09-23 21:13:40,294 - ERROR - Failed to update blueprint 1049574755244 from corp_industry_job: 404 - {"code":"rest_no_route","message":"No route was found matching the URL and request method.","data":{"status":404}}
+2025-09-23 21:13:40,500 - ERROR - Failed to update blueprint 1049574763305 from corp_industry_job: 404 - {"code":"rest_no_route","message":"No route was found matching the URL and request method.","data":{"status":404}}
+2025-09-23 21:13:40,628 - ERROR - Failed to update blueprint 1049574759425 from corp_industry_job: 404 - {"code":"rest_no_route","message":"No route was found matching the URL and request method.","data":{"status":404}}
+2025-09-23 21:13:40,797 - ERROR - Failed to update blueprint 1049574751987 from corp_industry_job: 404 - {"code":"rest_no_route","message":"No route was found matching the URL and request method.","data":{"status":404}}
+2025-09-23 21:13:41,023 - ERROR - Failed to update blueprint 1049574756931 from corp_industry_job: 404 - {"code":"rest_no_route","message":"No route was found matching the URL and request method.","data":{"status":404}}
+2025-09-23 21:13:41,188 - ERROR - Failed to update blueprint 1049574579770 from corp_industry_job: 404 - {"code":"rest_no_route","message":"No route was found matching the URL and request method.","data":{"status":404}}
+2025-09-23 21:13:41,336 - ERROR - Failed to update blueprint 1049574688527 from corp_industry_job: 404 - {"code":"rest_no_route","message":"No route was found matching the URL and request method.","data":{"status":404}}
+2025-09-23 21:13:41,548 - ERROR - Failed to update blueprint 1049576548631 from corp_industry_job: 404 - {"code":"rest_no_route","message":"No route was found matching the URL and request method.","data":{"status":404}}
+2025-09-23 21:13:41,703 - ERROR - Failed to update blueprint 1049576549259 from corp_industry_job: 404 - {"code":"rest_no_route","message":"No route was found matching the URL and request method.","data":{"status":404}}
+2025-09-23 21:13:41,847 - ERROR - Failed to update blueprint 1048892615386 from corp_industry_job: 404 - {"code":"rest_no_route","message":"No route was found matching the URL and request method.","data":{"status":404}}
+2025-09-23 21:13:42,073 - ERROR - Failed to update blueprint 1049574442751 from corp_industry_job: 404 - {"code":"rest_no_route","message":"No route was found matching the URL and request method.","data":{"status":404}}
+2025-09-23 21:13:42,210 - ERROR - Failed to update blueprint 1049574447488 from corp_industry_job: 404 - {"code":"rest_no_route","message":"No route was found matching the URL and request method.","data":{"status":404}}
+2025-09-23 21:13:42,352 - ERROR - Failed to update blueprint 1049576546106 from corp_industry_job: 404 - {"code":"rest_no_route","message":"No route was found matching the URL and request method.","data":{"status":404}}
+2025-09-23 21:13:42,472 - ERROR - Failed to update blueprint 1049576547988 from corp_industry_job: 404 - {"code":"rest_no_route","message":"No route was found matching the URL and request method.","data":{"status":404}}
+2025-09-23 21:13:42,686 - ERROR - Failed to update blueprint 1049576541669 from corp_industry_job: 404 - {"code":"rest_no_route","message":"No route was found matching the URL and request method.","data":{"status":404}}
+2025-09-23 21:13:42,846 - ERROR - Failed to update blueprint 1049574451532 from corp_industry_job: 404 - {"code":"rest_no_route","message":"No route was found matching the URL and request method.","data":{"status":404}}
+2025-09-23 21:13:42,979 - ERROR - Failed to update blueprint 1049576048517 from corp_industry_job: 404 - {"code":"rest_no_route","message":"No route was found matching the URL and request method.","data":{"status":404}}
+2025-09-23 21:13:43,208 - ERROR - Failed to update blueprint 1049574764624 from corp_industry_job: 404 - {"code":"rest_no_route","message":"No route was found matching the URL and request method.","data":{"status":404}}
+2025-09-23 21:13:43,354 - ERROR - Failed to update blueprint 1049574788474 from corp_industry_job: 404 - {"code":"rest_no_route","message":"No route was found matching the URL and request method.","data":{"status":404}}
+2025-09-23 21:13:43,495 - ERROR - Failed to update blueprint 1049574781697 from corp_industry_job: 404 - {"code":"rest_no_route","message":"No route was found matching the URL and request method.","data":{"status":404}}
+2025-09-23 21:13:43,718 - ERROR - Failed to update blueprint 1049574767458 from corp_industry_job: 404 - {"code":"rest_no_route","message":"No route was found matching the URL and request method.","data":{"status":404}}
+2025-09-23 21:13:43,849 - ERROR - Failed to update blueprint 1049574805777 from corp_industry_job: 404 - {"code":"rest_no_route","message":"No route was found matching the URL and request method.","data":{"status":404}}
+2025-09-23 21:13:43,994 - ERROR - Failed to update blueprint 1049574783623 from corp_industry_job: 404 - {"code":"rest_no_route","message":"No route was found matching the URL and request method.","data":{"status":404}}
+2025-09-23 21:13:44,169 - ERROR - Failed to update blueprint 1049574769783 from corp_industry_job: 404 - {"code":"rest_no_route","message":"No route was found matching the URL and request method.","data":{"status":404}}
+2025-09-23 21:13:44,308 - ERROR - Failed to update blueprint 1049574814115 from corp_industry_job: 404 - {"code":"rest_no_route","message":"No route was found matching the URL and request method.","data":{"status":404}}
+2025-09-23 21:13:44,443 - ERROR - Failed to update blueprint 1049574816825 from corp_industry_job: 404 - {"code":"rest_no_route","message":"No route was found matching the URL and request method.","data":{"status":404}}
+2025-09-23 21:13:44,691 - ERROR - Failed to update blueprint 1049574768724 from corp_industry_job: 404 - {"code":"rest_no_route","message":"No route was found matching the URL and request method.","data":{"status":404}}
+2025-09-23 21:13:44,819 - ERROR - Failed to update blueprint 1049574771593 from corp_industry_job: 404 - {"code":"rest_no_route","message":"No route was found matching the URL and request method.","data":{"status":404}}
+2025-09-23 21:13:44,947 - ERROR - Failed to update blueprint 1049576044342 from corp_industry_job: 404 - {"code":"rest_no_route","message":"No route was found matching the URL and request method.","data":{"status":404}}
+2025-09-23 21:13:45,103 - ERROR - Failed to update blueprint 1049574786127 from corp_industry_job: 404 - {"code":"rest_no_route","message":"No route was found matching the URL and request method.","data":{"status":404}}
+2025-09-23 21:13:45,378 - ERROR - Failed to update blueprint 1049574812602 from corp_industry_job: 404 - {"code":"rest_no_route","message":"No route was found matching the URL and request method.","data":{"status":404}}
+2025-09-23 21:13:45,550 - ERROR - Failed to update blueprint 1049574790307 from corp_industry_job: 404 - {"code":"rest_no_route","message":"No route was found matching the URL and request method.","data":{"status":404}}
+2025-09-23 21:13:45,742 - ERROR - Failed to update blueprint 1049574753605 from corp_industry_job: 404 - {"code":"rest_no_route","message":"No route was found matching the URL and request method.","data":{"status":404}}
+2025-09-23 21:13:45,910 - ERROR - Failed to update blueprint 1049576047227 from corp_industry_job: 404 - {"code":"rest_no_route","message":"No route was found matching the URL and request method.","data":{"status":404}}
+2025-09-23 21:13:46,062 - ERROR - Failed to update blueprint 1049574815479 from corp_industry_job: 404 - {"code":"rest_no_route","message":"No route was found matching the URL and request method.","data":{"status":404}}
+2025-09-23 21:13:46,265 - ERROR - Failed to update blueprint 1049574762041 from corp_industry_job: 404 - {"code":"rest_no_route","message":"No route was found matching the URL and request method.","data":{"status":404}}
+2025-09-23 21:13:46,415 - ERROR - Failed to update blueprint 1049576541010 from corp_industry_job: 404 - {"code":"rest_no_route","message":"No route was found matching the URL and request method.","data":{"status":404}}
+2025-09-23 21:13:46,565 - ERROR - Failed to update blueprint 1049574760705 from corp_industry_job: 404 - {"code":"rest_no_route","message":"No route was found matching the URL and request method.","data":{"status":404}}
+2025-09-23 21:13:46,792 - ERROR - Failed to update blueprint 1049574784788 from corp_industry_job: 404 - {"code":"rest_no_route","message":"No route was found matching the URL and request method.","data":{"status":404}}
+2025-09-23 21:13:46,946 - ERROR - Failed to update blueprint 1049574787807 from corp_industry_job: 404 - {"code":"rest_no_route","message":"No route was found matching the URL and request method.","data":{"status":404}}
+2025-09-23 21:13:47,083 - ERROR - Failed to update blueprint 1049576045884 from corp_industry_job: 404 - {"code":"rest_no_route","message":"No route was found matching the URL and request method.","data":{"status":404}}
+2025-09-23 21:13:47,213 - ERROR - Failed to update blueprint 1049576547463 from corp_industry_job: 404 - {"code":"rest_no_route","message":"No route was found matching the URL and request method.","data":{"status":404}}
+2025-09-23 21:13:47,447 - ERROR - Failed to update blueprint 1049576540350 from corp_industry_job: 404 - {"code":"rest_no_route","message":"No route was found matching the URL and request method.","data":{"status":404}}
+2025-09-23 21:13:47,583 - ERROR - Failed to update blueprint 1049574690328 from corp_industry_job: 404 - {"code":"rest_no_route","message":"No route was found matching the URL and request method.","data":{"status":404}}
+2025-09-23 21:13:47,716 - ERROR - Failed to update blueprint 1049574687167 from corp_industry_job: 404 - {"code":"rest_no_route","message":"No route was found matching the URL and request method.","data":{"status":404}}
+2025-09-23 21:13:47,925 - ERROR - Failed to update blueprint 1049574685686 from corp_industry_job: 404 - {"code":"rest_no_route","message":"No route was found matching the URL and request method.","data":{"status":404}}
+2025-09-23 21:13:48,068 - ERROR - Failed to update blueprint 1049574682998 from corp_industry_job: 404 - {"code":"rest_no_route","message":"No route was found matching the URL and request method.","data":{"status":404}}
+2025-09-23 21:13:48,208 - ERROR - Failed to update blueprint 1049574705873 from corp_industry_job: 404 - {"code":"rest_no_route","message":"No route was found matching the URL and request method.","data":{"status":404}}
+2025-09-23 21:13:48,453 - ERROR - Failed to update blueprint 1049574712131 from corp_industry_job: 404 - {"code":"rest_no_route","message":"No route was found matching the URL and request method.","data":{"status":404}}
+2025-09-23 21:13:48,584 - ERROR - Failed to update blueprint 1049574692766 from corp_industry_job: 404 - {"code":"rest_no_route","message":"No route was found matching the URL and request method.","data":{"status":404}}
+2025-09-23 21:13:48,729 - ERROR - Failed to update blueprint 1049574708304 from corp_industry_job: 404 - {"code":"rest_no_route","message":"No route was found matching the URL and request method.","data":{"status":404}}
+2025-09-23 21:13:48,964 - ERROR - Failed to update blueprint 1049574695751 from corp_industry_job: 404 - {"code":"rest_no_route","message":"No route was found matching the URL and request method.","data":{"status":404}}
+2025-09-23 21:13:49,112 - ERROR - Failed to update blueprint 1049574694012 from corp_industry_job: 404 - {"code":"rest_no_route","message":"No route was found matching the URL and request method.","data":{"status":404}}
+2025-09-23 21:13:49,267 - ERROR - Failed to update blueprint 1049574449602 from corp_industry_job: 404 - {"code":"rest_no_route","message":"No route was found matching the URL and request method.","data":{"status":404}}
+2025-09-23 21:13:49,480 - ERROR - Failed to update blueprint 1049574444009 from corp_industry_job: 404 - {"code":"rest_no_route","message":"No route was found matching the URL and request method.","data":{"status":404}}
+2025-09-23 21:13:49,606 - ERROR - Failed to update blueprint 1049574317609 from corp_industry_job: 404 - {"code":"rest_no_route","message":"No route was found matching the URL and request method.","data":{"status":404}}
+2025-09-23 21:13:49,732 - ERROR - Failed to update blueprint 1049574103840 from corp_industry_job: 404 - {"code":"rest_no_route","message":"No route was found matching the URL and request method.","data":{"status":404}}
+2025-09-23 21:13:49,933 - ERROR - Failed to update blueprint 1049574314029 from corp_industry_job: 404 - {"code":"rest_no_route","message":"No route was found matching the URL and request method.","data":{"status":404}}
+2025-09-23 21:13:50,075 - ERROR - Failed to update blueprint 1049574441448 from corp_industry_job: 404 - {"code":"rest_no_route","message":"No route was found matching the URL and request method.","data":{"status":404}}
+2025-09-23 21:13:50,078 - INFO - Processed blueprint 1/82
+2025-09-23 21:13:50,079 - INFO - Processed blueprint 2/82
+2025-09-23 21:13:50,079 - INFO - Processed blueprint 3/82
+2025-09-23 21:13:50,079 - INFO - Processed blueprint 4/82
+2025-09-23 21:13:50,079 - INFO - Processed blueprint 5/82
+2025-09-23 21:13:50,079 - INFO - Processed blueprint 6/82
+2025-09-23 21:13:50,079 - INFO - Processed blueprint 7/82
+2025-09-23 21:13:50,079 - INFO - Processed blueprint 8/82
+2025-09-23 21:13:50,079 - INFO - Processed blueprint 9/82
+2025-09-23 21:13:50,079 - INFO - Processed blueprint 10/82
+2025-09-23 21:13:50,079 - INFO - Processed blueprint 11/82
+2025-09-23 21:13:50,079 - INFO - Processed blueprint 12/82
+2025-09-23 21:13:50,079 - INFO - Processed blueprint 13/82
+2025-09-23 21:13:50,079 - INFO - Processed blueprint 14/82
+2025-09-23 21:13:50,079 - INFO - Processed blueprint 15/82
+2025-09-23 21:13:50,079 - INFO - Processed blueprint 16/82
+2025-09-23 21:13:50,079 - INFO - Processed blueprint 17/82
+2025-09-23 21:13:50,079 - INFO - Processed blueprint 18/82
+2025-09-23 21:13:50,079 - INFO - Processed blueprint 19/82
+2025-09-23 21:13:50,079 - INFO - Processed blueprint 20/82
+2025-09-23 21:13:50,079 - INFO - Processed blueprint 21/82
+2025-09-23 21:13:50,079 - INFO - Processed blueprint 22/82
+2025-09-23 21:13:50,080 - INFO - Processed blueprint 23/82
+2025-09-23 21:13:50,080 - INFO - Processed blueprint 24/82
+2025-09-23 21:13:50,080 - INFO - Processed blueprint 25/82
+2025-09-23 21:13:50,080 - INFO - Processed blueprint 26/82
+2025-09-23 21:13:50,080 - INFO - Processed blueprint 27/82
+2025-09-23 21:13:50,080 - INFO - Processed blueprint 28/82
+2025-09-23 21:13:50,080 - INFO - Processed blueprint 29/82
+2025-09-23 21:13:50,080 - INFO - Processed blueprint 30/82
+2025-09-23 21:13:50,080 - INFO - Processed blueprint 31/82
+2025-09-23 21:13:50,080 - INFO - Processed blueprint 32/82
+2025-09-23 21:13:50,080 - INFO - Processed blueprint 33/82
+2025-09-23 21:13:50,080 - INFO - Processed blueprint 34/82
+2025-09-23 21:13:50,080 - INFO - Processed blueprint 35/82
+2025-09-23 21:13:50,080 - INFO - Processed blueprint 36/82
+2025-09-23 21:13:50,080 - INFO - Processed blueprint 37/82
+2025-09-23 21:13:50,080 - INFO - Processed blueprint 38/82
+2025-09-23 21:13:50,080 - INFO - Processed blueprint 39/82
+2025-09-23 21:13:50,080 - INFO - Processed blueprint 40/82
+2025-09-23 21:13:50,080 - INFO - Processed blueprint 41/82
+2025-09-23 21:13:50,080 - INFO - Processed blueprint 42/82
+2025-09-23 21:13:50,080 - INFO - Processed blueprint 43/82
+2025-09-23 21:13:50,080 - INFO - Processed blueprint 44/82
+2025-09-23 21:13:50,080 - INFO - Processed blueprint 45/82
+2025-09-23 21:13:50,080 - INFO - Processed blueprint 46/82
+2025-09-23 21:13:50,081 - INFO - Processed blueprint 47/82
+2025-09-23 21:13:50,081 - INFO - Processed blueprint 48/82
+2025-09-23 21:13:50,081 - INFO - Processed blueprint 49/82
+2025-09-23 21:13:50,081 - INFO - Processed blueprint 50/82
+2025-09-23 21:13:50,081 - INFO - Processed blueprint 51/82
+2025-09-23 21:13:50,081 - INFO - Processed blueprint 52/82
+2025-09-23 21:13:50,081 - INFO - Processed blueprint 53/82
+2025-09-23 21:13:50,081 - INFO - Processed blueprint 54/82
+2025-09-23 21:13:50,081 - INFO - Processed blueprint 55/82
+2025-09-23 21:13:50,081 - INFO - Processed blueprint 56/82
+2025-09-23 21:13:50,081 - INFO - Processed blueprint 57/82
+2025-09-23 21:13:50,081 - INFO - Processed blueprint 58/82
+2025-09-23 21:13:50,081 - INFO - Processed blueprint 59/82
+2025-09-23 21:13:50,081 - INFO - Processed blueprint 60/82
+2025-09-23 21:13:50,081 - INFO - Processed blueprint 61/82
+2025-09-23 21:13:50,081 - INFO - Processed blueprint 62/82
+2025-09-23 21:13:50,081 - INFO - Processed blueprint 63/82
+2025-09-23 21:13:50,081 - INFO - Processed blueprint 64/82
+2025-09-23 21:13:50,081 - INFO - Processed blueprint 65/82
+2025-09-23 21:13:50,081 - INFO - Processed blueprint 66/82
+2025-09-23 21:13:50,081 - INFO - Processed blueprint 67/82
+2025-09-23 21:13:50,081 - INFO - Processed blueprint 68/82
+2025-09-23 21:13:50,081 - INFO - Processed blueprint 69/82
+2025-09-23 21:13:50,081 - INFO - Processed blueprint 70/82
+2025-09-23 21:13:50,081 - INFO - Processed blueprint 71/82
+2025-09-23 21:13:50,081 - INFO - Processed blueprint 72/82
+2025-09-23 21:13:50,081 - INFO - Processed blueprint 73/82
+2025-09-23 21:13:50,081 - INFO - Processed blueprint 74/82
+2025-09-23 21:13:50,081 - INFO - Processed blueprint 75/82
+2025-09-23 21:13:50,082 - INFO - Processed blueprint 76/82
+2025-09-23 21:13:50,082 - INFO - Processed blueprint 77/82
+2025-09-23 21:13:50,082 - INFO - Processed blueprint 78/82
+2025-09-23 21:13:50,082 - INFO - Processed blueprint 79/82
+2025-09-23 21:13:50,082 - INFO - Processed blueprint 80/82
+2025-09-23 21:13:50,082 - INFO - Processed blueprint 81/82
+2025-09-23 21:13:50,082 - INFO - Processed blueprint 82/82
+2025-09-23 21:13:50,082 - INFO - Blueprint processing completed for 82 blueprints in 28.04s
+2025-09-23 21:13:50,516 - INFO - ESI authenticated fetch successful: /corporations/98092220/contracts/ in 0.43s
+2025-09-23 21:13:50,517 - INFO - _fetch_esi_with_retry completed in 0.435s
+2025-09-23 21:13:50,647 - INFO - ESI authenticated fetch successful: /corporations/98092220/contracts/ in 0.13s
+2025-09-23 21:13:50,648 - INFO - _fetch_esi_with_retry completed in 0.130s
+2025-09-23 21:13:50,648 - INFO - Corporation contracts for No Mercy Incorporated: 116 items
+2025-09-23 21:13:50,795 - INFO - WordPress GET successful: /wp/v2/eve_contract?slug=contract-222641777 in 0.15s
+2025-09-23 21:13:50,796 - INFO - wp_request completed in 0.147s
+2025-09-23 21:13:51,508 - INFO - ESI authenticated fetch successful: /corporations/98092220/contracts/222641777/items/ in 0.71s
+2025-09-23 21:13:51,510 - INFO - _fetch_esi_with_retry completed in 0.713s
+2025-09-23 21:13:51,630 - INFO - Contract 222641777 contains no blueprints, skipping
+2025-09-23 21:13:51,720 - INFO - WordPress GET successful: /wp/v2/eve_contract?slug=contract-222641803 in 0.09s
+2025-09-23 21:13:51,720 - INFO - wp_request completed in 0.089s
+2025-09-23 21:13:51,912 - INFO - ESI authenticated fetch successful: /corporations/98092220/contracts/222641803/items/ in 0.19s
+2025-09-23 21:13:51,912 - INFO - _fetch_esi_with_retry completed in 0.192s
+2025-09-23 21:13:51,914 - INFO - Checking competition for contract 222641803 (type_id: 29044, price_per_item: 49990000.00) in region 10000002
+2025-09-23 21:13:52,968 - WARNING - Reached page limit (10) for region 10000002, stopping
+2025-09-23 21:13:52,969 - INFO - Found 9958 potential competing contracts in region 10000002

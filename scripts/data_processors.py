@@ -175,7 +175,7 @@ async def update_or_create_blueprint_post(
         # Update existing
         post_id = existing_post["id"]
         try:
-            result = await wp_request("PUT", f"/wp-json/wp/v2/eve_blueprint/{post_id}", post_data)
+            result = await wp_request("PUT", f"/wp/v2/eve_blueprint/{post_id}", post_data)
             if result:
                 logger.info(f"Updated blueprint: {item_id}")
                 log_audit_event("BLUEPRINT_UPDATE", str(char_id), {"item_id": item_id, "post_id": post_id})
@@ -186,7 +186,7 @@ async def update_or_create_blueprint_post(
     else:
         # Create new
         try:
-            new_post = await wp_request("POST", "/wp-json/wp/v2/eve_blueprint", post_data)
+            new_post = await wp_request("POST", "/wp/v2/eve_blueprint", post_data)
             if new_post:
                 set_cached_wp_post_id(wp_post_id_cache, "eve_blueprint", item_id, new_post["id"])
                 logger.info(f"Created new blueprint: {item_id}")
@@ -217,7 +217,7 @@ async def update_character_in_wp(char_id: int, char_data: Dict[str, Any]) -> Non
     slug = f"character-{char_id}"
     # Check if post exists by slug
     try:
-        existing_posts = await wp_request("GET", f"/wp-json/wp/v2/eve_character?slug={slug}")
+        existing_posts = await wp_request("GET", f"/wp/v2/eve_character?slug={slug}")
         existing_post = existing_posts[0] if existing_posts else None
     except (WordPressAuthError, WordPressRequestError) as e:
         logger.error(f"Failed to fetch existing character post for {char_id}: {e}")
@@ -265,7 +265,7 @@ async def update_character_in_wp(char_id: int, char_data: Dict[str, Any]) -> Non
         # Update existing
         post_id = existing_post["id"]
         try:
-            result = await wp_request("PUT", f"/wp-json/wp/v2/eve_character/{post_id}", post_data)
+            result = await wp_request("PUT", f"/wp/v2/eve_character/{post_id}", post_data)
             if result:
                 logger.info(f"Updated character: {char_data['name']}")
                 log_audit_event("CHARACTER_UPDATE", str(char_id), {"name": char_data["name"], "post_id": post_id})
@@ -276,7 +276,7 @@ async def update_character_in_wp(char_id: int, char_data: Dict[str, Any]) -> Non
     else:
         # Create new
         try:
-            result = await wp_request("POST", "/wp-json/wp/v2/eve_character", post_data)
+            result = await wp_request("POST", "/wp/v2/eve_character", post_data)
             if result:
                 logger.info(f"Created character: {char_data['name']}")
                 log_audit_event("CHARACTER_CREATE", str(char_id), {"name": char_data["name"], "post_id": result["id"]})
@@ -311,7 +311,7 @@ async def update_character_skills_in_wp(char_id: int, skills_data: Dict[str, Any
     slug = f"character-{char_id}"
     # Check if post exists by slug
     try:
-        existing_posts = await wp_request("GET", f"/wp-json/wp/v2/eve_character?slug={slug}")
+        existing_posts = await wp_request("GET", f"/wp/v2/eve_character?slug={slug}")
         existing_post = existing_posts[0] if existing_posts else None
     except (WordPressAuthError, WordPressRequestError) as e:
         logger.error(f"Failed to fetch character post for skills update {char_id}: {e}")
@@ -327,7 +327,7 @@ async def update_character_skills_in_wp(char_id: int, skills_data: Dict[str, Any
             }
         }
         try:
-            result = await wp_request("PUT", f"/wp-json/wp/v2/eve_character/{post_id}", post_data)
+            result = await wp_request("PUT", f"/wp/v2/eve_character/{post_id}", post_data)
             if result:
                 logger.info(f"Updated skills for character {char_id}")
             else:
@@ -519,7 +519,7 @@ async def _find_existing_blueprint_post(item_id: int, wp_post_id_cache: Dict[str
     if cached_post_id:
         # Use direct post ID lookup
         try:
-            existing_post = await wp_request("GET", f"/wp-json/wp/v2/eve_blueprint/{cached_post_id}")
+            existing_post = await wp_request("GET", f"/wp/v2/eve_blueprint/{cached_post_id}")
         except (WordPressAuthError, WordPressRequestError) as e:
             logger.error(f"Failed to fetch existing blueprint post {cached_post_id}: {e}")
             cached_post_id = None
@@ -527,7 +527,7 @@ async def _find_existing_blueprint_post(item_id: int, wp_post_id_cache: Dict[str
     else:
         # Fall back to slug lookup
         try:
-            existing_posts = await wp_request("GET", f"/wp-json/wp/v2/eve_blueprint?slug={slug}")
+            existing_posts = await wp_request("GET", f"/wp/v2/eve_blueprint?slug={slug}")
             existing_post = existing_posts[0] if existing_posts else None
 
             # Cache the post ID if found
@@ -548,13 +548,17 @@ async def _prepare_blueprint_data(
     location_cache: Dict[str, Any],
     structure_cache: Dict[str, Any],
     failed_structures: Dict[str, Any],
-) -> Tuple[Dict[str, Any], str, str, str]:
+) -> Optional[Tuple[Dict[str, Any], str, str, str]]:
     """Prepare blueprint post data with all required information."""
     # Fetch blueprint details
-    type_name, location_name, bp_type = await fetch_blueprint_details(
+    details = await fetch_blueprint_details(
         blueprint_data, char_id, access_token, blueprint_cache, location_cache, structure_cache, failed_structures
     )
+    
+    if details is None:
+        return None
 
+    type_name, location_name, bp_type = details
     item_id = blueprint_data["item_id"]
     post_data = construct_blueprint_post_data(blueprint_data, type_name, location_name, bp_type, char_id, item_id)
 
@@ -616,9 +620,29 @@ async def update_blueprint_in_wp(
     existing_post = await _find_existing_blueprint_post(item_id, wp_post_id_cache)
 
     # Prepare blueprint data
-    post_data, type_name, location_name, bp_type = await _prepare_blueprint_data(
+    details = await _prepare_blueprint_data(
         blueprint_data, char_id, access_token, blueprint_cache, location_cache, structure_cache, failed_structures
     )
+    
+    if details is None:
+        # Blueprint type no longer exists - check if we need to delete existing post
+        existing_post = await _find_existing_blueprint_post(item_id, wp_post_id_cache)
+        if existing_post:
+            logger.info(f"Deleting WordPress post for blueprint {item_id} (type no longer exists)")
+            try:
+                result = await wp_request("DELETE", f"/wp/v2/eve_blueprint/{existing_post['id']}")
+                if result:
+                    # Remove from cache
+                    wp_post_id_cache["eve_blueprint"].pop(str(item_id), None)
+                    save_wp_post_id_cache(wp_post_id_cache)
+                    log_audit_event("BLUEPRINT_DELETE", str(char_id), {"item_id": item_id, "reason": "type_deleted"})
+                else:
+                    logger.error(f"Failed to delete blueprint post {existing_post['id']}")
+            except (WordPressAuthError, WordPressRequestError) as e:
+                logger.error(f"Failed to delete blueprint post {existing_post['id']}: {e}")
+        return
+
+    post_data, type_name, location_name, bp_type = details
 
     # Update or create the blueprint post in WordPress
     await update_or_create_blueprint_post(
@@ -647,12 +671,12 @@ async def fetch_blueprint_details(
     location_cache: Dict[str, Any],
     structure_cache: Dict[str, Any],
     failed_structures: Dict[str, Any],
-) -> Tuple[str, str, str]:
+) -> Optional[Tuple[str, str, str]]:
     """
     Fetch blueprint type name and location name.
 
     Returns:
-        Tuple of (type_name, location_name, bp_type)
+        Tuple of (type_name, location_name, bp_type) or None if blueprint type no longer exists
     """
     item_id = blueprint_data.get("item_id")
     type_id = blueprint_data.get("type_id")
@@ -661,6 +685,10 @@ async def fetch_blueprint_details(
 
     # Get blueprint name from cache or API
     type_name = await get_blueprint_type_name(type_id, item_id, blueprint_cache)
+    if type_name is None:
+        # Blueprint type no longer exists, skip this blueprint
+        logger.info(f"Skipping blueprint {item_id} (type {type_id}) - type no longer exists")
+        return None
 
     # Determine BPO or BPC
     bp_type = determine_blueprint_type(quantity)
@@ -673,7 +701,7 @@ async def fetch_blueprint_details(
     return type_name, location_name, bp_type
 
 
-async def get_blueprint_type_name(type_id: Optional[int], item_id: int, blueprint_cache: Dict[str, Any]) -> str:
+async def get_blueprint_type_name(type_id: Optional[int], item_id: int, blueprint_cache: Dict[str, Any]) -> Optional[str]:
     """
     Get blueprint type name from cache or API.
 
@@ -683,7 +711,7 @@ async def get_blueprint_type_name(type_id: Optional[int], item_id: int, blueprin
         blueprint_cache: Cache for blueprint names
 
     Returns:
-        The blueprint type name
+        The blueprint type name, or None if the type no longer exists
     """
     if type_id:
         cached_name = get_cached_value_with_stats(blueprint_cache, str(type_id), "blueprint")
@@ -698,10 +726,17 @@ async def get_blueprint_type_name(type_id: Optional[int], item_id: int, blueprin
                     save_blueprint_cache(blueprint_cache)
                     return type_name
                 else:
-                    return f"Blueprint {item_id}".replace(" Blueprint", "").strip()
+                    # Type doesn't exist (404)
+                    logger.warning(f"Blueprint type {type_id} no longer exists (deleted from EVE)")
+                    return None
             except ESIApiError as e:
-                logger.error(f"Failed to fetch type data for {type_id}: {e}")
-                return f"Blueprint {item_id}".replace(" Blueprint", "").strip()
+                # Check if it's a 404 (resource not found)
+                if "Resource not found" in str(e) or "404" in str(e):
+                    logger.warning(f"Blueprint type {type_id} no longer exists (deleted from EVE): {e}")
+                    return None
+                else:
+                    logger.error(f"Failed to fetch type data for {type_id}: {e}")
+                    return f"Blueprint {item_id}".replace(" Blueprint", "").strip()
     else:
         return f"Blueprint {item_id}".replace(" Blueprint", "").strip()
 

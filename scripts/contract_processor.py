@@ -719,7 +719,7 @@ async def process_character_contracts(
         logger.info(f"Character contracts for {char_name}: {len(char_contracts)} items")
 
         # Process blueprints from contracts
-        contract_blueprints = extract_blueprints_from_contracts(char_contracts, "char", char_id)
+        contract_blueprints = await extract_blueprints_from_contracts(char_contracts, "char", char_id)
         if contract_blueprints:
             logger.info(f"Character contract blueprints: {len(contract_blueprints)} items")
             # Process blueprints in parallel

@@ -347,7 +347,7 @@ async def process_corporation_blueprints_from_assets(
     corp_assets = await fetch_corporation_assets(corp_id, access_token)
     if corp_assets:
         logger.info(f"Fetched {len(corp_assets)} corporation assets")
-        asset_blueprints = extract_blueprints_from_assets(corp_assets, "corp", corp_id, access_token)
+        asset_blueprints = await extract_blueprints_from_assets(corp_assets, "corp", corp_id, access_token)
         if asset_blueprints:
             logger.info(f"Corporation asset blueprints: {len(asset_blueprints)} items")
             # Process blueprints in parallel
@@ -435,7 +435,7 @@ async def process_corporation_blueprints_from_contracts(
     """
     corp_contracts = await fetch_corporation_contracts(corp_id, access_token)
     if corp_contracts:
-        contract_blueprints = extract_blueprints_from_contracts(corp_contracts, "corp", corp_id)
+        contract_blueprints = await extract_blueprints_from_contracts(corp_contracts, "corp", corp_id)
         if contract_blueprints:
             logger.info(f"Corporation contract blueprints: {len(contract_blueprints)} items")
             # Process blueprints in parallel
