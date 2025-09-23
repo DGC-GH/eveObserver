@@ -100,8 +100,6 @@ async def fetch_public_esi(endpoint: str, max_retries: int = None) -> Optional[D
     if max_retries is None:
         max_retries = api_config.esi_max_retries
 
-    import time
-
     sess = await get_session()
     url = f"{api_config.esi_base_url}{endpoint}"
 
@@ -189,8 +187,6 @@ async def fetch_esi(endpoint: str, char_id: Optional[int], access_token: str, ma
     start_time = time.time()
     if max_retries is None:
         max_retries = api_config.esi_max_retries
-
-    import time
 
     sess = await get_session()
     url = f"{api_config.esi_base_url}{endpoint}"

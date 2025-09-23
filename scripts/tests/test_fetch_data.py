@@ -183,7 +183,8 @@ class TestCollectCorporationMembers:
     @patch('fetch_data.save_tokens')
     @patch('fetch_data.fetch_character_data')
     @patch('fetch_data.update_character_in_wp')
-    def test_collect_corporation_members_valid_tokens(self, mock_update_wp, mock_fetch_char, mock_save, mock_refresh, mock_load_tokens):
+    @pytest.mark.asyncio
+    async def test_collect_corporation_members_valid_tokens(self, mock_update_wp, mock_fetch_char, mock_save, mock_refresh, mock_load_tokens):
         """Test collecting corporation members with valid tokens."""
         # Mock tokens data
         mock_tokens = {
@@ -208,7 +209,7 @@ class TestCollectCorporationMembers:
             {'corporation_id': 1001, 'name': 'Test Char 2'}
         ]
 
-        result = collect_corporation_members(mock_tokens)
+        result = await collect_corporation_members(mock_tokens)
 
         expected = {
             1001: [
@@ -226,7 +227,8 @@ class TestCollectCorporationMembers:
     @patch('fetch_data.save_tokens')
     @patch('fetch_data.fetch_character_data')
     @patch('fetch_data.update_character_in_wp')
-    def test_collect_corporation_members_expired_token_refresh(self, mock_update_wp, mock_fetch_char, mock_save, mock_refresh, mock_load_tokens):
+    @pytest.mark.asyncio
+    async def test_collect_corporation_members_expired_token_refresh(self, mock_update_wp, mock_fetch_char, mock_save, mock_refresh, mock_load_tokens):
         """Test token refresh when token is expired."""
         # Mock expired token
         expired_time = (datetime.now(timezone.utc) - timedelta(hours=1)).isoformat()
@@ -249,7 +251,7 @@ class TestCollectCorporationMembers:
         # Mock character data
         mock_fetch_char.return_value = {'corporation_id': 1001, 'name': 'Test Char 1'}
 
-        result = collect_corporation_members(mock_tokens)
+        result = await collect_corporation_members(mock_tokens)
 
         assert mock_refresh.called_once_with('refresh1')
         assert mock_save.called_once()
@@ -361,3 +363,175 @@ class TestPlanetExtractionCompletions:
 
         # Should not send email
         mock_send_email.assert_not_called()
+
+
+class TestBlueprintProcessing:
+    """Test blueprint processing functionality."""
+
+    @pytest.mark.asyncio
+    @patch('data_processors.load_blueprint_cache')
+    @patch('data_processors.load_location_cache')
+    @patch('data_processors.load_structure_cache')
+    @patch('data_processors.load_failed_structures')
+    @patch('data_processors.load_wp_post_id_cache')
+    @patch('data_processors.get_cached_wp_post_id')
+    @patch('data_processors.wp_request')
+    @patch('data_processors.fetch_public_esi')
+    @patch('data_processors.fetch_type_icon')
+    @patch('data_processors.set_cached_wp_post_id')
+    async def test_update_blueprint_in_wp_new_blueprint(self, mock_set_cache, mock_fetch_icon, mock_fetch_esi, mock_wp_request, mock_get_cache, mock_load_wp_cache, mock_load_failed, mock_load_struct, mock_load_loc, mock_load_bp):
+        """Test creating a new blueprint post."""
+        from data_processors import update_blueprint_in_wp
+
+        # Setup mocks
+        mock_load_bp.return_value = {}
+        mock_load_loc.return_value = {}
+        mock_load_struct.return_value = {}
+        mock_load_failed.return_value = {}
+        mock_load_wp_cache.return_value = {}
+        mock_get_cache.return_value = None  # No cached post ID
+
+        # Mock WP request for slug lookup - no existing post
+        mock_wp_request.side_effect = [
+            [],  # No existing posts by slug
+            {'id': 123, 'title': {'rendered': 'Test Blueprint BPO 10/20 (Test Station) – ID: 12345'}, 'meta': {}}  # Created post
+        ]
+
+        # Mock ESI fetch for type data
+        mock_fetch_esi.return_value = {'name': 'Test Blueprint'}
+
+        # Mock icon fetch
+        mock_fetch_icon.return_value = 'https://example.com/icon.png'
+
+        blueprint_data = {
+            'item_id': 12345,
+            'type_id': 1001,
+            'location_id': 60003760,  # Station ID
+            'material_efficiency': 10,
+            'time_efficiency': 20,
+            'quantity': -1,
+            'runs': -1
+        }
+
+        await update_blueprint_in_wp(blueprint_data, {}, 123, 'token')
+
+        # Verify WP requests
+        assert mock_wp_request.call_count == 2
+        # First call: get existing by slug
+        # Second call: create new post
+
+        # Verify icon was fetched for new blueprint
+        mock_fetch_icon.assert_called_once_with(1001, size=512)
+
+    @pytest.mark.asyncio
+    @patch('data_processors.load_blueprint_cache')
+    @patch('data_processors.load_location_cache')
+    @patch('data_processors.load_structure_cache')
+    @patch('data_processors.load_failed_structures')
+    @patch('data_processors.load_wp_post_id_cache')
+    @patch('data_processors.get_cached_wp_post_id')
+    @patch('data_processors.wp_request')
+    @patch('data_processors.fetch_public_esi')
+    @patch('data_processors.fetch_esi')
+    async def test_update_blueprint_in_wp_structure_location(self, mock_fetch_esi_auth, mock_fetch_esi_pub, mock_wp_request, mock_get_cache, mock_load_wp_cache, mock_load_failed, mock_load_struct, mock_load_loc, mock_load_bp):
+        """Test blueprint processing with structure location."""
+        from data_processors import update_blueprint_in_wp
+
+        # Setup mocks
+        mock_load_bp.return_value = {}
+        mock_load_loc.return_value = {}
+        mock_load_struct.return_value = {}
+        mock_load_failed.return_value = {}
+        mock_load_wp_cache.return_value = {}
+        mock_get_cache.return_value = None
+
+        # Mock WP requests
+        mock_wp_request.side_effect = [
+            [],  # No existing posts
+            {'id': 123, 'title': {'rendered': 'Test Blueprint BPO 0/0 (Test Citadel) – ID: 12345'}, 'meta': {}}
+        ]
+
+        # Mock ESI fetches
+        mock_fetch_esi_pub.side_effect = [
+            {'name': 'Test Blueprint'},  # Type data
+            {'name': 'Test Citadel'}     # Structure data
+        ]
+
+        blueprint_data = {
+            'item_id': 12345,
+            'type_id': 1001,
+            'location_id': 1035469615808,  # Structure ID (> 10^12)
+            'material_efficiency': 0,
+            'time_efficiency': 0,
+            'quantity': -1,
+            'runs': -1
+        }
+
+        await update_blueprint_in_wp(blueprint_data, {}, 123, 'token')
+
+        # Verify structure fetch was called
+        mock_fetch_esi_auth.assert_called_once_with('/universe/structures/1035469615808', 123, 'token')
+
+    @pytest.mark.asyncio
+    @patch('data_processors.update_blueprint_in_wp')
+    @patch('data_processors.load_blueprint_cache')
+    @patch('data_processors.load_location_cache')
+    @patch('data_processors.load_structure_cache')
+    @patch('data_processors.load_failed_structures')
+    @patch('data_processors.load_wp_post_id_cache')
+    async def test_process_blueprints_parallel_success(self, mock_load_wp_cache, mock_load_failed, mock_load_struct, mock_load_loc, mock_load_bp, mock_update_bp):
+        """Test parallel blueprint processing with successful updates."""
+        from data_processors import process_blueprints_parallel
+
+        # Setup mocks
+        mock_load_bp.return_value = {}
+        mock_load_loc.return_value = {}
+        mock_load_struct.return_value = {}
+        mock_load_failed.return_value = {}
+        mock_load_wp_cache.return_value = {}
+
+        mock_update_bp.return_value = None  # Success
+
+        blueprints = [
+            {'item_id': 1, 'type_id': 1001},
+            {'item_id': 2, 'type_id': 1002},
+            {'item_id': 3, 'type_id': 1003}
+        ]
+
+        results = await process_blueprints_parallel(blueprints, mock_update_bp, {}, 123, 'token')
+
+        assert len(results) == 3
+        assert mock_update_bp.call_count == 3
+
+    @pytest.mark.asyncio
+    @patch('data_processors.update_blueprint_in_wp')
+    @patch('data_processors.load_blueprint_cache')
+    @patch('data_processors.load_location_cache')
+    @patch('data_processors.load_structure_cache')
+    @patch('data_processors.load_failed_structures')
+    @patch('data_processors.load_wp_post_id_cache')
+    async def test_process_blueprints_parallel_with_exceptions(self, mock_load_wp_cache, mock_load_failed, mock_load_struct, mock_load_loc, mock_load_bp, mock_update_bp):
+        """Test parallel blueprint processing with some failures."""
+        from data_processors import process_blueprints_parallel
+
+        # Setup mocks
+        mock_load_bp.return_value = {}
+        mock_load_loc.return_value = {}
+        mock_load_struct.return_value = {}
+        mock_load_failed.return_value = {}
+        mock_load_wp_cache.return_value = {}
+
+        # Mock update function to succeed for first two, fail for third
+        mock_update_bp.side_effect = [None, None, Exception("Test error")]
+
+        blueprints = [
+            {'item_id': 1, 'type_id': 1001},
+            {'item_id': 2, 'type_id': 1002},
+            {'item_id': 3, 'type_id': 1003}
+        ]
+
+        results = await process_blueprints_parallel(blueprints, mock_update_bp, {}, 123, 'token')
+
+        assert len(results) == 3
+        assert isinstance(results[2], Exception)
+        assert str(results[2]) == "Test error"

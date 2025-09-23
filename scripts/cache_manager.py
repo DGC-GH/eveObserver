@@ -7,7 +7,7 @@ Handles loading and saving of various caches for performance optimization.
 import os
 import json
 import logging
-from typing import Dict, Any
+from typing import Dict, Any, Optional
 from config import CACHE_DIR, BLUEPRINT_CACHE_FILE, BLUEPRINT_TYPE_CACHE_FILE, LOCATION_CACHE_FILE, STRUCTURE_CACHE_FILE, FAILED_STRUCTURES_FILE, WP_POST_ID_CACHE_FILE
 
 logger = logging.getLogger(__name__)

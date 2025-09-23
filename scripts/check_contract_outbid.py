@@ -162,6 +162,7 @@ def check_contract_competition(contract_data, contract_items):
     quantity = item.get('quantity', 1)
     contract_price = contract_data.get('price', 0)
     contract_id = contract_data.get('contract_id')
+    contract_issuer_id = contract_data.get('issuer_id')
 
     if not type_id or quantity <= 0 or contract_price <= 0:
         return False, None
@@ -212,7 +213,7 @@ def check_contract_competition(contract_data, contract_items):
     # Filter to outstanding item exchange contracts
     competing_contracts = [
         c for c in region_contracts
-        if c.get('type') == 'item_exchange' and c.get('status') == 'outstanding' and c.get('contract_id') != contract_id
+        if c.get('type') == 'item_exchange' and c.get('status') == 'outstanding' and c.get('contract_id') != contract_id and c.get('issuer_id') != contract_issuer_id
     ]
 
     if not competing_contracts:
@@ -257,7 +258,7 @@ def update_contract_outbid_status(contract_id, is_outbid, competing_price=None):
         return
 
     existing_meta = existing_post.get('meta', {})
-    existing_outbid = existing_meta.get('_eve_contract_outbid') == 'true'
+    existing_outbid = existing_meta.get('_eve_contract_outbid') == '1'
 
     # Only update if outbid status has changed
     if existing_outbid == is_outbid:
@@ -267,17 +268,17 @@ def update_contract_outbid_status(contract_id, is_outbid, competing_price=None):
     # Prepare update data
     post_data = {
         'meta': {
-            '_eve_contract_outbid': 'true' if is_outbid else 'false',
+            '_eve_contract_outbid': '1' if is_outbid else '0',
             '_eve_last_updated': datetime.now(timezone.utc).isoformat()
         }
     }
 
     if is_outbid and competing_price:
-        post_data['meta']['_eve_contract_market_price'] = str(competing_price)
+        post_data['meta']['_eve_contract_competing_price'] = str(competing_price)
         logger.warning(f"Contract {contract_id} is outbid by competing contract price: {competing_price}")
     elif not is_outbid:
         # Remove competing price if no longer outbid
-        post_data['meta']['_eve_contract_market_price'] = None
+        post_data['meta']['_eve_contract_competing_price'] = None
 
 def collect_corporation_members(tokens):
     """Collect all corporations and their member characters from authorized tokens."""
