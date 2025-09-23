@@ -935,3 +935,314 @@
 2025-09-23 10:15:14,342 - INFO - Processed blueprint 9/10: 1049576661931
 2025-09-23 10:15:14,398 - INFO - Processed blueprint 10/10: 1049574775416
 2025-09-23 10:15:14,450 - INFO - Completed parallel processing: 10/10 blueprints processed successfully
+2025-09-23 10:20:14,753 - ERROR - Failed to send email: Connection unexpectedly closed
+2025-09-23 10:20:15,106 - INFO - Planets for Mr FiLiN: 6 colonies
+2025-09-23 10:20:15,673 - INFO - Updated planet: 40087444
+2025-09-23 10:20:16,152 - INFO - Updated planet: 40087446
+2025-09-23 10:20:16,618 - INFO - Updated planet: 40087448
+2025-09-23 10:20:17,153 - INFO - Updated planet: 40087450
+2025-09-23 10:20:17,706 - INFO - Updated planet: 40087468
+2025-09-23 10:20:18,264 - INFO - Updated planet: 40087521
+2025-09-23 10:20:18,421 - INFO - Fetching additional data for Dr FiLiN...
+2025-09-23 10:20:19,086 - INFO - Updated skills for character 90045731
+2025-09-23 10:20:19,088 - INFO - Skills for Dr FiLiN: 21128652 SP
+2025-09-23 10:20:19,088 - INFO - Fetching blueprints for Dr FiLiN...
+2025-09-23 10:20:19,342 - INFO - Processing 58 char assets for blueprint extraction...
+2025-09-23 10:20:19,342 - INFO - Completed asset processing: found 0 BPO blueprints in 58 assets
+2025-09-23 10:20:19,609 - INFO - Planets for Dr FiLiN: 6 colonies
+2025-09-23 10:20:20,135 - INFO - Updated planet: 40087444
+2025-09-23 10:20:20,660 - INFO - Updated planet: 40087446
+2025-09-23 10:20:21,084 - INFO - Updated planet: 40087448
+2025-09-23 10:20:21,525 - INFO - Updated planet: 40087450
+2025-09-23 10:20:22,021 - INFO - Updated planet: 40087468
+2025-09-23 10:20:22,569 - INFO - Updated planet: 40087521
+2025-09-23 10:20:22,756 - INFO - Character contracts for Dr FiLiN: 61 items
+2025-09-23 10:20:23,499 - INFO - Checking competition for contract 222641777 (type_id: 29040, price_per_item: 299999999.00) in region 10000002
+2025-09-23 10:20:25,639 - INFO - Found 0 potential competing contracts in region 10000002
+2025-09-23 10:20:25,639 - INFO - No competing contracts found for contract 222641777
+2025-09-23 10:20:25,797 - INFO - Updated contract: 222641777 - Capital Antimatter Reactor Unit - Contract 222641777
+2025-09-23 10:20:26,539 - INFO - Checking competition for contract 222641803 (type_id: 29044, price_per_item: 49990000.00) in region 10000002
+2025-09-23 10:20:28,224 - INFO - Found 0 potential competing contracts in region 10000002
+2025-09-23 10:20:28,224 - INFO - No competing contracts found for contract 222641803
+2025-09-23 10:20:28,381 - INFO - Updated contract: 222641803 - Capital Deflection Shield Emitter - Contract 222641803
+2025-09-23 10:20:29,465 - INFO - Checking competition for contract 222641814 (type_id: 29046, price_per_item: 51990000.00) in region 10000002
+2025-09-23 10:20:31,378 - INFO - Found 0 potential competing contracts in region 10000002
+2025-09-23 10:20:31,378 - INFO - No competing contracts found for contract 222641814
+2025-09-23 10:20:31,533 - INFO - Updated contract: 222641814 - Capital Electrolytic Capacitor Unit - Contract 222641814
+2025-09-23 10:20:32,360 - INFO - Checking competition for contract 222641822 (type_id: 29048, price_per_item: 31970000.00) in region 10000002
+2025-09-23 10:20:33,980 - INFO - Found 0 potential competing contracts in region 10000002
+2025-09-23 10:20:33,980 - INFO - No competing contracts found for contract 222641822
+2025-09-23 10:20:34,168 - INFO - Updated contract: 222641822 - Capital EM Pulse Generator - Contract 222641822
+2025-09-23 10:20:34,992 - INFO - Checking competition for contract 222641828 (type_id: 29050, price_per_item: 248990000.00) in region 10000002
+2025-09-23 10:20:36,584 - INFO - Found 0 potential competing contracts in region 10000002
+2025-09-23 10:20:36,584 - INFO - No competing contracts found for contract 222641828
+2025-09-23 10:20:36,735 - INFO - Updated contract: 222641828 - Capital Fernite Carbide Composite Armor Plate - Contract 222641828
+2025-09-23 10:20:37,472 - INFO - Checking competition for contract 222641837 (type_id: 29054, price_per_item: 299999999.00) in region 10000002
+2025-09-23 10:20:39,175 - INFO - Found 0 potential competing contracts in region 10000002
+2025-09-23 10:20:39,176 - INFO - No competing contracts found for contract 222641837
+2025-09-23 10:20:39,316 - INFO - Updated contract: 222641837 - Capital Fusion Thruster - Contract 222641837
+2025-09-23 10:20:40,136 - INFO - Checking competition for contract 222641849 (type_id: 29056, price_per_item: 148990000.00) in region 10000002
+2025-09-23 10:20:42,026 - INFO - Found 0 potential competing contracts in region 10000002
+2025-09-23 10:20:42,026 - INFO - No competing contracts found for contract 222641849
+2025-09-23 10:20:42,286 - INFO - Updated contract: 222641849 - Capital Gravimetric Sensor Cluster - Contract 222641849
+2025-09-23 10:20:42,960 - INFO - Checking competition for contract 222641864 (type_id: 29058, price_per_item: 22970000.00) in region 10000002
+2025-09-23 10:20:44,947 - INFO - Found 0 potential competing contracts in region 10000002
+2025-09-23 10:20:44,948 - INFO - No competing contracts found for contract 222641864
+2025-09-23 10:20:45,083 - INFO - Updated contract: 222641864 - Capital Graviton Pulse Generator - Contract 222641864
+2025-09-23 10:20:45,896 - INFO - Checking competition for contract 222641882 (type_id: 29060, price_per_item: 53990000.00) in region 10000002
+2025-09-23 10:20:47,534 - INFO - Found 0 potential competing contracts in region 10000002
+2025-09-23 10:20:47,534 - INFO - No competing contracts found for contract 222641882
+2025-09-23 10:20:47,694 - INFO - Updated contract: 222641882 - Capital Graviton Reactor Unit - Contract 222641882
+2025-09-23 10:20:48,286 - INFO - Checking competition for contract 222641897 (type_id: 29062, price_per_item: 38980000.00) in region 10000002
+2025-09-23 10:20:50,638 - INFO - Found 0 potential competing contracts in region 10000002
+2025-09-23 10:20:50,638 - INFO - No competing contracts found for contract 222641897
+2025-09-23 10:20:50,790 - INFO - Updated contract: 222641897 - Capital Ion Thruster - Contract 222641897
+2025-09-23 10:20:51,445 - INFO - Checking competition for contract 222641914 (type_id: 29066, price_per_item: 51990000.00) in region 10000002
+2025-09-23 10:20:53,167 - INFO - Found 0 potential competing contracts in region 10000002
+2025-09-23 10:20:53,168 - INFO - No competing contracts found for contract 222641914
+2025-09-23 10:20:53,307 - INFO - Updated contract: 222641914 - Capital Ladar Sensor Cluster - Contract 222641914
+2025-09-23 10:20:54,042 - INFO - Checking competition for contract 222641925 (type_id: 29064, price_per_item: 29960000.00) in region 10000002
+2025-09-23 10:20:56,187 - INFO - Found 0 potential competing contracts in region 10000002
+2025-09-23 10:20:56,187 - INFO - No competing contracts found for contract 222641925
+2025-09-23 10:20:56,456 - INFO - Updated contract: 222641925 - Capital Laser Focusing Crystals - Contract 222641925
+2025-09-23 10:20:57,150 - INFO - Checking competition for contract 222641937 (type_id: 29068, price_per_item: 299999999.00) in region 10000002
+2025-09-23 10:20:58,831 - INFO - Found 0 potential competing contracts in region 10000002
+2025-09-23 10:20:58,832 - INFO - No competing contracts found for contract 222641937
+2025-09-23 10:20:59,064 - INFO - Updated contract: 222641937 - Capital Linear Shield Emitter - Contract 222641937
+2025-09-23 10:21:00,327 - INFO - Checking competition for contract 222641948 (type_id: 29070, price_per_item: 38980000.00) in region 10000002
+2025-09-23 10:21:02,183 - INFO - Found 0 potential competing contracts in region 10000002
+2025-09-23 10:21:02,183 - INFO - No competing contracts found for contract 222641948
+2025-09-23 10:21:02,335 - INFO - Updated contract: 222641948 - Capital Magnetometric Sensor Cluster - Contract 222641948
+2025-09-23 10:21:02,966 - INFO - Checking competition for contract 222641961 (type_id: 29072, price_per_item: 298990000.00) in region 10000002
+2025-09-23 10:21:04,837 - INFO - Found 0 potential competing contracts in region 10000002
+2025-09-23 10:21:04,837 - INFO - No competing contracts found for contract 222641961
+2025-09-23 10:21:05,015 - INFO - Updated contract: 222641961 - Capital Magpulse Thruster - Contract 222641961
+2025-09-23 10:21:06,039 - INFO - Checking competition for contract 222641973 (type_id: 29074, price_per_item: 299999999.00) in region 10000002
+2025-09-23 10:21:07,898 - INFO - Found 0 potential competing contracts in region 10000002
+2025-09-23 10:21:07,898 - INFO - No competing contracts found for contract 222641973
+2025-09-23 10:21:08,398 - INFO - Updated contract: 222641973 - Capital Nanoelectrical Microprocessor - Contract 222641973
+2025-09-23 10:21:09,171 - INFO - Checking competition for contract 222641983 (type_id: 29076, price_per_item: 88980000.00) in region 10000002
+2025-09-23 10:21:10,996 - INFO - Found 0 potential competing contracts in region 10000002
+2025-09-23 10:21:10,996 - INFO - No competing contracts found for contract 222641983
+2025-09-23 10:21:11,147 - INFO - Updated contract: 222641983 - Capital Nanomechanical Microprocessor - Contract 222641983
+2025-09-23 10:21:11,839 - INFO - Checking competition for contract 222641993 (type_id: 29078, price_per_item: 46990000.00) in region 10000002
+2025-09-23 10:21:13,771 - INFO - Found 0 potential competing contracts in region 10000002
+2025-09-23 10:21:13,771 - INFO - No competing contracts found for contract 222641993
+2025-09-23 10:21:13,929 - INFO - Updated contract: 222641993 - Capital Nuclear Pulse Generator - Contract 222641993
+2025-09-23 10:21:14,748 - INFO - Checking competition for contract 222642004 (type_id: 29082, price_per_item: 83980000.00) in region 10000002
+2025-09-23 10:21:16,863 - INFO - Found 0 potential competing contracts in region 10000002
+2025-09-23 10:21:16,863 - INFO - No competing contracts found for contract 222642004
+2025-09-23 10:21:17,018 - INFO - Updated contract: 222642004 - Capital Oscillator Capacitor Unit - Contract 222642004
+2025-09-23 10:21:17,647 - INFO - Checking competition for contract 222642013 (type_id: 29084, price_per_item: 44990000.00) in region 10000002
+2025-09-23 10:21:20,214 - INFO - Found 0 potential competing contracts in region 10000002
+2025-09-23 10:21:20,214 - INFO - No competing contracts found for contract 222642013
+2025-09-23 10:21:20,427 - INFO - Updated contract: 222642013 - Capital Particle Accelerator Unit - Contract 222642013
+2025-09-23 10:21:21,139 - INFO - Checking competition for contract 222642020 (type_id: 29086, price_per_item: 48999999.00) in region 10000002
+2025-09-23 10:21:23,865 - INFO - Found 0 potential competing contracts in region 10000002
+2025-09-23 10:21:23,865 - INFO - No competing contracts found for contract 222642020
+2025-09-23 10:21:24,131 - INFO - Updated contract: 222642020 - Capital Photon Microprocessor - Contract 222642020
+2025-09-23 10:21:25,147 - INFO - Checking competition for contract 222642026 (type_id: 29088, price_per_item: 17760000.00) in region 10000002
+2025-09-23 10:21:27,293 - INFO - Found 0 potential competing contracts in region 10000002
+2025-09-23 10:21:27,294 - INFO - No competing contracts found for contract 222642026
+2025-09-23 10:21:27,464 - INFO - Updated contract: 222642026 - Capital Plasma Pulse Generator - Contract 222642026
+2025-09-23 10:21:28,119 - INFO - Checking competition for contract 222642037 (type_id: 29090, price_per_item: 50799999.00) in region 10000002
+2025-09-23 10:21:30,139 - INFO - Found 0 potential competing contracts in region 10000002
+2025-09-23 10:21:30,140 - INFO - No competing contracts found for contract 222642037
+2025-09-23 10:21:30,290 - INFO - Updated contract: 222642037 - Capital Plasma Thruster - Contract 222642037
+2025-09-23 10:21:31,014 - INFO - Checking competition for contract 222642061 (type_id: 29092, price_per_item: 48979999.00) in region 10000002
+2025-09-23 10:21:32,748 - INFO - Found 0 potential competing contracts in region 10000002
+2025-09-23 10:21:32,749 - INFO - No competing contracts found for contract 222642061
+2025-09-23 10:21:32,909 - INFO - Updated contract: 222642061 - Capital Pulse Shield Emitter - Contract 222642061
+2025-09-23 10:21:33,788 - INFO - Checking competition for contract 222642072 (type_id: 29094, price_per_item: 52990000.00) in region 10000002
+2025-09-23 10:21:35,501 - INFO - Found 0 potential competing contracts in region 10000002
+2025-09-23 10:21:35,502 - INFO - No competing contracts found for contract 222642072
+2025-09-23 10:21:35,747 - INFO - Updated contract: 222642072 - Capital Quantum Microprocessor - Contract 222642072
+2025-09-23 10:21:36,439 - INFO - Checking competition for contract 222642077 (type_id: 29096, price_per_item: 299999999.00) in region 10000002
+2025-09-23 10:21:38,638 - INFO - Found 0 potential competing contracts in region 10000002
+2025-09-23 10:21:38,639 - INFO - No competing contracts found for contract 222642077
+2025-09-23 10:21:38,908 - INFO - Updated contract: 222642077 - Capital Radar Sensor Cluster - Contract 222642077
+2025-09-23 10:21:39,704 - INFO - Checking competition for contract 222642089 (type_id: 29098, price_per_item: 53990000.00) in region 10000002
+2025-09-23 10:21:42,109 - INFO - Found 0 potential competing contracts in region 10000002
+2025-09-23 10:21:42,109 - INFO - No competing contracts found for contract 222642089
+2025-09-23 10:21:42,253 - INFO - Updated contract: 222642089 - Capital Scalar Capacitor Unit - Contract 222642089
+2025-09-23 10:21:43,004 - INFO - Checking competition for contract 222642107 (type_id: 29100, price_per_item: 99990000.00) in region 10000002
+2025-09-23 10:21:44,814 - INFO - Found 0 potential competing contracts in region 10000002
+2025-09-23 10:21:44,814 - INFO - No competing contracts found for contract 222642107
+2025-09-23 10:21:45,091 - INFO - Updated contract: 222642107 - Capital Superconductor Rails - Contract 222642107
+2025-09-23 10:21:45,826 - INFO - Checking competition for contract 222642133 (type_id: 29102, price_per_item: 52980000.00) in region 10000002
+2025-09-23 10:21:47,465 - INFO - Found 0 potential competing contracts in region 10000002
+2025-09-23 10:21:47,466 - INFO - No competing contracts found for contract 222642133
+2025-09-23 10:21:47,690 - INFO - Updated contract: 222642133 - Capital Sustained Shield Emitter - Contract 222642133
+2025-09-23 10:21:48,638 - INFO - Checking competition for contract 222642153 (type_id: 29104, price_per_item: 299999999.00) in region 10000002
+2025-09-23 10:21:50,443 - INFO - Found 0 potential competing contracts in region 10000002
+2025-09-23 10:21:50,443 - INFO - No competing contracts found for contract 222642153
+2025-09-23 10:21:50,580 - INFO - Updated contract: 222642153 - Capital Tesseract Capacitor Unit - Contract 222642153
+2025-09-23 10:21:52,527 - INFO - Checking competition for contract 222642169 (type_id: 29106, price_per_item: 43990000.00) in region 10000002
+2025-09-23 10:21:54,742 - INFO - Found 0 potential competing contracts in region 10000002
+2025-09-23 10:21:54,743 - INFO - No competing contracts found for contract 222642169
+2025-09-23 10:21:54,910 - INFO - Updated contract: 222642169 - Capital Thermonuclear Trigger Unit - Contract 222642169
+2025-09-23 10:21:55,745 - INFO - Checking competition for contract 222642175 (type_id: 29110, price_per_item: 24999999.00) in region 10000002
+2025-09-23 10:21:57,803 - INFO - Found 0 potential competing contracts in region 10000002
+2025-09-23 10:21:57,803 - INFO - No competing contracts found for contract 222642175
+2025-09-23 10:21:57,996 - INFO - Updated contract: 222642175 - Capital Tungsten Carbide Armor Plate - Contract 222642175
+2025-09-23 10:21:58,769 - INFO - Checking competition for contract 222642246 (type_id: 17355, price_per_item: 25899999.00) in region 10000002
+2025-09-23 10:22:00,849 - INFO - Found 0 potential competing contracts in region 10000002
+2025-09-23 10:22:00,849 - INFO - No competing contracts found for contract 222642246
+2025-09-23 10:22:00,998 - INFO - Updated contract: 222642246 - Fernite Carbide Composite Armor Plate - Contract 222642246
+2025-09-23 10:22:01,679 - INFO - Checking competition for contract 222642285 (type_id: 17325, price_per_item: 14740000.00) in region 10000002
+2025-09-23 10:22:03,247 - INFO - Found 0 potential competing contracts in region 10000002
+2025-09-23 10:22:03,247 - INFO - No competing contracts found for contract 222642285
+2025-09-23 10:22:03,416 - INFO - Updated contract: 222642285 - Nanomechanical Microprocessor - Contract 222642285
+2025-09-23 10:22:04,831 - INFO - Checking competition for contract 222642299 (type_id: 17339, price_per_item: 9970000.00) in region 10000002
+2025-09-23 10:22:06,820 - INFO - Found 0 potential competing contracts in region 10000002
+2025-09-23 10:22:06,820 - INFO - No competing contracts found for contract 222642299
+2025-09-23 10:22:06,988 - INFO - Updated contract: 222642299 - Plasma Pulse Generator - Contract 222642299
+2025-09-23 10:22:07,825 - INFO - Checking competition for contract 222642381 (type_id: 687, price_per_item: 144000000.00) in region 10000002
+2025-09-23 10:22:09,535 - INFO - Found 0 potential competing contracts in region 10000002
+2025-09-23 10:22:09,535 - INFO - No competing contracts found for contract 222642381
+2025-09-23 10:22:09,709 - INFO - Updated contract: 222642381 - Caracal - Contract 222642381
+2025-09-23 10:22:10,486 - INFO - Checking competition for contract 222642390 (type_id: 971, price_per_item: 199000000.00) in region 10000002
+2025-09-23 10:22:12,369 - INFO - Found 0 potential competing contracts in region 10000002
+2025-09-23 10:22:12,369 - INFO - No competing contracts found for contract 222642390
+2025-09-23 10:22:12,532 - INFO - Updated contract: 222642390 - Vexor - Contract 222642390
+2025-09-23 10:22:13,240 - INFO - Checking competition for contract 222642413 (type_id: 81043, price_per_item: 219999999.00) in region 10000002
+2025-09-23 10:22:15,295 - INFO - Found 0 potential competing contracts in region 10000002
+2025-09-23 10:22:15,295 - INFO - No competing contracts found for contract 222642413
+2025-09-23 10:22:15,586 - INFO - Updated contract: 222642413 - Squall - Contract 222642413
+2025-09-23 10:22:16,389 - INFO - Checking competition for contract 222697423 (type_id: 29040, price_per_item: 197999999.00) in region 10000002
+2025-09-23 10:22:18,364 - INFO - Found 0 potential competing contracts in region 10000002
+2025-09-23 10:22:18,364 - INFO - No competing contracts found for contract 222697423
+2025-09-23 10:22:18,509 - INFO - Updated contract: 222697423 - Capital Antimatter Reactor Unit - Contract 222697423
+2025-09-23 10:22:20,227 - INFO - Checking competition for contract 222697456 (type_id: 29044, price_per_item: 49990000.00) in region 10000002
+2025-09-23 10:22:22,350 - INFO - Found 0 potential competing contracts in region 10000002
+2025-09-23 10:22:22,350 - INFO - No competing contracts found for contract 222697456
+2025-09-23 10:22:22,501 - INFO - Updated contract: 222697456 - Capital Deflection Shield Emitter - Contract 222697456
+2025-09-23 10:22:23,181 - INFO - Checking competition for contract 222697477 (type_id: 29046, price_per_item: 51990000.00) in region 10000002
+2025-09-23 10:22:25,625 - INFO - Found 0 potential competing contracts in region 10000002
+2025-09-23 10:22:25,626 - INFO - No competing contracts found for contract 222697477
+2025-09-23 10:22:25,789 - INFO - Updated contract: 222697477 - Capital Electrolytic Capacitor Unit - Contract 222697477
+2025-09-23 10:22:26,524 - INFO - Checking competition for contract 222697508 (type_id: 29048, price_per_item: 31499999.00) in region 10000002
+2025-09-23 10:22:28,709 - INFO - Found 0 potential competing contracts in region 10000002
+2025-09-23 10:22:28,709 - INFO - No competing contracts found for contract 222697508
+2025-09-23 10:22:28,873 - INFO - Updated contract: 222697508 - Capital EM Pulse Generator - Contract 222697508
+2025-09-23 10:22:29,528 - INFO - Checking competition for contract 222697519 (type_id: 29050, price_per_item: 247999999.00) in region 10000002
+2025-09-23 10:22:31,508 - INFO - Found 0 potential competing contracts in region 10000002
+2025-09-23 10:22:31,508 - INFO - No competing contracts found for contract 222697519
+2025-09-23 10:22:31,729 - INFO - Updated contract: 222697519 - Capital Fernite Carbide Composite Armor Plate - Contract 222697519
+2025-09-23 10:22:32,462 - INFO - Checking competition for contract 222697538 (type_id: 29054, price_per_item: 289999999.00) in region 10000002
+2025-09-23 10:22:34,463 - INFO - Found 0 potential competing contracts in region 10000002
+2025-09-23 10:22:34,464 - INFO - No competing contracts found for contract 222697538
+2025-09-23 10:22:34,692 - INFO - Updated contract: 222697538 - Capital Fusion Thruster - Contract 222697538
+2025-09-23 10:22:35,507 - INFO - Checking competition for contract 222697552 (type_id: 29056, price_per_item: 148989999.00) in region 10000002
+2025-09-23 10:22:37,125 - INFO - Found 0 potential competing contracts in region 10000002
+2025-09-23 10:22:37,125 - INFO - No competing contracts found for contract 222697552
+2025-09-23 10:22:37,276 - INFO - Updated contract: 222697552 - Capital Gravimetric Sensor Cluster - Contract 222697552
+2025-09-23 10:22:38,136 - INFO - Checking competition for contract 222697571 (type_id: 29062, price_per_item: 38969999.00) in region 10000002
+2025-09-23 10:22:40,016 - INFO - Found 0 potential competing contracts in region 10000002
+2025-09-23 10:22:40,017 - INFO - No competing contracts found for contract 222697571
+2025-09-23 10:22:40,259 - INFO - Updated contract: 222697571 - Capital Ion Thruster - Contract 222697571
+2025-09-23 10:22:41,009 - INFO - Checking competition for contract 222697575 (type_id: 29066, price_per_item: 51799999.00) in region 10000002
+2025-09-23 10:22:42,793 - INFO - Found 0 potential competing contracts in region 10000002
+2025-09-23 10:22:42,794 - INFO - No competing contracts found for contract 222697575
+2025-09-23 10:22:42,942 - INFO - Updated contract: 222697575 - Capital Ladar Sensor Cluster - Contract 222697575
+2025-09-23 10:22:42,945 - INFO - Fetching additional data for Orev Khazar...
+2025-09-23 10:22:43,527 - INFO - Updated skills for character 90522765
+2025-09-23 10:22:43,528 - INFO - Skills for Orev Khazar: 12173612 SP
+2025-09-23 10:22:43,528 - INFO - Fetching blueprints for Orev Khazar...
+2025-09-23 10:22:43,838 - INFO - Processing 50 char assets for blueprint extraction...
+2025-09-23 10:22:43,838 - INFO - Completed asset processing: found 0 BPO blueprints in 50 assets
+2025-09-23 10:22:44,063 - INFO - Planets for Orev Khazar: 6 colonies
+2025-09-23 10:22:44,590 - INFO - Updated planet: 40087444
+2025-09-23 10:22:45,055 - INFO - Updated planet: 40087446
+2025-09-23 10:22:45,513 - INFO - Updated planet: 40087448
+2025-09-23 10:22:46,019 - INFO - Updated planet: 40087450
+2025-09-23 10:22:46,521 - INFO - Updated planet: 40087468
+2025-09-23 10:22:47,024 - INFO - Updated planet: 40087521
+2025-09-23 10:22:47,162 - INFO - Fetching additional data for Sir FiLiN...
+2025-09-23 10:22:47,781 - INFO - Updated skills for character 90162477
+2025-09-23 10:22:47,782 - INFO - Skills for Sir FiLiN: 81551886 SP
+2025-09-23 10:22:47,783 - INFO - Fetching blueprints for Sir FiLiN...
+2025-09-23 10:22:48,149 - INFO - Processing 437 char assets for blueprint extraction...
+2025-09-23 10:22:48,150 - INFO - Completed asset processing: found 0 BPO blueprints in 437 assets
+2025-09-23 10:22:48,399 - INFO - Planets for Sir FiLiN: 6 colonies
+2025-09-23 10:22:49,199 - INFO - Updated planet: 40087444
+2025-09-23 10:22:49,701 - INFO - Updated planet: 40087446
+2025-09-23 10:22:50,224 - INFO - Updated planet: 40087448
+2025-09-23 10:22:50,726 - INFO - Updated planet: 40087450
+2025-09-23 10:22:51,268 - INFO - Updated planet: 40087468
+2025-09-23 10:22:51,775 - INFO - Updated planet: 40087521
+2025-09-23 10:22:51,895 - INFO - Fetching additional data for Filin Khan...
+2025-09-23 10:22:53,448 - INFO - Updated skills for character 95937458
+2025-09-23 10:22:53,452 - INFO - Skills for Filin Khan: 10238856 SP
+2025-09-23 10:22:53,452 - INFO - Fetching blueprints for Filin Khan...
+2025-09-23 10:22:54,093 - INFO - Processing 24 char assets for blueprint extraction...
+2025-09-23 10:22:54,093 - INFO - Completed asset processing: found 0 BPO blueprints in 24 assets
+2025-09-23 10:22:54,482 - INFO - Planets for Filin Khan: 6 colonies
+2025-09-23 10:22:55,166 - INFO - Updated planet: 40087444
+2025-09-23 10:22:56,703 - INFO - Updated planet: 40087446
+2025-09-23 10:22:57,178 - INFO - Updated planet: 40087448
+2025-09-23 10:22:57,722 - INFO - Updated planet: 40087450
+2025-09-23 10:22:58,234 - INFO - Updated planet: 40087468
+2025-09-23 10:22:58,992 - INFO - Updated planet: 40087521
+2025-09-23 10:22:59,160 - INFO - Fetching additional data for Corvin Khan...
+2025-09-23 10:22:59,726 - INFO - Updated skills for character 95985116
+2025-09-23 10:22:59,728 - INFO - Skills for Corvin Khan: 13530825 SP
+2025-09-23 10:22:59,728 - INFO - Fetching blueprints for Corvin Khan...
+2025-09-23 10:22:59,850 - INFO - Character blueprints: 1 total, 1 BPOs
+2025-09-23 10:22:59,850 - INFO - Starting parallel processing of 1 blueprints with 10 workers
+2025-09-23 10:23:00,609 - INFO - Updated blueprint: 1045937684206
+2025-09-23 10:23:00,612 - INFO - Processed blueprint 1/1: 1045937684206
+2025-09-23 10:23:00,667 - INFO - Completed parallel processing: 1/1 blueprints processed successfully
+2025-09-23 10:23:00,920 - INFO - Processing 20 char assets for blueprint extraction...
+2025-09-23 10:23:00,920 - INFO - Completed asset processing: found 0 BPO blueprints in 20 assets
+2025-09-23 10:23:01,089 - INFO - Industry jobs for Corvin Khan: 1 active
+2025-09-23 10:23:01,090 - INFO - Character industry job blueprints: 1 items
+2025-09-23 10:23:01,091 - INFO - Starting parallel processing of 1 blueprints with 10 workers
+2025-09-23 10:23:01,437 - INFO - Updated blueprint from char_industry_job: 1045937684206
+2025-09-23 10:23:01,439 - INFO - Processed blueprint 1/1: 1045937684206
+2025-09-23 10:23:01,495 - INFO - Completed parallel processing: 1/1 blueprints processed successfully
+2025-09-23 10:23:01,668 - INFO - Planets for Corvin Khan: 6 colonies
+2025-09-23 10:23:02,138 - INFO - Updated planet: 40087444
+2025-09-23 10:23:02,664 - INFO - Updated planet: 40087446
+2025-09-23 10:23:03,191 - INFO - Updated planet: 40087448
+2025-09-23 10:23:03,713 - INFO - Updated planet: 40087450
+2025-09-23 10:23:04,235 - INFO - Updated planet: 40087468
+2025-09-23 10:23:04,968 - INFO - Updated planet: 40087521
+2025-09-23 10:23:05,084 - INFO - Fetching additional data for FiLiN Core...
+2025-09-23 10:23:06,004 - INFO - Updated skills for character 1316070855
+2025-09-23 10:23:06,007 - INFO - Skills for FiLiN Core: 17053066 SP
+2025-09-23 10:23:06,007 - INFO - Fetching blueprints for FiLiN Core...
+2025-09-23 10:23:06,246 - INFO - Processing 263 char assets for blueprint extraction...
+2025-09-23 10:23:06,246 - INFO - Completed asset processing: found 0 BPO blueprints in 263 assets
+2025-09-23 10:23:06,654 - INFO - Planets for FiLiN Core: 5 colonies
+2025-09-23 10:23:07,240 - INFO - Updated planet: 40087444
+2025-09-23 10:23:07,741 - INFO - Updated planet: 40087446
+2025-09-23 10:23:08,251 - INFO - Updated planet: 40087448
+2025-09-23 10:23:08,769 - INFO - Updated planet: 40087450
+2025-09-23 10:23:09,300 - INFO - Updated planet: 40087468
+2025-09-23 10:23:09,546 - INFO - Fetching additional data for Raven Madyar...
+2025-09-23 10:23:10,097 - INFO - Updated skills for character 91594850
+2025-09-23 10:23:10,098 - INFO - Skills for Raven Madyar: 27017089 SP
+2025-09-23 10:23:10,098 - INFO - Fetching blueprints for Raven Madyar...
+2025-09-23 10:23:10,376 - INFO - Processing 51 char assets for blueprint extraction...
+2025-09-23 10:23:10,376 - INFO - Completed asset processing: found 0 BPO blueprints in 51 assets
+2025-09-23 10:23:10,752 - INFO - Planets for Raven Madyar: 6 colonies
+2025-09-23 10:23:11,246 - INFO - Updated planet: 40087444
+2025-09-23 10:23:11,945 - INFO - Updated planet: 40087446
+2025-09-23 10:23:12,443 - INFO - Updated planet: 40087448
+2025-09-23 10:23:12,978 - INFO - Updated planet: 40087450
+2025-09-23 10:23:13,543 - INFO - Updated planet: 40087468
+2025-09-23 10:23:14,010 - INFO - Updated planet: 40087521
+2025-09-23 10:23:14,196 - INFO - Fetching additional data for Vran Ruthen...
+2025-09-23 10:23:14,918 - INFO - Updated skills for character 90483242
+2025-09-23 10:23:14,919 - INFO - Skills for Vran Ruthen: 16088803 SP
+2025-09-23 10:23:14,920 - INFO - Fetching blueprints for Vran Ruthen...
+2025-09-23 10:23:15,248 - INFO - Processing 66 char assets for blueprint extraction...
+2025-09-23 10:23:15,248 - INFO - Completed asset processing: found 0 BPO blueprints in 66 assets
+2025-09-23 10:23:15,556 - INFO - Planets for Vran Ruthen: 6 colonies
+2025-09-23 10:23:16,107 - INFO - Updated planet: 40087444
+2025-09-23 10:23:16,644 - INFO - Updated planet: 40087446
+2025-09-23 10:23:17,156 - INFO - Updated planet: 40087448
+2025-09-23 10:23:17,720 - INFO - Updated planet: 40087450
+2025-09-23 10:23:18,199 - INFO - Updated planet: 40087468
+2025-09-23 10:23:18,766 - INFO - Updated planet: 40087521

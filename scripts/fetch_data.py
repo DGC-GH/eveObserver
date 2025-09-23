@@ -1744,7 +1744,9 @@ def check_industry_job_completions(jobs, char_name):
         body = f"The following jobs will complete within 24 hours:\n\n"
         for job in upcoming_completions:
             body += f"- Job ID {job['job_id']}: {job.get('activity_id', 'Unknown')} ending {job['end_date']}\n"
-        send_email(subject, body)
+        # Email functionality disabled
+        logger.info(f"Email alert disabled: {subject}")
+        # send_email(subject, body)
 
 def process_character_planets(char_id, access_token, char_name):
     """Process planets for a character."""
@@ -1775,7 +1777,9 @@ def check_planet_extraction_completions(planet_details, char_name):
         body = f"The following extractions will complete within 24 hours:\n\n"
         for pin in upcoming_extractions:
             body += f"- Pin {pin['pin_id']}: Type {pin.get('type_id', 'Unknown')} ending {pin['expiry_time']}\n"
-        send_email(subject, body)
+        # Email functionality disabled
+        logger.info(f"Email alert disabled: {subject}")
+        # send_email(subject, body)
 
 def process_character_contracts(char_id, access_token, char_name, wp_post_id_cache, blueprint_cache, location_cache, structure_cache, failed_structures):
     """Process contracts for a character."""
