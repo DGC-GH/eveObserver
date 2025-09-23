@@ -1347,36 +1347,92 @@ def update_contract_in_wp(contract_id, contract_data, for_corp=False, entity_id=
         logger.error(f"Failed to update contract {contract_id}: {response.status_code} - {response.text}")
 
 def get_region_from_location(location_id):
-    """Get region_id from a location_id (station or structure)."""
+    """Get region_id from a location_id (station or structure) with caching."""
     if not location_id:
         return None
     
+    # Load cache
+    cache_file = 'cache/region_cache.json'
+    try:
+        with open(cache_file, 'r') as f:
+            region_cache = json.load(f)
+    except (FileNotFoundError, json.JSONDecodeError):
+        region_cache = {}
+    
+    location_id_str = str(location_id)
+    if location_id_str in region_cache:
+        return region_cache[location_id_str]
+    
     region_id = None
+    import requests
     if location_id >= 1000000000000:  # Structure
         # For structures, we need to fetch structure info to get solar_system_id, then region
-        struct_data = fetch_public_esi(f"/universe/structures/{location_id}")
+        try:
+            response = requests.get(f"{ESI_BASE_URL}/universe/structures/{location_id}", headers={'Accept': 'application/json'}, timeout=30)
+            response.raise_for_status()
+            struct_data = response.json()
+        except requests.exceptions.RequestException:
+            struct_data = None
+        
         if struct_data:
             solar_system_id = struct_data.get('solar_system_id')
             if solar_system_id:
-                system_data = fetch_public_esi(f"/universe/systems/{solar_system_id}")
+                try:
+                    response = requests.get(f"{ESI_BASE_URL}/universe/systems/{solar_system_id}", headers={'Accept': 'application/json'}, timeout=30)
+                    response.raise_for_status()
+                    system_data = response.json()
+                except requests.exceptions.RequestException:
+                    system_data = None
+                
                 if system_data:
                     constellation_id = system_data.get('constellation_id')
                     if constellation_id:
-                        constellation_data = fetch_public_esi(f"/universe/constellations/{constellation_id}")
+                        try:
+                            response = requests.get(f"{ESI_BASE_URL}/universe/constellations/{constellation_id}", headers={'Accept': 'application/json'}, timeout=30)
+                            response.raise_for_status()
+                            constellation_data = response.json()
+                        except requests.exceptions.RequestException:
+                            constellation_data = None
+                        
                         if constellation_data:
                             region_id = constellation_data.get('region_id')
     else:  # Station
-        station_data = fetch_public_esi(f"/universe/stations/{location_id}")
+        try:
+            response = requests.get(f"{ESI_BASE_URL}/universe/stations/{location_id}", headers={'Accept': 'application/json'}, timeout=30)
+            response.raise_for_status()
+            station_data = response.json()
+        except requests.exceptions.RequestException:
+            station_data = None
+        
         if station_data:
             system_id = station_data.get('system_id')
             if system_id:
-                system_data = fetch_public_esi(f"/universe/systems/{system_id}")
+                try:
+                    response = requests.get(f"{ESI_BASE_URL}/universe/systems/{system_id}", headers={'Accept': 'application/json'}, timeout=30)
+                    response.raise_for_status()
+                    system_data = response.json()
+                except requests.exceptions.RequestException:
+                    system_data = None
+                
                 if system_data:
                     constellation_id = system_data.get('constellation_id')
                     if constellation_id:
-                        constellation_data = fetch_public_esi(f"/universe/constellations/{constellation_id}")
+                        try:
+                            response = requests.get(f"{ESI_BASE_URL}/universe/constellations/{constellation_id}", headers={'Accept': 'application/json'}, timeout=30)
+                            response.raise_for_status()
+                            constellation_data = response.json()
+                        except requests.exceptions.RequestException:
+                            constellation_data = None
+                        
                         if constellation_data:
                             region_id = constellation_data.get('region_id')
+    
+    # Cache the result
+    if region_id:
+        region_cache[location_id_str] = region_id
+        os.makedirs(os.path.dirname(cache_file), exist_ok=True)
+        with open(cache_file, 'w') as f:
+            json.dump(region_cache, f, indent=2)
     
     return region_id
 
@@ -1415,15 +1471,61 @@ def refresh_token(refresh_token):
         logger.error(f"Failed to refresh token: {response.status_code} - {response.text}")
         return None
 
-def fetch_public_contracts(region_id, page=1):
-    """Fetch public contracts for a region."""
+def fetch_public_contracts(region_id, page=1, max_retries=3):
+    """Fetch public contracts for a region with retry logic."""
     endpoint = f"/contracts/public/{region_id}/?page={page}"
-    return fetch_public_esi(endpoint)
+    import requests
+    url = f"{ESI_BASE_URL}{endpoint}"
+    headers = {'Accept': 'application/json'}
+    
+    for attempt in range(max_retries):
+        try:
+            response = requests.get(url, headers=headers, timeout=30)
+            response.raise_for_status()
+            
+            # Check rate limiting
+            remaining = response.headers.get('X-ESI-Error-Limit-Remain', '100')
+            reset_time = response.headers.get('X-ESI-Error-Limit-Reset', '60')
+            if int(remaining) < 20:
+                logger.warning(f"ESI rate limit low: {remaining} requests remaining, resets in {reset_time}s")
+            
+            return response.json()
+        except requests.exceptions.RequestException as e:
+            if attempt < max_retries - 1:
+                wait_time = 2 ** attempt  # Exponential backoff
+                logger.warning(f"ESI request failed (attempt {attempt + 1}/{max_retries}): {e}. Retrying in {wait_time}s")
+                time.sleep(wait_time)
+            else:
+                logger.error(f"ESI request failed after {max_retries} attempts: {e}")
+                return None
 
-def fetch_public_contract_items(contract_id):
-    """Fetch items in a public contract."""
+def fetch_public_contract_items(contract_id, max_retries=3):
+    """Fetch items in a public contract with retry logic."""
     endpoint = f"/contracts/public/items/{contract_id}/"
-    return fetch_public_esi(endpoint)
+    import requests
+    url = f"{ESI_BASE_URL}{endpoint}"
+    headers = {'Accept': 'application/json'}
+    
+    for attempt in range(max_retries):
+        try:
+            response = requests.get(url, headers=headers, timeout=30)
+            response.raise_for_status()
+            
+            # Check rate limiting
+            remaining = response.headers.get('X-ESI-Error-Limit-Remain', '100')
+            reset_time = response.headers.get('X-ESI-Error-Limit-Reset', '60')
+            if int(remaining) < 20:
+                logger.warning(f"ESI rate limit low: {remaining} requests remaining, resets in {reset_time}s")
+            
+            return response.json()
+        except requests.exceptions.RequestException as e:
+            if attempt < max_retries - 1:
+                wait_time = 2 ** attempt  # Exponential backoff
+                logger.warning(f"ESI request failed (attempt {attempt + 1}/{max_retries}): {e}. Retrying in {wait_time}s")
+                time.sleep(wait_time)
+            else:
+                logger.error(f"ESI request failed after {max_retries} attempts: {e}")
+                return None
 
 def check_contract_competition(contract_data, contract_items):
     """Check if a sell contract has been outbid by cheaper contracts in the same region."""
@@ -1449,6 +1551,7 @@ def check_contract_competition(contract_data, contract_items):
     # Get contract region
     region_id = get_region_from_location(contract_data.get('start_location_id'))
     if not region_id:
+        logger.warning(f"Could not determine region for contract {contract_id}")
         return False, None
     
     logger.info(f"Checking competition for contract {contract_id} (type_id: {type_id}, price_per_item: {price_per_item:.2f}) in region {region_id}")
@@ -1458,9 +1561,16 @@ def check_contract_competition(contract_data, contract_items):
     competing_contracts = []
     
     while True:
+        logger.debug(f"Fetching contracts page {page} for region {region_id}")
         contracts_page = fetch_public_contracts(region_id, page)
-        if not contracts_page:
+        if contracts_page is None:
+            logger.error(f"Failed to fetch contracts for region {region_id}, page {page}")
             break
+        elif not contracts_page:
+            logger.debug(f"No contracts returned for region {region_id}, page {page}")
+            break
+        
+        logger.debug(f"Fetched {len(contracts_page)} contracts from region {region_id}, page {page}")
         
         # Filter for outstanding item_exchange contracts
         for contract in contracts_page:
@@ -1473,6 +1583,9 @@ def check_contract_competition(contract_data, contract_items):
         if len(contracts_page) < 1000:  # ESI returns max 1000 per page
             break
         page += 1
+        if page > 10:  # Safety limit to prevent infinite loops
+            logger.warning(f"Reached page limit (10) for region {region_id}, stopping")
+            break
     
     logger.info(f"Found {len(competing_contracts)} potential competing contracts in region {region_id}")
     
