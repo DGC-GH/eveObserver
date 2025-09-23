@@ -523,6 +523,12 @@ class EVEDashboard {
         const ctx = document.getElementById('eveChart');
         if (!ctx) return;
 
+        // Destroy existing chart if it exists
+        if (this.chart) {
+            console.log('🔄 [CHART] Destroying existing chart...');
+            this.chart.destroy();
+        }
+
         const counts = {
             Characters: this.data.characters.length,
             Blueprints: this.data.blueprints.length,
@@ -537,6 +543,7 @@ class EVEDashboard {
             Object.entries(counts).map(([key, value]) => [key, total > 0 ? (value / total * 100) : 0])
         );
 
+        console.log('🔄 [CHART] Creating new chart with data:', counts);
         this.chart = new Chart(ctx, {
             type: 'doughnut',
             data: {
@@ -606,6 +613,7 @@ class EVEDashboard {
                 }
             }
         });
+        console.log('✅ [CHART] Chart created successfully');
     }
 
     scrollToSection(sectionId) {
