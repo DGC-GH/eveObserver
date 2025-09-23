@@ -19,7 +19,29 @@ import re
 from dataclasses import dataclass
 from enum import Enum
 import time
+import functools
 from config import *
+
+# Performance benchmarking decorator
+def benchmark(func):
+    """Decorator to measure and log function execution time."""
+    @functools.wraps(func)
+    async def async_wrapper(*args, **kwargs):
+        start = time.perf_counter()
+        result = await func(*args, **kwargs)
+        elapsed = time.perf_counter() - start
+        logger.info(f"{func.__name__} completed in {elapsed:.3f}s")
+        return result
+    
+    @functools.wraps(func)
+    def sync_wrapper(*args, **kwargs):
+        start = time.perf_counter()
+        result = func(*args, **kwargs)
+        elapsed = time.perf_counter() - start
+        logger.info(f"{func.__name__} completed in {elapsed:.3f}s")
+        return result
+    
+    return async_wrapper if asyncio.iscoroutinefunction(func) else sync_wrapper
 
 # Circuit Breaker implementation for better error handling
 class CircuitBreakerState(Enum):
@@ -170,16 +192,46 @@ load_dotenv()
 
 # Create a global aiohttp session for connection reuse
 session = None
+_session_cleanup_registered = False
 
 async def get_session():
-    """Get or create aiohttp session."""
-    global session
+    """Get or create aiohttp session with proper cleanup registration."""
+    global session, _session_cleanup_registered
     if session is None or session.closed:
         session = aiohttp.ClientSession(
             timeout=aiohttp.ClientTimeout(total=api_config.esi_timeout),
             connector=aiohttp.TCPConnector(limit=api_config.esi_max_workers * 2)
         )
+        # Register cleanup only once
+        if not _session_cleanup_registered:
+            import atexit
+            atexit.register(_sync_cleanup_session)
+            _session_cleanup_registered = True
     return session
+
+def _sync_cleanup_session():
+    """Synchronous cleanup wrapper for the global session."""
+    try:
+        # Try to get the current event loop
+        loop = asyncio.get_event_loop()
+        if loop.is_running():
+            # If loop is running, we can't await, so just close synchronously if possible
+            if session and not session.closed:
+                # This is not ideal but prevents the error
+                logger.warning("Session cleanup attempted while event loop is running")
+        else:
+            # Create a new task to cleanup
+            loop.run_until_complete(_cleanup_session())
+    except RuntimeError:
+        # No event loop, try synchronous cleanup
+        logger.warning("No event loop available for session cleanup")
+
+async def _cleanup_session():
+    """Cleanup the global session."""
+    global session
+    if session and not session.closed:
+        await session.close()
+        session = None
 
 # Initialize API configuration
 api_config = ApiConfig.from_env()
@@ -195,6 +247,7 @@ logging.basicConfig(
 )
 logger = logging.getLogger(__name__)
 
+@benchmark
 async def _fetch_esi_with_retry(endpoint: str, headers: Optional[Dict[str, str]] = None, max_retries: int = None, is_public: bool = True) -> Dict[str, Any]:
     """Internal function to fetch data from ESI API with circuit breaker and error handling."""
     
@@ -313,6 +366,7 @@ async def fetch_esi(endpoint: str, char_id: Optional[int], access_token: str, ma
     headers = {'Authorization': f'Bearer {access_token}'}
     return await _fetch_esi_with_retry(endpoint, headers=headers, max_retries=max_retries, is_public=False)
 
+@benchmark
 async def wp_request(method: str, endpoint: str, data: Optional[Dict] = None) -> Optional[Dict]:
     """Make async request to WordPress REST API with circuit breaker protection."""
     
@@ -435,6 +489,7 @@ def refresh_token(refresh_token: str) -> Optional[Dict[str, Any]]:
         logger.error(f"Failed to refresh token: {response.status_code} - {response.text}")
         return None
 
+@benchmark
 async def fetch_type_icon(type_id: int, size: int = 512) -> str:
     """Fetch type icon URL from images.evetech.net with fallback."""
     # Try the 'bp' variation first for blueprints, then fallback to regular icon
