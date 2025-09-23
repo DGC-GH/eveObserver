@@ -12,9 +12,11 @@ sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from fetch_data import (
     collect_corporation_members,
+    ApiConfig,
+)
+from character_processor import (
     check_industry_job_completions,
     check_planet_extraction_completions,
-    ApiConfig,
 )
 from api_client import (
     fetch_public_esi,
@@ -247,10 +249,12 @@ class TestCollectCorporationMembers:
         mock_load_tokens.return_value = mock_tokens
 
         # Mock character data
-        mock_fetch_char.side_effect = [
-            {'corporation_id': 1001, 'name': 'Test Char 1'},
-            {'corporation_id': 1001, 'name': 'Test Char 2'}
-        ]
+        async def async_return_1():
+            return {'corporation_id': 1001, 'name': 'Test Char 1'}
+        async def async_return_2():
+            return {'corporation_id': 1001, 'name': 'Test Char 2'}
+        
+        mock_fetch_char.side_effect = [async_return_1(), async_return_2()]
 
         result = await collect_corporation_members(mock_tokens)
 
@@ -292,7 +296,10 @@ class TestCollectCorporationMembers:
         }
 
         # Mock character data
-        mock_fetch_char.return_value = {'corporation_id': 1001, 'name': 'Test Char 1'}
+        async def async_return(char_id, access_token):
+            return {'corporation_id': 1001, 'name': 'Test Char 1'}
+        
+        mock_fetch_char.side_effect = async_return
 
         result = await collect_corporation_members(mock_tokens)
 

@@ -24,7 +24,6 @@ from cache_manager import (
     get_cached_wp_post_id, set_cached_wp_post_id, get_cache_stats, log_cache_performance,
     get_cached_value_with_stats, flush_pending_saves
 )
-from fetch_data import fetch_character_portrait
 
 logger = logging.getLogger(__name__)
 
@@ -591,3 +590,8 @@ def construct_blueprint_post_data(blueprint_data: Dict[str, Any], type_name: str
     }
     
     return post_data
+
+async def fetch_character_portrait(char_id):
+    """Fetch character portrait URLs from ESI."""
+    endpoint = f"/characters/{char_id}/portrait/"
+    return await fetch_public_esi(endpoint)
