@@ -14,10 +14,110 @@ import smtplib
 from email.mime.text import MIMEText
 import logging
 import requests
-from typing import Optional, Dict, List, Any, Tuple
+from typing import Optional, Dict, List, Any, Tuple, Callable, Awaitable
 from dataclasses import dataclass
+from enum import Enum
 import time
 from config import *
+
+# Circuit Breaker implementation for better error handling
+class CircuitBreakerState(Enum):
+    CLOSED = "closed"      # Normal operation
+    OPEN = "open"          # Circuit is open, failing fast
+    HALF_OPEN = "half_open"  # Testing if service recovered
+
+@dataclass
+class CircuitBreakerConfig:
+    """Configuration for circuit breaker behavior."""
+    failure_threshold: int = 5  # Number of failures before opening
+    recovery_timeout: int = 60  # Seconds to wait before trying half-open
+    success_threshold: int = 3  # Number of successes needed to close circuit
+    timeout: float = 30.0       # Request timeout in seconds
+
+class CircuitBreaker:
+    """Circuit breaker pattern implementation for API calls."""
+    
+    def __init__(self, name: str, config: CircuitBreakerConfig = None):
+        self.name = name
+        self.config = config or CircuitBreakerConfig()
+        self.state = CircuitBreakerState.CLOSED
+        self.failure_count = 0
+        self.success_count = 0
+        self.last_failure_time = None
+        
+    def _should_attempt_call(self) -> bool:
+        """Determine if we should attempt the API call."""
+        if self.state == CircuitBreakerState.CLOSED:
+            return True
+        elif self.state == CircuitBreakerState.OPEN:
+            if self._is_recovery_timeout_expired():
+                self.state = CircuitBreakerState.HALF_OPEN
+                self.success_count = 0
+                logger.info(f"Circuit breaker {self.name} entering HALF_OPEN state")
+                return True
+            return False
+        elif self.state == CircuitBreakerState.HALF_OPEN:
+            return True
+        return False
+    
+    def _is_recovery_timeout_expired(self) -> bool:
+        """Check if enough time has passed to try recovery."""
+        if self.last_failure_time is None:
+            return True
+        return (time.time() - self.last_failure_time) >= self.config.recovery_timeout
+    
+    def _record_success(self):
+        """Record a successful call."""
+        self.failure_count = 0
+        if self.state == CircuitBreakerState.HALF_OPEN:
+            self.success_count += 1
+            if self.success_count >= self.config.success_threshold:
+                self.state = CircuitBreakerState.CLOSED
+                logger.info(f"Circuit breaker {self.name} CLOSED after {self.success_count} successes")
+    
+    def _record_failure(self):
+        """Record a failed call."""
+        self.failure_count += 1
+        self.last_failure_time = time.time()
+        self.success_count = 0
+        
+        if self.state == CircuitBreakerState.HALF_OPEN:
+            self.state = CircuitBreakerState.OPEN
+            logger.warning(f"Circuit breaker {self.name} OPEN due to failure in HALF_OPEN state")
+        elif (self.state == CircuitBreakerState.CLOSED and 
+              self.failure_count >= self.config.failure_threshold):
+            self.state = CircuitBreakerState.OPEN
+            logger.warning(f"Circuit breaker {self.name} OPEN after {self.failure_count} failures")
+    
+    async def call(self, func: Callable[..., Awaitable], *args, **kwargs):
+        """Execute function with circuit breaker protection."""
+        if not self._should_attempt_call():
+            raise ESIRequestError(f"Circuit breaker {self.name} is OPEN")
+        
+        try:
+            result = await asyncio.wait_for(func(*args, **kwargs), timeout=self.config.timeout)
+            self._record_success()
+            return result
+        except Exception as e:
+            self._record_failure()
+            raise e
+
+# Global circuit breakers for different API endpoints
+_esi_circuit_breaker = CircuitBreaker("ESI_API", CircuitBreakerConfig(
+    failure_threshold=5,
+    recovery_timeout=60,
+    success_threshold=3,
+    timeout=30.0
+))
+
+_wp_circuit_breaker = CircuitBreaker("WordPress_API", CircuitBreakerConfig(
+    failure_threshold=3,
+    recovery_timeout=30,
+    success_threshold=2,
+    timeout=15.0
+))
+
+# Custom exceptions for better error handling
 
 # Custom exceptions for better error handling
 class ESIApiError(Exception):
@@ -94,265 +194,203 @@ logging.basicConfig(
 )
 logger = logging.getLogger(__name__)
 
-async def fetch_public_esi(endpoint: str, max_retries: int = None) -> Optional[Dict[str, Any]]:
-    """Fetch data from ESI API (public endpoints, no auth) with rate limiting and error handling."""
-    start_time = time.time()
-    if max_retries is None:
-        max_retries = api_config.esi_max_retries
+async def _fetch_esi_with_retry(endpoint: str, headers: Optional[Dict[str, str]] = None, max_retries: int = None, is_public: bool = True) -> Dict[str, Any]:
+    """Internal function to fetch data from ESI API with circuit breaker and error handling."""
+    
+    async def _do_request():
+        nonlocal max_retries
+        start_time = time.time()
+        if max_retries is None:
+            max_retries = api_config.esi_max_retries
 
-    sess = await get_session()
-    url = f"{api_config.esi_base_url}{endpoint}"
+        sess = await get_session()
+        url = f"{api_config.esi_base_url}{endpoint}"
 
-    for attempt in range(max_retries):
-        try:
-            async with sess.get(url) as response:
-                if response.status == 200:
-                    result = await response.json()
-                    elapsed = time.time() - start_time
-                    logger.info(f"ESI public fetch successful: {endpoint} in {elapsed:.2f}s")
-                    return result
-                elif response.status == 404:
-                    elapsed = time.time() - start_time
-                    logger.warning(f"Resource not found for public endpoint {endpoint} in {elapsed:.2f}s")
-                    raise ESIRequestError(f"Resource not found: {endpoint}")
-                elif response.status == 429:  # Rate limited
-                    # Check for X-ESI-Error-Limit-Remain header
-                    error_limit_remain = response.headers.get('X-ESI-Error-Limit-Remain')
-                    error_limit_reset = response.headers.get('X-ESI-Error-Limit-Reset')
+        for attempt in range(max_retries):
+            try:
+                async with sess.get(url, headers=headers or {}) as response:
+                    if response.status == 200:
+                        result = await response.json()
+                        elapsed = time.time() - start_time
+                        endpoint_type = "public" if is_public else "authenticated"
+                        logger.info(f"ESI {endpoint_type} fetch successful: {endpoint} in {elapsed:.2f}s")
+                        return result
+                    elif response.status == 401 and not is_public:
+                        elapsed = time.time() - start_time
+                        logger.error(f"Authentication failed for endpoint {endpoint} in {elapsed:.2f}s")
+                        raise ESIAuthError(f"Authentication failed: {endpoint}")
+                    elif response.status == 403 and not is_public:
+                        elapsed = time.time() - start_time
+                        logger.error(f"Access forbidden for endpoint {endpoint} in {elapsed:.2f}s")
+                        raise ESIRequestError(f"Access forbidden: {endpoint}")
+                    elif response.status == 404:
+                        elapsed = time.time() - start_time
+                        endpoint_type = "public" if is_public else ""
+                        logger.warning(f"Resource not found for {endpoint_type} endpoint {endpoint} in {elapsed:.2f}s")
+                        raise ESIRequestError(f"Resource not found: {endpoint}")
+                    elif response.status == 429:  # Rate limited
+                        # Check for X-ESI-Error-Limit-Remain header
+                        error_limit_remain = response.headers.get('X-ESI-Error-Limit-Remain')
+                        error_limit_reset = response.headers.get('X-ESI-Error-Limit-Reset')
 
-                    if error_limit_reset:
-                        wait_time = int(error_limit_reset) + 1  # Add 1 second buffer
-                        logger.info(f"RATE LIMIT: Waiting {wait_time} seconds for public endpoint...")
-                        await asyncio.sleep(wait_time)
-                        continue
+                        if error_limit_reset:
+                            wait_time = int(error_limit_reset) + 1  # Add 1 second buffer
+                            endpoint_type = "public" if is_public else ""
+                            logger.info(f"RATE LIMIT: Waiting {wait_time} seconds for {endpoint_type} endpoint...")
+                            await asyncio.sleep(wait_time)
+                            continue
+                        else:
+                            # Fallback: wait 60 seconds if no reset header
+                            endpoint_type = "public" if is_public else ""
+                            logger.info(f"RATE LIMIT: Waiting 60 seconds for {endpoint_type} endpoint (no reset header)...")
+                            await asyncio.sleep(60)
+                            continue
+                    elif response.status == 420:  # Error limited
+                        error_limit_remain = response.headers.get('X-ESI-Error-Limit-Remain')
+                        error_limit_reset = response.headers.get('X-ESI-Error-Limit-Reset')
+
+                        if error_limit_reset:
+                            wait_time = int(error_limit_reset) + 1
+                            endpoint_type = "public" if is_public else ""
+                            logger.info(f"ERROR LIMIT: Waiting {wait_time} seconds for {endpoint_type} endpoint...")
+                            await asyncio.sleep(wait_time)
+                            continue
+                        else:
+                            endpoint_type = "public" if is_public else ""
+                            logger.info(f"ERROR LIMIT: Waiting 60 seconds for {endpoint_type} endpoint...")
+                            await asyncio.sleep(60)
+                            continue
+                    elif response.status >= 500:
+                        # Server error, retry
+                        if attempt < max_retries - 1:
+                            wait_time = 2 ** attempt  # Exponential backoff
+                            logger.warning(f"SERVER ERROR {response.status}: Retrying in {wait_time} seconds...")
+                            await asyncio.sleep(wait_time)
+                            continue
+                        else:
+                            logger.error(f"SERVER ERROR {response.status}: Max retries exceeded")
+                            raise ESIRequestError(f"Server error after {max_retries} retries: {endpoint}")
                     else:
-                        # Fallback: wait 60 seconds if no reset header
-                        logger.info(f"RATE LIMIT: Waiting 60 seconds for public endpoint (no reset header)...")
-                        await asyncio.sleep(60)
-                        continue
-                elif response.status == 420:  # Error limited
-                    error_limit_remain = response.headers.get('X-ESI-Error-Limit-Remain')
-                    error_limit_reset = response.headers.get('X-ESI-Error-Limit-Reset')
+                        elapsed = time.time() - start_time
+                        logger.error(f"ESI API error for {endpoint}: {response.status} - {await response.text()} (took {elapsed:.2f}s)")
+                        raise ESIRequestError(f"ESI API error {response.status}: {endpoint}")
 
-                    if error_limit_reset:
-                        wait_time = int(error_limit_reset) + 1
-                        logger.info(f"ERROR LIMIT: Waiting {wait_time} seconds for public endpoint...")
-                        await asyncio.sleep(wait_time)
-                        continue
-                    else:
-                        logger.info(f"ERROR LIMIT: Waiting 60 seconds for public endpoint...")
-                        await asyncio.sleep(60)
-                        continue
-                elif response.status >= 500:
-                    # Server error, retry
-                    if attempt < max_retries - 1:
-                        wait_time = 2 ** attempt  # Exponential backoff
-                        logger.warning(f"SERVER ERROR {response.status}: Retrying in {wait_time} seconds...")
-                        await asyncio.sleep(wait_time)
-                        continue
-                    else:
-                        logger.error(f"SERVER ERROR {response.status}: Max retries exceeded")
-                        raise ESIRequestError(f"Server error after {max_retries} retries: {endpoint}")
+            except asyncio.TimeoutError:
+                if attempt < max_retries - 1:
+                    wait_time = 2 ** attempt
+                    logger.warning(f"TIMEOUT: Retrying in {wait_time} seconds...")
+                    await asyncio.sleep(wait_time)
+                    continue
                 else:
                     elapsed = time.time() - start_time
-                    logger.error(f"ESI API error for {endpoint}: {response.status} - {await response.text()} (took {elapsed:.2f}s)")
-                    raise ESIRequestError(f"ESI API error {response.status}: {endpoint}")
+                    logger.error(f"TIMEOUT: Max retries exceeded for {endpoint} (took {elapsed:.2f}s)")
+                    raise ESIRequestError(f"Timeout after {max_retries} retries: {endpoint}")
+            except aiohttp.ClientError as e:
+                if attempt < max_retries - 1:
+                    wait_time = 2 ** attempt
+                    logger.warning(f"NETWORK ERROR: {e}. Retrying in {wait_time} seconds...")
+                    await asyncio.sleep(wait_time)
+                    continue
+                else:
+                    elapsed = time.time() - start_time
+                    logger.error(f"NETWORK ERROR: {e}. Max retries exceeded for {endpoint} (took {elapsed:.2f}s)")
+                    raise ESIRequestError(f"Network error after {max_retries} retries: {endpoint}")
 
-        except asyncio.TimeoutError:
-            if attempt < max_retries - 1:
-                wait_time = 2 ** attempt
-                logger.warning(f"TIMEOUT: Retrying in {wait_time} seconds...")
-                await asyncio.sleep(wait_time)
-                continue
-            else:
-                elapsed = time.time() - start_time
-                logger.error(f"TIMEOUT: Max retries exceeded for {endpoint} (took {elapsed:.2f}s)")
-                raise ESIRequestError(f"Timeout after {max_retries} retries: {endpoint}")
-        except aiohttp.ClientError as e:
-            if attempt < max_retries - 1:
-                wait_time = 2 ** attempt
-                logger.warning(f"NETWORK ERROR: {e}. Retrying in {wait_time} seconds...")
-                await asyncio.sleep(wait_time)
-                continue
-            else:
-                elapsed = time.time() - start_time
-                logger.error(f"NETWORK ERROR: {e}. Max retries exceeded for {endpoint} (took {elapsed:.2f}s)")
-                raise ESIRequestError(f"Network error after {max_retries} retries: {endpoint}")
+        elapsed = time.time() - start_time
+        endpoint_type = "public" if is_public else "authenticated"
+        raise ESIRequestError(f"Max retries exceeded for {endpoint_type} endpoint: {endpoint} (took {elapsed:.2f}s)")
+    
+    # Use circuit breaker to protect the API call
+    return await _esi_circuit_breaker.call(_do_request)
 
-    elapsed = time.time() - start_time
-    raise ESIRequestError(f"Max retries exceeded for public endpoint: {endpoint} (took {elapsed:.2f}s)")
+async def fetch_public_esi(endpoint: str, max_retries: int = None) -> Optional[Dict[str, Any]]:
+    """Fetch data from ESI API (public endpoints, no auth) with rate limiting and error handling."""
+    return await _fetch_esi_with_retry(endpoint, headers=None, max_retries=max_retries, is_public=True)
 
 async def fetch_esi(endpoint: str, char_id: Optional[int], access_token: str, max_retries: int = None) -> Optional[Dict[str, Any]]:
     """Fetch data from ESI API with rate limiting and error handling."""
-    start_time = time.time()
-    if max_retries is None:
-        max_retries = api_config.esi_max_retries
-
-    sess = await get_session()
-    url = f"{api_config.esi_base_url}{endpoint}"
     headers = {'Authorization': f'Bearer {access_token}'}
-
-    for attempt in range(max_retries):
-        try:
-            async with sess.get(url, headers=headers) as response:
-                if response.status == 200:
-                    result = await response.json()
-                    elapsed = time.time() - start_time
-                    logger.info(f"ESI auth fetch successful: {endpoint} in {elapsed:.2f}s")
-                    return result
-                elif response.status == 401:
-                    elapsed = time.time() - start_time
-                    logger.error(f"Authentication failed for endpoint {endpoint} in {elapsed:.2f}s")
-                    raise ESIAuthError(f"Authentication failed: {endpoint}")
-                elif response.status == 403:
-                    elapsed = time.time() - start_time
-                    logger.error(f"Access forbidden for endpoint {endpoint} in {elapsed:.2f}s")
-                    raise ESIRequestError(f"Access forbidden: {endpoint}")
-                elif response.status == 404:
-                    elapsed = time.time() - start_time
-                    logger.warning(f"Resource not found for endpoint {endpoint} in {elapsed:.2f}s")
-                    raise ESIRequestError(f"Resource not found: {endpoint}")
-                elif response.status == 429:  # Rate limited
-                    # Check for X-ESI-Error-Limit-Remain header
-                    error_limit_remain = response.headers.get('X-ESI-Error-Limit-Remain')
-                    error_limit_reset = response.headers.get('X-ESI-Error-Limit-Reset')
-
-                    if error_limit_reset:
-                        wait_time = int(error_limit_reset) + 1  # Add 1 second buffer
-                        logger.info(f"RATE LIMIT: Waiting {wait_time} seconds...")
-                        await asyncio.sleep(wait_time)
-                        continue
-                    else:
-                        # Fallback: wait 60 seconds if no reset header
-                        logger.info(f"RATE LIMIT: Waiting 60 seconds (no reset header)...")
-                        await asyncio.sleep(60)
-                        continue
-                elif response.status == 420:  # Error limited
-                    error_limit_remain = response.headers.get('X-ESI-Error-Limit-Remain')
-                    error_limit_reset = response.headers.get('X-ESI-Error-Limit-Reset')
-
-                    if error_limit_reset:
-                        wait_time = int(error_limit_reset) + 1
-                        logger.info(f"ERROR LIMIT: Waiting {wait_time} seconds...")
-                        await asyncio.sleep(wait_time)
-                        continue
-                    else:
-                        logger.info(f"ERROR LIMIT: Waiting 60 seconds...")
-                        await asyncio.sleep(60)
-                        continue
-                elif response.status >= 500:
-                    # Server error, retry
-                    if attempt < max_retries - 1:
-                        wait_time = 2 ** attempt  # Exponential backoff
-                        logger.warning(f"SERVER ERROR {response.status}: Retrying in {wait_time} seconds...")
-                        await asyncio.sleep(wait_time)
-                        continue
-                    else:
-                        logger.error(f"SERVER ERROR {response.status}: Max retries exceeded")
-                        raise ESIRequestError(f"Server error after {max_retries} retries: {endpoint}")
-                else:
-                    elapsed = time.time() - start_time
-                    logger.error(f"ESI API error for {endpoint}: {response.status} - {await response.text()} (took {elapsed:.2f}s)")
-                    raise ESIRequestError(f"ESI API error {response.status}: {endpoint}")
-
-        except asyncio.TimeoutError:
-            if attempt < max_retries - 1:
-                wait_time = 2 ** attempt
-                logger.warning(f"TIMEOUT: Retrying in {wait_time} seconds...")
-                await asyncio.sleep(wait_time)
-                continue
-            else:
-                elapsed = time.time() - start_time
-                logger.error(f"TIMEOUT: Max retries exceeded for {endpoint} (took {elapsed:.2f}s)")
-                raise ESIRequestError(f"Timeout after {max_retries} retries: {endpoint}")
-        except aiohttp.ClientError as e:
-            if attempt < max_retries - 1:
-                wait_time = 2 ** attempt
-                logger.warning(f"NETWORK ERROR: {e}. Retrying in {wait_time} seconds...")
-                await asyncio.sleep(wait_time)
-                continue
-            else:
-                elapsed = time.time() - start_time
-                logger.error(f"NETWORK ERROR: {e}. Max retries exceeded for {endpoint} (took {elapsed:.2f}s)")
-                raise ESIRequestError(f"Network error after {max_retries} retries: {endpoint}")
-
-    elapsed = time.time() - start_time
-    raise ESIRequestError(f"Max retries exceeded for authenticated endpoint: {endpoint} (took {elapsed:.2f}s)")
+    return await _fetch_esi_with_retry(endpoint, headers=headers, max_retries=max_retries, is_public=False)
 
 async def wp_request(method: str, endpoint: str, data: Optional[Dict] = None) -> Optional[Dict]:
-    """Make async request to WordPress REST API."""
-    start_time = time.time()
-    sess = await get_session()
-    url = f"{WP_BASE_URL}{endpoint}"
-    auth = aiohttp.BasicAuth(WP_USERNAME, WP_APP_PASSWORD)
+    """Make async request to WordPress REST API with circuit breaker protection."""
+    
+    async def _do_wp_request():
+        start_time = time.time()
+        sess = await get_session()
+        url = f"{WP_BASE_URL}{endpoint}"
+        auth = aiohttp.BasicAuth(WP_USERNAME, WP_APP_PASSWORD)
 
-    try:
-        if method.upper() == 'GET':
-            async with sess.get(url, auth=auth) as response:
-                if response.status == 200:
-                    result = await response.json()
-                    elapsed = time.time() - start_time
-                    logger.info(f"WordPress GET successful: {endpoint} in {elapsed:.2f}s")
-                    return result
-                elif response.status == 401:
-                    elapsed = time.time() - start_time
-                    logger.error(f"WordPress authentication failed: {response.status} - {await response.text()} (took {elapsed:.2f}s)")
-                    raise WordPressAuthError(f"Authentication failed for {endpoint}")
-                else:
-                    elapsed = time.time() - start_time
-                    logger.error(f"WordPress API error: {response.status} - {await response.text()} (took {elapsed:.2f}s)")
-                    raise WordPressRequestError(f"WordPress API error {response.status}: {endpoint}")
-        elif method.upper() == 'POST':
-            async with sess.post(url, json=data, auth=auth) as response:
-                if response.status in [200, 201]:
-                    result = await response.json()
-                    elapsed = time.time() - start_time
-                    logger.info(f"WordPress POST successful: {endpoint} in {elapsed:.2f}s")
-                    return result
-                elif response.status == 401:
-                    elapsed = time.time() - start_time
-                    logger.error(f"WordPress authentication failed: {response.status} - {await response.text()} (took {elapsed:.2f}s)")
-                    raise WordPressAuthError(f"Authentication failed for {endpoint}")
-                else:
-                    elapsed = time.time() - start_time
-                    logger.error(f"WordPress API error: {response.status} - {await response.text()} (took {elapsed:.2f}s)")
-                    raise WordPressRequestError(f"WordPress API error {response.status}: {endpoint}")
-        elif method.upper() == 'PUT':
-            async with sess.put(url, json=data, auth=auth) as response:
-                if response.status in [200, 201]:
-                    result = await response.json()
-                    elapsed = time.time() - start_time
-                    logger.info(f"WordPress PUT successful: {endpoint} in {elapsed:.2f}s")
-                    return result
-                elif response.status == 401:
-                    elapsed = time.time() - start_time
-                    logger.error(f"WordPress authentication failed: {response.status} - {await response.text()} (took {elapsed:.2f}s)")
-                    raise WordPressAuthError(f"Authentication failed for {endpoint}")
-                else:
-                    elapsed = time.time() - start_time
-                    logger.error(f"WordPress API error: {response.status} - {await response.text()} (took {elapsed:.2f}s)")
-                    raise WordPressRequestError(f"WordPress API error {response.status}: {endpoint}")
-        elif method.upper() == 'DELETE':
-            params = {'force': 'true'} if data and data.get('force') else None
-            async with sess.delete(url, auth=auth, params=params) as response:
-                if response.status == 200:
-                    elapsed = time.time() - start_time
-                    logger.info(f"WordPress DELETE successful: {endpoint} in {elapsed:.2f}s")
-                    return {"deleted": True}
-                elif response.status == 401:
-                    elapsed = time.time() - start_time
-                    logger.error(f"WordPress authentication failed: {response.status} - {await response.text()} (took {elapsed:.2f}s)")
-                    raise WordPressAuthError(f"Authentication failed for {endpoint}")
-                else:
-                    elapsed = time.time() - start_time
-                    logger.error(f"WordPress API error: {response.status} - {await response.text()} (took {elapsed:.2f}s)")
-                    raise WordPressRequestError(f"WordPress API error {response.status}: {endpoint}")
-    except aiohttp.ClientError as e:
-        elapsed = time.time() - start_time
-        logger.error(f"WordPress API request failed: {e} (took {elapsed:.2f}s)")
-        raise WordPressRequestError(f"Network error for WordPress API: {endpoint}")
+        try:
+            if method.upper() == 'GET':
+                async with sess.get(url, auth=auth) as response:
+                    if response.status == 200:
+                        result = await response.json()
+                        elapsed = time.time() - start_time
+                        logger.info(f"WordPress GET successful: {endpoint} in {elapsed:.2f}s")
+                        return result
+                    elif response.status == 401:
+                        elapsed = time.time() - start_time
+                        logger.error(f"WordPress authentication failed: {response.status} - {await response.text()} (took {elapsed:.2f}s)")
+                        raise WordPressAuthError(f"Authentication failed for {endpoint}")
+                    else:
+                        elapsed = time.time() - start_time
+                        logger.error(f"WordPress API error: {response.status} - {await response.text()} (took {elapsed:.2f}s)")
+                        raise WordPressRequestError(f"WordPress API error {response.status}: {endpoint}")
+            elif method.upper() == 'POST':
+                async with sess.post(url, json=data, auth=auth) as response:
+                    if response.status in [200, 201]:
+                        result = await response.json()
+                        elapsed = time.time() - start_time
+                        logger.info(f"WordPress POST successful: {endpoint} in {elapsed:.2f}s")
+                        return result
+                    elif response.status == 401:
+                        elapsed = time.time() - start_time
+                        logger.error(f"WordPress authentication failed: {response.status} - {await response.text()} (took {elapsed:.2f}s)")
+                        raise WordPressAuthError(f"Authentication failed for {endpoint}")
+                    else:
+                        elapsed = time.time() - start_time
+                        logger.error(f"WordPress API error: {response.status} - {await response.text()} (took {elapsed:.2f}s)")
+                        raise WordPressRequestError(f"WordPress API error {response.status}: {endpoint}")
+            elif method.upper() == 'PUT':
+                async with sess.put(url, json=data, auth=auth) as response:
+                    if response.status in [200, 201]:
+                        result = await response.json()
+                        elapsed = time.time() - start_time
+                        logger.info(f"WordPress PUT successful: {endpoint} in {elapsed:.2f}s")
+                        return result
+                    elif response.status == 401:
+                        elapsed = time.time() - start_time
+                        logger.error(f"WordPress authentication failed: {response.status} - {await response.text()} (took {elapsed:.2f}s)")
+                        raise WordPressAuthError(f"Authentication failed for {endpoint}")
+                    else:
+                        elapsed = time.time() - start_time
+                        logger.error(f"WordPress API error: {response.status} - {await response.text()} (took {elapsed:.2f}s)")
+                        raise WordPressRequestError(f"WordPress API error {response.status}: {endpoint}")
+            elif method.upper() == 'DELETE':
+                params = {'force': 'true'} if data and data.get('force') else None
+                async with sess.delete(url, auth=auth, params=params) as response:
+                    if response.status == 200:
+                        elapsed = time.time() - start_time
+                        logger.info(f"WordPress DELETE successful: {endpoint} in {elapsed:.2f}s")
+                        return {"deleted": True}
+                    elif response.status == 401:
+                        elapsed = time.time() - start_time
+                        logger.error(f"WordPress authentication failed: {response.status} - {await response.text()} (took {elapsed:.2f}s)")
+                        raise WordPressAuthError(f"Authentication failed for {endpoint}")
+                    else:
+                        elapsed = time.time() - start_time
+                        logger.error(f"WordPress API error: {response.status} - {await response.text()} (took {elapsed:.2f}s)")
+                        raise WordPressRequestError(f"WordPress API error {response.status}: {endpoint}")
+        except aiohttp.ClientError as e:
+            elapsed = time.time() - start_time
+            logger.error(f"WordPress API request failed: {e} (took {elapsed:.2f}s)")
+            raise WordPressRequestError(f"Network error for WordPress API: {endpoint}")
 
-    return None
+        return None
+    
+    # Use circuit breaker to protect WordPress API calls
+    return await _wp_circuit_breaker.call(_do_wp_request)
 
 def send_email(subject: str, body: str) -> None:
     """Send an email alert."""

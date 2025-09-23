@@ -2,6 +2,7 @@
 import pytest
 import asyncio
 from unittest.mock import patch, MagicMock, AsyncMock
+from contextlib import asynccontextmanager
 from datetime import datetime, timezone, timedelta
 import sys
 import os
@@ -73,50 +74,68 @@ class TestFetchFunctions:
     """Test ESI API fetch functions."""
 
     @pytest.mark.asyncio
-    @patch('api_client.session')
+    @patch('api_client.get_session')
     @patch('api_client.api_config')
-    async def test_fetch_public_esi_success(self, mock_api_config, mock_session):
+    async def test_fetch_public_esi_success(self, mock_api_config, mock_get_session):
         """Test successful fetch_public_esi call."""
         # Setup mocks
         mock_api_config.esi_max_retries = 3
         mock_api_config.esi_base_url = 'https://esi.evetech.net/latest'
         mock_api_config.esi_timeout = 30
 
+        mock_session = AsyncMock()
         mock_response = AsyncMock()
         mock_response.status = 200
         mock_response.json.return_value = {'test': 'data'}
-        mock_session.get.return_value.__aenter__.return_value = mock_response
+
+        # Create an async context manager
+        @asynccontextmanager
+        async def mock_get(*args, **kwargs):
+            yield mock_response
+
+        mock_session.get = mock_get
+        mock_get_session.return_value = mock_session
 
         result = await fetch_public_esi('/test/endpoint')
 
         assert result == {'test': 'data'}
 
     @pytest.mark.asyncio
-    @patch('api_client.session')
+    @patch('api_client.get_session')
     @patch('api_client.api_config')
-    async def test_fetch_public_esi_404(self, mock_api_config, mock_session):
+    async def test_fetch_public_esi_404(self, mock_api_config, mock_get_session):
         """Test fetch_public_esi with 404 response."""
         mock_api_config.esi_max_retries = 3
         mock_api_config.esi_base_url = 'https://esi.evetech.net/latest'
         mock_api_config.esi_timeout = 30
 
+        mock_session = AsyncMock()
         mock_response = AsyncMock()
         mock_response.status = 404
         mock_response.text.return_value = "Not Found"
-        mock_session.get.return_value.__aenter__.return_value = mock_response
+
+        # Create an async context manager
+        @asynccontextmanager
+        async def mock_get(*args, **kwargs):
+            yield mock_response
+
+        mock_session.get = mock_get
+        mock_get_session.return_value = mock_session
 
         with pytest.raises(ESIRequestError):
             await fetch_public_esi('/test/endpoint')
 
     @pytest.mark.asyncio
     @patch('asyncio.sleep')
-    @patch('api_client.session')
+    @patch('api_client.get_session')
     @patch('api_client.api_config')
-    async def test_fetch_public_esi_rate_limit(self, mock_api_config, mock_session, mock_sleep):
+    async def test_fetch_public_esi_rate_limit(self, mock_api_config, mock_get_session, mock_sleep):
         """Test fetch_public_esi with rate limiting."""
         mock_api_config.esi_max_retries = 3
         mock_api_config.esi_base_url = 'https://esi.evetech.net/latest'
         mock_api_config.esi_timeout = 30
+
+        mock_session = AsyncMock()
 
         # First call returns rate limited, second succeeds
         mock_response_rate_limited = AsyncMock()
@@ -128,48 +147,72 @@ class TestFetchFunctions:
         mock_response_success.status = 200
         mock_response_success.json.return_value = {'test': 'data'}
 
-        mock_session.get.side_effect = [
-            AsyncMock(return_value=mock_response_rate_limited),
-            AsyncMock(return_value=mock_response_success)
-        ]
+        call_count = 0
+        @asynccontextmanager
+        async def mock_get(*args, **kwargs):
+            nonlocal call_count
+            call_count += 1
+            if call_count == 1:
+                yield mock_response_rate_limited
+            else:
+                yield mock_response_success
+
+        mock_session.get = mock_get
+        mock_get_session.return_value = mock_session
 
         result = await fetch_public_esi('/test/endpoint')
 
         assert result == {'test': 'data'}
-        assert mock_session.get.call_count == 2
+        assert call_count == 2
         mock_sleep.assert_called_once_with(6)  # 5 + 1 buffer
 
     @pytest.mark.asyncio
-    @patch('api_client.session')
+    @patch('api_client.get_session')
     @patch('api_client.api_config')
-    async def test_fetch_esi_success(self, mock_api_config, mock_session):
+    async def test_fetch_esi_success(self, mock_api_config, mock_get_session):
         """Test successful fetch_esi call."""
         mock_api_config.esi_max_retries = 3
         mock_api_config.esi_base_url = 'https://esi.evetech.net/latest'
         mock_api_config.esi_timeout = 30
 
+        mock_session = AsyncMock()
         mock_response = AsyncMock()
         mock_response.status = 200
         mock_response.json.return_value = {'test': 'data'}
-        mock_session.get.return_value.__aenter__.return_value = mock_response
+
+        # Create an async context manager
+        @asynccontextmanager
+        async def mock_get(*args, **kwargs):
+            yield mock_response
+
+        mock_session.get = mock_get
+        mock_get_session.return_value = mock_session
 
         result = await fetch_esi('/test/endpoint', 123, 'token123')
 
         assert result == {'test': 'data'}
 
     @pytest.mark.asyncio
-    @patch('api_client.session')
+    @patch('api_client.get_session')
     @patch('api_client.api_config')
-    async def test_fetch_esi_unauthorized(self, mock_api_config, mock_session):
+    async def test_fetch_esi_unauthorized(self, mock_api_config, mock_get_session):
         """Test fetch_esi with 401 unauthorized."""
         mock_api_config.esi_max_retries = 3
         mock_api_config.esi_base_url = 'https://esi.evetech.net/latest'
         mock_api_config.esi_timeout = 30
 
+        mock_session = AsyncMock()
         mock_response = AsyncMock()
         mock_response.status = 401
         mock_response.text.return_value = "Unauthorized"
-        mock_session.get.return_value.__aenter__.return_value = mock_response
+
+        # Create an async context manager
+        @asynccontextmanager
+        async def mock_get(*args, **kwargs):
+            yield mock_response
+
+        mock_session.get = mock_get
+        mock_get_session.return_value = mock_session
 
         with pytest.raises(ESIAuthError):
             await fetch_esi('/test/endpoint', 123, 'invalid_token')

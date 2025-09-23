@@ -94,15 +94,21 @@ def main() -> None:
         logger.error("No authorized characters found. Run 'python esi_oauth.py authorize' first.")
         return
 
-    # Collect all corporations and their member characters
-    corp_members = collect_corporation_members(tokens)
-    allowed_corp_ids, allowed_issuer_ids = get_allowed_entities(corp_members)
+    try:
+        # Collect all corporations and their member characters
+        corp_members = collect_corporation_members(tokens)
+        allowed_corp_ids, allowed_issuer_ids = get_allowed_entities(corp_members)
 
-    # Clean up old posts with filtering (only if doing full fetch or contracts)
-    if args.all or args.contracts:
-        cleanup_old_posts(allowed_corp_ids, allowed_issuer_ids)
+        # Clean up old posts with filtering (only if doing full fetch or contracts)
+        if args.all or args.contracts:
+            cleanup_old_posts(allowed_corp_ids, allowed_issuer_ids)
 
-    process_all_data(corp_members, caches, args, tokens)
+        process_all_data(corp_members, caches, args, tokens)
+    finally:
+        # Flush any pending cache saves and log performance
+        from cache_manager import flush_pending_saves, log_cache_performance
+        flush_pending_saves()
+        log_cache_performance()
 
 if __name__ == "__main__":
     import argparse

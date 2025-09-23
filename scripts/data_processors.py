@@ -25,7 +25,8 @@ from cache_manager import (
     load_blueprint_cache, save_blueprint_cache, load_blueprint_type_cache, save_blueprint_type_cache,
     load_location_cache, save_location_cache, load_structure_cache, save_structure_cache,
     load_failed_structures, save_failed_structures, load_wp_post_id_cache, save_wp_post_id_cache,
-    get_cached_wp_post_id, set_cached_wp_post_id
+    get_cached_wp_post_id, set_cached_wp_post_id, get_cache_stats, log_cache_performance,
+    get_cached_value_with_stats, flush_pending_saves
 )
 from fetch_data import fetch_character_portrait
 
@@ -372,8 +373,9 @@ async def fetch_blueprint_details(blueprint_data: Dict[str, Any], char_id: int, 
     
     # Get blueprint name from cache or API
     if type_id:
-        if str(type_id) in blueprint_cache:
-            type_name = blueprint_cache[str(type_id)]
+        cached_name = get_cached_value_with_stats(blueprint_cache, str(type_id))
+        if cached_name:
+            type_name = cached_name
         else:
             try:
                 type_data = await fetch_public_esi(f"/universe/types/{type_id}")
@@ -395,33 +397,38 @@ async def fetch_blueprint_details(blueprint_data: Dict[str, Any], char_id: int, 
     # Get location name from cache or API
     if location_id:
         location_id_str = str(location_id)
-        if location_id_str in location_cache:
-            location_name = location_cache[location_id_str]
+        cached_location = get_cached_value_with_stats(location_cache, location_id_str)
+        if cached_location:
+            location_name = cached_location
         elif location_id >= 1000000000000:  # Structures (citadels, etc.)
-            if location_id_str in failed_structures:
+            cached_failed = get_cached_value_with_stats(failed_structures, location_id_str)
+            if cached_failed:
                 location_name = f"Citadel {location_id}"
-            elif location_id_str in structure_cache:
-                location_name = structure_cache[location_id_str]
             else:
-                # Try auth fetch for private structures
-                try:
-                    struct_data = await fetch_esi(f"/universe/structures/{location_id}", char_id, access_token)
-                    if struct_data:
-                        location_name = struct_data.get('name', f"Citadel {location_id}")
-                        structure_cache[location_id_str] = location_name
-                        save_structure_cache(structure_cache)
-                    else:
+                cached_structure = get_cached_value_with_stats(structure_cache, location_id_str)
+                if cached_structure:
+                    location_name = cached_structure
+                else:
+                    # Try auth fetch for private structures
+                    try:
+                        struct_data = await fetch_esi(f"/universe/structures/{location_id}", char_id, access_token)
+                        if struct_data:
+                            location_name = struct_data.get('name', f"Citadel {location_id}")
+                            structure_cache[location_id_str] = location_name
+                            save_structure_cache(structure_cache)
+                        else:
+                            location_name = f"Citadel {location_id}"
+                            failed_structures[location_id_str] = True
+                            save_failed_structures(failed_structures)
+                    except (ESIAuthError, ESIRequestError) as e:
+                        logger.error(f"Failed to fetch structure data for {location_id}: {e}")
                         location_name = f"Citadel {location_id}"
                         failed_structures[location_id_str] = True
                         save_failed_structures(failed_structures)
-                except (ESIAuthError, ESIRequestError) as e:
-                    logger.error(f"Failed to fetch structure data for {location_id}: {e}")
-                    location_name = f"Citadel {location_id}"
-                    failed_structures[location_id_str] = True
-                    save_failed_structures(failed_structures)
         else:  # Stations - public data
-            if location_id_str in location_cache:
-                location_name = location_cache[location_id_str]
+            cached_station = get_cached_value_with_stats(location_cache, location_id_str)
+            if cached_station:
+                location_name = cached_station
             else:
                 try:
                     loc_data = await fetch_public_esi(f"/universe/stations/{location_id}")
