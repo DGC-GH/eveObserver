@@ -310,32 +310,98 @@ _wp_circuit_breaker = CircuitBreaker(
 )
 
 
-class RateLimiter:
-    """Rate limiter to prevent API abuse with configurable calls per minute."""
+class DynamicRateLimiter:
+    """Dynamic rate limiter that adjusts based on response times and error rates."""
 
-    def __init__(self, calls_per_minute: int = 60):
-        self.calls_per_minute = calls_per_minute
+    def __init__(self, base_calls_per_minute: int = 60, max_calls_per_minute: int = 120):
+        self.base_calls_per_minute = base_calls_per_minute
+        self.max_calls_per_minute = max_calls_per_minute
+        self.current_calls_per_minute = base_calls_per_minute
         self.calls = []
+        self.response_times = []
+        self.errors = []
+        self.adjustment_factor = 1.0
 
     async def wait_if_needed(self):
-        """Wait if necessary to respect rate limits."""
+        """Wait if necessary to respect dynamic rate limits."""
         now = datetime.now()
-        # Remove calls older than 1 minute
-        self.calls = [call for call in self.calls if call > now - timedelta(minutes=1)]
 
-        if len(self.calls) >= self.calls_per_minute:
-            # Wait until the oldest call is more than 1 minute old
-            wait_time = (self.calls[0] + timedelta(minutes=1) - now).total_seconds()
-            if wait_time > 0:
-                logger.info(
-                    f"Rate limiter: Waiting {wait_time:.2f} seconds to respect "
-                    f"{self.calls_per_minute} calls/minute limit"
+        # Clean up old data (keep last 5 minutes)
+        cutoff_time = now - timedelta(minutes=5)
+        self.calls = [call for call in self.calls if call > cutoff_time]
+        self.response_times = [rt for rt, ts in self.response_times if ts > cutoff_time]
+        self.errors = [err for err, ts in self.errors if ts > cutoff_time]
+
+        # Adjust rate based on recent performance
+        self._adjust_rate(now)
+
+        # Calculate minimum interval between calls
+        min_interval = 60.0 / self.current_calls_per_minute
+
+        if self.calls:
+            # Wait until enough time has passed since the last call
+            time_since_last_call = (now - self.calls[-1]).total_seconds()
+            if time_since_last_call < min_interval:
+                wait_time = min_interval - time_since_last_call
+                logger.debug(
+                    ".2f"
+                    ".1f"
                 )
                 await asyncio.sleep(wait_time)
-                # Recheck after waiting
-                return await self.wait_if_needed()
 
         self.calls.append(now)
+
+    def record_response_time(self, response_time: float):
+        """Record a successful response time."""
+        now = datetime.now()
+        self.response_times.append((response_time, now))
+
+    def record_error(self):
+        """Record an error."""
+        now = datetime.now()
+        self.errors.append((True, now))
+
+    def _adjust_rate(self, now: datetime):
+        """Adjust the rate based on recent performance."""
+        # Look at last 2 minutes of data
+        recent_cutoff = now - timedelta(minutes=2)
+
+        recent_responses = [rt for rt, ts in self.response_times if ts > recent_cutoff]
+        recent_errors = [err for err, ts in self.errors if ts > recent_errors]
+
+        if not recent_responses:
+            return  # Not enough data yet
+
+        avg_response_time = sum(recent_responses) / len(recent_responses)
+        error_rate = len(recent_errors) / max(len(recent_responses) + len(recent_errors), 1)
+
+        # Adjust based on response time (slower = reduce rate)
+        if avg_response_time > 1.0:  # If average response > 1 second
+            self.adjustment_factor = max(0.5, self.adjustment_factor * 0.9)  # Reduce by 10%
+        elif avg_response_time < 0.3:  # If average response < 0.3 seconds
+            self.adjustment_factor = min(2.0, self.adjustment_factor * 1.05)  # Increase by 5%
+
+        # Adjust based on error rate
+        if error_rate > 0.1:  # More than 10% errors
+            self.adjustment_factor = max(0.3, self.adjustment_factor * 0.8)  # Reduce significantly
+        elif error_rate < 0.01:  # Less than 1% errors
+            self.adjustment_factor = min(1.5, self.adjustment_factor * 1.02)  # Slight increase
+
+        # Calculate new rate
+        new_rate = self.base_calls_per_minute * self.adjustment_factor
+        self.current_calls_per_minute = max(10, min(self.max_calls_per_minute, new_rate))  # Clamp between 10 and max
+
+        # Log significant changes
+        if abs(self.current_calls_per_minute - self.base_calls_per_minute) > 5:
+            logger.info(
+                ".1f"
+                ".2f"
+                ".1f"
+            )
+
+
+# Global dynamic rate limiter for WordPress API
+wp_rate_limiter = DynamicRateLimiter(base_calls_per_minute=60, max_calls_per_minute=120)
 
 
 # Global rate limiter for WordPress API
@@ -953,6 +1019,15 @@ async def wp_request(method: str, endpoint: str, data: Optional[Dict] = None) ->
         url = f"{WP_BASE_URL}{endpoint}"
         auth = aiohttp.BasicAuth(WP_USERNAME, WP_APP_PASSWORD)
 
+    async def _do_wp_request():
+        start_time = time.time()
+        # Apply rate limiting
+        await wp_rate_limiter.wait_if_needed()
+
+        sess = await get_session()
+        url = f"{WP_BASE_URL}{endpoint}"
+        auth = aiohttp.BasicAuth(WP_USERNAME, WP_APP_PASSWORD)
+
         try:
             if method.upper() == "GET":
                 async with sess.get(url, auth=auth) as response:
@@ -961,6 +1036,7 @@ async def wp_request(method: str, endpoint: str, data: Optional[Dict] = None) ->
                         result = sanitize_api_response(result)  # Sanitize API response
                         elapsed = time.time() - start_time
                         logger.info(f"WordPress GET successful: {endpoint} in {elapsed:.2f}s")
+                        wp_rate_limiter.record_response_time(elapsed)
                         return result
                     elif response.status == 401:
                         elapsed = time.time() - start_time
@@ -968,12 +1044,23 @@ async def wp_request(method: str, endpoint: str, data: Optional[Dict] = None) ->
                             f"WordPress authentication failed: {response.status} - "
                             f"{await response.text()} (took {elapsed:.2f}s)"
                         )
+                        wp_rate_limiter.record_error()
                         raise WordPressAuthError(f"Authentication failed for {endpoint}")
+                    elif response.status == 500:
+                        elapsed = time.time() - start_time
+                        error_text = await response.text()
+                        logger.warning(
+                            f"WordPress server error: {response.status} - {error_text[:200]}... (took {elapsed:.2f}s)"
+                        )
+                        wp_rate_limiter.record_error()
+                        # For 500 errors, retry with exponential backoff
+                        raise WordPressRequestError(f"WordPress server error {response.status}: {endpoint}")
                     else:
                         elapsed = time.time() - start_time
                         logger.error(
                             f"WordPress API error: {response.status} - {await response.text()} (took {elapsed:.2f}s)"
                         )
+                        wp_rate_limiter.record_error()
                         raise WordPressRequestError(f"WordPress API error {response.status}: {endpoint}")
             elif method.upper() == "POST":
                 async with sess.post(url, json=data, auth=auth) as response:
@@ -982,6 +1069,7 @@ async def wp_request(method: str, endpoint: str, data: Optional[Dict] = None) ->
                         result = sanitize_api_response(result)  # Sanitize API response
                         elapsed = time.time() - start_time
                         logger.info(f"WordPress POST successful: {endpoint} in {elapsed:.2f}s")
+                        wp_rate_limiter.record_response_time(elapsed)
                         return result
                     elif response.status == 401:
                         elapsed = time.time() - start_time
@@ -989,12 +1077,22 @@ async def wp_request(method: str, endpoint: str, data: Optional[Dict] = None) ->
                             f"WordPress authentication failed: {response.status} - "
                             f"{await response.text()} (took {elapsed:.2f}s)"
                         )
+                        wp_rate_limiter.record_error()
                         raise WordPressAuthError(f"Authentication failed for {endpoint}")
+                    elif response.status == 500:
+                        elapsed = time.time() - start_time
+                        error_text = await response.text()
+                        logger.warning(
+                            f"WordPress server error: {response.status} - {error_text[:200]}... (took {elapsed:.2f}s)"
+                        )
+                        wp_rate_limiter.record_error()
+                        raise WordPressRequestError(f"WordPress server error {response.status}: {endpoint}")
                     else:
                         elapsed = time.time() - start_time
                         logger.error(
                             f"WordPress API error: {response.status} - {await response.text()} (took {elapsed:.2f}s)"
                         )
+                        wp_rate_limiter.record_error()
                         raise WordPressRequestError(f"WordPress API error {response.status}: {endpoint}")
             elif method.upper() == "PUT":
                 async with sess.put(url, json=data, auth=auth) as response:
@@ -1003,6 +1101,7 @@ async def wp_request(method: str, endpoint: str, data: Optional[Dict] = None) ->
                         result = sanitize_api_response(result)  # Sanitize API response
                         elapsed = time.time() - start_time
                         logger.info(f"WordPress PUT successful: {endpoint} in {elapsed:.2f}s")
+                        wp_rate_limiter.record_response_time(elapsed)
                         return result
                     elif response.status == 401:
                         elapsed = time.time() - start_time
@@ -1010,12 +1109,22 @@ async def wp_request(method: str, endpoint: str, data: Optional[Dict] = None) ->
                             f"WordPress authentication failed: {response.status} - "
                             f"{await response.text()} (took {elapsed:.2f}s)"
                         )
+                        wp_rate_limiter.record_error()
                         raise WordPressAuthError(f"Authentication failed for {endpoint}")
+                    elif response.status == 500:
+                        elapsed = time.time() - start_time
+                        error_text = await response.text()
+                        logger.warning(
+                            f"WordPress server error: {response.status} - {error_text[:200]}... (took {elapsed:.2f}s)"
+                        )
+                        wp_rate_limiter.record_error()
+                        raise WordPressRequestError(f"WordPress server error {response.status}: {endpoint}")
                     else:
                         elapsed = time.time() - start_time
                         logger.error(
                             f"WordPress API error: {response.status} - {await response.text()} (took {elapsed:.2f}s)"
                         )
+                        wp_rate_limiter.record_error()
                         raise WordPressRequestError(f"WordPress API error {response.status}: {endpoint}")
             elif method.upper() == "DELETE":
                 params = {"force": "true"} if data and data.get("force") else None
@@ -1023,6 +1132,7 @@ async def wp_request(method: str, endpoint: str, data: Optional[Dict] = None) ->
                     if response.status == 200:
                         elapsed = time.time() - start_time
                         logger.info(f"WordPress DELETE successful: {endpoint} in {elapsed:.2f}s")
+                        wp_rate_limiter.record_response_time(elapsed)
                         return {"deleted": True}
                     elif response.status == 401:
                         elapsed = time.time() - start_time
@@ -1030,17 +1140,30 @@ async def wp_request(method: str, endpoint: str, data: Optional[Dict] = None) ->
                             f"WordPress authentication failed: {response.status} - "
                             f"{await response.text()} (took {elapsed:.2f}s)"
                         )
+                        wp_rate_limiter.record_error()
                         raise WordPressAuthError(f"Authentication failed for {endpoint}")
+                    elif response.status == 500:
+                        elapsed = time.time() - start_time
+                        error_text = await response.text()
+                        logger.warning(
+                            f"WordPress server error: {response.status} - {error_text[:200]}... (took {elapsed:.2f}s)"
+                        )
+                        wp_rate_limiter.record_error()
+                        raise WordPressRequestError(f"WordPress server error {response.status}: {endpoint}")
                     else:
                         elapsed = time.time() - start_time
                         logger.error(
                             f"WordPress API error: {response.status} - {await response.text()} (took {elapsed:.2f}s)"
                         )
+                        wp_rate_limiter.record_error()
                         raise WordPressRequestError(f"WordPress API error {response.status}: {endpoint}")
         except aiohttp.ClientError as e:
             elapsed = time.time() - start_time
             logger.error(f"WordPress API request failed: {e} (took {elapsed:.2f}s)")
+            wp_rate_limiter.record_error()
             raise WordPressRequestError(f"Network error for WordPress API: {endpoint}")
+
+        return None
 
         return None
 

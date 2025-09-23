@@ -3788,3 +3788,1450 @@
 2025-09-23 21:39:58,237 - INFO - Rate limiter: Waiting 25.35 seconds to respect 60 calls/minute limit
 2025-09-23 21:39:58,238 - INFO - Rate limiter: Waiting 25.35 seconds to respect 60 calls/minute limit
 2025-09-23 21:39:58,313 - INFO - Rate limiter: Waiting 25.28 seconds to respect 60 calls/minute limit
+2025-09-23 21:40:23,594 - INFO - Rate limiter: Waiting 0.23 seconds to respect 60 calls/minute limit
+2025-09-23 21:40:23,595 - INFO - Rate limiter: Waiting 0.23 seconds to respect 60 calls/minute limit
+2025-09-23 21:40:23,595 - INFO - Rate limiter: Waiting 0.23 seconds to respect 60 calls/minute limit
+2025-09-23 21:40:23,596 - INFO - Rate limiter: Waiting 0.23 seconds to respect 60 calls/minute limit
+2025-09-23 21:40:23,596 - INFO - Rate limiter: Waiting 0.23 seconds to respect 60 calls/minute limit
+2025-09-23 21:40:23,596 - INFO - Rate limiter: Waiting 0.23 seconds to respect 60 calls/minute limit
+2025-09-23 21:40:23,597 - INFO - Rate limiter: Waiting 0.23 seconds to respect 60 calls/minute limit
+2025-09-23 21:40:23,805 - INFO - WordPress GET successful: /wp/v2/eve_blueprint?slug=blueprint-1049589408412 in 25.67s
+2025-09-23 21:40:23,806 - INFO - wp_request completed in 25.671s
+2025-09-23 21:40:23,807 - INFO - Rate limiter: Waiting 0.02 seconds to respect 60 calls/minute limit
+2025-09-23 21:40:23,829 - INFO - Rate limiter: Waiting 0.21 seconds to respect 60 calls/minute limit
+2025-09-23 21:40:23,830 - INFO - Rate limiter: Waiting 0.21 seconds to respect 60 calls/minute limit
+2025-09-23 21:40:23,830 - INFO - Rate limiter: Waiting 0.21 seconds to respect 60 calls/minute limit
+2025-09-23 21:40:23,830 - INFO - Rate limiter: Waiting 0.21 seconds to respect 60 calls/minute limit
+2025-09-23 21:40:23,830 - INFO - Rate limiter: Waiting 0.21 seconds to respect 60 calls/minute limit
+2025-09-23 21:40:23,830 - INFO - Rate limiter: Waiting 0.21 seconds to respect 60 calls/minute limit
+2025-09-23 21:40:23,831 - INFO - Rate limiter: Waiting 0.21 seconds to respect 60 calls/minute limit
+2025-09-23 21:40:23,914 - INFO - WordPress PUT successful: /wp/v2/eve_blueprint/2254 in 0.11s
+2025-09-23 21:40:23,915 - INFO - wp_request completed in 0.108s
+2025-09-23 21:40:23,915 - INFO - Updated blueprint: 1049589408412
+2025-09-23 21:40:24,043 - INFO - Rate limiter: Waiting 0.10 seconds to respect 60 calls/minute limit
+2025-09-23 21:40:24,044 - INFO - Rate limiter: Waiting 0.10 seconds to respect 60 calls/minute limit
+2025-09-23 21:40:24,044 - INFO - Rate limiter: Waiting 0.10 seconds to respect 60 calls/minute limit
+2025-09-23 21:40:24,045 - INFO - Rate limiter: Waiting 0.10 seconds to respect 60 calls/minute limit
+2025-09-23 21:40:24,045 - INFO - Rate limiter: Waiting 0.10 seconds to respect 60 calls/minute limit
+2025-09-23 21:40:24,045 - INFO - Rate limiter: Waiting 0.10 seconds to respect 60 calls/minute limit
+2025-09-23 21:40:24,136 - INFO - WordPress GET successful: /wp/v2/eve_blueprint?slug=blueprint-1049576645167 in 26.00s
+2025-09-23 21:40:24,136 - INFO - wp_request completed in 26.001s
+2025-09-23 21:40:24,137 - INFO - Rate limiter: Waiting 0.01 seconds to respect 60 calls/minute limit
+2025-09-23 21:40:24,150 - INFO - Rate limiter: Waiting 0.20 seconds to respect 60 calls/minute limit
+2025-09-23 21:40:24,151 - INFO - Rate limiter: Waiting 0.20 seconds to respect 60 calls/minute limit
+2025-09-23 21:40:24,151 - INFO - Rate limiter: Waiting 0.19 seconds to respect 60 calls/minute limit
+2025-09-23 21:40:24,151 - INFO - Rate limiter: Waiting 0.19 seconds to respect 60 calls/minute limit
+2025-09-23 21:40:24,151 - INFO - Rate limiter: Waiting 0.19 seconds to respect 60 calls/minute limit
+2025-09-23 21:40:24,151 - INFO - Rate limiter: Waiting 0.19 seconds to respect 60 calls/minute limit
+2025-09-23 21:40:24,231 - INFO - WordPress GET successful: /wp/v2/eve_blueprint?slug=blueprint-1049589413302 in 25.99s
+2025-09-23 21:40:24,231 - INFO - wp_request completed in 25.993s
+2025-09-23 21:40:24,232 - INFO - Rate limiter: Waiting 0.11 seconds to respect 60 calls/minute limit
+2025-09-23 21:40:24,349 - INFO - Rate limiter: Waiting 0.19 seconds to respect 60 calls/minute limit
+2025-09-23 21:40:24,350 - INFO - Rate limiter: Waiting 0.19 seconds to respect 60 calls/minute limit
+2025-09-23 21:40:24,350 - INFO - Rate limiter: Waiting 0.19 seconds to respect 60 calls/minute limit
+2025-09-23 21:40:24,351 - INFO - Rate limiter: Waiting 0.19 seconds to respect 60 calls/minute limit
+2025-09-23 21:40:24,351 - INFO - Rate limiter: Waiting 0.19 seconds to respect 60 calls/minute limit
+2025-09-23 21:40:24,352 - INFO - Rate limiter: Waiting 0.19 seconds to respect 60 calls/minute limit
+2025-09-23 21:40:24,432 - INFO - WordPress GET successful: /wp/v2/eve_blueprint?slug=blueprint-1049589451922 in 26.12s
+2025-09-23 21:40:24,433 - INFO - wp_request completed in 26.120s
+2025-09-23 21:40:24,433 - INFO - Rate limiter: Waiting 0.11 seconds to respect 60 calls/minute limit
+2025-09-23 21:40:24,544 - INFO - Rate limiter: Waiting 0.16 seconds to respect 60 calls/minute limit
+2025-09-23 21:40:24,544 - INFO - Rate limiter: Waiting 0.16 seconds to respect 60 calls/minute limit
+2025-09-23 21:40:24,545 - INFO - Rate limiter: Waiting 0.16 seconds to respect 60 calls/minute limit
+2025-09-23 21:40:24,545 - INFO - Rate limiter: Waiting 0.16 seconds to respect 60 calls/minute limit
+2025-09-23 21:40:24,545 - INFO - Rate limiter: Waiting 0.15 seconds to respect 60 calls/minute limit
+2025-09-23 21:40:24,546 - INFO - Rate limiter: Waiting 0.15 seconds to respect 60 calls/minute limit
+2025-09-23 21:40:24,617 - INFO - WordPress GET successful: /wp/v2/eve_blueprint?slug=blueprint-1049576644465 in 26.53s
+2025-09-23 21:40:24,617 - INFO - wp_request completed in 26.530s
+2025-09-23 21:40:24,617 - INFO - Rate limiter: Waiting 0.08 seconds to respect 60 calls/minute limit
+2025-09-23 21:40:24,702 - INFO - Rate limiter: Waiting 0.17 seconds to respect 60 calls/minute limit
+2025-09-23 21:40:24,702 - INFO - Rate limiter: Waiting 0.17 seconds to respect 60 calls/minute limit
+2025-09-23 21:40:24,702 - INFO - Rate limiter: Waiting 0.17 seconds to respect 60 calls/minute limit
+2025-09-23 21:40:24,702 - INFO - Rate limiter: Waiting 0.17 seconds to respect 60 calls/minute limit
+2025-09-23 21:40:24,702 - INFO - Rate limiter: Waiting 0.17 seconds to respect 60 calls/minute limit
+2025-09-23 21:40:24,702 - INFO - Rate limiter: Waiting 0.17 seconds to respect 60 calls/minute limit
+2025-09-23 21:40:24,854 - INFO - WordPress GET successful: /wp/v2/eve_blueprint?slug=blueprint-1049589409028 in 26.71s
+2025-09-23 21:40:24,855 - INFO - wp_request completed in 26.714s
+2025-09-23 21:40:24,855 - INFO - Rate limiter: Waiting 0.02 seconds to respect 60 calls/minute limit
+2025-09-23 21:40:24,876 - INFO - Rate limiter: Waiting 0.19 seconds to respect 60 calls/minute limit
+2025-09-23 21:40:24,877 - INFO - Rate limiter: Waiting 0.19 seconds to respect 60 calls/minute limit
+2025-09-23 21:40:24,877 - INFO - Rate limiter: Waiting 0.19 seconds to respect 60 calls/minute limit
+2025-09-23 21:40:24,877 - INFO - Rate limiter: Waiting 0.19 seconds to respect 60 calls/minute limit
+2025-09-23 21:40:24,877 - INFO - Rate limiter: Waiting 0.19 seconds to respect 60 calls/minute limit
+2025-09-23 21:40:24,877 - INFO - Rate limiter: Waiting 0.19 seconds to respect 60 calls/minute limit
+2025-09-23 21:40:24,964 - INFO - WordPress PUT successful: /wp/v2/eve_blueprint/649 in 0.83s
+2025-09-23 21:40:24,965 - INFO - wp_request completed in 0.828s
+2025-09-23 21:40:24,965 - INFO - Updated blueprint: 1049576645167
+2025-09-23 21:40:25,072 - INFO - Rate limiter: Waiting 0.11 seconds to respect 60 calls/minute limit
+2025-09-23 21:40:25,072 - INFO - Rate limiter: Waiting 0.11 seconds to respect 60 calls/minute limit
+2025-09-23 21:40:25,073 - INFO - Rate limiter: Waiting 0.11 seconds to respect 60 calls/minute limit
+2025-09-23 21:40:25,073 - INFO - Rate limiter: Waiting 0.11 seconds to respect 60 calls/minute limit
+2025-09-23 21:40:25,073 - INFO - Rate limiter: Waiting 0.11 seconds to respect 60 calls/minute limit
+2025-09-23 21:40:25,173 - INFO - WordPress PUT successful: /wp/v2/eve_blueprint/651 in 0.32s
+2025-09-23 21:40:25,173 - INFO - wp_request completed in 0.318s
+2025-09-23 21:40:25,174 - INFO - Updated blueprint: 1049589409028
+2025-09-23 21:40:25,186 - INFO - Rate limiter: Waiting 0.17 seconds to respect 60 calls/minute limit
+2025-09-23 21:40:25,186 - INFO - Rate limiter: Waiting 0.17 seconds to respect 60 calls/minute limit
+2025-09-23 21:40:25,187 - INFO - Rate limiter: Waiting 0.17 seconds to respect 60 calls/minute limit
+2025-09-23 21:40:25,187 - INFO - Rate limiter: Waiting 0.17 seconds to respect 60 calls/minute limit
+2025-09-23 21:40:25,278 - INFO - WordPress GET successful: /wp/v2/eve_blueprint?slug=blueprint-1049589412723 in 27.04s
+2025-09-23 21:40:25,279 - INFO - wp_request completed in 27.042s
+2025-09-23 21:40:25,279 - INFO - Rate limiter: Waiting 0.08 seconds to respect 60 calls/minute limit
+2025-09-23 21:40:25,360 - INFO - Rate limiter: Waiting 0.19 seconds to respect 60 calls/minute limit
+2025-09-23 21:40:25,361 - INFO - Rate limiter: Waiting 0.19 seconds to respect 60 calls/minute limit
+2025-09-23 21:40:25,361 - INFO - Rate limiter: Waiting 0.19 seconds to respect 60 calls/minute limit
+2025-09-23 21:40:25,361 - INFO - Rate limiter: Waiting 0.19 seconds to respect 60 calls/minute limit
+2025-09-23 21:40:25,472 - INFO - WordPress PUT successful: /wp/v2/eve_blueprint/2253 in 0.85s
+2025-09-23 21:40:25,472 - INFO - wp_request completed in 0.855s
+2025-09-23 21:40:25,472 - INFO - Updated blueprint: 1049576644465
+2025-09-23 21:40:25,555 - INFO - Rate limiter: Waiting 0.12 seconds to respect 60 calls/minute limit
+2025-09-23 21:40:25,556 - INFO - Rate limiter: Waiting 0.11 seconds to respect 60 calls/minute limit
+2025-09-23 21:40:25,557 - INFO - Rate limiter: Waiting 0.11 seconds to respect 60 calls/minute limit
+2025-09-23 21:40:25,634 - INFO - WordPress PUT successful: /wp/v2/eve_blueprint/653 in 0.35s
+2025-09-23 21:40:25,635 - INFO - wp_request completed in 0.356s
+2025-09-23 21:40:25,635 - INFO - Updated blueprint: 1049589412723
+2025-09-23 21:40:25,672 - INFO - Rate limiter: Waiting 0.21 seconds to respect 60 calls/minute limit
+2025-09-23 21:40:25,673 - INFO - Rate limiter: Waiting 0.21 seconds to respect 60 calls/minute limit
+2025-09-23 21:40:25,775 - INFO - WordPress PUT successful: /wp/v2/eve_blueprint/2256 in 1.34s
+2025-09-23 21:40:25,776 - INFO - wp_request completed in 1.343s
+2025-09-23 21:40:25,776 - INFO - Updated blueprint: 1049589451922
+2025-09-23 21:40:25,888 - INFO - Rate limiter: Waiting 0.24 seconds to respect 60 calls/minute limit
+2025-09-23 21:40:25,987 - INFO - WordPress PUT successful: /wp/v2/eve_blueprint/2257 in 1.76s
+2025-09-23 21:40:25,988 - INFO - wp_request completed in 1.756s
+2025-09-23 21:40:25,988 - INFO - Updated blueprint: 1049589413302
+2025-09-23 21:40:26,230 - INFO - WordPress GET successful: /wp/v2/eve_blueprint?slug=blueprint-1049589409666 in 28.00s
+2025-09-23 21:40:26,231 - INFO - wp_request completed in 27.997s
+2025-09-23 21:40:26,231 - INFO - Rate limiter: Waiting 0.02 seconds to respect 60 calls/minute limit
+2025-09-23 21:40:26,338 - INFO - WordPress PUT successful: /wp/v2/eve_blueprint/2255 in 0.11s
+2025-09-23 21:40:26,339 - INFO - wp_request completed in 0.108s
+2025-09-23 21:40:26,339 - INFO - Updated blueprint: 1049589409666
+2025-09-23 21:40:26,340 - INFO - Processed blueprint 1/341
+2025-09-23 21:40:26,340 - INFO - Processed blueprint 2/341
+2025-09-23 21:40:26,340 - INFO - Processed blueprint 3/341
+2025-09-23 21:40:26,341 - INFO - Processed blueprint 4/341
+2025-09-23 21:40:26,341 - INFO - Processed blueprint 5/341
+2025-09-23 21:40:26,341 - INFO - Processed blueprint 6/341
+2025-09-23 21:40:26,341 - INFO - Processed blueprint 7/341
+2025-09-23 21:40:26,341 - INFO - Processed blueprint 8/341
+2025-09-23 21:40:26,341 - INFO - Processed blueprint 9/341
+2025-09-23 21:40:26,341 - INFO - Processed blueprint 10/341
+2025-09-23 21:40:26,341 - INFO - Processed blueprint 11/341
+2025-09-23 21:40:26,341 - INFO - Processed blueprint 12/341
+2025-09-23 21:40:26,341 - INFO - Processed blueprint 13/341
+2025-09-23 21:40:26,341 - INFO - Processed blueprint 14/341
+2025-09-23 21:40:26,342 - INFO - Processed blueprint 15/341
+2025-09-23 21:40:26,342 - ERROR - Blueprint processing generated an exception: 
+2025-09-23 21:40:26,342 - INFO - Processed blueprint 16/341
+2025-09-23 21:40:26,342 - INFO - Processed blueprint 17/341
+2025-09-23 21:40:26,342 - INFO - Processed blueprint 18/341
+2025-09-23 21:40:26,342 - INFO - Processed blueprint 19/341
+2025-09-23 21:40:26,342 - ERROR - Blueprint processing generated an exception: 
+2025-09-23 21:40:26,342 - ERROR - Blueprint processing generated an exception: 
+2025-09-23 21:40:26,342 - ERROR - Blueprint processing generated an exception: 
+2025-09-23 21:40:26,343 - ERROR - Blueprint processing generated an exception: 
+2025-09-23 21:40:26,343 - ERROR - Blueprint processing generated an exception: 
+2025-09-23 21:40:26,343 - ERROR - Blueprint processing generated an exception: 
+2025-09-23 21:40:26,343 - ERROR - Blueprint processing generated an exception: 
+2025-09-23 21:40:26,343 - ERROR - Blueprint processing generated an exception: 
+2025-09-23 21:40:26,343 - ERROR - Blueprint processing generated an exception: 
+2025-09-23 21:40:26,344 - INFO - Processed blueprint 20/341
+2025-09-23 21:40:26,344 - INFO - Processed blueprint 21/341
+2025-09-23 21:40:26,344 - INFO - Processed blueprint 22/341
+2025-09-23 21:40:26,344 - INFO - Processed blueprint 23/341
+2025-09-23 21:40:26,344 - INFO - Processed blueprint 24/341
+2025-09-23 21:40:26,344 - INFO - Processed blueprint 25/341
+2025-09-23 21:40:26,344 - INFO - Processed blueprint 26/341
+2025-09-23 21:40:26,344 - INFO - Processed blueprint 27/341
+2025-09-23 21:40:26,344 - INFO - Processed blueprint 28/341
+2025-09-23 21:40:26,344 - INFO - Processed blueprint 29/341
+2025-09-23 21:40:26,344 - INFO - Processed blueprint 30/341
+2025-09-23 21:40:26,344 - INFO - Processed blueprint 31/341
+2025-09-23 21:40:26,344 - INFO - Processed blueprint 32/341
+2025-09-23 21:40:26,344 - INFO - Processed blueprint 33/341
+2025-09-23 21:40:26,344 - INFO - Processed blueprint 34/341
+2025-09-23 21:40:26,344 - INFO - Processed blueprint 35/341
+2025-09-23 21:40:26,344 - INFO - Processed blueprint 36/341
+2025-09-23 21:40:26,344 - INFO - Processed blueprint 37/341
+2025-09-23 21:40:26,344 - INFO - Processed blueprint 38/341
+2025-09-23 21:40:26,344 - INFO - Processed blueprint 39/341
+2025-09-23 21:40:26,345 - INFO - Processed blueprint 40/341
+2025-09-23 21:40:26,345 - INFO - Processed blueprint 41/341
+2025-09-23 21:40:26,345 - INFO - Processed blueprint 42/341
+2025-09-23 21:40:26,345 - INFO - Processed blueprint 43/341
+2025-09-23 21:40:26,345 - INFO - Processed blueprint 44/341
+2025-09-23 21:40:26,345 - INFO - Processed blueprint 45/341
+2025-09-23 21:40:26,345 - ERROR - Blueprint processing generated an exception: 
+2025-09-23 21:40:26,345 - INFO - Processed blueprint 46/341
+2025-09-23 21:40:26,345 - ERROR - Blueprint processing generated an exception: 
+2025-09-23 21:40:26,346 - ERROR - Blueprint processing generated an exception: 
+2025-09-23 21:40:26,346 - ERROR - Blueprint processing generated an exception: 
+2025-09-23 21:40:26,346 - ERROR - Blueprint processing generated an exception: 
+2025-09-23 21:40:26,346 - ERROR - Blueprint processing generated an exception: 
+2025-09-23 21:40:26,346 - ERROR - Blueprint processing generated an exception: 
+2025-09-23 21:40:26,346 - ERROR - Blueprint processing generated an exception: 
+2025-09-23 21:40:26,346 - ERROR - Blueprint processing generated an exception: 
+2025-09-23 21:40:26,346 - ERROR - Blueprint processing generated an exception: 
+2025-09-23 21:40:26,346 - INFO - Processed blueprint 47/341
+2025-09-23 21:40:26,346 - INFO - Processed blueprint 48/341
+2025-09-23 21:40:26,346 - INFO - Processed blueprint 49/341
+2025-09-23 21:40:26,346 - INFO - Processed blueprint 50/341
+2025-09-23 21:40:26,346 - INFO - Processed blueprint 51/341
+2025-09-23 21:40:26,346 - INFO - Processed blueprint 52/341
+2025-09-23 21:40:26,346 - INFO - Processed blueprint 53/341
+2025-09-23 21:40:26,346 - INFO - Processed blueprint 54/341
+2025-09-23 21:40:26,346 - INFO - Processed blueprint 55/341
+2025-09-23 21:40:26,346 - INFO - Processed blueprint 56/341
+2025-09-23 21:40:26,346 - INFO - Processed blueprint 57/341
+2025-09-23 21:40:26,346 - INFO - Processed blueprint 58/341
+2025-09-23 21:40:26,346 - INFO - Processed blueprint 59/341
+2025-09-23 21:40:26,346 - INFO - Processed blueprint 60/341
+2025-09-23 21:40:26,346 - INFO - Processed blueprint 61/341
+2025-09-23 21:40:26,346 - INFO - Processed blueprint 62/341
+2025-09-23 21:40:26,346 - INFO - Processed blueprint 63/341
+2025-09-23 21:40:26,346 - INFO - Processed blueprint 64/341
+2025-09-23 21:40:26,347 - INFO - Processed blueprint 65/341
+2025-09-23 21:40:26,347 - INFO - Processed blueprint 66/341
+2025-09-23 21:40:26,347 - INFO - Processed blueprint 67/341
+2025-09-23 21:40:26,347 - INFO - Processed blueprint 68/341
+2025-09-23 21:40:26,347 - INFO - Processed blueprint 69/341
+2025-09-23 21:40:26,347 - INFO - Processed blueprint 70/341
+2025-09-23 21:40:26,347 - INFO - Processed blueprint 71/341
+2025-09-23 21:40:26,347 - INFO - Processed blueprint 72/341
+2025-09-23 21:40:26,347 - INFO - Processed blueprint 73/341
+2025-09-23 21:40:26,347 - INFO - Processed blueprint 74/341
+2025-09-23 21:40:26,347 - ERROR - Blueprint processing generated an exception: 
+2025-09-23 21:40:26,347 - ERROR - Blueprint processing generated an exception: 
+2025-09-23 21:40:26,347 - ERROR - Blueprint processing generated an exception: 
+2025-09-23 21:40:26,347 - ERROR - Blueprint processing generated an exception: 
+2025-09-23 21:40:26,347 - ERROR - Blueprint processing generated an exception: 
+2025-09-23 21:40:26,347 - ERROR - Blueprint processing generated an exception: 
+2025-09-23 21:40:26,347 - ERROR - Blueprint processing generated an exception: 
+2025-09-23 21:40:26,347 - ERROR - Blueprint processing generated an exception: 
+2025-09-23 21:40:26,347 - ERROR - Blueprint processing generated an exception: 
+2025-09-23 21:40:26,347 - ERROR - Blueprint processing generated an exception: 
+2025-09-23 21:40:26,347 - INFO - Processed blueprint 75/341
+2025-09-23 21:40:26,347 - INFO - Processed blueprint 76/341
+2025-09-23 21:40:26,347 - INFO - Processed blueprint 77/341
+2025-09-23 21:40:26,347 - INFO - Processed blueprint 78/341
+2025-09-23 21:40:26,347 - INFO - Processed blueprint 79/341
+2025-09-23 21:40:26,347 - INFO - Processed blueprint 80/341
+2025-09-23 21:40:26,347 - INFO - Processed blueprint 81/341
+2025-09-23 21:40:26,347 - INFO - Processed blueprint 82/341
+2025-09-23 21:40:26,348 - INFO - Processed blueprint 83/341
+2025-09-23 21:40:26,348 - INFO - Processed blueprint 84/341
+2025-09-23 21:40:26,348 - INFO - Processed blueprint 85/341
+2025-09-23 21:40:26,348 - INFO - Processed blueprint 86/341
+2025-09-23 21:40:26,348 - INFO - Processed blueprint 87/341
+2025-09-23 21:40:26,348 - INFO - Processed blueprint 88/341
+2025-09-23 21:40:26,348 - INFO - Processed blueprint 89/341
+2025-09-23 21:40:26,348 - INFO - Processed blueprint 90/341
+2025-09-23 21:40:26,348 - INFO - Processed blueprint 91/341
+2025-09-23 21:40:26,348 - INFO - Processed blueprint 92/341
+2025-09-23 21:40:26,348 - INFO - Processed blueprint 93/341
+2025-09-23 21:40:26,348 - INFO - Processed blueprint 94/341
+2025-09-23 21:40:26,348 - INFO - Processed blueprint 95/341
+2025-09-23 21:40:26,348 - INFO - Processed blueprint 96/341
+2025-09-23 21:40:26,348 - INFO - Processed blueprint 97/341
+2025-09-23 21:40:26,348 - INFO - Processed blueprint 98/341
+2025-09-23 21:40:26,348 - ERROR - Blueprint processing generated an exception: 
+2025-09-23 21:40:26,348 - INFO - Processed blueprint 99/341
+2025-09-23 21:40:26,348 - ERROR - Blueprint processing generated an exception: 
+2025-09-23 21:40:26,348 - ERROR - Blueprint processing generated an exception: 
+2025-09-23 21:40:26,349 - INFO - Processed blueprint 100/341
+2025-09-23 21:40:26,349 - ERROR - Blueprint processing generated an exception: 
+2025-09-23 21:40:26,349 - INFO - Processed blueprint 101/341
+2025-09-23 21:40:26,349 - INFO - Processed blueprint 102/341
+2025-09-23 21:40:26,349 - ERROR - Blueprint processing generated an exception: 
+2025-09-23 21:40:26,349 - ERROR - Blueprint processing generated an exception: 
+2025-09-23 21:40:26,349 - ERROR - Blueprint processing generated an exception: 
+2025-09-23 21:40:26,349 - ERROR - Blueprint processing generated an exception: 
+2025-09-23 21:40:26,349 - ERROR - Blueprint processing generated an exception: 
+2025-09-23 21:40:26,349 - ERROR - Blueprint processing generated an exception: 
+2025-09-23 21:40:26,349 - INFO - Processed blueprint 103/341
+2025-09-23 21:40:26,349 - INFO - Processed blueprint 104/341
+2025-09-23 21:40:26,349 - INFO - Processed blueprint 105/341
+2025-09-23 21:40:26,349 - INFO - Processed blueprint 106/341
+2025-09-23 21:40:26,349 - INFO - Processed blueprint 107/341
+2025-09-23 21:40:26,349 - INFO - Processed blueprint 108/341
+2025-09-23 21:40:26,349 - INFO - Processed blueprint 109/341
+2025-09-23 21:40:26,349 - INFO - Processed blueprint 110/341
+2025-09-23 21:40:26,349 - INFO - Processed blueprint 111/341
+2025-09-23 21:40:26,349 - INFO - Processed blueprint 112/341
+2025-09-23 21:40:26,349 - INFO - Processed blueprint 113/341
+2025-09-23 21:40:26,349 - INFO - Processed blueprint 114/341
+2025-09-23 21:40:26,349 - INFO - Processed blueprint 115/341
+2025-09-23 21:40:26,349 - INFO - Processed blueprint 116/341
+2025-09-23 21:40:26,349 - INFO - Processed blueprint 117/341
+2025-09-23 21:40:26,349 - INFO - Processed blueprint 118/341
+2025-09-23 21:40:26,349 - INFO - Processed blueprint 119/341
+2025-09-23 21:40:26,349 - INFO - Processed blueprint 120/341
+2025-09-23 21:40:26,350 - INFO - Processed blueprint 121/341
+2025-09-23 21:40:26,350 - INFO - Processed blueprint 122/341
+2025-09-23 21:40:26,350 - INFO - Processed blueprint 123/341
+2025-09-23 21:40:26,350 - INFO - Processed blueprint 124/341
+2025-09-23 21:40:26,350 - INFO - Processed blueprint 125/341
+2025-09-23 21:40:26,350 - INFO - Processed blueprint 126/341
+2025-09-23 21:40:26,350 - INFO - Processed blueprint 127/341
+2025-09-23 21:40:26,350 - INFO - Processed blueprint 128/341
+2025-09-23 21:40:26,350 - INFO - Processed blueprint 129/341
+2025-09-23 21:40:26,350 - INFO - Processed blueprint 130/341
+2025-09-23 21:40:26,350 - INFO - Processed blueprint 131/341
+2025-09-23 21:40:26,350 - ERROR - Blueprint processing generated an exception: 
+2025-09-23 21:40:26,350 - ERROR - Blueprint processing generated an exception: 
+2025-09-23 21:40:26,350 - ERROR - Blueprint processing generated an exception: 
+2025-09-23 21:40:26,350 - ERROR - Blueprint processing generated an exception: 
+2025-09-23 21:40:26,350 - ERROR - Blueprint processing generated an exception: 
+2025-09-23 21:40:26,350 - ERROR - Blueprint processing generated an exception: 
+2025-09-23 21:40:26,350 - ERROR - Blueprint processing generated an exception: 
+2025-09-23 21:40:26,350 - ERROR - Blueprint processing generated an exception: 
+2025-09-23 21:40:26,350 - ERROR - Blueprint processing generated an exception: 
+2025-09-23 21:40:26,350 - ERROR - Blueprint processing generated an exception: 
+2025-09-23 21:40:26,350 - INFO - Processed blueprint 132/341
+2025-09-23 21:40:26,350 - INFO - Processed blueprint 133/341
+2025-09-23 21:40:26,350 - INFO - Processed blueprint 134/341
+2025-09-23 21:40:26,350 - INFO - Processed blueprint 135/341
+2025-09-23 21:40:26,350 - INFO - Processed blueprint 136/341
+2025-09-23 21:40:26,350 - INFO - Processed blueprint 137/341
+2025-09-23 21:40:26,350 - INFO - Processed blueprint 138/341
+2025-09-23 21:40:26,350 - INFO - Processed blueprint 139/341
+2025-09-23 21:40:26,350 - INFO - Processed blueprint 140/341
+2025-09-23 21:40:26,350 - INFO - Processed blueprint 141/341
+2025-09-23 21:40:26,350 - INFO - Processed blueprint 142/341
+2025-09-23 21:40:26,350 - INFO - Processed blueprint 143/341
+2025-09-23 21:40:26,350 - INFO - Processed blueprint 144/341
+2025-09-23 21:40:26,351 - INFO - Processed blueprint 145/341
+2025-09-23 21:40:26,351 - INFO - Processed blueprint 146/341
+2025-09-23 21:40:26,351 - INFO - Processed blueprint 147/341
+2025-09-23 21:40:26,351 - INFO - Processed blueprint 148/341
+2025-09-23 21:40:26,351 - INFO - Processed blueprint 149/341
+2025-09-23 21:40:26,351 - INFO - Processed blueprint 150/341
+2025-09-23 21:40:26,351 - INFO - Processed blueprint 151/341
+2025-09-23 21:40:26,351 - INFO - Processed blueprint 152/341
+2025-09-23 21:40:26,351 - INFO - Processed blueprint 153/341
+2025-09-23 21:40:26,351 - INFO - Processed blueprint 154/341
+2025-09-23 21:40:26,351 - INFO - Processed blueprint 155/341
+2025-09-23 21:40:26,351 - INFO - Processed blueprint 156/341
+2025-09-23 21:40:26,351 - INFO - Processed blueprint 157/341
+2025-09-23 21:40:26,351 - INFO - Processed blueprint 158/341
+2025-09-23 21:40:26,351 - INFO - Processed blueprint 159/341
+2025-09-23 21:40:26,351 - INFO - Processed blueprint 160/341
+2025-09-23 21:40:26,351 - ERROR - Blueprint processing generated an exception: 
+2025-09-23 21:40:26,351 - ERROR - Blueprint processing generated an exception: 
+2025-09-23 21:40:26,351 - ERROR - Blueprint processing generated an exception: 
+2025-09-23 21:40:26,351 - ERROR - Blueprint processing generated an exception: 
+2025-09-23 21:40:26,351 - ERROR - Blueprint processing generated an exception: 
+2025-09-23 21:40:26,351 - ERROR - Blueprint processing generated an exception: 
+2025-09-23 21:40:26,351 - ERROR - Blueprint processing generated an exception: 
+2025-09-23 21:40:26,351 - ERROR - Blueprint processing generated an exception: 
+2025-09-23 21:40:26,351 - ERROR - Blueprint processing generated an exception: 
+2025-09-23 21:40:26,351 - ERROR - Blueprint processing generated an exception: 
+2025-09-23 21:40:26,351 - INFO - Processed blueprint 161/341
+2025-09-23 21:40:26,351 - INFO - Processed blueprint 162/341
+2025-09-23 21:40:26,351 - INFO - Processed blueprint 163/341
+2025-09-23 21:40:26,351 - INFO - Processed blueprint 164/341
+2025-09-23 21:40:26,351 - INFO - Processed blueprint 165/341
+2025-09-23 21:40:26,351 - INFO - Processed blueprint 166/341
+2025-09-23 21:40:26,352 - INFO - Processed blueprint 167/341
+2025-09-23 21:40:26,352 - INFO - Processed blueprint 168/341
+2025-09-23 21:40:26,352 - INFO - Processed blueprint 169/341
+2025-09-23 21:40:26,352 - INFO - Processed blueprint 170/341
+2025-09-23 21:40:26,352 - INFO - Processed blueprint 171/341
+2025-09-23 21:40:26,352 - INFO - Processed blueprint 172/341
+2025-09-23 21:40:26,352 - INFO - Processed blueprint 173/341
+2025-09-23 21:40:26,352 - INFO - Processed blueprint 174/341
+2025-09-23 21:40:26,352 - INFO - Processed blueprint 175/341
+2025-09-23 21:40:26,352 - INFO - Processed blueprint 176/341
+2025-09-23 21:40:26,352 - INFO - Processed blueprint 177/341
+2025-09-23 21:40:26,352 - INFO - Processed blueprint 178/341
+2025-09-23 21:40:26,352 - INFO - Processed blueprint 179/341
+2025-09-23 21:40:26,352 - INFO - Processed blueprint 180/341
+2025-09-23 21:40:26,352 - INFO - Processed blueprint 181/341
+2025-09-23 21:40:26,352 - INFO - Processed blueprint 182/341
+2025-09-23 21:40:26,352 - INFO - Processed blueprint 183/341
+2025-09-23 21:40:26,352 - INFO - Processed blueprint 184/341
+2025-09-23 21:40:26,352 - INFO - Processed blueprint 185/341
+2025-09-23 21:40:26,352 - ERROR - Blueprint processing generated an exception: 
+2025-09-23 21:40:26,352 - ERROR - Blueprint processing generated an exception: 
+2025-09-23 21:40:26,352 - INFO - Processed blueprint 186/341
+2025-09-23 21:40:26,352 - INFO - Processed blueprint 187/341
+2025-09-23 21:40:26,352 - ERROR - Blueprint processing generated an exception: 
+2025-09-23 21:40:26,352 - INFO - Processed blueprint 188/341
+2025-09-23 21:40:26,352 - ERROR - Blueprint processing generated an exception: 
+2025-09-23 21:40:26,352 - ERROR - Blueprint processing generated an exception: 
+2025-09-23 21:40:26,352 - ERROR - Blueprint processing generated an exception: 
+2025-09-23 21:40:26,352 - ERROR - Blueprint processing generated an exception: 
+2025-09-23 21:40:26,352 - ERROR - Blueprint processing generated an exception: 
+2025-09-23 21:40:26,352 - ERROR - Blueprint processing generated an exception: 
+2025-09-23 21:40:26,352 - ERROR - Blueprint processing generated an exception: 
+2025-09-23 21:40:26,352 - INFO - Processed blueprint 189/341
+2025-09-23 21:40:26,353 - INFO - Processed blueprint 190/341
+2025-09-23 21:40:26,353 - INFO - Processed blueprint 191/341
+2025-09-23 21:40:26,353 - INFO - Processed blueprint 192/341
+2025-09-23 21:40:26,353 - INFO - Processed blueprint 193/341
+2025-09-23 21:40:26,353 - INFO - Processed blueprint 194/341
+2025-09-23 21:40:26,353 - INFO - Processed blueprint 195/341
+2025-09-23 21:40:26,353 - INFO - Processed blueprint 196/341
+2025-09-23 21:40:26,353 - INFO - Processed blueprint 197/341
+2025-09-23 21:40:26,353 - INFO - Processed blueprint 198/341
+2025-09-23 21:40:26,353 - INFO - Processed blueprint 199/341
+2025-09-23 21:40:26,353 - INFO - Processed blueprint 200/341
+2025-09-23 21:40:26,353 - INFO - Processed blueprint 201/341
+2025-09-23 21:40:26,353 - INFO - Processed blueprint 202/341
+2025-09-23 21:40:26,353 - INFO - Processed blueprint 203/341
+2025-09-23 21:40:26,353 - INFO - Processed blueprint 204/341
+2025-09-23 21:40:26,353 - INFO - Processed blueprint 205/341
+2025-09-23 21:40:26,353 - INFO - Processed blueprint 206/341
+2025-09-23 21:40:26,353 - INFO - Processed blueprint 207/341
+2025-09-23 21:40:26,353 - INFO - Processed blueprint 208/341
+2025-09-23 21:40:26,353 - INFO - Processed blueprint 209/341
+2025-09-23 21:40:26,353 - INFO - Processed blueprint 210/341
+2025-09-23 21:40:26,353 - INFO - Processed blueprint 211/341
+2025-09-23 21:40:26,353 - INFO - Processed blueprint 212/341
+2025-09-23 21:40:26,353 - ERROR - Blueprint processing generated an exception: 
+2025-09-23 21:40:26,353 - ERROR - Blueprint processing generated an exception: 
+2025-09-23 21:40:26,353 - INFO - Processed blueprint 213/341
+2025-09-23 21:40:26,353 - ERROR - Blueprint processing generated an exception: 
+2025-09-23 21:40:26,353 - INFO - Processed blueprint 214/341
+2025-09-23 21:40:26,353 - INFO - Processed blueprint 215/341
+2025-09-23 21:40:26,353 - INFO - Processed blueprint 216/341
+2025-09-23 21:40:26,353 - ERROR - Blueprint processing generated an exception: 
+2025-09-23 21:40:26,353 - ERROR - Blueprint processing generated an exception: 
+2025-09-23 21:40:26,353 - ERROR - Blueprint processing generated an exception: 
+2025-09-23 21:40:26,354 - ERROR - Blueprint processing generated an exception: 
+2025-09-23 21:40:26,354 - ERROR - Blueprint processing generated an exception: 
+2025-09-23 21:40:26,354 - ERROR - Blueprint processing generated an exception: 
+2025-09-23 21:40:26,354 - ERROR - Blueprint processing generated an exception: 
+2025-09-23 21:40:26,354 - INFO - Processed blueprint 217/341
+2025-09-23 21:40:26,354 - INFO - Processed blueprint 218/341
+2025-09-23 21:40:26,354 - INFO - Processed blueprint 219/341
+2025-09-23 21:40:26,354 - INFO - Processed blueprint 220/341
+2025-09-23 21:40:26,354 - INFO - Processed blueprint 221/341
+2025-09-23 21:40:26,354 - INFO - Processed blueprint 222/341
+2025-09-23 21:40:26,354 - INFO - Processed blueprint 223/341
+2025-09-23 21:40:26,354 - INFO - Processed blueprint 224/341
+2025-09-23 21:40:26,354 - INFO - Processed blueprint 225/341
+2025-09-23 21:40:26,354 - INFO - Processed blueprint 226/341
+2025-09-23 21:40:26,354 - INFO - Processed blueprint 227/341
+2025-09-23 21:40:26,354 - INFO - Processed blueprint 228/341
+2025-09-23 21:40:26,354 - INFO - Processed blueprint 229/341
+2025-09-23 21:40:26,354 - INFO - Processed blueprint 230/341
+2025-09-23 21:40:26,354 - INFO - Processed blueprint 231/341
+2025-09-23 21:40:26,354 - INFO - Processed blueprint 232/341
+2025-09-23 21:40:26,354 - INFO - Processed blueprint 233/341
+2025-09-23 21:40:26,354 - INFO - Processed blueprint 234/341
+2025-09-23 21:40:26,354 - INFO - Processed blueprint 235/341
+2025-09-23 21:40:26,354 - INFO - Processed blueprint 236/341
+2025-09-23 21:40:26,354 - INFO - Processed blueprint 237/341
+2025-09-23 21:40:26,354 - INFO - Processed blueprint 238/341
+2025-09-23 21:40:26,354 - INFO - Processed blueprint 239/341
+2025-09-23 21:40:26,354 - INFO - Processed blueprint 240/341
+2025-09-23 21:40:26,354 - INFO - Processed blueprint 241/341
+2025-09-23 21:40:26,354 - INFO - Processed blueprint 242/341
+2025-09-23 21:40:26,354 - ERROR - Blueprint processing generated an exception: 
+2025-09-23 21:40:26,354 - INFO - Processed blueprint 243/341
+2025-09-23 21:40:26,354 - ERROR - Blueprint processing generated an exception: 
+2025-09-23 21:40:26,355 - ERROR - Blueprint processing generated an exception: 
+2025-09-23 21:40:26,355 - ERROR - Blueprint processing generated an exception: 
+2025-09-23 21:40:26,355 - ERROR - Blueprint processing generated an exception: 
+2025-09-23 21:40:26,355 - ERROR - Blueprint processing generated an exception: 
+2025-09-23 21:40:26,355 - ERROR - Blueprint processing generated an exception: 
+2025-09-23 21:40:26,355 - ERROR - Blueprint processing generated an exception: 
+2025-09-23 21:40:26,355 - ERROR - Blueprint processing generated an exception: 
+2025-09-23 21:40:26,355 - ERROR - Blueprint processing generated an exception: 
+2025-09-23 21:40:26,355 - INFO - Processed blueprint 244/341
+2025-09-23 21:40:26,355 - INFO - Processed blueprint 245/341
+2025-09-23 21:40:26,355 - INFO - Processed blueprint 246/341
+2025-09-23 21:40:26,355 - INFO - Processed blueprint 247/341
+2025-09-23 21:40:26,355 - INFO - Processed blueprint 248/341
+2025-09-23 21:40:26,355 - INFO - Processed blueprint 249/341
+2025-09-23 21:40:26,355 - INFO - Processed blueprint 250/341
+2025-09-23 21:40:26,355 - INFO - Processed blueprint 251/341
+2025-09-23 21:40:26,355 - INFO - Blueprint processing completed for 341 blueprints in 538.90s
+2025-09-23 21:40:26,355 - INFO - Fetching corporation assets for 98092220...
+2025-09-23 21:40:26,762 - INFO - ESI authenticated fetch successful: /corporations/98092220/assets/ in 0.41s
+2025-09-23 21:40:26,763 - INFO - _fetch_esi_with_retry completed in 0.408s
+2025-09-23 21:40:26,763 - INFO - Fetched 1000 corporation assets
+2025-09-23 21:40:26,765 - INFO - Processing 1000 corp assets for blueprint extraction...
+2025-09-23 21:40:26,765 - INFO - Processed 1000/1000 assets...
+2025-09-23 21:40:26,766 - INFO - Completed asset processing: found 0 BPO blueprints in 1000 assets
+2025-09-23 21:40:26,766 - INFO - No blueprints found in corporation assets
+2025-09-23 21:40:26,978 - INFO - ESI authenticated fetch successful: /corporations/98092220/industry/jobs/ in 0.21s
+2025-09-23 21:40:26,979 - INFO - _fetch_esi_with_retry completed in 0.214s
+2025-09-23 21:40:26,980 - INFO - Corporation industry job blueprints: 82 items
+2025-09-23 21:40:26,980 - INFO - Starting async processing of 82 blueprints
+2025-09-23 21:40:26,983 - INFO - Rate limiter: Waiting 0.23 seconds to respect 60 calls/minute limit
+2025-09-23 21:40:26,983 - INFO - Rate limiter: Waiting 0.23 seconds to respect 60 calls/minute limit
+2025-09-23 21:40:26,983 - INFO - Rate limiter: Waiting 0.23 seconds to respect 60 calls/minute limit
+2025-09-23 21:40:26,983 - INFO - Rate limiter: Waiting 0.23 seconds to respect 60 calls/minute limit
+2025-09-23 21:40:26,983 - INFO - Rate limiter: Waiting 0.23 seconds to respect 60 calls/minute limit
+2025-09-23 21:40:26,983 - INFO - Rate limiter: Waiting 0.23 seconds to respect 60 calls/minute limit
+2025-09-23 21:40:26,984 - INFO - Rate limiter: Waiting 0.23 seconds to respect 60 calls/minute limit
+2025-09-23 21:40:27,084 - INFO - WordPress GET successful: /wp/v2/eve_blueprint/625 in 0.10s
+2025-09-23 21:40:27,084 - INFO - wp_request completed in 0.104s
+2025-09-23 21:40:27,085 - INFO - Rate limiter: Waiting 0.12 seconds to respect 60 calls/minute limit
+2025-09-23 21:40:27,131 - INFO - WordPress GET successful: /wp/v2/eve_blueprint/624 in 0.15s
+2025-09-23 21:40:27,132 - INFO - wp_request completed in 0.151s
+2025-09-23 21:40:27,133 - INFO - Rate limiter: Waiting 0.08 seconds to respect 60 calls/minute limit
+2025-09-23 21:40:27,145 - INFO - WordPress GET successful: /wp/v2/eve_blueprint/623 in 0.16s
+2025-09-23 21:40:27,146 - INFO - wp_request completed in 0.165s
+2025-09-23 21:40:27,146 - INFO - Rate limiter: Waiting 0.06 seconds to respect 60 calls/minute limit
+2025-09-23 21:40:27,211 - INFO - Rate limiter: Waiting 0.07 seconds to respect 60 calls/minute limit
+2025-09-23 21:40:27,212 - INFO - Rate limiter: Waiting 0.07 seconds to respect 60 calls/minute limit
+2025-09-23 21:40:27,212 - INFO - Rate limiter: Waiting 0.07 seconds to respect 60 calls/minute limit
+2025-09-23 21:40:27,212 - INFO - Rate limiter: Waiting 0.07 seconds to respect 60 calls/minute limit
+2025-09-23 21:40:27,212 - INFO - Rate limiter: Waiting 0.07 seconds to respect 60 calls/minute limit
+2025-09-23 21:40:27,213 - INFO - Rate limiter: Waiting 0.07 seconds to respect 60 calls/minute limit
+2025-09-23 21:40:27,213 - INFO - Rate limiter: Waiting 0.07 seconds to respect 60 calls/minute limit
+2025-09-23 21:40:27,213 - INFO - Rate limiter: Waiting 0.06 seconds to respect 60 calls/minute limit
+2025-09-23 21:40:27,213 - INFO - Rate limiter: Waiting 0.06 seconds to respect 60 calls/minute limit
+2025-09-23 21:40:27,281 - INFO - Rate limiter: Waiting 0.19 seconds to respect 60 calls/minute limit
+2025-09-23 21:40:27,281 - INFO - Rate limiter: Waiting 0.19 seconds to respect 60 calls/minute limit
+2025-09-23 21:40:27,281 - INFO - Rate limiter: Waiting 0.19 seconds to respect 60 calls/minute limit
+2025-09-23 21:40:27,282 - INFO - Rate limiter: Waiting 0.19 seconds to respect 60 calls/minute limit
+2025-09-23 21:40:27,282 - INFO - Rate limiter: Waiting 0.19 seconds to respect 60 calls/minute limit
+2025-09-23 21:40:27,282 - INFO - Rate limiter: Waiting 0.19 seconds to respect 60 calls/minute limit
+2025-09-23 21:40:27,282 - INFO - Rate limiter: Waiting 0.18 seconds to respect 60 calls/minute limit
+2025-09-23 21:40:27,283 - INFO - Rate limiter: Waiting 0.18 seconds to respect 60 calls/minute limit
+2025-09-23 21:40:27,303 - INFO - WordPress GET successful: /wp/v2/eve_blueprint/616 in 0.32s
+2025-09-23 21:40:27,304 - INFO - wp_request completed in 0.322s
+2025-09-23 21:40:27,304 - INFO - Rate limiter: Waiting 0.16 seconds to respect 60 calls/minute limit
+2025-09-23 21:40:27,390 - INFO - WordPress GET successful: /wp/v2/eve_blueprint/620 in 0.41s
+2025-09-23 21:40:27,390 - INFO - wp_request completed in 0.409s
+2025-09-23 21:40:27,391 - INFO - Rate limiter: Waiting 0.08 seconds to respect 60 calls/minute limit
+2025-09-23 21:40:27,563 - INFO - WordPress GET successful: /wp/v2/eve_blueprint/617 in 0.58s
+2025-09-23 21:40:27,564 - INFO - wp_request completed in 0.583s
+2025-09-23 21:40:27,565 - INFO - Rate limiter: Waiting 0.03 seconds to respect 60 calls/minute limit
+2025-09-23 21:40:27,566 - INFO - WordPress GET successful: /wp/v2/eve_blueprint/622 in 0.58s
+2025-09-23 21:40:27,567 - INFO - wp_request completed in 0.585s
+2025-09-23 21:40:27,567 - INFO - Rate limiter: Waiting 0.03 seconds to respect 60 calls/minute limit
+2025-09-23 21:40:27,573 - INFO - WordPress PUT successful: /wp/v2/eve_blueprint/616 in 0.27s
+2025-09-23 21:40:27,573 - INFO - wp_request completed in 0.269s
+2025-09-23 21:40:27,573 - INFO - Updated blueprint from corp_industry_job: 1049574869338
+2025-09-23 21:40:27,573 - INFO - Rate limiter: Waiting 0.02 seconds to respect 60 calls/minute limit
+2025-09-23 21:40:27,599 - INFO - Rate limiter: Waiting 0.13 seconds to respect 60 calls/minute limit
+2025-09-23 21:40:27,600 - INFO - Rate limiter: Waiting 0.13 seconds to respect 60 calls/minute limit
+2025-09-23 21:40:27,618 - INFO - WordPress PUT successful: /wp/v2/eve_blueprint/620 in 0.23s
+2025-09-23 21:40:27,618 - INFO - wp_request completed in 0.228s
+2025-09-23 21:40:27,619 - INFO - Updated blueprint from corp_industry_job: 1049576017866
+2025-09-23 21:40:27,619 - INFO - Rate limiter: Waiting 0.11 seconds to respect 60 calls/minute limit
+2025-09-23 21:40:27,625 - INFO - WordPress GET successful: /wp/v2/eve_blueprint/621 in 0.64s
+2025-09-23 21:40:27,625 - INFO - wp_request completed in 0.644s
+2025-09-23 21:40:27,625 - INFO - Rate limiter: Waiting 0.10 seconds to respect 60 calls/minute limit
+2025-09-23 21:40:27,627 - INFO - WordPress GET successful: /wp/v2/eve_blueprint/619 in 0.64s
+2025-09-23 21:40:27,627 - INFO - wp_request completed in 0.646s
+2025-09-23 21:40:27,627 - INFO - Rate limiter: Waiting 0.10 seconds to respect 60 calls/minute limit
+2025-09-23 21:40:27,644 - INFO - WordPress PUT successful: /wp/v2/eve_blueprint/623 in 0.50s
+2025-09-23 21:40:27,644 - INFO - wp_request completed in 0.498s
+2025-09-23 21:40:27,645 - INFO - Updated blueprint from corp_industry_job: 1049576018885
+2025-09-23 21:40:27,645 - INFO - Rate limiter: Waiting 0.09 seconds to respect 60 calls/minute limit
+2025-09-23 21:40:27,648 - INFO - WordPress PUT successful: /wp/v2/eve_blueprint/624 in 0.51s
+2025-09-23 21:40:27,648 - INFO - WordPress GET successful: /wp/v2/eve_blueprint/618 in 0.67s
+2025-09-23 21:40:27,648 - INFO - wp_request completed in 0.516s
+2025-09-23 21:40:27,649 - INFO - Updated blueprint from corp_industry_job: 1049576019228
+2025-09-23 21:40:27,649 - INFO - wp_request completed in 0.668s
+2025-09-23 21:40:27,649 - INFO - Rate limiter: Waiting 0.08 seconds to respect 60 calls/minute limit
+2025-09-23 21:40:27,649 - INFO - Rate limiter: Waiting 0.08 seconds to respect 60 calls/minute limit
+2025-09-23 21:40:27,664 - INFO - WordPress PUT successful: /wp/v2/eve_blueprint/625 in 0.58s
+2025-09-23 21:40:27,664 - INFO - wp_request completed in 0.580s
+2025-09-23 21:40:27,664 - INFO - Updated blueprint from corp_industry_job: 1049576019604
+2025-09-23 21:40:27,665 - INFO - Rate limiter: Waiting 0.07 seconds to respect 60 calls/minute limit
+2025-09-23 21:40:27,706 - INFO - WordPress PUT successful: /wp/v2/eve_blueprint/622 in 0.14s
+2025-09-23 21:40:27,707 - INFO - wp_request completed in 0.140s
+2025-09-23 21:40:27,707 - INFO - Updated blueprint from corp_industry_job: 1049576018563
+2025-09-23 21:40:27,707 - INFO - Rate limiter: Waiting 0.02 seconds to respect 60 calls/minute limit
+2025-09-23 21:40:27,732 - INFO - Rate limiter: Waiting 0.02 seconds to respect 60 calls/minute limit
+2025-09-23 21:40:27,733 - INFO - Rate limiter: Waiting 0.02 seconds to respect 60 calls/minute limit
+2025-09-23 21:40:27,733 - INFO - Rate limiter: Waiting 0.02 seconds to respect 60 calls/minute limit
+2025-09-23 21:40:27,733 - INFO - Rate limiter: Waiting 0.02 seconds to respect 60 calls/minute limit
+2025-09-23 21:40:27,733 - INFO - Rate limiter: Waiting 0.02 seconds to respect 60 calls/minute limit
+2025-09-23 21:40:27,733 - INFO - Rate limiter: Waiting 0.02 seconds to respect 60 calls/minute limit
+2025-09-23 21:40:27,733 - INFO - Rate limiter: Waiting 0.02 seconds to respect 60 calls/minute limit
+2025-09-23 21:40:27,734 - INFO - Rate limiter: Waiting 0.02 seconds to respect 60 calls/minute limit
+2025-09-23 21:40:27,758 - INFO - Rate limiter: Waiting 0.01 seconds to respect 60 calls/minute limit
+2025-09-23 21:40:27,758 - INFO - Rate limiter: Waiting 0.01 seconds to respect 60 calls/minute limit
+2025-09-23 21:40:27,759 - INFO - Rate limiter: Waiting 0.01 seconds to respect 60 calls/minute limit
+2025-09-23 21:40:27,759 - INFO - Rate limiter: Waiting 0.01 seconds to respect 60 calls/minute limit
+2025-09-23 21:40:27,759 - INFO - Rate limiter: Waiting 0.01 seconds to respect 60 calls/minute limit
+2025-09-23 21:40:27,767 - INFO - Rate limiter: Waiting 0.00 seconds to respect 60 calls/minute limit
+2025-09-23 21:40:27,767 - INFO - Rate limiter: Waiting 0.00 seconds to respect 60 calls/minute limit
+2025-09-23 21:40:27,767 - INFO - Rate limiter: Waiting 0.00 seconds to respect 60 calls/minute limit
+2025-09-23 21:40:27,772 - INFO - Rate limiter: Waiting 0.02 seconds to respect 60 calls/minute limit
+2025-09-23 21:40:27,772 - INFO - Rate limiter: Waiting 0.02 seconds to respect 60 calls/minute limit
+2025-09-23 21:40:27,791 - INFO - Rate limiter: Waiting 0.08 seconds to respect 60 calls/minute limit
+2025-09-23 21:40:27,822 - INFO - WordPress PUT successful: /wp/v2/eve_blueprint/618 in 0.17s
+2025-09-23 21:40:27,822 - INFO - wp_request completed in 0.174s
+2025-09-23 21:40:27,823 - INFO - Updated blueprint from corp_industry_job: 1049576017392
+2025-09-23 21:40:27,823 - INFO - Rate limiter: Waiting 0.05 seconds to respect 60 calls/minute limit
+2025-09-23 21:40:27,823 - INFO - WordPress PUT successful: /wp/v2/eve_blueprint/619 in 0.20s
+2025-09-23 21:40:27,823 - INFO - wp_request completed in 0.197s
+2025-09-23 21:40:27,823 - INFO - Updated blueprint from corp_industry_job: 1049576017671
+2025-09-23 21:40:27,824 - INFO - Rate limiter: Waiting 0.05 seconds to respect 60 calls/minute limit
+2025-09-23 21:40:27,830 - INFO - WordPress GET successful: /wp/v2/eve_blueprint/645 in 0.26s
+2025-09-23 21:40:27,831 - INFO - wp_request completed in 0.258s
+2025-09-23 21:40:27,831 - INFO - Rate limiter: Waiting 0.04 seconds to respect 60 calls/minute limit
+2025-09-23 21:40:27,841 - INFO - WordPress GET successful: /wp/v2/eve_blueprint/638 in 0.13s
+2025-09-23 21:40:27,841 - INFO - wp_request completed in 0.135s
+2025-09-23 21:40:27,842 - INFO - Rate limiter: Waiting 0.03 seconds to respect 60 calls/minute limit
+2025-09-23 21:40:27,844 - INFO - WordPress GET successful: /wp/v2/eve_blueprint?slug=blueprint-1049576632228 in 0.20s
+2025-09-23 21:40:27,845 - INFO - wp_request completed in 0.200s
+2025-09-23 21:40:27,845 - INFO - Rate limiter: Waiting 0.03 seconds to respect 60 calls/minute limit
+2025-09-23 21:40:27,847 - INFO - WordPress GET successful: /wp/v2/eve_blueprint/644 in 0.18s
+2025-09-23 21:40:27,847 - INFO - wp_request completed in 0.182s
+2025-09-23 21:40:27,847 - INFO - Rate limiter: Waiting 0.02 seconds to respect 60 calls/minute limit
+2025-09-23 21:40:27,849 - INFO - WordPress GET successful: /wp/v2/eve_blueprint/643 in 0.20s
+2025-09-23 21:40:27,849 - INFO - wp_request completed in 0.201s
+2025-09-23 21:40:27,849 - INFO - Rate limiter: Waiting 0.02 seconds to respect 60 calls/minute limit
+2025-09-23 21:40:27,856 - INFO - WordPress PUT successful: /wp/v2/eve_blueprint/617 in 0.29s
+2025-09-23 21:40:27,857 - INFO - wp_request completed in 0.292s
+2025-09-23 21:40:27,857 - INFO - Updated blueprint from corp_industry_job: 1049576016678
+2025-09-23 21:40:27,857 - INFO - Rate limiter: Waiting 0.01 seconds to respect 60 calls/minute limit
+2025-09-23 21:40:27,874 - INFO - Rate limiter: Waiting 0.01 seconds to respect 60 calls/minute limit
+2025-09-23 21:40:27,874 - INFO - Rate limiter: Waiting 0.01 seconds to respect 60 calls/minute limit
+2025-09-23 21:40:27,874 - INFO - Rate limiter: Waiting 0.01 seconds to respect 60 calls/minute limit
+2025-09-23 21:40:27,874 - INFO - Rate limiter: Waiting 0.01 seconds to respect 60 calls/minute limit
+2025-09-23 21:40:27,874 - INFO - Rate limiter: Waiting 0.01 seconds to respect 60 calls/minute limit
+2025-09-23 21:40:27,874 - INFO - Rate limiter: Waiting 0.01 seconds to respect 60 calls/minute limit
+2025-09-23 21:40:27,874 - INFO - Rate limiter: Waiting 0.01 seconds to respect 60 calls/minute limit
+2025-09-23 21:40:27,874 - INFO - Rate limiter: Waiting 0.01 seconds to respect 60 calls/minute limit
+2025-09-23 21:40:27,884 - INFO - WordPress PUT successful: /wp/v2/eve_blueprint/621 in 0.26s
+2025-09-23 21:40:27,884 - INFO - wp_request completed in 0.259s
+2025-09-23 21:40:27,884 - INFO - Updated blueprint from corp_industry_job: 1049576018142
+2025-09-23 21:40:27,885 - INFO - Rate limiter: Waiting 0.12 seconds to respect 60 calls/minute limit
+2025-09-23 21:40:27,886 - INFO - Rate limiter: Waiting 0.12 seconds to respect 60 calls/minute limit
+2025-09-23 21:40:27,886 - INFO - Rate limiter: Waiting 0.12 seconds to respect 60 calls/minute limit
+2025-09-23 21:40:27,886 - INFO - Rate limiter: Waiting 0.12 seconds to respect 60 calls/minute limit
+2025-09-23 21:40:27,886 - INFO - Rate limiter: Waiting 0.12 seconds to respect 60 calls/minute limit
+2025-09-23 21:40:27,886 - INFO - Rate limiter: Waiting 0.12 seconds to respect 60 calls/minute limit
+2025-09-23 21:40:28,004 - INFO - WordPress GET successful: /wp/v2/eve_blueprint?slug=blueprint-1049576631501 in 0.38s
+2025-09-23 21:40:28,005 - INFO - WordPress PUT successful: /wp/v2/eve_blueprint/638 in 0.16s
+2025-09-23 21:40:28,006 - INFO - WordPress GET successful: /wp/v2/eve_blueprint/640 in 0.18s
+2025-09-23 21:40:28,006 - ERROR - WordPress API error: 500 - {"code":"rest_invalid_stored_value","message":"The _eve_bp_location_id property has an invalid stored value, and cannot be updated to null.","data":{"status":500}} (took 0.16s)
+2025-09-23 21:40:28,006 - INFO - wp_request completed in 0.387s
+2025-09-23 21:40:28,006 - INFO - wp_request completed in 0.165s
+2025-09-23 21:40:28,007 - INFO - Updated blueprint from corp_industry_job: 1049576555733
+2025-09-23 21:40:28,007 - INFO - wp_request completed in 0.183s
+2025-09-23 21:40:28,007 - INFO - Rate limiter: Waiting 0.00 seconds to respect 60 calls/minute limit
+2025-09-23 21:40:28,008 - INFO - Rate limiter: Waiting 0.00 seconds to respect 60 calls/minute limit
+2025-09-23 21:40:28,010 - INFO - Rate limiter: Waiting 0.00 seconds to respect 60 calls/minute limit
+2025-09-23 21:40:28,010 - INFO - Rate limiter: Waiting 0.00 seconds to respect 60 calls/minute limit
+2025-09-23 21:40:28,010 - INFO - Rate limiter: Waiting 0.00 seconds to respect 60 calls/minute limit
+2025-09-23 21:40:28,010 - INFO - Rate limiter: Waiting 0.00 seconds to respect 60 calls/minute limit
+2025-09-23 21:40:28,011 - INFO - Rate limiter: Waiting 0.00 seconds to respect 60 calls/minute limit
+2025-09-23 21:40:28,011 - INFO - Rate limiter: Waiting 0.00 seconds to respect 60 calls/minute limit
+2025-09-23 21:40:28,011 - INFO - Rate limiter: Waiting 0.00 seconds to respect 60 calls/minute limit
+2025-09-23 21:40:28,012 - INFO - Rate limiter: Waiting 0.00 seconds to respect 60 calls/minute limit
+2025-09-23 21:40:28,089 - INFO - WordPress GET successful: /wp/v2/eve_blueprint/637 in 0.08s
+2025-09-23 21:40:28,089 - INFO - wp_request completed in 0.082s
+2025-09-23 21:40:28,090 - INFO - Rate limiter: Waiting 0.04 seconds to respect 60 calls/minute limit
+2025-09-23 21:40:28,092 - INFO - WordPress GET successful: /wp/v2/eve_blueprint/639 in 0.27s
+2025-09-23 21:40:28,093 - INFO - wp_request completed in 0.270s
+2025-09-23 21:40:28,093 - INFO - Rate limiter: Waiting 0.03 seconds to respect 60 calls/minute limit
+2025-09-23 21:40:28,122 - ERROR - WordPress API error: 500 - {"code":"rest_invalid_stored_value","message":"The _eve_bp_location_id property has an invalid stored value, and cannot be updated to null.","data":{"status":500}} (took 0.29s)
+2025-09-23 21:40:28,123 - INFO - WordPress GET successful: /wp/v2/eve_blueprint?slug=blueprint-1049576559320 in 0.24s
+2025-09-23 21:40:28,124 - INFO - wp_request completed in 0.238s
+2025-09-23 21:40:28,124 - INFO - Rate limiter: Waiting 0.00 seconds to respect 60 calls/minute limit
+2025-09-23 21:40:28,124 - INFO - Rate limiter: Waiting 0.00 seconds to respect 60 calls/minute limit
+2025-09-23 21:40:28,128 - INFO - Rate limiter: Waiting 0.00 seconds to respect 60 calls/minute limit
+2025-09-23 21:40:28,129 - INFO - Rate limiter: Waiting 0.11 seconds to respect 60 calls/minute limit
+2025-09-23 21:40:28,130 - INFO - Rate limiter: Waiting 0.11 seconds to respect 60 calls/minute limit
+2025-09-23 21:40:28,137 - INFO - WordPress GET successful: /wp/v2/eve_blueprint/636 in 0.13s
+2025-09-23 21:40:28,137 - INFO - wp_request completed in 0.130s
+2025-09-23 21:40:28,137 - INFO - Rate limiter: Waiting 0.10 seconds to respect 60 calls/minute limit
+2025-09-23 21:40:28,139 - ERROR - WordPress API error: 500 - {"code":"rest_invalid_stored_value","message":"The _eve_bp_location_id property has an invalid stored value, and cannot be updated to null.","data":{"status":500}} (took 0.29s)
+2025-09-23 21:40:28,139 - INFO - Rate limiter: Waiting 0.10 seconds to respect 60 calls/minute limit
+2025-09-23 21:40:28,144 - ERROR - WordPress API error: 500 - {"code":"rest_invalid_stored_value","message":"The _eve_bp_location_id property has an invalid stored value, and cannot be updated to null.","data":{"status":500}} (took 0.29s)
+2025-09-23 21:40:28,144 - INFO - Rate limiter: Waiting 0.09 seconds to respect 60 calls/minute limit
+2025-09-23 21:40:28,145 - INFO - WordPress GET successful: /wp/v2/eve_blueprint?slug=blueprint-1049576558540 in 0.29s
+2025-09-23 21:40:28,145 - INFO - wp_request completed in 0.288s
+2025-09-23 21:40:28,146 - INFO - Rate limiter: Waiting 0.09 seconds to respect 60 calls/minute limit
+2025-09-23 21:40:28,155 - ERROR - WordPress API error: 500 - {"code":"rest_invalid_stored_value","message":"The _eve_bp_location_id property has an invalid stored value, and cannot be updated to null.","data":{"status":500}} (took 0.15s)
+2025-09-23 21:40:28,155 - INFO - Rate limiter: Waiting 0.08 seconds to respect 60 calls/minute limit
+2025-09-23 21:40:28,156 - ERROR - WordPress API error: 500 - {"code":"rest_invalid_stored_value","message":"The _eve_bp_location_id property has an invalid stored value, and cannot be updated to null.","data":{"status":500}} (took 0.15s)
+2025-09-23 21:40:28,156 - INFO - Rate limiter: Waiting 0.08 seconds to respect 60 calls/minute limit
+2025-09-23 21:40:28,191 - INFO - WordPress GET successful: /wp/v2/eve_blueprint/635 in 0.07s
+2025-09-23 21:40:28,191 - INFO - wp_request completed in 0.067s
+2025-09-23 21:40:28,191 - INFO - Rate limiter: Waiting 0.05 seconds to respect 60 calls/minute limit
+2025-09-23 21:40:28,206 - ERROR - WordPress API error: 500 - {"code":"rest_invalid_stored_value","message":"The _eve_bp_location_id property has an invalid stored value, and cannot be updated to null.","data":{"status":500}} (took 0.11s)
+2025-09-23 21:40:28,207 - INFO - Rate limiter: Waiting 0.03 seconds to respect 60 calls/minute limit
+2025-09-23 21:40:28,241 - INFO - Rate limiter: Waiting 55.35 seconds to respect 60 calls/minute limit
+2025-09-23 21:40:28,241 - INFO - Rate limiter: Waiting 55.35 seconds to respect 60 calls/minute limit
+2025-09-23 21:40:28,242 - INFO - Rate limiter: Waiting 55.35 seconds to respect 60 calls/minute limit
+2025-09-23 21:40:28,242 - INFO - Rate limiter: Waiting 55.35 seconds to respect 60 calls/minute limit
+2025-09-23 21:40:28,242 - INFO - Rate limiter: Waiting 55.35 seconds to respect 60 calls/minute limit
+2025-09-23 21:40:28,242 - INFO - Rate limiter: Waiting 55.35 seconds to respect 60 calls/minute limit
+2025-09-23 21:40:28,242 - INFO - Rate limiter: Waiting 55.35 seconds to respect 60 calls/minute limit
+2025-09-23 21:40:28,315 - INFO - WordPress GET successful: /wp/v2/eve_blueprint/631 in 0.16s
+2025-09-23 21:40:28,316 - INFO - wp_request completed in 0.160s
+2025-09-23 21:40:28,317 - ERROR - WordPress API error: 500 - {"code":"rest_invalid_stored_value","message":"The _eve_bp_location_id property has an invalid stored value, and cannot be updated to null.","data":{"status":500}} (took 0.17s)
+2025-09-23 21:40:28,317 - INFO - Rate limiter: Waiting 55.28 seconds to respect 60 calls/minute limit
+2025-09-23 21:40:28,318 - INFO - Rate limiter: Waiting 55.27 seconds to respect 60 calls/minute limit
+2025-09-23 21:40:28,319 - INFO - WordPress PUT successful: /wp/v2/eve_blueprint/636 in 0.18s
+2025-09-23 21:40:28,320 - INFO - wp_request completed in 0.182s
+2025-09-23 21:40:28,320 - INFO - Updated blueprint from corp_industry_job: 1049576548631
+2025-09-23 21:40:28,320 - INFO - Rate limiter: Waiting 55.27 seconds to respect 60 calls/minute limit
+2025-09-23 21:40:58,091 - INFO - Rate limiter: Waiting 25.50 seconds to respect 60 calls/minute limit
+2025-09-23 21:40:58,126 - INFO - Rate limiter: Waiting 25.47 seconds to respect 60 calls/minute limit
+2025-09-23 21:40:58,140 - INFO - Rate limiter: Waiting 25.45 seconds to respect 60 calls/minute limit
+2025-09-23 21:40:58,145 - INFO - Rate limiter: Waiting 25.45 seconds to respect 60 calls/minute limit
+2025-09-23 21:40:58,156 - INFO - Rate limiter: Waiting 25.44 seconds to respect 60 calls/minute limit
+2025-09-23 21:40:58,193 - INFO - Rate limiter: Waiting 25.40 seconds to respect 60 calls/minute limit
+2025-09-23 21:40:58,209 - INFO - Rate limiter: Waiting 25.38 seconds to respect 60 calls/minute limit
+2025-09-23 21:40:58,318 - INFO - Rate limiter: Waiting 25.27 seconds to respect 60 calls/minute limit
+2025-09-23 21:40:58,319 - INFO - Rate limiter: Waiting 25.27 seconds to respect 60 calls/minute limit
+2025-09-23 21:40:58,321 - INFO - Rate limiter: Waiting 25.27 seconds to respect 60 calls/minute limit
+2025-09-23 21:41:23,596 - INFO - Rate limiter: Waiting 0.23 seconds to respect 60 calls/minute limit
+2025-09-23 21:41:23,597 - INFO - Rate limiter: Waiting 0.23 seconds to respect 60 calls/minute limit
+2025-09-23 21:41:23,597 - INFO - Rate limiter: Waiting 0.23 seconds to respect 60 calls/minute limit
+2025-09-23 21:41:23,598 - INFO - Rate limiter: Waiting 0.23 seconds to respect 60 calls/minute limit
+2025-09-23 21:41:23,598 - INFO - Rate limiter: Waiting 0.23 seconds to respect 60 calls/minute limit
+2025-09-23 21:41:23,598 - INFO - Rate limiter: Waiting 0.23 seconds to respect 60 calls/minute limit
+2025-09-23 21:41:23,598 - INFO - Rate limiter: Waiting 0.23 seconds to respect 60 calls/minute limit
+2025-09-23 21:41:23,598 - INFO - Rate limiter: Waiting 0.23 seconds to respect 60 calls/minute limit
+2025-09-23 21:41:23,598 - INFO - Rate limiter: Waiting 0.23 seconds to respect 60 calls/minute limit
+2025-09-23 21:41:23,831 - INFO - Rate limiter: Waiting 0.21 seconds to respect 60 calls/minute limit
+2025-09-23 21:41:23,831 - INFO - Rate limiter: Waiting 0.21 seconds to respect 60 calls/minute limit
+2025-09-23 21:41:23,832 - INFO - Rate limiter: Waiting 0.21 seconds to respect 60 calls/minute limit
+2025-09-23 21:41:23,832 - INFO - Rate limiter: Waiting 0.21 seconds to respect 60 calls/minute limit
+2025-09-23 21:41:23,832 - INFO - Rate limiter: Waiting 0.21 seconds to respect 60 calls/minute limit
+2025-09-23 21:41:23,832 - INFO - Rate limiter: Waiting 0.21 seconds to respect 60 calls/minute limit
+2025-09-23 21:41:23,833 - INFO - Rate limiter: Waiting 0.21 seconds to respect 60 calls/minute limit
+2025-09-23 21:41:23,835 - INFO - Rate limiter: Waiting 0.21 seconds to respect 60 calls/minute limit
+2025-09-23 21:41:23,854 - INFO - WordPress GET successful: /wp/v2/eve_blueprint/591 in 25.65s
+2025-09-23 21:41:23,854 - INFO - wp_request completed in 25.645s
+2025-09-23 21:41:23,854 - INFO - Rate limiter: Waiting 0.19 seconds to respect 60 calls/minute limit
+2025-09-23 21:41:23,966 - INFO - WordPress GET successful: /wp/v2/eve_blueprint/626 in 25.84s
+2025-09-23 21:41:23,967 - INFO - wp_request completed in 25.841s
+2025-09-23 21:41:23,967 - INFO - Rate limiter: Waiting 0.07 seconds to respect 60 calls/minute limit
+2025-09-23 21:41:24,044 - INFO - Rate limiter: Waiting 0.10 seconds to respect 60 calls/minute limit
+2025-09-23 21:41:24,045 - INFO - Rate limiter: Waiting 0.10 seconds to respect 60 calls/minute limit
+2025-09-23 21:41:24,045 - INFO - Rate limiter: Waiting 0.10 seconds to respect 60 calls/minute limit
+2025-09-23 21:41:24,045 - INFO - Rate limiter: Waiting 0.10 seconds to respect 60 calls/minute limit
+2025-09-23 21:41:24,045 - INFO - Rate limiter: Waiting 0.10 seconds to respect 60 calls/minute limit
+2025-09-23 21:41:24,046 - INFO - Rate limiter: Waiting 0.10 seconds to respect 60 calls/minute limit
+2025-09-23 21:41:24,046 - INFO - Rate limiter: Waiting 0.10 seconds to respect 60 calls/minute limit
+2025-09-23 21:41:24,046 - INFO - Rate limiter: Waiting 0.10 seconds to respect 60 calls/minute limit
+2025-09-23 21:41:24,047 - INFO - Rate limiter: Waiting 0.10 seconds to respect 60 calls/minute limit
+2025-09-23 21:41:24,152 - INFO - Rate limiter: Waiting 0.20 seconds to respect 60 calls/minute limit
+2025-09-23 21:41:24,152 - INFO - Rate limiter: Waiting 0.20 seconds to respect 60 calls/minute limit
+2025-09-23 21:41:24,152 - INFO - Rate limiter: Waiting 0.20 seconds to respect 60 calls/minute limit
+2025-09-23 21:41:24,152 - INFO - Rate limiter: Waiting 0.19 seconds to respect 60 calls/minute limit
+2025-09-23 21:41:24,153 - INFO - Rate limiter: Waiting 0.19 seconds to respect 60 calls/minute limit
+2025-09-23 21:41:24,153 - INFO - Rate limiter: Waiting 0.19 seconds to respect 60 calls/minute limit
+2025-09-23 21:41:24,153 - INFO - Rate limiter: Waiting 0.19 seconds to respect 60 calls/minute limit
+2025-09-23 21:41:24,153 - INFO - Rate limiter: Waiting 0.19 seconds to respect 60 calls/minute limit
+2025-09-23 21:41:24,179 - INFO - WordPress PUT successful: /wp/v2/eve_blueprint/591 in 0.33s
+2025-09-23 21:41:24,180 - INFO - wp_request completed in 0.326s
+2025-09-23 21:41:24,180 - INFO - Updated blueprint from corp_industry_job: 1049574753605
+2025-09-23 21:41:24,180 - INFO - Rate limiter: Waiting 0.17 seconds to respect 60 calls/minute limit
+2025-09-23 21:41:24,245 - INFO - WordPress GET successful: /wp/v2/eve_blueprint/627 in 26.15s
+2025-09-23 21:41:24,245 - INFO - wp_request completed in 26.154s
+2025-09-23 21:41:24,246 - INFO - Rate limiter: Waiting 0.10 seconds to respect 60 calls/minute limit
+2025-09-23 21:41:24,351 - INFO - Rate limiter: Waiting 0.19 seconds to respect 60 calls/minute limit
+2025-09-23 21:41:24,351 - INFO - Rate limiter: Waiting 0.19 seconds to respect 60 calls/minute limit
+2025-09-23 21:41:24,352 - INFO - Rate limiter: Waiting 0.19 seconds to respect 60 calls/minute limit
+2025-09-23 21:41:24,352 - INFO - Rate limiter: Waiting 0.19 seconds to respect 60 calls/minute limit
+2025-09-23 21:41:24,353 - INFO - Rate limiter: Waiting 0.19 seconds to respect 60 calls/minute limit
+2025-09-23 21:41:24,353 - INFO - Rate limiter: Waiting 0.19 seconds to respect 60 calls/minute limit
+2025-09-23 21:41:24,353 - INFO - Rate limiter: Waiting 0.19 seconds to respect 60 calls/minute limit
+2025-09-23 21:41:24,354 - INFO - Rate limiter: Waiting 0.19 seconds to respect 60 calls/minute limit
+2025-09-23 21:41:24,354 - INFO - Rate limiter: Waiting 0.19 seconds to respect 60 calls/minute limit
+2025-09-23 21:41:24,421 - INFO - WordPress GET successful: /wp/v2/eve_blueprint/612 in 26.26s
+2025-09-23 21:41:24,422 - INFO - wp_request completed in 26.265s
+2025-09-23 21:41:24,423 - INFO - Rate limiter: Waiting 0.12 seconds to respect 60 calls/minute limit
+2025-09-23 21:41:24,545 - INFO - Rate limiter: Waiting 0.16 seconds to respect 60 calls/minute limit
+2025-09-23 21:41:24,546 - INFO - Rate limiter: Waiting 0.16 seconds to respect 60 calls/minute limit
+2025-09-23 21:41:24,546 - INFO - Rate limiter: Waiting 0.16 seconds to respect 60 calls/minute limit
+2025-09-23 21:41:24,546 - INFO - Rate limiter: Waiting 0.16 seconds to respect 60 calls/minute limit
+2025-09-23 21:41:24,547 - INFO - Rate limiter: Waiting 0.15 seconds to respect 60 calls/minute limit
+2025-09-23 21:41:24,547 - INFO - Rate limiter: Waiting 0.15 seconds to respect 60 calls/minute limit
+2025-09-23 21:41:24,548 - INFO - Rate limiter: Waiting 0.15 seconds to respect 60 calls/minute limit
+2025-09-23 21:41:24,548 - INFO - Rate limiter: Waiting 0.15 seconds to respect 60 calls/minute limit
+2025-09-23 21:41:24,548 - INFO - Rate limiter: Waiting 0.15 seconds to respect 60 calls/minute limit
+2025-09-23 21:41:24,703 - INFO - Rate limiter: Waiting 0.17 seconds to respect 60 calls/minute limit
+2025-09-23 21:41:24,703 - INFO - Rate limiter: Waiting 0.17 seconds to respect 60 calls/minute limit
+2025-09-23 21:41:24,703 - INFO - Rate limiter: Waiting 0.17 seconds to respect 60 calls/minute limit
+2025-09-23 21:41:24,703 - INFO - Rate limiter: Waiting 0.17 seconds to respect 60 calls/minute limit
+2025-09-23 21:41:24,703 - INFO - Rate limiter: Waiting 0.17 seconds to respect 60 calls/minute limit
+2025-09-23 21:41:24,703 - INFO - Rate limiter: Waiting 0.17 seconds to respect 60 calls/minute limit
+2025-09-23 21:41:24,703 - INFO - Rate limiter: Waiting 0.17 seconds to respect 60 calls/minute limit
+2025-09-23 21:41:24,704 - INFO - Rate limiter: Waiting 0.17 seconds to respect 60 calls/minute limit
+2025-09-23 21:41:24,713 - INFO - WordPress GET successful: /wp/v2/eve_blueprint?slug=blueprint-1049574790307 in 26.39s
+2025-09-23 21:41:24,713 - INFO - wp_request completed in 26.395s
+2025-09-23 21:41:24,713 - INFO - Rate limiter: Waiting 0.16 seconds to respect 60 calls/minute limit
+2025-09-23 21:41:24,803 - INFO - WordPress PUT successful: /wp/v2/eve_blueprint/626 in 0.84s
+2025-09-23 21:41:24,803 - INFO - wp_request completed in 0.836s
+2025-09-23 21:41:24,803 - INFO - Updated blueprint from corp_industry_job: 1049576044342
+2025-09-23 21:41:24,803 - INFO - Rate limiter: Waiting 0.07 seconds to respect 60 calls/minute limit
+2025-09-23 21:41:24,877 - INFO - Rate limiter: Waiting 0.19 seconds to respect 60 calls/minute limit
+2025-09-23 21:41:24,877 - INFO - Rate limiter: Waiting 0.19 seconds to respect 60 calls/minute limit
+2025-09-23 21:41:24,877 - INFO - Rate limiter: Waiting 0.19 seconds to respect 60 calls/minute limit
+2025-09-23 21:41:24,877 - INFO - Rate limiter: Waiting 0.19 seconds to respect 60 calls/minute limit
+2025-09-23 21:41:24,877 - INFO - Rate limiter: Waiting 0.19 seconds to respect 60 calls/minute limit
+2025-09-23 21:41:24,877 - INFO - Rate limiter: Waiting 0.19 seconds to respect 60 calls/minute limit
+2025-09-23 21:41:24,877 - INFO - Rate limiter: Waiting 0.19 seconds to respect 60 calls/minute limit
+2025-09-23 21:41:24,877 - INFO - Rate limiter: Waiting 0.19 seconds to respect 60 calls/minute limit
+2025-09-23 21:41:24,877 - INFO - Rate limiter: Waiting 0.19 seconds to respect 60 calls/minute limit
+2025-09-23 21:41:24,946 - INFO - WordPress GET successful: /wp/v2/eve_blueprint/611 in 26.75s
+2025-09-23 21:41:24,946 - INFO - wp_request completed in 26.753s
+2025-09-23 21:41:24,946 - INFO - Rate limiter: Waiting 0.12 seconds to respect 60 calls/minute limit
+2025-09-23 21:41:25,073 - INFO - Rate limiter: Waiting 0.11 seconds to respect 60 calls/minute limit
+2025-09-23 21:41:25,073 - INFO - Rate limiter: Waiting 0.11 seconds to respect 60 calls/minute limit
+2025-09-23 21:41:25,074 - INFO - Rate limiter: Waiting 0.11 seconds to respect 60 calls/minute limit
+2025-09-23 21:41:25,074 - INFO - Rate limiter: Waiting 0.11 seconds to respect 60 calls/minute limit
+2025-09-23 21:41:25,074 - INFO - Rate limiter: Waiting 0.11 seconds to respect 60 calls/minute limit
+2025-09-23 21:41:25,074 - INFO - Rate limiter: Waiting 0.11 seconds to respect 60 calls/minute limit
+2025-09-23 21:41:25,074 - INFO - Rate limiter: Waiting 0.11 seconds to respect 60 calls/minute limit
+2025-09-23 21:41:25,075 - INFO - Rate limiter: Waiting 0.11 seconds to respect 60 calls/minute limit
+2025-09-23 21:41:25,075 - INFO - Rate limiter: Waiting 0.11 seconds to respect 60 calls/minute limit
+2025-09-23 21:41:25,187 - INFO - Rate limiter: Waiting 0.17 seconds to respect 60 calls/minute limit
+2025-09-23 21:41:25,188 - INFO - Rate limiter: Waiting 0.17 seconds to respect 60 calls/minute limit
+2025-09-23 21:41:25,188 - INFO - Rate limiter: Waiting 0.17 seconds to respect 60 calls/minute limit
+2025-09-23 21:41:25,189 - INFO - Rate limiter: Waiting 0.17 seconds to respect 60 calls/minute limit
+2025-09-23 21:41:25,189 - INFO - Rate limiter: Waiting 0.17 seconds to respect 60 calls/minute limit
+2025-09-23 21:41:25,189 - INFO - Rate limiter: Waiting 0.17 seconds to respect 60 calls/minute limit
+2025-09-23 21:41:25,189 - INFO - Rate limiter: Waiting 0.17 seconds to respect 60 calls/minute limit
+2025-09-23 21:41:25,190 - INFO - Rate limiter: Waiting 0.17 seconds to respect 60 calls/minute limit
+2025-09-23 21:41:25,224 - ERROR - WordPress API error: 500 - {"code":"rest_invalid_stored_value","message":"The _eve_bp_location_id property has an invalid stored value, and cannot be updated to null.","data":{"status":500}} (took 0.51s)
+2025-09-23 21:41:25,224 - INFO - Rate limiter: Waiting 0.13 seconds to respect 60 calls/minute limit
+2025-09-23 21:41:25,268 - INFO - WordPress GET successful: /wp/v2/eve_blueprint?slug=blueprint-1049574788474 in 26.95s
+2025-09-23 21:41:25,268 - INFO - wp_request completed in 26.947s
+2025-09-23 21:41:25,269 - INFO - Rate limiter: Waiting 0.09 seconds to respect 60 calls/minute limit
+2025-09-23 21:41:25,361 - INFO - Rate limiter: Waiting 0.19 seconds to respect 60 calls/minute limit
+2025-09-23 21:41:25,361 - INFO - Rate limiter: Waiting 0.19 seconds to respect 60 calls/minute limit
+2025-09-23 21:41:25,361 - INFO - Rate limiter: Waiting 0.19 seconds to respect 60 calls/minute limit
+2025-09-23 21:41:25,361 - INFO - Rate limiter: Waiting 0.19 seconds to respect 60 calls/minute limit
+2025-09-23 21:41:25,361 - INFO - Rate limiter: Waiting 0.19 seconds to respect 60 calls/minute limit
+2025-09-23 21:41:25,361 - INFO - Rate limiter: Waiting 0.19 seconds to respect 60 calls/minute limit
+2025-09-23 21:41:25,361 - INFO - Rate limiter: Waiting 0.19 seconds to respect 60 calls/minute limit
+2025-09-23 21:41:25,361 - INFO - Rate limiter: Waiting 0.19 seconds to respect 60 calls/minute limit
+2025-09-23 21:41:25,361 - INFO - Rate limiter: Waiting 0.19 seconds to respect 60 calls/minute limit
+2025-09-23 21:41:25,438 - INFO - WordPress GET successful: /wp/v2/eve_blueprint/595 in 0.21s
+2025-09-23 21:41:25,438 - INFO - wp_request completed in 0.214s
+2025-09-23 21:41:25,438 - INFO - Rate limiter: Waiting 0.12 seconds to respect 60 calls/minute limit
+2025-09-23 21:41:25,555 - INFO - Rate limiter: Waiting 0.12 seconds to respect 60 calls/minute limit
+2025-09-23 21:41:25,555 - INFO - Rate limiter: Waiting 0.12 seconds to respect 60 calls/minute limit
+2025-09-23 21:41:25,555 - INFO - Rate limiter: Waiting 0.12 seconds to respect 60 calls/minute limit
+2025-09-23 21:41:25,555 - INFO - Rate limiter: Waiting 0.12 seconds to respect 60 calls/minute limit
+2025-09-23 21:41:25,555 - INFO - Rate limiter: Waiting 0.12 seconds to respect 60 calls/minute limit
+2025-09-23 21:41:25,555 - INFO - Rate limiter: Waiting 0.12 seconds to respect 60 calls/minute limit
+2025-09-23 21:41:25,556 - INFO - Rate limiter: Waiting 0.12 seconds to respect 60 calls/minute limit
+2025-09-23 21:41:25,556 - INFO - Rate limiter: Waiting 0.12 seconds to respect 60 calls/minute limit
+2025-09-23 21:41:25,556 - INFO - Rate limiter: Waiting 0.12 seconds to respect 60 calls/minute limit
+2025-09-23 21:41:25,673 - INFO - WordPress GET successful: /wp/v2/eve_blueprint/613 in 27.53s
+2025-09-23 21:41:25,674 - INFO - Rate limiter: Waiting 0.21 seconds to respect 60 calls/minute limit
+2025-09-23 21:41:25,675 - INFO - Rate limiter: Waiting 0.21 seconds to respect 60 calls/minute limit
+2025-09-23 21:41:25,675 - INFO - Rate limiter: Waiting 0.21 seconds to respect 60 calls/minute limit
+2025-09-23 21:41:25,675 - INFO - Rate limiter: Waiting 0.21 seconds to respect 60 calls/minute limit
+2025-09-23 21:41:25,675 - INFO - Rate limiter: Waiting 0.21 seconds to respect 60 calls/minute limit
+2025-09-23 21:41:25,675 - INFO - Rate limiter: Waiting 0.21 seconds to respect 60 calls/minute limit
+2025-09-23 21:41:25,675 - INFO - Rate limiter: Waiting 0.21 seconds to respect 60 calls/minute limit
+2025-09-23 21:41:25,675 - INFO - Rate limiter: Waiting 0.21 seconds to respect 60 calls/minute limit
+2025-09-23 21:41:25,675 - INFO - wp_request completed in 27.530s
+2025-09-23 21:41:25,676 - INFO - Rate limiter: Waiting 0.21 seconds to respect 60 calls/minute limit
+2025-09-23 21:41:25,770 - INFO - WordPress PUT successful: /wp/v2/eve_blueprint/595 in 0.33s
+2025-09-23 21:41:25,771 - INFO - wp_request completed in 0.333s
+2025-09-23 21:41:25,771 - INFO - Updated blueprint from corp_industry_job: 1049574760705
+2025-09-23 21:41:25,771 - INFO - Rate limiter: Waiting 0.11 seconds to respect 60 calls/minute limit
+2025-09-23 21:41:25,887 - INFO - Rate limiter: Waiting 0.25 seconds to respect 60 calls/minute limit
+2025-09-23 21:41:25,887 - INFO - Rate limiter: Waiting 0.25 seconds to respect 60 calls/minute limit
+2025-09-23 21:41:25,887 - INFO - Rate limiter: Waiting 0.25 seconds to respect 60 calls/minute limit
+2025-09-23 21:41:25,887 - INFO - Rate limiter: Waiting 0.25 seconds to respect 60 calls/minute limit
+2025-09-23 21:41:25,887 - INFO - Rate limiter: Waiting 0.25 seconds to respect 60 calls/minute limit
+2025-09-23 21:41:25,887 - INFO - Rate limiter: Waiting 0.24 seconds to respect 60 calls/minute limit
+2025-09-23 21:41:25,887 - INFO - Rate limiter: Waiting 0.24 seconds to respect 60 calls/minute limit
+2025-09-23 21:41:25,887 - INFO - Rate limiter: Waiting 0.24 seconds to respect 60 calls/minute limit
+2025-09-23 21:41:25,887 - INFO - Rate limiter: Waiting 0.24 seconds to respect 60 calls/minute limit
+2025-09-23 21:41:25,966 - INFO - WordPress GET successful: /wp/v2/eve_blueprint?slug=blueprint-1049574786127 in 0.20s
+2025-09-23 21:41:25,966 - INFO - wp_request completed in 0.195s
+2025-09-23 21:41:25,966 - INFO - Rate limiter: Waiting 0.17 seconds to respect 60 calls/minute limit
+2025-09-23 21:41:26,133 - INFO - Rate limiter: Waiting 0.12 seconds to respect 60 calls/minute limit
+2025-09-23 21:41:26,133 - INFO - Rate limiter: Waiting 0.12 seconds to respect 60 calls/minute limit
+2025-09-23 21:41:26,133 - INFO - Rate limiter: Waiting 0.12 seconds to respect 60 calls/minute limit
+2025-09-23 21:41:26,133 - INFO - Rate limiter: Waiting 0.12 seconds to respect 60 calls/minute limit
+2025-09-23 21:41:26,133 - INFO - Rate limiter: Waiting 0.12 seconds to respect 60 calls/minute limit
+2025-09-23 21:41:26,133 - INFO - Rate limiter: Waiting 0.12 seconds to respect 60 calls/minute limit
+2025-09-23 21:41:26,133 - INFO - Rate limiter: Waiting 0.12 seconds to respect 60 calls/minute limit
+2025-09-23 21:41:26,133 - INFO - Rate limiter: Waiting 0.12 seconds to respect 60 calls/minute limit
+2025-09-23 21:41:26,133 - INFO - Rate limiter: Waiting 0.12 seconds to respect 60 calls/minute limit
+2025-09-23 21:41:26,259 - INFO - Rate limiter: Waiting 0.72 seconds to respect 60 calls/minute limit
+2025-09-23 21:41:26,259 - INFO - Rate limiter: Waiting 0.72 seconds to respect 60 calls/minute limit
+2025-09-23 21:41:26,259 - INFO - Rate limiter: Waiting 0.72 seconds to respect 60 calls/minute limit
+2025-09-23 21:41:26,259 - INFO - Rate limiter: Waiting 0.72 seconds to respect 60 calls/minute limit
+2025-09-23 21:41:26,259 - INFO - Rate limiter: Waiting 0.72 seconds to respect 60 calls/minute limit
+2025-09-23 21:41:26,259 - INFO - Rate limiter: Waiting 0.72 seconds to respect 60 calls/minute limit
+2025-09-23 21:41:26,260 - INFO - Rate limiter: Waiting 0.72 seconds to respect 60 calls/minute limit
+2025-09-23 21:41:26,260 - INFO - Rate limiter: Waiting 0.72 seconds to respect 60 calls/minute limit
+2025-09-23 21:41:26,266 - ERROR - WordPress API error: 500 - {"code":"rest_invalid_stored_value","message":"The _eve_bp_location_id property has an invalid stored value, and cannot be updated to null.","data":{"status":500}} (took 1.00s)
+2025-09-23 21:41:26,266 - INFO - Rate limiter: Waiting 0.72 seconds to respect 60 calls/minute limit
+2025-09-23 21:41:26,343 - INFO - WordPress PUT successful: /wp/v2/eve_blueprint/627 in 2.10s
+2025-09-23 21:41:26,343 - INFO - wp_request completed in 2.097s
+2025-09-23 21:41:26,343 - INFO - Updated blueprint from corp_industry_job: 1049576045884
+2025-09-23 21:41:26,344 - INFO - Rate limiter: Waiting 0.64 seconds to respect 60 calls/minute limit
+2025-09-23 21:41:26,983 - INFO - Rate limiter: Waiting 0.23 seconds to respect 60 calls/minute limit
+2025-09-23 21:41:26,983 - INFO - Rate limiter: Waiting 0.23 seconds to respect 60 calls/minute limit
+2025-09-23 21:41:26,983 - INFO - Rate limiter: Waiting 0.23 seconds to respect 60 calls/minute limit
+2025-09-23 21:41:26,983 - INFO - Rate limiter: Waiting 0.23 seconds to respect 60 calls/minute limit
+2025-09-23 21:41:26,983 - INFO - Rate limiter: Waiting 0.23 seconds to respect 60 calls/minute limit
+2025-09-23 21:41:26,983 - INFO - Rate limiter: Waiting 0.23 seconds to respect 60 calls/minute limit
+2025-09-23 21:41:26,983 - INFO - Rate limiter: Waiting 0.23 seconds to respect 60 calls/minute limit
+2025-09-23 21:41:27,102 - INFO - WordPress GET successful: /wp/v2/eve_blueprint/596 in 2.30s
+2025-09-23 21:41:27,102 - INFO - WordPress PUT successful: /wp/v2/eve_blueprint/611 in 2.16s
+2025-09-23 21:41:27,102 - INFO - wp_request completed in 2.299s
+2025-09-23 21:41:27,102 - INFO - Rate limiter: Waiting 0.11 seconds to respect 60 calls/minute limit
+2025-09-23 21:41:27,103 - INFO - wp_request completed in 2.156s
+2025-09-23 21:41:27,103 - INFO - Updated blueprint from corp_industry_job: 1049574812602
+2025-09-23 21:41:27,103 - INFO - Rate limiter: Waiting 0.11 seconds to respect 60 calls/minute limit
+2025-09-23 21:41:27,146 - INFO - WordPress GET successful: /wp/v2/eve_blueprint?slug=blueprint-1049574805777 in 28.83s
+2025-09-23 21:41:27,146 - INFO - wp_request completed in 28.828s
+2025-09-23 21:41:27,147 - INFO - Rate limiter: Waiting 0.06 seconds to respect 60 calls/minute limit
+2025-09-23 21:41:27,212 - INFO - Rate limiter: Waiting 0.07 seconds to respect 60 calls/minute limit
+2025-09-23 21:41:27,212 - INFO - Rate limiter: Waiting 0.07 seconds to respect 60 calls/minute limit
+2025-09-23 21:41:27,213 - INFO - Rate limiter: Waiting 0.07 seconds to respect 60 calls/minute limit
+2025-09-23 21:41:27,213 - INFO - Rate limiter: Waiting 0.07 seconds to respect 60 calls/minute limit
+2025-09-23 21:41:27,213 - INFO - Rate limiter: Waiting 0.07 seconds to respect 60 calls/minute limit
+2025-09-23 21:41:27,213 - INFO - Rate limiter: Waiting 0.07 seconds to respect 60 calls/minute limit
+2025-09-23 21:41:27,213 - INFO - Rate limiter: Waiting 0.07 seconds to respect 60 calls/minute limit
+2025-09-23 21:41:27,214 - INFO - Rate limiter: Waiting 0.07 seconds to respect 60 calls/minute limit
+2025-09-23 21:41:27,214 - INFO - Rate limiter: Waiting 0.07 seconds to respect 60 calls/minute limit
+2025-09-23 21:41:27,281 - INFO - Rate limiter: Waiting 0.19 seconds to respect 60 calls/minute limit
+2025-09-23 21:41:27,281 - INFO - Rate limiter: Waiting 0.19 seconds to respect 60 calls/minute limit
+2025-09-23 21:41:27,281 - INFO - Rate limiter: Waiting 0.19 seconds to respect 60 calls/minute limit
+2025-09-23 21:41:27,281 - INFO - Rate limiter: Waiting 0.19 seconds to respect 60 calls/minute limit
+2025-09-23 21:41:27,281 - INFO - Rate limiter: Waiting 0.19 seconds to respect 60 calls/minute limit
+2025-09-23 21:41:27,281 - INFO - Rate limiter: Waiting 0.19 seconds to respect 60 calls/minute limit
+2025-09-23 21:41:27,281 - INFO - Rate limiter: Waiting 0.19 seconds to respect 60 calls/minute limit
+2025-09-23 21:41:27,281 - INFO - Rate limiter: Waiting 0.19 seconds to respect 60 calls/minute limit
+2025-09-23 21:41:27,334 - ERROR - WordPress API error: 500 - {"code":"rest_invalid_stored_value","message":"The _eve_bp_location_id property has an invalid stored value, and cannot be updated to null.","data":{"status":500}} (took 1.37s)
+2025-09-23 21:41:27,335 - INFO - Rate limiter: Waiting 0.13 seconds to respect 60 calls/minute limit
+2025-09-23 21:41:27,363 - INFO - WordPress PUT successful: /wp/v2/eve_blueprint/612 in 2.94s
+2025-09-23 21:41:27,364 - INFO - wp_request completed in 2.941s
+2025-09-23 21:41:27,364 - INFO - Updated blueprint from corp_industry_job: 1049574814115
+2025-09-23 21:41:27,364 - INFO - Rate limiter: Waiting 0.11 seconds to respect 60 calls/minute limit
+2025-09-23 21:41:27,471 - INFO - Rate limiter: Waiting 0.00 seconds to respect 60 calls/minute limit
+2025-09-23 21:41:27,471 - INFO - Rate limiter: Waiting 0.00 seconds to respect 60 calls/minute limit
+2025-09-23 21:41:27,471 - INFO - Rate limiter: Waiting 0.00 seconds to respect 60 calls/minute limit
+2025-09-23 21:41:27,471 - INFO - Rate limiter: Waiting 0.00 seconds to respect 60 calls/minute limit
+2025-09-23 21:41:27,471 - INFO - Rate limiter: Waiting 0.00 seconds to respect 60 calls/minute limit
+2025-09-23 21:41:27,471 - INFO - Rate limiter: Waiting 0.00 seconds to respect 60 calls/minute limit
+2025-09-23 21:41:27,471 - INFO - Rate limiter: Waiting 0.00 seconds to respect 60 calls/minute limit
+2025-09-23 21:41:27,471 - INFO - Rate limiter: Waiting 0.00 seconds to respect 60 calls/minute limit
+2025-09-23 21:41:27,472 - INFO - Rate limiter: Waiting 0.00 seconds to respect 60 calls/minute limit
+2025-09-23 21:41:27,472 - INFO - Rate limiter: Waiting 0.00 seconds to respect 60 calls/minute limit
+2025-09-23 21:41:27,472 - INFO - Rate limiter: Waiting 0.00 seconds to respect 60 calls/minute limit
+2025-09-23 21:41:27,472 - INFO - Rate limiter: Waiting 0.00 seconds to respect 60 calls/minute limit
+2025-09-23 21:41:27,472 - INFO - Rate limiter: Waiting 0.00 seconds to respect 60 calls/minute limit
+2025-09-23 21:41:27,473 - INFO - Rate limiter: Waiting 0.00 seconds to respect 60 calls/minute limit
+2025-09-23 21:41:27,473 - INFO - Rate limiter: Waiting 0.00 seconds to respect 60 calls/minute limit
+2025-09-23 21:41:27,473 - INFO - Rate limiter: Waiting 0.00 seconds to respect 60 calls/minute limit
+2025-09-23 21:41:27,473 - INFO - Rate limiter: Waiting 0.00 seconds to respect 60 calls/minute limit
+2025-09-23 21:41:27,474 - INFO - Rate limiter: Waiting 0.00 seconds to respect 60 calls/minute limit
+2025-09-23 21:41:27,474 - INFO - Rate limiter: Waiting 0.00 seconds to respect 60 calls/minute limit
+2025-09-23 21:41:27,475 - INFO - Rate limiter: Waiting 0.00 seconds to respect 60 calls/minute limit
+2025-09-23 21:41:27,476 - INFO - Rate limiter: Waiting 0.00 seconds to respect 60 calls/minute limit
+2025-09-23 21:41:27,554 - INFO - WordPress GET successful: /wp/v2/eve_blueprint/604 in 1.21s
+2025-09-23 21:41:27,554 - INFO - wp_request completed in 1.211s
+2025-09-23 21:41:27,555 - INFO - Rate limiter: Waiting 0.04 seconds to respect 60 calls/minute limit
+2025-09-23 21:41:27,559 - INFO - WordPress PUT successful: /wp/v2/eve_blueprint/596 in 0.46s
+2025-09-23 21:41:27,559 - INFO - wp_request completed in 0.457s
+2025-09-23 21:41:27,559 - INFO - Updated blueprint from corp_industry_job: 1049574762041
+2025-09-23 21:41:27,560 - INFO - Rate limiter: Waiting 0.04 seconds to respect 60 calls/minute limit
+2025-09-23 21:41:27,564 - INFO - WordPress GET successful: /wp/v2/eve_blueprint?slug=blueprint-1049574787807 in 3.38s
+2025-09-23 21:41:27,565 - INFO - wp_request completed in 3.384s
+2025-09-23 21:41:27,565 - INFO - Rate limiter: Waiting 0.03 seconds to respect 60 calls/minute limit
+2025-09-23 21:41:27,600 - INFO - Rate limiter: Waiting 0.13 seconds to respect 60 calls/minute limit
+2025-09-23 21:41:27,601 - INFO - Rate limiter: Waiting 0.13 seconds to respect 60 calls/minute limit
+2025-09-23 21:41:27,657 - INFO - WordPress GET successful: /wp/v2/eve_blueprint/602 in 0.29s
+2025-09-23 21:41:27,657 - INFO - WordPress GET successful: /wp/v2/eve_blueprint/603 in 0.55s
+2025-09-23 21:41:27,657 - INFO - wp_request completed in 0.294s
+2025-09-23 21:41:27,658 - INFO - Rate limiter: Waiting 0.07 seconds to respect 60 calls/minute limit
+2025-09-23 21:41:27,658 - INFO - wp_request completed in 0.555s
+2025-09-23 21:41:27,658 - INFO - Rate limiter: Waiting 0.07 seconds to respect 60 calls/minute limit
+2025-09-23 21:41:27,670 - INFO - WordPress GET successful: /wp/v2/eve_blueprint?slug=blueprint-1049574784788 in 1.40s
+2025-09-23 21:41:27,670 - INFO - wp_request completed in 1.404s
+2025-09-23 21:41:27,671 - INFO - Rate limiter: Waiting 0.06 seconds to respect 60 calls/minute limit
+2025-09-23 21:41:27,674 - INFO - WordPress GET successful: /wp/v2/eve_blueprint/614 in 29.53s
+2025-09-23 21:41:27,674 - INFO - wp_request completed in 29.534s
+2025-09-23 21:41:27,674 - INFO - Rate limiter: Waiting 0.06 seconds to respect 60 calls/minute limit
+2025-09-23 21:41:27,680 - ERROR - WordPress API error: 500 - {"code":"rest_invalid_stored_value","message":"The _eve_bp_location_id property has an invalid stored value, and cannot be updated to null.","data":{"status":500}} (took 0.53s)
+2025-09-23 21:41:27,681 - INFO - Rate limiter: Waiting 0.05 seconds to respect 60 calls/minute limit
+2025-09-23 21:41:27,734 - INFO - Rate limiter: Waiting 0.02 seconds to respect 60 calls/minute limit
+2025-09-23 21:41:27,735 - INFO - Rate limiter: Waiting 0.02 seconds to respect 60 calls/minute limit
+2025-09-23 21:41:27,735 - INFO - Rate limiter: Waiting 0.02 seconds to respect 60 calls/minute limit
+2025-09-23 21:41:27,736 - INFO - Rate limiter: Waiting 0.02 seconds to respect 60 calls/minute limit
+2025-09-23 21:41:27,736 - INFO - Rate limiter: Waiting 0.02 seconds to respect 60 calls/minute limit
+2025-09-23 21:41:27,759 - INFO - Rate limiter: Waiting 0.01 seconds to respect 60 calls/minute limit
+2025-09-23 21:41:27,759 - INFO - Rate limiter: Waiting 0.01 seconds to respect 60 calls/minute limit
+2025-09-23 21:41:27,770 - INFO - WordPress PUT successful: /wp/v2/eve_blueprint/613 in 2.09s
+2025-09-23 21:41:27,770 - ERROR - WordPress API error: 500 - {"code":"rest_invalid_stored_value","message":"The _eve_bp_location_id property has an invalid stored value, and cannot be updated to null.","data":{"status":500}} (took 0.22s)
+2025-09-23 21:41:27,770 - INFO - wp_request completed in 2.095s
+2025-09-23 21:41:27,770 - INFO - Updated blueprint from corp_industry_job: 1049574815479
+2025-09-23 21:41:27,771 - INFO - Rate limiter: Waiting 0.00 seconds to respect 60 calls/minute limit
+2025-09-23 21:41:27,771 - INFO - Rate limiter: Waiting 0.00 seconds to respect 60 calls/minute limit
+2025-09-23 21:41:27,771 - INFO - Rate limiter: Waiting 0.02 seconds to respect 60 calls/minute limit
+2025-09-23 21:41:27,771 - INFO - WordPress GET successful: /wp/v2/eve_blueprint/601 in 0.44s
+2025-09-23 21:41:27,772 - INFO - wp_request completed in 0.437s
+2025-09-23 21:41:27,772 - INFO - Rate limiter: Waiting 0.02 seconds to respect 60 calls/minute limit
+2025-09-23 21:41:27,792 - INFO - Rate limiter: Waiting 0.08 seconds to respect 60 calls/minute limit
+2025-09-23 21:41:27,845 - INFO - WordPress GET successful: /wp/v2/eve_blueprint/600 in 0.29s
+2025-09-23 21:41:27,845 - INFO - wp_request completed in 0.285s
+2025-09-23 21:41:27,845 - INFO - Rate limiter: Waiting 0.03 seconds to respect 60 calls/minute limit
+2025-09-23 21:41:27,849 - INFO - WordPress GET successful: /wp/v2/eve_blueprint/599 in 0.17s
+2025-09-23 21:41:27,849 - INFO - wp_request completed in 0.168s
+2025-09-23 21:41:27,849 - INFO - Rate limiter: Waiting 0.02 seconds to respect 60 calls/minute limit
+2025-09-23 21:41:27,860 - ERROR - WordPress API error: 500 - {"code":"rest_invalid_stored_value","message":"The _eve_bp_location_id property has an invalid stored value, and cannot be updated to null.","data":{"status":500}} (took 0.19s)
+2025-09-23 21:41:27,860 - INFO - Rate limiter: Waiting 0.01 seconds to respect 60 calls/minute limit
+2025-09-23 21:41:27,861 - ERROR - WordPress API error: 500 - {"code":"rest_invalid_stored_value","message":"The _eve_bp_location_id property has an invalid stored value, and cannot be updated to null.","data":{"status":500}} (took 0.30s)
+2025-09-23 21:41:27,861 - INFO - Rate limiter: Waiting 0.01 seconds to respect 60 calls/minute limit
+2025-09-23 21:41:27,864 - INFO - WordPress GET successful: /wp/v2/eve_blueprint/598 in 0.09s
+2025-09-23 21:41:27,865 - INFO - wp_request completed in 0.094s
+2025-09-23 21:41:27,865 - INFO - Rate limiter: Waiting 0.01 seconds to respect 60 calls/minute limit
+2025-09-23 21:41:27,872 - INFO - WordPress GET successful: /wp/v2/eve_blueprint/597 in 0.10s
+2025-09-23 21:41:27,873 - INFO - wp_request completed in 0.102s
+2025-09-23 21:41:27,873 - INFO - Rate limiter: Waiting 0.00 seconds to respect 60 calls/minute limit
+2025-09-23 21:41:27,874 - INFO - Rate limiter: Waiting 0.01 seconds to respect 60 calls/minute limit
+2025-09-23 21:41:27,874 - INFO - Rate limiter: Waiting 0.01 seconds to respect 60 calls/minute limit
+2025-09-23 21:41:27,877 - INFO - Rate limiter: Waiting 0.01 seconds to respect 60 calls/minute limit
+2025-09-23 21:41:27,877 - INFO - Rate limiter: Waiting 0.01 seconds to respect 60 calls/minute limit
+2025-09-23 21:41:27,878 - INFO - WordPress PUT successful: /wp/v2/eve_blueprint/602 in 0.22s
+2025-09-23 21:41:27,878 - INFO - Rate limiter: Waiting 0.01 seconds to respect 60 calls/minute limit
+2025-09-23 21:41:27,878 - INFO - Rate limiter: Waiting 0.01 seconds to respect 60 calls/minute limit
+2025-09-23 21:41:27,878 - INFO - wp_request completed in 0.221s
+2025-09-23 21:41:27,878 - INFO - Updated blueprint from corp_industry_job: 1049574771593
+2025-09-23 21:41:27,878 - INFO - Rate limiter: Waiting 0.01 seconds to respect 60 calls/minute limit
+2025-09-23 21:41:27,879 - INFO - WordPress PUT successful: /wp/v2/eve_blueprint/614 in 0.20s
+2025-09-23 21:41:27,879 - INFO - wp_request completed in 0.205s
+2025-09-23 21:41:27,880 - INFO - Updated blueprint from corp_industry_job: 1049574816825
+2025-09-23 21:41:27,880 - INFO - Rate limiter: Waiting 0.00 seconds to respect 60 calls/minute limit
+2025-09-23 21:41:27,885 - INFO - WordPress PUT successful: /wp/v2/eve_blueprint/603 in 0.23s
+2025-09-23 21:41:27,885 - INFO - Rate limiter: Waiting 0.12 seconds to respect 60 calls/minute limit
+2025-09-23 21:41:27,885 - INFO - Rate limiter: Waiting 0.12 seconds to respect 60 calls/minute limit
+2025-09-23 21:41:27,885 - INFO - Rate limiter: Waiting 0.12 seconds to respect 60 calls/minute limit
+2025-09-23 21:41:27,885 - INFO - wp_request completed in 0.228s
+2025-09-23 21:41:27,886 - INFO - Updated blueprint from corp_industry_job: 1049574781697
+2025-09-23 21:41:27,886 - INFO - Rate limiter: Waiting 0.12 seconds to respect 60 calls/minute limit
+2025-09-23 21:41:27,886 - INFO - Rate limiter: Waiting 0.12 seconds to respect 60 calls/minute limit
+2025-09-23 21:41:27,887 - INFO - Rate limiter: Waiting 0.12 seconds to respect 60 calls/minute limit
+2025-09-23 21:41:27,951 - INFO - WordPress GET successful: /wp/v2/eve_blueprint/593 in 0.09s
+2025-09-23 21:41:27,951 - INFO - wp_request completed in 0.090s
+2025-09-23 21:41:27,951 - INFO - Rate limiter: Waiting 0.06 seconds to respect 60 calls/minute limit
+2025-09-23 21:41:27,956 - INFO - WordPress PUT successful: /wp/v2/eve_blueprint/599 in 0.11s
+2025-09-23 21:41:27,956 - INFO - wp_request completed in 0.106s
+2025-09-23 21:41:27,956 - INFO - Updated blueprint from corp_industry_job: 1049574767458
+2025-09-23 21:41:27,956 - INFO - Rate limiter: Waiting 0.05 seconds to respect 60 calls/minute limit
+2025-09-23 21:41:27,964 - ERROR - WordPress API error: 500 - {"code":"rest_invalid_stored_value","message":"The _eve_bp_location_id property has an invalid stored value, and cannot be updated to null.","data":{"status":500}} (took 0.09s)
+2025-09-23 21:41:27,965 - INFO - Rate limiter: Waiting 0.04 seconds to respect 60 calls/minute limit
+2025-09-23 21:41:27,966 - INFO - WordPress GET successful: /wp/v2/eve_blueprint/594 in 0.11s
+2025-09-23 21:41:27,966 - INFO - wp_request completed in 0.106s
+2025-09-23 21:41:27,966 - INFO - Rate limiter: Waiting 0.04 seconds to respect 60 calls/minute limit
+2025-09-23 21:41:28,009 - INFO - Rate limiter: Waiting 0.00 seconds to respect 60 calls/minute limit
+2025-09-23 21:41:28,009 - INFO - Rate limiter: Waiting 0.00 seconds to respect 60 calls/minute limit
+2025-09-23 21:41:28,010 - INFO - Rate limiter: Waiting 0.00 seconds to respect 60 calls/minute limit
+2025-09-23 21:41:28,010 - INFO - Rate limiter: Waiting 0.00 seconds to respect 60 calls/minute limit
+2025-09-23 21:41:28,010 - INFO - Rate limiter: Waiting 0.00 seconds to respect 60 calls/minute limit
+2025-09-23 21:41:28,010 - INFO - Rate limiter: Waiting 0.00 seconds to respect 60 calls/minute limit
+2025-09-23 21:41:28,010 - INFO - Rate limiter: Waiting 0.00 seconds to respect 60 calls/minute limit
+2025-09-23 21:41:28,010 - INFO - Rate limiter: Waiting 0.00 seconds to respect 60 calls/minute limit
+2025-09-23 21:41:28,010 - INFO - Rate limiter: Waiting 0.00 seconds to respect 60 calls/minute limit
+2025-09-23 21:41:28,011 - INFO - Rate limiter: Waiting 0.00 seconds to respect 60 calls/minute limit
+2025-09-23 21:41:28,011 - INFO - Rate limiter: Waiting 0.00 seconds to respect 60 calls/minute limit
+2025-09-23 21:41:28,012 - INFO - Rate limiter: Waiting 0.00 seconds to respect 60 calls/minute limit
+2025-09-23 21:41:28,012 - INFO - Rate limiter: Waiting 0.00 seconds to respect 60 calls/minute limit
+2025-09-23 21:41:28,074 - INFO - WordPress GET successful: /wp/v2/eve_blueprint/592 in 0.20s
+2025-09-23 21:41:28,074 - INFO - wp_request completed in 0.196s
+2025-09-23 21:41:28,074 - INFO - Rate limiter: Waiting 0.05 seconds to respect 60 calls/minute limit
+2025-09-23 21:41:28,077 - INFO - WordPress GET successful: /wp/v2/eve_blueprint/590 in 0.20s
+2025-09-23 21:41:28,077 - INFO - wp_request completed in 0.197s
+2025-09-23 21:41:28,077 - INFO - Rate limiter: Waiting 0.05 seconds to respect 60 calls/minute limit
+2025-09-23 21:41:28,078 - INFO - WordPress GET successful: /wp/v2/eve_blueprint/588 in 0.12s
+2025-09-23 21:41:28,078 - INFO - wp_request completed in 0.122s
+2025-09-23 21:41:28,079 - INFO - Rate limiter: Waiting 0.05 seconds to respect 60 calls/minute limit
+2025-09-23 21:41:28,119 - INFO - WordPress GET successful: /wp/v2/eve_blueprint/589 in 0.23s
+2025-09-23 21:41:28,119 - INFO - wp_request completed in 0.233s
+2025-09-23 21:41:28,119 - INFO - Rate limiter: Waiting 0.01 seconds to respect 60 calls/minute limit
+2025-09-23 21:41:28,123 - INFO - WordPress PUT successful: /wp/v2/eve_blueprint/593 in 0.17s
+2025-09-23 21:41:28,123 - INFO - wp_request completed in 0.172s
+2025-09-23 21:41:28,123 - INFO - Updated blueprint from corp_industry_job: 1049574756931
+2025-09-23 21:41:28,123 - INFO - Rate limiter: Waiting 0.00 seconds to respect 60 calls/minute limit
+2025-09-23 21:41:28,127 - INFO - WordPress GET successful: /wp/v2/eve_blueprint/587 in 0.16s
+2025-09-23 21:41:28,127 - INFO - wp_request completed in 0.162s
+2025-09-23 21:41:28,127 - INFO - Rate limiter: Waiting 0.00 seconds to respect 60 calls/minute limit
+2025-09-23 21:41:28,128 - INFO - Rate limiter: Waiting 0.00 seconds to respect 60 calls/minute limit
+2025-09-23 21:41:28,128 - INFO - Rate limiter: Waiting 0.00 seconds to respect 60 calls/minute limit
+2025-09-23 21:41:28,128 - INFO - Rate limiter: Waiting 0.00 seconds to respect 60 calls/minute limit
+2025-09-23 21:41:28,128 - INFO - Rate limiter: Waiting 0.00 seconds to respect 60 calls/minute limit
+2025-09-23 21:41:28,128 - INFO - Rate limiter: Waiting 0.00 seconds to respect 60 calls/minute limit
+2025-09-23 21:41:28,129 - INFO - Rate limiter: Waiting 0.11 seconds to respect 60 calls/minute limit
+2025-09-23 21:41:28,129 - INFO - Rate limiter: Waiting 0.11 seconds to respect 60 calls/minute limit
+2025-09-23 21:41:28,129 - INFO - Rate limiter: Waiting 0.11 seconds to respect 60 calls/minute limit
+2025-09-23 21:41:28,129 - INFO - Rate limiter: Waiting 0.11 seconds to respect 60 calls/minute limit
+2025-09-23 21:41:28,129 - INFO - WordPress PUT successful: /wp/v2/eve_blueprint/594 in 0.16s
+2025-09-23 21:41:28,129 - INFO - wp_request completed in 0.163s
+2025-09-23 21:41:28,129 - INFO - Updated blueprint from corp_industry_job: 1049574759425
+2025-09-23 21:41:28,129 - INFO - Rate limiter: Waiting 0.11 seconds to respect 60 calls/minute limit
+2025-09-23 21:41:28,136 - ERROR - WordPress API error: 500 - {"code":"rest_invalid_stored_value","message":"The _eve_bp_location_id property has an invalid stored value, and cannot be updated to null.","data":{"status":500}} (took 0.27s)
+2025-09-23 21:41:28,136 - INFO - Rate limiter: Waiting 0.10 seconds to respect 60 calls/minute limit
+2025-09-23 21:41:28,154 - ERROR - WordPress API error: 500 - {"code":"rest_invalid_stored_value","message":"The _eve_bp_location_id property has an invalid stored value, and cannot be updated to null.","data":{"status":500}} (took 0.31s)
+2025-09-23 21:41:28,155 - INFO - Rate limiter: Waiting 0.08 seconds to respect 60 calls/minute limit
+2025-09-23 21:41:28,156 - INFO - WordPress PUT successful: /wp/v2/eve_blueprint/601 in 0.38s
+2025-09-23 21:41:28,157 - INFO - wp_request completed in 0.385s
+2025-09-23 21:41:28,157 - INFO - Updated blueprint from corp_industry_job: 1049574769783
+2025-09-23 21:41:28,157 - INFO - Rate limiter: Waiting 0.08 seconds to respect 60 calls/minute limit
+2025-09-23 21:41:28,189 - INFO - WordPress GET successful: /wp/v2/eve_blueprint/586 in 0.07s
+2025-09-23 21:41:28,189 - INFO - wp_request completed in 0.066s
+2025-09-23 21:41:28,190 - INFO - Rate limiter: Waiting 0.05 seconds to respect 60 calls/minute limit
+2025-09-23 21:41:28,241 - INFO - Rate limiter: Waiting 55.35 seconds to respect 60 calls/minute limit
+2025-09-23 21:41:28,242 - INFO - Rate limiter: Waiting 55.35 seconds to respect 60 calls/minute limit
+2025-09-23 21:41:28,242 - INFO - Rate limiter: Waiting 55.35 seconds to respect 60 calls/minute limit
+2025-09-23 21:41:28,242 - INFO - Rate limiter: Waiting 55.35 seconds to respect 60 calls/minute limit
+2025-09-23 21:41:28,242 - INFO - Rate limiter: Waiting 55.35 seconds to respect 60 calls/minute limit
+2025-09-23 21:41:28,242 - INFO - Rate limiter: Waiting 55.35 seconds to respect 60 calls/minute limit
+2025-09-23 21:41:28,295 - INFO - WordPress PUT successful: /wp/v2/eve_blueprint/588 in 0.22s
+2025-09-23 21:41:28,295 - INFO - wp_request completed in 0.217s
+2025-09-23 21:41:28,296 - INFO - Updated blueprint from corp_industry_job: 1049574712131
+2025-09-23 21:41:28,296 - INFO - Rate limiter: Waiting 55.30 seconds to respect 60 calls/minute limit
+2025-09-23 21:41:28,359 - INFO - WordPress GET successful: /wp/v2/eve_blueprint/585 in 0.23s
+2025-09-23 21:41:28,360 - INFO - wp_request completed in 0.231s
+2025-09-23 21:41:28,360 - INFO - Rate limiter: Waiting 55.23 seconds to respect 60 calls/minute limit
+2025-09-23 21:41:28,391 - INFO - WordPress PUT successful: /wp/v2/eve_blueprint/592 in 0.32s
+2025-09-23 21:41:28,392 - INFO - wp_request completed in 0.318s
+2025-09-23 21:41:28,392 - INFO - Updated blueprint from corp_industry_job: 1049574755244
+2025-09-23 21:41:28,393 - INFO - Rate limiter: Waiting 55.20 seconds to respect 60 calls/minute limit
+2025-09-23 21:41:28,393 - INFO - WordPress PUT successful: /wp/v2/eve_blueprint/589 in 0.27s
+2025-09-23 21:41:28,394 - INFO - wp_request completed in 0.275s
+2025-09-23 21:41:28,394 - INFO - Updated blueprint from corp_industry_job: 1049574725214
+2025-09-23 21:41:28,394 - INFO - Rate limiter: Waiting 55.20 seconds to respect 60 calls/minute limit
+2025-09-23 21:41:58,079 - INFO - Rate limiter: Waiting 25.52 seconds to respect 60 calls/minute limit
+2025-09-23 21:41:58,129 - INFO - Rate limiter: Waiting 25.47 seconds to respect 60 calls/minute limit
+2025-09-23 21:41:58,138 - INFO - Rate limiter: Waiting 25.46 seconds to respect 60 calls/minute limit
+2025-09-23 21:41:58,157 - INFO - Rate limiter: Waiting 25.44 seconds to respect 60 calls/minute limit
+2025-09-23 21:41:58,157 - INFO - Rate limiter: Waiting 25.44 seconds to respect 60 calls/minute limit
+2025-09-23 21:41:58,191 - INFO - Rate limiter: Waiting 25.40 seconds to respect 60 calls/minute limit
+2025-09-23 21:41:58,298 - INFO - Rate limiter: Waiting 25.30 seconds to respect 60 calls/minute limit
+2025-09-23 21:41:58,362 - INFO - Rate limiter: Waiting 25.23 seconds to respect 60 calls/minute limit
+2025-09-23 21:41:58,394 - INFO - Rate limiter: Waiting 25.20 seconds to respect 60 calls/minute limit
+2025-09-23 21:41:58,395 - INFO - Rate limiter: Waiting 25.20 seconds to respect 60 calls/minute limit
+2025-09-23 21:42:23,598 - INFO - Rate limiter: Waiting 0.23 seconds to respect 60 calls/minute limit
+2025-09-23 21:42:23,598 - INFO - Rate limiter: Waiting 0.23 seconds to respect 60 calls/minute limit
+2025-09-23 21:42:23,598 - INFO - Rate limiter: Waiting 0.23 seconds to respect 60 calls/minute limit
+2025-09-23 21:42:23,599 - INFO - Rate limiter: Waiting 0.23 seconds to respect 60 calls/minute limit
+2025-09-23 21:42:23,599 - INFO - Rate limiter: Waiting 0.23 seconds to respect 60 calls/minute limit
+2025-09-23 21:42:23,599 - INFO - Rate limiter: Waiting 0.23 seconds to respect 60 calls/minute limit
+2025-09-23 21:42:23,599 - INFO - Rate limiter: Waiting 0.23 seconds to respect 60 calls/minute limit
+2025-09-23 21:42:23,599 - INFO - Rate limiter: Waiting 0.23 seconds to respect 60 calls/minute limit
+2025-09-23 21:42:23,599 - INFO - Rate limiter: Waiting 0.23 seconds to respect 60 calls/minute limit
+2025-09-23 21:42:23,733 - INFO - WordPress GET successful: /wp/v2/eve_blueprint/574 in 25.58s
+2025-09-23 21:42:23,733 - INFO - wp_request completed in 25.576s
+2025-09-23 21:42:23,733 - INFO - Rate limiter: Waiting 0.10 seconds to respect 60 calls/minute limit
+2025-09-23 21:42:23,832 - INFO - Rate limiter: Waiting 0.21 seconds to respect 60 calls/minute limit
+2025-09-23 21:42:23,832 - INFO - Rate limiter: Waiting 0.21 seconds to respect 60 calls/minute limit
+2025-09-23 21:42:23,832 - INFO - Rate limiter: Waiting 0.21 seconds to respect 60 calls/minute limit
+2025-09-23 21:42:23,833 - INFO - Rate limiter: Waiting 0.21 seconds to respect 60 calls/minute limit
+2025-09-23 21:42:23,833 - INFO - Rate limiter: Waiting 0.21 seconds to respect 60 calls/minute limit
+2025-09-23 21:42:23,833 - INFO - Rate limiter: Waiting 0.21 seconds to respect 60 calls/minute limit
+2025-09-23 21:42:23,833 - INFO - Rate limiter: Waiting 0.21 seconds to respect 60 calls/minute limit
+2025-09-23 21:42:23,833 - INFO - Rate limiter: Waiting 0.21 seconds to respect 60 calls/minute limit
+2025-09-23 21:42:23,833 - INFO - Rate limiter: Waiting 0.21 seconds to respect 60 calls/minute limit
+2025-09-23 21:42:23,983 - INFO - WordPress PUT successful: /wp/v2/eve_blueprint/574 in 0.25s
+2025-09-23 21:42:23,984 - INFO - wp_request completed in 0.251s
+2025-09-23 21:42:23,984 - INFO - Updated blueprint from corp_industry_job: 1049574451532
+2025-09-23 21:42:23,984 - INFO - Rate limiter: Waiting 0.06 seconds to respect 60 calls/minute limit
+2025-09-23 21:42:24,045 - INFO - Rate limiter: Waiting 0.11 seconds to respect 60 calls/minute limit
+2025-09-23 21:42:24,045 - INFO - Rate limiter: Waiting 0.11 seconds to respect 60 calls/minute limit
+2025-09-23 21:42:24,046 - INFO - Rate limiter: Waiting 0.11 seconds to respect 60 calls/minute limit
+2025-09-23 21:42:24,046 - INFO - Rate limiter: Waiting 0.10 seconds to respect 60 calls/minute limit
+2025-09-23 21:42:24,046 - INFO - Rate limiter: Waiting 0.10 seconds to respect 60 calls/minute limit
+2025-09-23 21:42:24,046 - INFO - Rate limiter: Waiting 0.10 seconds to respect 60 calls/minute limit
+2025-09-23 21:42:24,046 - INFO - Rate limiter: Waiting 0.10 seconds to respect 60 calls/minute limit
+2025-09-23 21:42:24,046 - INFO - Rate limiter: Waiting 0.10 seconds to respect 60 calls/minute limit
+2025-09-23 21:42:24,046 - INFO - Rate limiter: Waiting 0.10 seconds to respect 60 calls/minute limit
+2025-09-23 21:42:24,139 - INFO - WordPress GET successful: /wp/v2/eve_blueprint?slug=blueprint-1049574441448 in 25.74s
+2025-09-23 21:42:24,139 - INFO - wp_request completed in 25.744s
+2025-09-23 21:42:24,140 - INFO - Rate limiter: Waiting 0.01 seconds to respect 60 calls/minute limit
+2025-09-23 21:42:24,152 - INFO - Rate limiter: Waiting 0.20 seconds to respect 60 calls/minute limit
+2025-09-23 21:42:24,153 - INFO - Rate limiter: Waiting 0.20 seconds to respect 60 calls/minute limit
+2025-09-23 21:42:24,153 - INFO - Rate limiter: Waiting 0.20 seconds to respect 60 calls/minute limit
+2025-09-23 21:42:24,153 - INFO - Rate limiter: Waiting 0.20 seconds to respect 60 calls/minute limit
+2025-09-23 21:42:24,153 - INFO - Rate limiter: Waiting 0.20 seconds to respect 60 calls/minute limit
+2025-09-23 21:42:24,153 - INFO - Rate limiter: Waiting 0.20 seconds to respect 60 calls/minute limit
+2025-09-23 21:42:24,153 - INFO - Rate limiter: Waiting 0.20 seconds to respect 60 calls/minute limit
+2025-09-23 21:42:24,153 - INFO - Rate limiter: Waiting 0.20 seconds to respect 60 calls/minute limit
+2025-09-23 21:42:24,153 - INFO - Rate limiter: Waiting 0.20 seconds to respect 60 calls/minute limit
+2025-09-23 21:42:24,231 - INFO - WordPress GET successful: /wp/v2/eve_blueprint/568 in 0.25s
+2025-09-23 21:42:24,231 - INFO - wp_request completed in 0.247s
+2025-09-23 21:42:24,231 - INFO - Rate limiter: Waiting 0.12 seconds to respect 60 calls/minute limit
+2025-09-23 21:42:24,351 - INFO - Rate limiter: Waiting 0.19 seconds to respect 60 calls/minute limit
+2025-09-23 21:42:24,351 - INFO - Rate limiter: Waiting 0.19 seconds to respect 60 calls/minute limit
+2025-09-23 21:42:24,351 - INFO - Rate limiter: Waiting 0.19 seconds to respect 60 calls/minute limit
+2025-09-23 21:42:24,352 - INFO - Rate limiter: Waiting 0.19 seconds to respect 60 calls/minute limit
+2025-09-23 21:42:24,352 - INFO - Rate limiter: Waiting 0.19 seconds to respect 60 calls/minute limit
+2025-09-23 21:42:24,352 - INFO - Rate limiter: Waiting 0.19 seconds to respect 60 calls/minute limit
+2025-09-23 21:42:24,352 - INFO - Rate limiter: Waiting 0.19 seconds to respect 60 calls/minute limit
+2025-09-23 21:42:24,352 - INFO - Rate limiter: Waiting 0.19 seconds to respect 60 calls/minute limit
+2025-09-23 21:42:24,352 - INFO - Rate limiter: Waiting 0.19 seconds to respect 60 calls/minute limit
+2025-09-23 21:42:24,488 - INFO - WordPress GET successful: /wp/v2/eve_blueprint/578 in 26.41s
+2025-09-23 21:42:24,488 - INFO - wp_request completed in 26.409s
+2025-09-23 21:42:24,489 - INFO - Rate limiter: Waiting 0.06 seconds to respect 60 calls/minute limit
+2025-09-23 21:42:24,546 - INFO - Rate limiter: Waiting 0.16 seconds to respect 60 calls/minute limit
+2025-09-23 21:42:24,547 - INFO - Rate limiter: Waiting 0.16 seconds to respect 60 calls/minute limit
+2025-09-23 21:42:24,547 - INFO - Rate limiter: Waiting 0.16 seconds to respect 60 calls/minute limit
+2025-09-23 21:42:24,548 - INFO - Rate limiter: Waiting 0.16 seconds to respect 60 calls/minute limit
+2025-09-23 21:42:24,548 - INFO - Rate limiter: Waiting 0.15 seconds to respect 60 calls/minute limit
+2025-09-23 21:42:24,548 - INFO - Rate limiter: Waiting 0.15 seconds to respect 60 calls/minute limit
+2025-09-23 21:42:24,549 - INFO - Rate limiter: Waiting 0.15 seconds to respect 60 calls/minute limit
+2025-09-23 21:42:24,549 - INFO - Rate limiter: Waiting 0.15 seconds to respect 60 calls/minute limit
+2025-09-23 21:42:24,549 - INFO - Rate limiter: Waiting 0.15 seconds to respect 60 calls/minute limit
+2025-09-23 21:42:24,622 - INFO - WordPress GET successful: /wp/v2/eve_blueprint/577 in 26.49s
+2025-09-23 21:42:24,623 - INFO - wp_request completed in 26.494s
+2025-09-23 21:42:24,623 - INFO - Rate limiter: Waiting 0.08 seconds to respect 60 calls/minute limit
+2025-09-23 21:42:24,704 - INFO - Rate limiter: Waiting 0.17 seconds to respect 60 calls/minute limit
+2025-09-23 21:42:24,704 - INFO - Rate limiter: Waiting 0.17 seconds to respect 60 calls/minute limit
+2025-09-23 21:42:24,704 - INFO - Rate limiter: Waiting 0.17 seconds to respect 60 calls/minute limit
+2025-09-23 21:42:24,704 - INFO - Rate limiter: Waiting 0.17 seconds to respect 60 calls/minute limit
+2025-09-23 21:42:24,705 - INFO - Rate limiter: Waiting 0.17 seconds to respect 60 calls/minute limit
+2025-09-23 21:42:24,705 - INFO - Rate limiter: Waiting 0.17 seconds to respect 60 calls/minute limit
+2025-09-23 21:42:24,705 - INFO - Rate limiter: Waiting 0.17 seconds to respect 60 calls/minute limit
+2025-09-23 21:42:24,705 - INFO - Rate limiter: Waiting 0.17 seconds to respect 60 calls/minute limit
+2025-09-23 21:42:24,705 - INFO - Rate limiter: Waiting 0.17 seconds to respect 60 calls/minute limit
+2025-09-23 21:42:24,788 - INFO - WordPress PUT successful: /wp/v2/eve_blueprint/577 in 0.17s
+2025-09-23 21:42:24,788 - INFO - wp_request completed in 0.165s
+2025-09-23 21:42:24,788 - INFO - Updated blueprint from corp_industry_job: 1049574677299
+2025-09-23 21:42:24,789 - INFO - Rate limiter: Waiting 0.09 seconds to respect 60 calls/minute limit
+2025-09-23 21:42:24,878 - INFO - Rate limiter: Waiting 0.19 seconds to respect 60 calls/minute limit
+2025-09-23 21:42:24,879 - INFO - Rate limiter: Waiting 0.19 seconds to respect 60 calls/minute limit
+2025-09-23 21:42:24,879 - INFO - Rate limiter: Waiting 0.19 seconds to respect 60 calls/minute limit
+2025-09-23 21:42:24,879 - INFO - Rate limiter: Waiting 0.19 seconds to respect 60 calls/minute limit
+2025-09-23 21:42:24,879 - INFO - Rate limiter: Waiting 0.19 seconds to respect 60 calls/minute limit
+2025-09-23 21:42:24,879 - INFO - Rate limiter: Waiting 0.19 seconds to respect 60 calls/minute limit
+2025-09-23 21:42:24,879 - INFO - Rate limiter: Waiting 0.19 seconds to respect 60 calls/minute limit
+2025-09-23 21:42:24,879 - INFO - Rate limiter: Waiting 0.19 seconds to respect 60 calls/minute limit
+2025-09-23 21:42:24,880 - INFO - Rate limiter: Waiting 0.19 seconds to respect 60 calls/minute limit
+2025-09-23 21:42:24,999 - INFO - WordPress GET successful: /wp/v2/eve_blueprint?slug=blueprint-1049574444009 in 26.64s
+2025-09-23 21:42:25,000 - INFO - wp_request completed in 26.638s
+2025-09-23 21:42:25,001 - INFO - Rate limiter: Waiting 0.07 seconds to respect 60 calls/minute limit
+2025-09-23 21:42:25,075 - INFO - Rate limiter: Waiting 0.11 seconds to respect 60 calls/minute limit
+2025-09-23 21:42:25,075 - INFO - Rate limiter: Waiting 0.11 seconds to respect 60 calls/minute limit
+2025-09-23 21:42:25,075 - INFO - Rate limiter: Waiting 0.11 seconds to respect 60 calls/minute limit
+2025-09-23 21:42:25,076 - INFO - Rate limiter: Waiting 0.11 seconds to respect 60 calls/minute limit
+2025-09-23 21:42:25,076 - INFO - Rate limiter: Waiting 0.11 seconds to respect 60 calls/minute limit
+2025-09-23 21:42:25,077 - INFO - Rate limiter: Waiting 0.11 seconds to respect 60 calls/minute limit
+2025-09-23 21:42:25,077 - INFO - Rate limiter: Waiting 0.11 seconds to respect 60 calls/minute limit
+2025-09-23 21:42:25,078 - INFO - Rate limiter: Waiting 0.11 seconds to respect 60 calls/minute limit
+2025-09-23 21:42:25,078 - INFO - Rate limiter: Waiting 0.11 seconds to respect 60 calls/minute limit
+2025-09-23 21:42:25,178 - INFO - WordPress PUT successful: /wp/v2/eve_blueprint/578 in 0.69s
+2025-09-23 21:42:25,179 - INFO - wp_request completed in 0.691s
+2025-09-23 21:42:25,180 - INFO - Updated blueprint from corp_industry_job: 1049574682998
+2025-09-23 21:42:25,180 - INFO - Rate limiter: Waiting 0.01 seconds to respect 60 calls/minute limit
+2025-09-23 21:42:25,188 - INFO - Rate limiter: Waiting 0.17 seconds to respect 60 calls/minute limit
+2025-09-23 21:42:25,188 - INFO - Rate limiter: Waiting 0.17 seconds to respect 60 calls/minute limit
+2025-09-23 21:42:25,188 - INFO - Rate limiter: Waiting 0.17 seconds to respect 60 calls/minute limit
+2025-09-23 21:42:25,188 - INFO - Rate limiter: Waiting 0.17 seconds to respect 60 calls/minute limit
+2025-09-23 21:42:25,188 - INFO - Rate limiter: Waiting 0.17 seconds to respect 60 calls/minute limit
+2025-09-23 21:42:25,189 - INFO - Rate limiter: Waiting 0.17 seconds to respect 60 calls/minute limit
+2025-09-23 21:42:25,189 - INFO - Rate limiter: Waiting 0.17 seconds to respect 60 calls/minute limit
+2025-09-23 21:42:25,189 - INFO - Rate limiter: Waiting 0.17 seconds to respect 60 calls/minute limit
+2025-09-23 21:42:25,189 - INFO - Rate limiter: Waiting 0.17 seconds to respect 60 calls/minute limit
+2025-09-23 21:42:25,280 - ERROR - WordPress API error: 500 - {"code":"rest_invalid_stored_value","message":"The _eve_bp_location_id property has an invalid stored value, and cannot be updated to null.","data":{"status":500}} (took 0.28s)
+2025-09-23 21:42:25,281 - INFO - Rate limiter: Waiting 0.08 seconds to respect 60 calls/minute limit
+2025-09-23 21:42:25,363 - INFO - Rate limiter: Waiting 0.19 seconds to respect 60 calls/minute limit
+2025-09-23 21:42:25,364 - INFO - Rate limiter: Waiting 0.19 seconds to respect 60 calls/minute limit
+2025-09-23 21:42:25,364 - INFO - Rate limiter: Waiting 0.19 seconds to respect 60 calls/minute limit
+2025-09-23 21:42:25,364 - INFO - Rate limiter: Waiting 0.19 seconds to respect 60 calls/minute limit
+2025-09-23 21:42:25,364 - INFO - Rate limiter: Waiting 0.19 seconds to respect 60 calls/minute limit
+2025-09-23 21:42:25,364 - INFO - Rate limiter: Waiting 0.19 seconds to respect 60 calls/minute limit
+2025-09-23 21:42:25,364 - INFO - Rate limiter: Waiting 0.19 seconds to respect 60 calls/minute limit
+2025-09-23 21:42:25,365 - INFO - Rate limiter: Waiting 0.19 seconds to respect 60 calls/minute limit
+2025-09-23 21:42:25,365 - INFO - Rate limiter: Waiting 0.19 seconds to respect 60 calls/minute limit
+2025-09-23 21:42:25,510 - INFO - WordPress GET successful: /wp/v2/eve_blueprint?slug=blueprint-1049574103840 in 0.33s
+2025-09-23 21:42:25,510 - INFO - wp_request completed in 0.330s
+2025-09-23 21:42:25,511 - INFO - Rate limiter: Waiting 0.04 seconds to respect 60 calls/minute limit
+2025-09-23 21:42:25,558 - INFO - Rate limiter: Waiting 0.12 seconds to respect 60 calls/minute limit
+2025-09-23 21:42:25,558 - INFO - Rate limiter: Waiting 0.12 seconds to respect 60 calls/minute limit
+2025-09-23 21:42:25,559 - INFO - Rate limiter: Waiting 0.12 seconds to respect 60 calls/minute limit
+2025-09-23 21:42:25,559 - INFO - Rate limiter: Waiting 0.11 seconds to respect 60 calls/minute limit
+2025-09-23 21:42:25,559 - INFO - Rate limiter: Waiting 0.11 seconds to respect 60 calls/minute limit
+2025-09-23 21:42:25,560 - INFO - Rate limiter: Waiting 0.11 seconds to respect 60 calls/minute limit
+2025-09-23 21:42:25,560 - INFO - Rate limiter: Waiting 0.11 seconds to respect 60 calls/minute limit
+2025-09-23 21:42:25,560 - INFO - Rate limiter: Waiting 0.11 seconds to respect 60 calls/minute limit
+2025-09-23 21:42:25,560 - INFO - Rate limiter: Waiting 0.11 seconds to respect 60 calls/minute limit
+2025-09-23 21:42:25,633 - INFO - WordPress GET successful: /wp/v2/eve_blueprint/575 in 27.48s
+2025-09-23 21:42:25,634 - INFO - wp_request completed in 27.477s
+2025-09-23 21:42:25,635 - INFO - Rate limiter: Waiting 0.04 seconds to respect 60 calls/minute limit
+2025-09-23 21:42:25,677 - INFO - Rate limiter: Waiting 0.21 seconds to respect 60 calls/minute limit
+2025-09-23 21:42:25,677 - INFO - Rate limiter: Waiting 0.21 seconds to respect 60 calls/minute limit
+2025-09-23 21:42:25,677 - INFO - Rate limiter: Waiting 0.21 seconds to respect 60 calls/minute limit
+2025-09-23 21:42:25,677 - INFO - Rate limiter: Waiting 0.21 seconds to respect 60 calls/minute limit
+2025-09-23 21:42:25,678 - INFO - Rate limiter: Waiting 0.21 seconds to respect 60 calls/minute limit
+2025-09-23 21:42:25,678 - INFO - Rate limiter: Waiting 0.21 seconds to respect 60 calls/minute limit
+2025-09-23 21:42:25,678 - INFO - Rate limiter: Waiting 0.21 seconds to respect 60 calls/minute limit
+2025-09-23 21:42:25,678 - INFO - Rate limiter: Waiting 0.21 seconds to respect 60 calls/minute limit
+2025-09-23 21:42:25,678 - INFO - Rate limiter: Waiting 0.21 seconds to respect 60 calls/minute limit
+2025-09-23 21:42:25,760 - INFO - WordPress GET successful: /wp/v2/eve_blueprint?slug=blueprint-1049574442751 in 27.37s
+2025-09-23 21:42:25,761 - INFO - wp_request completed in 27.366s
+2025-09-23 21:42:25,761 - INFO - Rate limiter: Waiting 0.13 seconds to respect 60 calls/minute limit
+2025-09-23 21:42:25,888 - INFO - Rate limiter: Waiting 0.24 seconds to respect 60 calls/minute limit
+2025-09-23 21:42:25,889 - INFO - Rate limiter: Waiting 0.24 seconds to respect 60 calls/minute limit
+2025-09-23 21:42:25,889 - INFO - Rate limiter: Waiting 0.24 seconds to respect 60 calls/minute limit
+2025-09-23 21:42:25,889 - INFO - Rate limiter: Waiting 0.24 seconds to respect 60 calls/minute limit
+2025-09-23 21:42:25,889 - INFO - Rate limiter: Waiting 0.24 seconds to respect 60 calls/minute limit
+2025-09-23 21:42:25,889 - INFO - Rate limiter: Waiting 0.24 seconds to respect 60 calls/minute limit
+2025-09-23 21:42:25,890 - INFO - Rate limiter: Waiting 0.24 seconds to respect 60 calls/minute limit
+2025-09-23 21:42:25,890 - INFO - Rate limiter: Waiting 0.24 seconds to respect 60 calls/minute limit
+2025-09-23 21:42:25,891 - INFO - Rate limiter: Waiting 0.24 seconds to respect 60 calls/minute limit
+2025-09-23 21:42:26,058 - INFO - WordPress GET successful: /wp/v2/eve_blueprint/558 in 0.78s
+2025-09-23 21:42:26,058 - INFO - wp_request completed in 0.778s
+2025-09-23 21:42:26,059 - INFO - Rate limiter: Waiting 0.07 seconds to respect 60 calls/minute limit
+2025-09-23 21:42:26,135 - INFO - Rate limiter: Waiting 0.12 seconds to respect 60 calls/minute limit
+2025-09-23 21:42:26,136 - INFO - Rate limiter: Waiting 0.12 seconds to respect 60 calls/minute limit
+2025-09-23 21:42:26,136 - INFO - Rate limiter: Waiting 0.12 seconds to respect 60 calls/minute limit
+2025-09-23 21:42:26,136 - INFO - Rate limiter: Waiting 0.12 seconds to respect 60 calls/minute limit
+2025-09-23 21:42:26,136 - INFO - Rate limiter: Waiting 0.12 seconds to respect 60 calls/minute limit
+2025-09-23 21:42:26,136 - INFO - Rate limiter: Waiting 0.12 seconds to respect 60 calls/minute limit
+2025-09-23 21:42:26,137 - INFO - Rate limiter: Waiting 0.12 seconds to respect 60 calls/minute limit
+2025-09-23 21:42:26,137 - INFO - Rate limiter: Waiting 0.12 seconds to respect 60 calls/minute limit
+2025-09-23 21:42:26,137 - INFO - Rate limiter: Waiting 0.12 seconds to respect 60 calls/minute limit
+2025-09-23 21:42:26,230 - ERROR - WordPress API error: 500 - {"code":"rest_invalid_stored_value","message":"The _eve_bp_location_id property has an invalid stored value, and cannot be updated to null.","data":{"status":500}} (took 0.72s)
+2025-09-23 21:42:26,260 - INFO - Rate limiter: Waiting 0.72 seconds to respect 60 calls/minute limit
+2025-09-23 21:42:26,260 - INFO - Rate limiter: Waiting 0.72 seconds to respect 60 calls/minute limit
+2025-09-23 21:42:26,260 - INFO - Rate limiter: Waiting 0.72 seconds to respect 60 calls/minute limit
+2025-09-23 21:42:26,260 - INFO - Rate limiter: Waiting 0.72 seconds to respect 60 calls/minute limit
+2025-09-23 21:42:26,261 - INFO - Rate limiter: Waiting 0.72 seconds to respect 60 calls/minute limit
+2025-09-23 21:42:26,261 - INFO - Rate limiter: Waiting 0.72 seconds to respect 60 calls/minute limit
+2025-09-23 21:42:26,261 - INFO - Rate limiter: Waiting 0.72 seconds to respect 60 calls/minute limit
+2025-09-23 21:42:26,261 - INFO - Rate limiter: Waiting 0.72 seconds to respect 60 calls/minute limit
+2025-09-23 21:42:26,343 - INFO - WordPress PUT successful: /wp/v2/eve_blueprint/558 in 0.28s
+2025-09-23 21:42:26,344 - INFO - wp_request completed in 0.285s
+2025-09-23 21:42:26,344 - INFO - Updated blueprint from corp_industry_job: 1048892615386
+2025-09-23 21:42:26,987 - INFO - Rate limiter: Waiting 0.22 seconds to respect 60 calls/minute limit
+2025-09-23 21:42:26,988 - INFO - Rate limiter: Waiting 0.22 seconds to respect 60 calls/minute limit
+2025-09-23 21:42:26,988 - INFO - Rate limiter: Waiting 0.22 seconds to respect 60 calls/minute limit
+2025-09-23 21:42:26,989 - INFO - Rate limiter: Waiting 0.22 seconds to respect 60 calls/minute limit
+2025-09-23 21:42:26,989 - INFO - Rate limiter: Waiting 0.22 seconds to respect 60 calls/minute limit
+2025-09-23 21:42:27,123 - ERROR - WordPress API error: 500 - {"code":"rest_invalid_stored_value","message":"The _eve_bp_location_id property has an invalid stored value, and cannot be updated to null.","data":{"status":500}} (took 2.98s)
+2025-09-23 21:42:27,149 - INFO - WordPress PUT successful: /wp/v2/eve_blueprint/575 in 1.51s
+2025-09-23 21:42:27,149 - INFO - wp_request completed in 1.515s
+2025-09-23 21:42:27,150 - INFO - Updated blueprint from corp_industry_job: 1049574579770
+2025-09-23 21:42:27,189 - INFO - WordPress GET successful: /wp/v2/eve_blueprint?slug=blueprint-1049574447488 in 28.89s
+2025-09-23 21:42:27,189 - INFO - wp_request completed in 28.892s
+2025-09-23 21:42:27,190 - INFO - Rate limiter: Waiting 0.02 seconds to respect 60 calls/minute limit
+2025-09-23 21:42:27,214 - INFO - Rate limiter: Waiting 0.07 seconds to respect 60 calls/minute limit
+2025-09-23 21:42:27,214 - INFO - Rate limiter: Waiting 0.07 seconds to respect 60 calls/minute limit
+2025-09-23 21:42:27,214 - INFO - Rate limiter: Waiting 0.07 seconds to respect 60 calls/minute limit
+2025-09-23 21:42:27,214 - INFO - Rate limiter: Waiting 0.07 seconds to respect 60 calls/minute limit
+2025-09-23 21:42:27,214 - INFO - Rate limiter: Waiting 0.07 seconds to respect 60 calls/minute limit
+2025-09-23 21:42:27,283 - INFO - Rate limiter: Waiting 0.19 seconds to respect 60 calls/minute limit
+2025-09-23 21:42:27,284 - INFO - Rate limiter: Waiting 0.19 seconds to respect 60 calls/minute limit
+2025-09-23 21:42:27,284 - INFO - Rate limiter: Waiting 0.19 seconds to respect 60 calls/minute limit
+2025-09-23 21:42:27,284 - INFO - Rate limiter: Waiting 0.19 seconds to respect 60 calls/minute limit
+2025-09-23 21:42:27,293 - INFO - WordPress GET successful: /wp/v2/eve_blueprint?slug=blueprint-1049574314029 in 2.50s
+2025-09-23 21:42:27,293 - INFO - wp_request completed in 2.504s
+2025-09-23 21:42:27,294 - INFO - Rate limiter: Waiting 0.18 seconds to respect 60 calls/minute limit
+2025-09-23 21:42:27,361 - ERROR - WordPress API error: 500 - {"code":"rest_invalid_stored_value","message":"The _eve_bp_location_id property has an invalid stored value, and cannot be updated to null.","data":{"status":500}} (took 3.13s)
+2025-09-23 21:42:27,473 - INFO - Rate limiter: Waiting 0.00 seconds to respect 60 calls/minute limit
+2025-09-23 21:42:27,627 - INFO - WordPress GET successful: /wp/v2/eve_blueprint/573 in 29.44s
+2025-09-23 21:42:27,627 - INFO - wp_request completed in 29.436s
+2025-09-23 21:42:27,635 - ERROR - WordPress API error: 500 - {"code":"rest_invalid_stored_value","message":"The _eve_bp_location_id property has an invalid stored value, and cannot be updated to null.","data":{"status":500}} (took 1.87s)
+2025-09-23 21:42:27,638 - ERROR - WordPress API error: 500 - {"code":"rest_invalid_stored_value","message":"The _eve_bp_location_id property has an invalid stored value, and cannot be updated to null.","data":{"status":500}} (took 0.45s)
+2025-09-23 21:42:27,678 - INFO - WordPress GET successful: /wp/v2/eve_blueprint/576 in 29.54s
+2025-09-23 21:42:27,678 - INFO - wp_request completed in 29.540s
+2025-09-23 21:42:27,702 - INFO - WordPress PUT successful: /wp/v2/eve_blueprint/573 in 0.07s
+2025-09-23 21:42:27,702 - INFO - wp_request completed in 0.075s
+2025-09-23 21:42:27,702 - INFO - Updated blueprint from corp_industry_job: 1049574449602
+2025-09-23 21:42:27,707 - ERROR - WordPress API error: 500 - {"code":"rest_invalid_stored_value","message":"The _eve_bp_location_id property has an invalid stored value, and cannot be updated to null.","data":{"status":500}} (took 0.41s)
+2025-09-23 21:42:27,784 - INFO - WordPress PUT successful: /wp/v2/eve_blueprint/576 in 0.11s
+2025-09-23 21:42:27,784 - INFO - wp_request completed in 0.106s
+2025-09-23 21:42:27,784 - INFO - Updated blueprint from corp_industry_job: 1049574582590
+2025-09-23 21:42:27,785 - INFO - Processed blueprint 1/82
+2025-09-23 21:42:27,785 - INFO - Processed blueprint 2/82
+2025-09-23 21:42:27,785 - INFO - Processed blueprint 3/82
+2025-09-23 21:42:27,785 - INFO - Processed blueprint 4/82
+2025-09-23 21:42:27,785 - INFO - Processed blueprint 5/82
+2025-09-23 21:42:27,785 - INFO - Processed blueprint 6/82
+2025-09-23 21:42:27,785 - INFO - Processed blueprint 7/82
+2025-09-23 21:42:27,785 - INFO - Processed blueprint 8/82
+2025-09-23 21:42:27,785 - INFO - Processed blueprint 9/82
+2025-09-23 21:42:27,785 - INFO - Processed blueprint 10/82
+2025-09-23 21:42:27,785 - ERROR - Blueprint processing generated an exception: WordPress API error 500: /wp/v2/eve_blueprint/645
+2025-09-23 21:42:27,785 - ERROR - Blueprint processing generated an exception: WordPress API error 500: /wp/v2/eve_blueprint/646
+2025-09-23 21:42:27,785 - ERROR - Blueprint processing generated an exception: WordPress API error 500: /wp/v2/eve_blueprint/647
+2025-09-23 21:42:27,785 - ERROR - Blueprint processing generated an exception: WordPress API error 500: /wp/v2/eve_blueprint/643
+2025-09-23 21:42:27,785 - ERROR - Blueprint processing generated an exception: WordPress API error 500: /wp/v2/eve_blueprint/644
+2025-09-23 21:42:27,785 - INFO - Processed blueprint 11/82
+2025-09-23 21:42:27,785 - ERROR - Blueprint processing generated an exception: WordPress API error 500: /wp/v2/eve_blueprint/639
+2025-09-23 21:42:27,785 - ERROR - Blueprint processing generated an exception: WordPress API error 500: /wp/v2/eve_blueprint/640
+2025-09-23 21:42:27,785 - ERROR - Blueprint processing generated an exception: WordPress API error 500: /wp/v2/eve_blueprint/641
+2025-09-23 21:42:27,785 - ERROR - Blueprint processing generated an exception: 
+2025-09-23 21:42:27,785 - ERROR - Blueprint processing generated an exception: 
+2025-09-23 21:42:27,785 - INFO - Processed blueprint 12/82
+2025-09-23 21:42:27,785 - ERROR - Blueprint processing generated an exception: 
+2025-09-23 21:42:27,785 - ERROR - Blueprint processing generated an exception: 
+2025-09-23 21:42:27,785 - ERROR - Blueprint processing generated an exception: 
+2025-09-23 21:42:27,785 - ERROR - Blueprint processing generated an exception: 
+2025-09-23 21:42:27,785 - ERROR - Blueprint processing generated an exception: 
+2025-09-23 21:42:27,785 - ERROR - Blueprint processing generated an exception: 
+2025-09-23 21:42:27,785 - ERROR - Blueprint processing generated an exception: 
+2025-09-23 21:42:27,785 - ERROR - Blueprint processing generated an exception: 
+2025-09-23 21:42:27,785 - INFO - Processed blueprint 13/82
+2025-09-23 21:42:27,785 - INFO - Processed blueprint 14/82
+2025-09-23 21:42:27,785 - INFO - Processed blueprint 15/82
+2025-09-23 21:42:27,785 - INFO - Processed blueprint 16/82
+2025-09-23 21:42:27,785 - INFO - Processed blueprint 17/82
+2025-09-23 21:42:27,785 - INFO - Processed blueprint 18/82
+2025-09-23 21:42:27,785 - INFO - Processed blueprint 19/82
+2025-09-23 21:42:27,785 - ERROR - Blueprint processing generated an exception: WordPress API error 500: /wp/v2/eve_blueprint/610
+2025-09-23 21:42:27,785 - ERROR - Blueprint processing generated an exception: WordPress API error 500: /wp/v2/eve_blueprint/609
+2025-09-23 21:42:27,785 - ERROR - Blueprint processing generated an exception: WordPress API error 500: /wp/v2/eve_blueprint/608
+2025-09-23 21:42:27,785 - ERROR - Blueprint processing generated an exception: WordPress API error 500: /wp/v2/eve_blueprint/607
+2025-09-23 21:42:27,785 - INFO - Processed blueprint 20/82
+2025-09-23 21:42:27,785 - INFO - Processed blueprint 21/82
+2025-09-23 21:42:27,785 - ERROR - Blueprint processing generated an exception: WordPress API error 500: /wp/v2/eve_blueprint/606
+2025-09-23 21:42:27,785 - ERROR - Blueprint processing generated an exception: WordPress API error 500: /wp/v2/eve_blueprint/605
+2025-09-23 21:42:27,786 - ERROR - Blueprint processing generated an exception: WordPress API error 500: /wp/v2/eve_blueprint/604
+2025-09-23 21:42:27,786 - INFO - Processed blueprint 22/82
+2025-09-23 21:42:27,786 - INFO - Processed blueprint 23/82
+2025-09-23 21:42:27,786 - INFO - Processed blueprint 24/82
+2025-09-23 21:42:27,786 - ERROR - Blueprint processing generated an exception: WordPress API error 500: /wp/v2/eve_blueprint/600
+2025-09-23 21:42:27,786 - INFO - Processed blueprint 25/82
+2025-09-23 21:42:27,786 - ERROR - Blueprint processing generated an exception: WordPress API error 500: /wp/v2/eve_blueprint/598
+2025-09-23 21:42:27,786 - ERROR - Blueprint processing generated an exception: WordPress API error 500: /wp/v2/eve_blueprint/597
+2025-09-23 21:42:27,786 - INFO - Processed blueprint 26/82
+2025-09-23 21:42:27,786 - INFO - Processed blueprint 27/82
+2025-09-23 21:42:27,786 - INFO - Processed blueprint 28/82
+2025-09-23 21:42:27,786 - ERROR - Blueprint processing generated an exception: 
+2025-09-23 21:42:27,786 - INFO - Processed blueprint 29/82
+2025-09-23 21:42:27,786 - INFO - Processed blueprint 30/82
+2025-09-23 21:42:27,786 - ERROR - Blueprint processing generated an exception: 
+2025-09-23 21:42:27,786 - ERROR - Blueprint processing generated an exception: 
+2025-09-23 21:42:27,786 - ERROR - Blueprint processing generated an exception: 
+2025-09-23 21:42:27,786 - ERROR - Blueprint processing generated an exception: 
+2025-09-23 21:42:27,786 - ERROR - Blueprint processing generated an exception: 
+2025-09-23 21:42:27,786 - ERROR - Blueprint processing generated an exception: 
+2025-09-23 21:42:27,786 - ERROR - Blueprint processing generated an exception: 
+2025-09-23 21:42:27,786 - ERROR - Blueprint processing generated an exception: 
+2025-09-23 21:42:27,786 - ERROR - Blueprint processing generated an exception: 
+2025-09-23 21:42:27,786 - INFO - Processed blueprint 31/82
+2025-09-23 21:42:27,786 - INFO - Processed blueprint 32/82
+2025-09-23 21:42:27,786 - INFO - Processed blueprint 33/82
+2025-09-23 21:42:27,786 - INFO - Processed blueprint 34/82
+2025-09-23 21:42:27,786 - INFO - Processed blueprint 35/82
+2025-09-23 21:42:27,786 - INFO - Processed blueprint 36/82
+2025-09-23 21:42:27,786 - ERROR - Blueprint processing generated an exception: WordPress API error 500: /wp/v2/eve_blueprint/572
+2025-09-23 21:42:27,786 - ERROR - Blueprint processing generated an exception: WordPress API error 500: /wp/v2/eve_blueprint/571
+2025-09-23 21:42:27,786 - ERROR - Blueprint processing generated an exception: WordPress API error 500: /wp/v2/eve_blueprint/570
+2025-09-23 21:42:27,786 - ERROR - Blueprint processing generated an exception: WordPress API error 500: /wp/v2/eve_blueprint/569
+2025-09-23 21:42:27,786 - ERROR - Blueprint processing generated an exception: WordPress API error 500: /wp/v2/eve_blueprint/568
+2025-09-23 21:42:27,786 - ERROR - Blueprint processing generated an exception: WordPress API error 500: /wp/v2/eve_blueprint/567
+2025-09-23 21:42:27,786 - ERROR - Blueprint processing generated an exception: WordPress API error 500: /wp/v2/eve_blueprint/566
+2025-09-23 21:42:27,786 - INFO - Processed blueprint 37/82
+2025-09-23 21:42:27,786 - INFO - Blueprint processing completed for 82 blueprints in 120.81s
+2025-09-23 21:42:28,070 - INFO - ESI authenticated fetch successful: /corporations/98092220/contracts/ in 0.28s
+2025-09-23 21:42:28,071 - INFO - _fetch_esi_with_retry completed in 0.284s
+2025-09-23 21:42:28,118 - INFO - ESI authenticated fetch successful: /corporations/98092220/contracts/ in 0.05s
+2025-09-23 21:42:28,119 - INFO - _fetch_esi_with_retry completed in 0.046s
+2025-09-23 21:42:28,119 - INFO - Corporation contracts for No Mercy Incorporated: 116 items
+2025-09-23 21:42:28,195 - INFO - WordPress GET successful: /wp/v2/eve_contract?slug=contract-222641777 in 0.08s
+2025-09-23 21:42:28,196 - INFO - wp_request completed in 0.076s
+2025-09-23 21:42:28,236 - INFO - ESI authenticated fetch successful: /corporations/98092220/contracts/222641777/items/ in 0.04s
+2025-09-23 21:42:28,237 - INFO - _fetch_esi_with_retry completed in 0.041s
+2025-09-23 21:42:28,240 - INFO - Checking competition for contract 222641777 (type_id: 29040, price_per_item: 299999999.00) in region 10000002
+2025-09-23 21:42:29,145 - WARNING - Reached page limit (10) for region 10000002, stopping
+2025-09-23 21:42:29,145 - INFO - Found 9958 potential competing contracts in region 10000002
