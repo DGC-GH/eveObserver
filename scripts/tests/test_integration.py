@@ -366,7 +366,7 @@ class TestCorporationProcessorIntegration:
         mock_fetch_esi.assert_called_once_with("/corporations/1001/", None, "test_token")
 
     @pytest.mark.asyncio
-    @patch("api_client.wp_request")
+    @patch("corporation_processor.wp_request")
     @patch("cache_manager.load_cache")
     @patch("cache_manager.save_cache")
     async def test_update_corporation_in_wp_integration(self, mock_save_cache, mock_load_cache, mock_wp_request):
@@ -376,11 +376,8 @@ class TestCorporationProcessorIntegration:
 
         corp_data = {"name": "Test Corporation", "ticker": "TEST", "member_count": 100}
 
-        # Mock WordPress API calls
-        mock_wp_request.side_effect = [
-            [],  # No existing posts
-            {"id": 126, "title": {"rendered": "Test Corporation"}},  # Created post
-        ]
+        # Mock WordPress API calls - use AsyncMock for proper async handling
+        mock_wp_request.side_effect = [AsyncMock(return_value=[]), AsyncMock(return_value={"id": 126, "title": {"rendered": "Test Corporation"}})]
 
         await update_corporation_in_wp(1001, corp_data)
 

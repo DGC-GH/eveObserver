@@ -18,13 +18,13 @@ from api_client import get_session, refresh_token
 from cache_manager import load_wp_post_id_cache
 from config import LOG_FILE, LOG_LEVEL, TOKENS_FILE
 from corporation_processor import process_corporation_data
-from data_processors import (
-    cleanup_old_posts,
+from fetch_data import (
     clear_log_file,
     collect_corporation_members,
     get_allowed_entities,
     initialize_caches,
     process_character_data,
+    cleanup_old_posts,
 )
 
 load_dotenv()
@@ -131,7 +131,7 @@ async def main() -> None:
     try:
         # Collect all corporations and their member characters
         collect_start = time.time()
-        corp_members = collect_corporation_members(tokens)
+        corp_members = await collect_corporation_members(tokens)
         allowed_corp_ids, allowed_issuer_ids = get_allowed_entities(corp_members)
         collect_time = time.time() - collect_start
         logger.info(f"Corporation collection completed in {collect_time:.2f}s")
@@ -139,7 +139,7 @@ async def main() -> None:
         # Clean up old posts with filtering (only if doing full fetch or contracts)
         if args.all or args.contracts:
             cleanup_start = time.time()
-            cleanup_old_posts(allowed_corp_ids, allowed_issuer_ids)
+            await cleanup_old_posts(allowed_corp_ids, allowed_issuer_ids)
             cleanup_time = time.time() - cleanup_start
             logger.info(f"Post cleanup completed in {cleanup_time:.2f}s")
 
