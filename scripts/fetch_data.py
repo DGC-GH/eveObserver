@@ -12,6 +12,7 @@ from dotenv import load_dotenv
 import smtplib
 from email.mime.text import MIMEText
 import logging
+import argparse
 from config import *
 from esi_oauth import save_tokens
 
@@ -1421,6 +1422,21 @@ def collect_corporation_members(tokens):
 
 def main():
     """Main data fetching routine."""
+    parser = argparse.ArgumentParser(description='Fetch EVE Online data from ESI API')
+    parser.add_argument('--contracts', action='store_true', help='Fetch contracts data')
+    parser.add_argument('--planets', action='store_true', help='Fetch planets data')
+    parser.add_argument('--blueprints', action='store_true', help='Fetch blueprints data')
+    parser.add_argument('--skills', action='store_true', help='Fetch skills data')
+    parser.add_argument('--corporations', action='store_true', help='Fetch corporation data')
+    parser.add_argument('--characters', action='store_true', help='Fetch character data')
+    parser.add_argument('--all', action='store_true', help='Fetch all data (default)')
+    
+    args = parser.parse_args()
+    
+    # If no specific flags set, default to --all
+    if not any([args.contracts, args.planets, args.blueprints, args.skills, args.corporations, args.characters]):
+        args.all = True
+    
     # Clear the log file at the start of each run
     with open(LOG_FILE, 'w') as f:
         f.truncate(0)
@@ -1448,8 +1464,9 @@ def main():
             for char_id, access_token, char_name in members:
                 allowed_issuer_ids.add(char_id)
 
-    # Clean up old posts with filtering
-    cleanup_old_posts(allowed_corp_ids, allowed_issuer_ids)
+    # Clean up old posts with filtering (only if doing full fetch or contracts)
+    if args.all or args.contracts:
+        cleanup_old_posts(allowed_corp_ids, allowed_issuer_ids)
 
     # Process each corporation with any available member token
     processed_corps = set()
@@ -1458,15 +1475,17 @@ def main():
             continue
 
         # Process data for the corporation and its members
-        process_corporation_data(corp_id, members, wp_post_id_cache, blueprint_cache, location_cache, structure_cache, failed_structures)
+        if args.all or args.corporations or args.blueprints:
+            process_corporation_data(corp_id, members, wp_post_id_cache, blueprint_cache, location_cache, structure_cache, failed_structures, args)
 
         processed_corps.add(corp_id)
 
     # Now process individual character data (skills, blueprints, etc.)
     for char_id, token_data in tokens.items():
-        process_character_data(char_id, token_data, wp_post_id_cache, blueprint_cache, location_cache, structure_cache, failed_structures)
+        if args.all or args.characters or args.skills or args.blueprints or args.planets or args.contracts:
+            process_character_data(char_id, token_data, wp_post_id_cache, blueprint_cache, location_cache, structure_cache, failed_structures, args)
 
-def process_corporation_data(corp_id, members, wp_post_id_cache, blueprint_cache, location_cache, structure_cache, failed_structures):
+def process_corporation_data(corp_id, members, wp_post_id_cache, blueprint_cache, location_cache, structure_cache, failed_structures, args):
     """Process data for a single corporation and its members."""
     # For No Mercy Incorporated, prioritize Dr FiLiN's token (CEO)
     if corp_id == 98092220:  # No Mercy Incorporated
@@ -1527,10 +1546,12 @@ def process_corporation_data(corp_id, members, wp_post_id_cache, blueprint_cache
         logger.info(f"Skipping corporation: {corp_name} (only processing {ALLOWED_CORPORATIONS})")
         return
 
-    update_corporation_in_wp(corp_id, corp_data)
+    if args.all or args.corporations:
+        update_corporation_in_wp(corp_id, corp_data)
 
     # Process corporation blueprints from various sources
-    process_corporation_blueprints(corp_id, successful_token, successful_char_id, wp_post_id_cache, blueprint_cache, location_cache, structure_cache, failed_structures)
+    if args.all or args.blueprints:
+        process_corporation_blueprints(corp_id, successful_token, successful_char_id, wp_post_id_cache, blueprint_cache, location_cache, structure_cache, failed_structures)
 
     # Corporation contracts are processed via character contracts (issued by corp members)
     # process_corporation_contracts(corp_id, successful_token, corp_data, blueprint_cache)
@@ -1644,7 +1665,7 @@ def process_corporation_contracts(corp_id, access_token, corp_data, blueprint_ca
                 
             update_contract_in_wp(contract['contract_id'], contract, for_corp=True, entity_id=corp_id, access_token=access_token, blueprint_cache=blueprint_cache)
 
-def process_character_data(char_id, token_data, wp_post_id_cache, blueprint_cache, location_cache, structure_cache, failed_structures):
+def process_character_data(char_id, token_data, wp_post_id_cache, blueprint_cache, location_cache, structure_cache, failed_structures, args):
     """Process data for a single character."""
     access_token = token_data['access_token']
     char_name = token_data['name']
@@ -1652,20 +1673,24 @@ def process_character_data(char_id, token_data, wp_post_id_cache, blueprint_cach
     logger.info(f"Fetching additional data for {char_name}...")
 
     # Fetch skills
-    skills = fetch_character_skills(char_id, access_token)
-    if skills:
-        # Update character with skills data
-        update_character_skills_in_wp(char_id, skills)
-        logger.info(f"Skills for {char_name}: {skills['total_sp']} SP")
+    if args.all or args.skills:
+        skills = fetch_character_skills(char_id, access_token)
+        if skills:
+            # Update character with skills data
+            update_character_skills_in_wp(char_id, skills)
+            logger.info(f"Skills for {char_name}: {skills['total_sp']} SP")
 
     # Process character blueprints from all sources
-    process_character_blueprints(char_id, access_token, char_name, wp_post_id_cache, blueprint_cache, location_cache, structure_cache, failed_structures)
+    if args.all or args.blueprints:
+        process_character_blueprints(char_id, access_token, char_name, wp_post_id_cache, blueprint_cache, location_cache, structure_cache, failed_structures)
 
     # Process character planets
-    process_character_planets(char_id, access_token, char_name)
+    if args.all or args.planets:
+        process_character_planets(char_id, access_token, char_name)
 
     # Process character contracts
-    process_character_contracts(char_id, access_token, char_name, wp_post_id_cache, blueprint_cache, location_cache, structure_cache, failed_structures)
+    if args.all or args.contracts:
+        process_character_contracts(char_id, access_token, char_name, wp_post_id_cache, blueprint_cache, location_cache, structure_cache, failed_structures)
 
 def process_character_blueprints(char_id, access_token, char_name, wp_post_id_cache, blueprint_cache, location_cache, structure_cache, failed_structures):
     """Process all blueprint sources for a character."""
