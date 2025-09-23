@@ -21,9 +21,19 @@ import asyncio
 import time
 from datetime import datetime, timezone
 from typing import Dict, List, Any, Optional, Tuple
+import logging
 from config import *
 from api_client import fetch_public_esi, fetch_esi, wp_request, send_email, fetch_type_icon, sanitize_string, WordPressAuthError, WordPressRequestError, fetch_public_contracts_async, fetch_public_contract_items_async, get_session
 from cache_manager import load_blueprint_cache, save_blueprint_cache, load_blueprint_type_cache, save_blueprint_type_cache, get_cached_blueprint_name
+
+from blueprint_processor import (
+    update_blueprint_from_asset_in_wp,
+    extract_blueprints_from_contracts
+)
+
+logger = logging.getLogger(__name__)
+
+logger = logging.getLogger(__name__)
 
 @validate_input_params(dict, list)
 async def check_contract_competition(contract_data: Dict[str, Any], contract_items: List[Dict[str, Any]]) -> Tuple[bool, Optional[float]]:
@@ -442,11 +452,6 @@ async def update_contract_in_wp(contract_id: int, contract_data: Dict[str, Any],
 
     # Remove null values from meta to avoid WordPress validation errors
     post_data['meta'] = {k: v for k, v in post_data['meta'].items() if v is not None}
-
-    # Check if post exists by slug
-    existing_posts = await wp_request('GET', f"/wp/v2/eve_contract?slug={slug}")
-    existing_post = existing_posts[0] if existing_posts else None
-    existing_meta = existing_post.get('meta', {}) if existing_post else {}
 
     # Add items data if available
     if contract_items:

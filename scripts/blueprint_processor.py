@@ -8,6 +8,7 @@ import json
 import requests
 from datetime import datetime, timezone
 from typing import Dict, List, Any, Optional
+import logging
 from config import *
 from api_client import fetch_public_esi, fetch_esi, fetch_type_icon, WordPressAuthError, WordPressRequestError, delete_wp_post
 from data_processors import get_wp_auth
@@ -17,7 +18,9 @@ from cache_manager import (
     load_failed_structures, save_failed_structures, get_cached_wp_post_id, set_cached_wp_post_id
 )
 
-def update_blueprint_in_wp(blueprint_data: Dict[str, Any], wp_post_id_cache: Dict[str, Any], char_id: int, access_token: str, blueprint_cache: Optional[Dict[str, Any]] = None, location_cache: Optional[Dict[str, Any]] = None, structure_cache: Optional[Dict[str, Any]] = None, failed_structures: Optional[Dict[str, Any]] = None) -> None:
+logger = logging.getLogger(__name__)
+
+async def update_blueprint_in_wp(blueprint_data: Dict[str, Any], wp_post_id_cache: Dict[str, Any], char_id: int, access_token: str, blueprint_cache: Optional[Dict[str, Any]] = None, location_cache: Optional[Dict[str, Any]] = None, structure_cache: Optional[Dict[str, Any]] = None, failed_structures: Optional[Dict[str, Any]] = None) -> None:
     """
     Update or create a blueprint post in WordPress from direct blueprint endpoint data.
 
@@ -99,7 +102,7 @@ def update_blueprint_in_wp(blueprint_data: Dict[str, Any], wp_post_id_cache: Dic
         if str(type_id) in blueprint_cache:
             type_name = blueprint_cache[str(type_id)]
         else:
-            type_data = fetch_public_esi(f"/universe/types/{type_id}")
+            type_data = await fetch_public_esi(f"/universe/types/{type_id}")
             if type_data:
                 type_name = type_data.get('name', f"Blueprint {item_id}").replace(" Blueprint", "").strip()
                 blueprint_cache[str(type_id)] = type_name
@@ -124,7 +127,7 @@ def update_blueprint_in_wp(blueprint_data: Dict[str, Any], wp_post_id_cache: Dic
                 location_name = structure_cache[location_id_str]
             else:
                 # Try auth fetch for private structures
-                struct_data = fetch_esi(f"/universe/structures/{location_id}", char_id, access_token)
+                struct_data = await fetch_esi(f"/universe/structures/{location_id}", char_id, access_token)
                 if struct_data:
                     location_name = struct_data.get('name', f"Citadel {location_id}")
                     structure_cache[location_id_str] = location_name
@@ -137,7 +140,7 @@ def update_blueprint_in_wp(blueprint_data: Dict[str, Any], wp_post_id_cache: Dic
             if location_id_str in location_cache:
                 location_name = location_cache[location_id_str]
             else:
-                loc_data = fetch_public_esi(f"/universe/stations/{location_id}")
+                loc_data = await fetch_public_esi(f"/universe/stations/{location_id}")
                 location_name = loc_data.get('name', f"Station {location_id}") if loc_data else f"Station {location_id}"
                 location_cache[location_id_str] = location_name
                 save_location_cache(location_cache)
@@ -169,7 +172,7 @@ def update_blueprint_in_wp(blueprint_data: Dict[str, Any], wp_post_id_cache: Dic
     if not existing_post:
         type_id = blueprint_data.get('type_id')
         if type_id:
-            image_url = fetch_type_icon(type_id, size=512)
+            image_url = await fetch_type_icon(type_id, size=512)
             post_data['meta']['_thumbnail_external_url'] = image_url
 
     if existing_post:

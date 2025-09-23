@@ -301,7 +301,7 @@ async def update_character_skills_in_wp(char_id: int, skills_data: Dict[str, Any
         except (WordPressAuthError, WordPressRequestError) as e:
             logger.error(f"Failed to update skills for character {char_id}: {e}")
 
-def fetch_character_data(char_id: int, access_token: str) -> Optional[Dict[str, Any]]:
+async def fetch_character_data(char_id: int, access_token: str) -> Optional[Dict[str, Any]]:
     """
     Fetch basic character information from EVE ESI API.
 
@@ -321,12 +321,12 @@ def fetch_character_data(char_id: int, access_token: str) -> Optional[Dict[str, 
     """
     try:
         endpoint = f"/characters/{char_id}/"
-        return fetch_esi(endpoint, char_id, access_token)
+        return await fetch_esi(endpoint, char_id, access_token)
     except (ESIAuthError, ESIRequestError) as e:
         logger.error(format_error_message("fetch_character_data", char_id, e))
         return None
 
-def fetch_character_skills(char_id: int, access_token: str) -> Optional[Dict[str, Any]]:
+async def fetch_character_skills(char_id: int, access_token: str) -> Optional[Dict[str, Any]]:
     """
     Fetch character skills and training information from EVE ESI API.
 
@@ -346,12 +346,12 @@ def fetch_character_skills(char_id: int, access_token: str) -> Optional[Dict[str
     """
     try:
         endpoint = f"/characters/{char_id}/skills/"
-        return fetch_esi(endpoint, char_id, access_token)
+        return await fetch_esi(endpoint, char_id, access_token)
     except (ESIAuthError, ESIRequestError) as e:
         logger.error(format_error_message("fetch_character_skills", char_id, e))
         return None
 
-def fetch_character_blueprints(char_id: int, access_token: str) -> Optional[Dict[str, Any]]:
+async def fetch_character_blueprints(char_id: int, access_token: str) -> Optional[Dict[str, Any]]:
     """
     Fetch character blueprint collection from EVE ESI API.
 
@@ -371,12 +371,12 @@ def fetch_character_blueprints(char_id: int, access_token: str) -> Optional[Dict
     """
     try:
         endpoint = f"/characters/{char_id}/blueprints/"
-        return fetch_esi(endpoint, char_id, access_token)
+        return await fetch_esi(endpoint, char_id, access_token)
     except (ESIAuthError, ESIRequestError) as e:
         logger.error(format_error_message("fetch_character_blueprints", char_id, e))
         return None
 
-def fetch_character_planets(char_id: int, access_token: str) -> Optional[Dict[str, Any]]:
+async def fetch_character_planets(char_id: int, access_token: str) -> Optional[Dict[str, Any]]:
     """
     Fetch character planetary colony information from EVE ESI API.
 
@@ -396,12 +396,12 @@ def fetch_character_planets(char_id: int, access_token: str) -> Optional[Dict[st
     """
     try:
         endpoint = f"/characters/{char_id}/planets/"
-        return fetch_esi(endpoint, char_id, access_token)
+        return await fetch_esi(endpoint, char_id, access_token)
     except (ESIAuthError, ESIRequestError) as e:
         logger.error(format_error_message("fetch_character_planets", char_id, e))
         return None
 
-def fetch_corporation_data(corp_id: int, access_token: str) -> Optional[Dict[str, Any]]:
+async def fetch_corporation_data(corp_id: int, access_token: str) -> Optional[Dict[str, Any]]:
     """
     Fetch corporation information from EVE ESI API.
 
@@ -425,7 +425,7 @@ def fetch_corporation_data(corp_id: int, access_token: str) -> Optional[Dict[str
     """
     try:
         endpoint = f"/corporations/{corp_id}/"
-        return fetch_esi(endpoint, None, access_token)  # No char_id needed for corp data
+        return await fetch_esi(endpoint, None, access_token)  # No char_id needed for corp data
     except (ESIAuthError, ESIRequestError) as e:
         logger.error(format_error_message("fetch_corporation_data", corp_id, e))
         return None

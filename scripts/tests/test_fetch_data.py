@@ -702,10 +702,15 @@ class TestCacheLRUOptimization:
 
     @patch('cache_manager.load_blueprint_cache')
     @patch('cache_manager.get_cached_value_with_stats')
-    def test_get_cached_blueprint_name_lru(self, mock_get_cached, mock_load_cache):
+    @patch('cache_manager.get_blueprint_lru_cache')
+    def test_get_cached_blueprint_name_lru(self, mock_lru_cache, mock_get_cached, mock_load_cache):
         """Test LRU caching for blueprint name lookups."""
         from cache_manager import get_cached_blueprint_name
 
+        # Mock LRU cache
+        mock_cache_instance = mock_lru_cache.return_value
+        mock_cache_instance.get.return_value = 'Test Blueprint'
+        
         mock_load_cache.return_value = {'1001': 'Test Blueprint'}
         mock_get_cached.return_value = 'Test Blueprint'
 
@@ -722,10 +727,15 @@ class TestCacheLRUOptimization:
 
     @patch('cache_manager.load_location_cache')
     @patch('cache_manager.get_cached_value_with_stats')
-    def test_get_cached_location_name_lru(self, mock_get_cached, mock_load_cache):
+    @patch('cache_manager.get_location_lru_cache')
+    def test_get_cached_location_name_lru(self, mock_lru_cache, mock_get_cached, mock_load_cache):
         """Test LRU caching for location name lookups."""
         from cache_manager import get_cached_location_name
 
+        # Mock LRU cache
+        mock_cache_instance = mock_lru_cache.return_value
+        mock_cache_instance.get.return_value = 'Jita IV - Moon 4 - Caldari Navy Assembly Plant'
+        
         mock_load_cache.return_value = {'60003760': 'Jita IV - Moon 4 - Caldari Navy Assembly Plant'}
         mock_get_cached.return_value = 'Jita IV - Moon 4 - Caldari Navy Assembly Plant'
 

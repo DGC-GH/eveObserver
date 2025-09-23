@@ -174,11 +174,13 @@ def load_cache(cache_file: str) -> Dict[str, Any]:
     ensure_cache_dir()
     if os.path.exists(cache_file):
         try:
-            if CACHE_CONFIG['use_compression']:
-                with gzip.open(cache_file, 'rt', encoding='utf-8') as f:
-                    data = json.load(f)
-            else:
+            # Try loading as uncompressed JSON first (for backward compatibility)
+            try:
                 with open(cache_file, 'r') as f:
+                    data = json.load(f)
+            except Exception:
+                # If uncompressed fails, try compressed
+                with gzip.open(cache_file, 'rt', encoding='utf-8') as f:
                     data = json.load(f)
             
             # Clean up expired entries

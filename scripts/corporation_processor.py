@@ -8,11 +8,14 @@ import requests
 import argparse
 from datetime import datetime, timezone
 from typing import Dict, Any, Optional, List, Tuple
+import logging
 from config import *
 from api_client import fetch_esi, fetch_public_esi, wp_request, WordPressAuthError, WordPressRequestError
 from data_processors import get_wp_auth
 from blueprint_processor import extract_blueprints_from_assets, extract_blueprints_from_industry_jobs, extract_blueprints_from_contracts, update_blueprint_in_wp, update_blueprint_from_asset_in_wp
 from data_processors import process_blueprints_parallel
+
+logger = logging.getLogger(__name__)
 
 async def fetch_corporation_data(corp_id: int, access_token: str) -> Optional[Dict[str, Any]]:
     """
