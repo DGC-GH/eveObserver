@@ -340,7 +340,7 @@ class EVEDashboard {
         console.log('✅ [STEP 11] eveObserverApi is available');
         console.log('🔄 [STEP 12] API configuration:', {
             nonce: eveObserverApi.nonce ? 'present' : 'missing',
-            restUrl: eveObserverApi.restUrl
+            ajaxUrl: eveObserverApi.ajaxUrl
         });
 
         // Disable button and show loading state
@@ -354,71 +354,37 @@ class EVEDashboard {
         this.animateProgress(progressFill, progressText, 'Preparing request...');
 
         try {
-            console.log(`🔄 [STEP 15] Preparing API request to sync ${section}`);
-            console.log('🔄 [STEP 16] API URL:', eveObserverApi.restUrl + 'sync/' + section);
+            console.log(`🔄 [STEP 15] Preparing AJAX request to sync ${section}`);
+            console.log('🔄 [STEP 16] AJAX action: eve_sync');
             console.log('🔄 [STEP 17] Nonce:', eveObserverApi.nonce);
 
-            const requestData = {
-                method: 'POST',
-                headers: {
-                    'X-WP-Nonce': eveObserverApi.nonce,
-                    'Content-Type': 'application/json'
-                }
+            const ajaxData = {
+                action: 'eve_sync',
+                section: section,
+                nonce: eveObserverApi.nonce
             };
-            console.log('🔄 [STEP 18] Request configuration:', requestData);
+            console.log('🔄 [STEP 18] AJAX data:', ajaxData);
 
-            console.log(`🔄 [STEP 19] Making fetch request to: ${eveObserverApi.restUrl}sync/${section}`);
-            const response = await fetch(`${eveObserverApi.restUrl}sync/${section}`, requestData);
-            console.log('✅ [STEP 20] Fetch request completed');
-            console.log('🔄 [STEP 21] Response status:', response.status);
-            console.log('🔄 [STEP 22] Response ok:', response.ok);
+            console.log(`🔄 [STEP 19] Making AJAX request to sync ${section}`);
+            const response = await this.makeAjaxRequest(ajaxData);
+            console.log('✅ [STEP 20] AJAX request completed');
+            console.log('🔄 [STEP 21] Response success:', response.success);
 
             // Update progress for request completion
             this.animateProgress(progressFill, progressText, 'Processing response...');
 
-            if (!response.ok) {
-                console.log('❌ [STEP 23] Response not ok, processing error...');
-                const errorData = await response.json().catch(() => ({ message: 'Unknown error' }));
-                console.log('🔄 [STEP 24] Error data:', errorData);
-
-                // Check for specific error types
-                if (errorData.code === 'function_disabled') {
-                    console.log('❌ [STEP 25] Detected shell_exec disabled error');
-                    progressContent.textContent += `❌ Server configuration error: ${errorData.message}. Please contact your hosting provider to enable shell_exec function.\n`;
-                    progressFill.style.width = '100%';
-                    progressFill.style.backgroundColor = '#dc3545';
-                    progressText.textContent = 'Error: Server configuration';
-                    throw new Error(`Server configuration error: ${errorData.message}. Please contact your hosting provider to enable shell_exec function.`);
-                }
-
-                console.log('❌ [STEP 26] Generic HTTP error');
-                progressContent.textContent += `❌ HTTP ${response.status}: ${errorData.message || response.statusText}\n`;
-                progressFill.style.width = '100%';
-                progressFill.style.backgroundColor = '#dc3545';
-                progressText.textContent = 'Error: HTTP failure';
-                throw new Error(`HTTP ${response.status}: ${errorData.message || response.statusText}`);
-            }
-
-            console.log('✅ [STEP 27] Response ok, parsing JSON...');
-            const result = await response.json();
-            console.log(`✅ [STEP 28] JSON parsed successfully`);
-            console.log(`🔄 [STEP 29] EVE Observer: Sync response for ${section}:`, result);
-
-            // Update progress for successful parsing
-            this.animateProgress(progressFill, progressText, 'Sync completed successfully!');
-
-            if (result.success) {
-                console.log('✅ [STEP 30] Sync was successful');
-                const message = result.execution_time
-                    ? `Successfully synced ${section} in ${result.execution_time}s`
+            if (response.success) {
+                console.log('✅ [STEP 22] Sync was successful');
+                const message = response.data.execution_time
+                    ? `Successfully synced ${section} in ${response.data.execution_time}s`
                     : `Successfully synced ${section}`;
-                console.log('🔄 [STEP 31] Success message:', message);
-                console.log('🔄 [STEP 32] Showing success notification...');
+                console.log('🔄 [STEP 23] Success message:', message);
+                console.log('🔄 [STEP 24] Showing success notification...');
                 this.showNotification(message, 'success');
 
                 // Show sync output in progress area
-                if (result.output) {
-                    progressContent.textContent += `✅ Sync completed successfully!\n\nOutput:\n${result.output}\n`;
+                if (response.data.output) {
+                    progressContent.textContent += `✅ Sync completed successfully!\n\nOutput:\n${response.data.output}\n`;
                 } else {
                     progressContent.textContent += '✅ Sync completed successfully!\n';
                 }
@@ -429,27 +395,27 @@ class EVEDashboard {
                 progressText.textContent = 'Complete!';
 
                 // Reload data after successful sync
-                console.log(`🔄 [STEP 33] Reloading data after successful sync of ${section}`);
-                console.log('🔄 [STEP 34] Calling loadAllData()...');
+                console.log(`🔄 [STEP 25] Reloading data after successful sync of ${section}`);
+                console.log('🔄 [STEP 26] Calling loadAllData()...');
                 await this.loadAllData();
-                console.log('✅ [STEP 35] Data reloaded successfully');
-                console.log('🔄 [STEP 36] Calling renderAllTables()...');
+                console.log('✅ [STEP 27] Data reloaded successfully');
+                console.log('🔄 [STEP 28] Calling renderAllTables()...');
                 this.renderAllTables();
-                console.log('✅ [STEP 37] Tables rendered');
-                console.log('🔄 [STEP 38] Calling renderChart()...');
+                console.log('✅ [STEP 29] Tables rendered');
+                console.log('🔄 [STEP 30] Calling renderChart()...');
                 this.renderChart();
-                console.log('✅ [STEP 39] Chart rendered');
+                console.log('✅ [STEP 31] Chart rendered');
             } else {
-                console.log('❌ [STEP 40] Sync reported failure in response');
-                progressContent.textContent += `❌ Sync failed: ${result.message}\n`;
+                console.log('❌ [STEP 32] Sync reported failure in response');
+                progressContent.textContent += `❌ Sync failed: ${response.data.message}\n`;
                 progressFill.style.width = '100%';
                 progressFill.style.backgroundColor = '#dc3545';
                 progressText.textContent = 'Failed';
-                throw new Error(result.message || 'Sync failed');
+                throw new Error(response.data.message || 'Sync failed');
             }
         } catch (error) {
             console.error(`❌ [ERROR] EVE Observer: Sync error for ${section}:`, error);
-            console.log('🔄 [STEP 41] Showing error notification...');
+            console.log('🔄 [STEP 33] Showing error notification...');
             this.showNotification(`Failed to sync ${section}: ${error.message}`, 'error');
             progressContent.textContent += `❌ Error: ${error.message}\n`;
             progressFill.style.width = '100%';
@@ -457,11 +423,11 @@ class EVEDashboard {
             progressText.textContent = 'Error occurred';
         } finally {
             // Restore button state
-            console.log('🔄 [STEP 42] Restoring button state...');
+            console.log('🔄 [STEP 34] Restoring button state...');
             button.disabled = false;
             button.innerHTML = originalText;
-            console.log('✅ [STEP 43] Button state restored');
-            console.log(`🔄 [STEP 44] EVE Observer: Sync operation completed for ${section}`);
+            console.log('✅ [STEP 35] Button state restored');
+            console.log(`🔄 [STEP 36] EVE Observer: Sync operation completed for ${section}`);
 
             // Hide progress after 10 seconds
             setTimeout(() => {
@@ -485,6 +451,30 @@ class EVEDashboard {
         };
 
         animate();
+    }
+
+    makeAjaxRequest(data) {
+        return new Promise((resolve, reject) => {
+            jQuery.ajax({
+                url: eveObserverApi.ajaxUrl,
+                type: 'POST',
+                data: data,
+                success: (response) => {
+                    console.log('✅ [AJAX] Request successful:', response);
+                    resolve(response);
+                },
+                error: (xhr, status, error) => {
+                    console.error('❌ [AJAX] Request failed:', xhr, status, error);
+                    let errorMessage = 'Unknown AJAX error';
+                    if (xhr.responseJSON && xhr.responseJSON.data && xhr.responseJSON.data.message) {
+                        errorMessage = xhr.responseJSON.data.message;
+                    } else if (xhr.responseText) {
+                        errorMessage = xhr.responseText;
+                    }
+                    reject(new Error(errorMessage));
+                }
+            });
+        });
     }
 
     showNotification(message, type = 'info') {

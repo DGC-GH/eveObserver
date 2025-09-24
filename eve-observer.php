@@ -26,6 +26,7 @@ class EVE_Observer {
         add_action('init', array($this, 'init'));
         add_action('admin_menu', array($this, 'add_admin_menu'));
         add_action('admin_enqueue_scripts', array($this, 'enqueue_admin_scripts'));
+        add_action('wp_ajax_eve_sync', array($this, 'handle_ajax_sync_request'));
         register_activation_hook(__FILE__, array($this, 'activate'));
         register_deactivation_hook(__FILE__, array($this, 'deactivate'));
     }
@@ -185,6 +186,98 @@ class EVE_Observer {
 
     public function check_sync_permissions() {
         return current_user_can('manage_options');
+    }
+
+    public function handle_ajax_sync_request() {
+        // Check permissions
+        if (!current_user_can('manage_options')) {
+            wp_die(__('You do not have sufficient permissions to access this page.'));
+        }
+
+        // Verify nonce
+        if (!wp_verify_nonce($_POST['nonce'], 'eve_sync_nonce')) {
+            wp_send_json_error(array('message' => 'Security check failed'), 403);
+            return;
+        }
+
+        // Get the section parameter
+        $section = isset($_POST['section']) ? sanitize_text_field($_POST['section']) : 'all';
+
+        // Log the sync request
+        error_log("🔄 [AJAX PHP STEP 1] EVE Observer: AJAX sync request started for section: {$section}");
+
+        // Map sections to Python scripts
+        $script_map = array(
+            'characters' => 'main.py --characters',
+            'blueprints' => 'main.py --blueprints',
+            'planets' => 'main.py --planets',
+            'corporations' => 'main.py --corporations',
+            'contracts' => 'main.py --contracts',
+            'all' => 'main.py --all'
+        );
+
+        if (!isset($script_map[$section])) {
+            error_log("❌ [AJAX PHP ERROR] Invalid section specified: {$section}");
+            wp_send_json_error(array('message' => 'Invalid section specified'), 400);
+            return;
+        }
+
+        // Get the plugin directory path
+        $plugin_dir = plugin_dir_path(__FILE__);
+        $scripts_dir = $plugin_dir . 'scripts/';
+        $script_path = $scripts_dir . $script_map[$section];
+
+        // Use the specific path provided by Hostinger
+        $python_cmd = 'python3 ' . escapeshellarg($script_path);
+
+        error_log("🔄 [AJAX PHP STEP 2] Plugin dir: {$plugin_dir}");
+        error_log("🔄 [AJAX PHP STEP 3] Scripts dir: {$scripts_dir}");
+        error_log("🔄 [AJAX PHP STEP 4] Script path: {$script_path}");
+        error_log("🔄 [AJAX PHP STEP 5] Python command: {$python_cmd}");
+
+        // Change to scripts directory and run the command
+        $command = 'cd ' . escapeshellarg($scripts_dir) . ' && ' . $python_cmd . ' 2>&1';
+        error_log("🔄 [AJAX PHP STEP 6] Full command: {$command}");
+
+        // Set execution time limit for long-running syncs
+        set_time_limit(300); // 5 minutes
+        error_log("🔄 [AJAX PHP STEP 7] Time limit set");
+
+        // Execute the command and capture output
+        error_log("🔄 [AJAX PHP STEP 8] Starting command execution...");
+        $start_time = microtime(true);
+        $output = shell_exec($command);
+        $execution_time = microtime(true) - $start_time;
+        error_log("✅ [AJAX PHP STEP 9] Command execution completed in " . round($execution_time, 2) . " seconds");
+
+        // Check if command was successful
+        $exit_code = 0;
+        if (function_exists('exec')) {
+            exec($command, $output_lines, $exit_code);
+            error_log("🔄 [AJAX PHP STEP 10] Exit code from exec(): {$exit_code}");
+        }
+
+        if ($exit_code !== 0) {
+            error_log("❌ [AJAX PHP ERROR] Sync failed for section {$section}. Exit code: {$exit_code}. Output: " . substr($output, 0, 1000));
+            wp_send_json_error(array(
+                'message' => 'Sync failed with exit code: ' . $exit_code,
+                'output' => $output,
+                'execution_time' => round($execution_time, 2)
+            ), 500);
+            return;
+        }
+
+        // Log successful completion
+        error_log("✅ [AJAX PHP STEP 11] Sync completed successfully for section {$section} in " . round($execution_time, 2) . " seconds");
+
+        // Send success response
+        wp_send_json_success(array(
+            'section' => $section,
+            'message' => 'Sync completed successfully',
+            'execution_time' => round($execution_time, 2),
+            'timestamp' => current_time('mysql'),
+            'output' => $output
+        ));
     }
 
     public function handle_sync_request($request) {
@@ -347,10 +440,10 @@ class EVE_Observer {
             wp_enqueue_script('chart-js', 'https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.js', array(), '4.4.1', true);
             wp_enqueue_script('eve-observer-dashboard', plugin_dir_url(__FILE__) . 'js/dashboard.js', array('chart-js'), '1.1.1', false);
 
-            // Localize script with nonce
+            // Localize script with nonce and AJAX URL
             wp_localize_script('eve-observer-dashboard', 'eveObserverApi', array(
-                'nonce' => wp_create_nonce('wp_rest'),
-                'restUrl' => rest_url('eve-observer/v1/')
+                'nonce' => wp_create_nonce('eve_sync_nonce'),
+                'ajaxUrl' => admin_url('admin-ajax.php')
             ));
 
             // Add clipboard functionality for dashboard
