@@ -36,35 +36,60 @@ class EVEDashboard {
             console.log('🔄 [INIT] Starting loadAllData()...');
             await this.loadAllData();
             console.log('✅ [INIT] loadAllData() completed');
+        } catch (error) {
+            console.error('❌ [INIT ERROR] loadAllData() failed:', error);
+            console.log('🔄 [INIT] Continuing with empty data...');
+        }
 
+        try {
             console.log('🔄 [INIT] Starting setupSearch()...');
             this.setupSearch();
             console.log('✅ [INIT] setupSearch() completed');
+        } catch (error) {
+            console.error('❌ [INIT ERROR] setupSearch() failed:', error);
+        }
 
+        try {
             console.log('🔄 [INIT] Starting setupCardClicks()...');
             this.setupCardClicks();
             console.log('✅ [INIT] setupCardClicks() completed');
+        } catch (error) {
+            console.error('❌ [INIT ERROR] setupCardClicks() failed:', error);
+        }
 
+        try {
             console.log('🔄 [INIT] Starting renderChart()...');
             this.renderChart();
             console.log('✅ [INIT] renderChart() completed');
+        } catch (error) {
+            console.error('❌ [INIT ERROR] renderChart() failed:', error);
+        }
 
+        try {
             console.log('🔄 [INIT] Starting renderAllTables()...');
             this.renderAllTables();
             console.log('✅ [INIT] renderAllTables() completed');
+        } catch (error) {
+            console.error('❌ [INIT ERROR] renderAllTables() failed:', error);
+        }
 
+        try {
             console.log('🔄 [INIT] Starting setupActionButtons()...');
             this.setupActionButtons();
             console.log('✅ [INIT] setupActionButtons() completed');
+        } catch (error) {
+            console.error('❌ [INIT ERROR] setupActionButtons() failed:', error);
+        }
 
+        try {
             console.log('🔄 [INIT] Starting hideLoaders()...');
             this.hideLoaders();
             console.log('✅ [INIT] hideLoaders() completed');
-
-            console.log('🎉 [INIT] Dashboard initialization completed successfully!');
         } catch (error) {
-            console.error('❌ [INIT ERROR] Dashboard initialization failed:', error);
+            console.error('❌ [INIT ERROR] hideLoaders() failed:', error);
         }
+
+        console.log('🎉 [INIT] Dashboard initialization completed (with error handling)');
     }
 
     async loadAllData() {
@@ -306,6 +331,11 @@ class EVEDashboard {
                 console.log('🔄 [STEP 2] Event object:', e);
                 console.log('🔄 [STEP 3] Button element:', syncAllButton);
                 console.log('🔄 [STEP 4] Button data-section:', syncAllButton.getAttribute('data-section'));
+                console.log('🔄 [STEP 5] eveObserverApi available:', typeof eveObserverApi !== 'undefined');
+                if (typeof eveObserverApi !== 'undefined') {
+                    console.log('🔄 [STEP 6] eveObserverApi.nonce exists:', !!eveObserverApi.nonce);
+                    console.log('🔄 [STEP 7] eveObserverApi.ajaxUrl exists:', !!eveObserverApi.ajaxUrl);
+                }
                 this.syncSection('all', syncAllButton);
             });
             console.log('✅ [INIT STEP 17] Sync all button event listener set up');
@@ -678,7 +708,18 @@ class EVEDashboard {
 
     renderChart() {
         let canvas = document.getElementById('eveChart');
-        if (!canvas) return;
+        if (!canvas) {
+            console.log('⚠️ [CHART] Canvas element not found, skipping chart creation');
+            return;
+        }
+
+        // Check if Chart.js is available
+        if (typeof Chart === 'undefined') {
+            console.error('❌ [CHART] Chart.js is not loaded! Skipping chart creation.');
+            console.log('🔄 [CHART] Chart object:', typeof Chart);
+            console.log('🔄 [CHART] This may prevent sync functionality from working properly.');
+            return;
+        }
 
         // Destroy any existing chart on the current canvas before replacing
         const existingChart = Chart.getChart(canvas);
@@ -797,7 +838,8 @@ class EVEDashboard {
             console.log('✅ [CHART] Chart created successfully');
         } catch (error) {
             console.error('❌ [CHART] Error creating chart:', error);
-            throw error;
+            console.log('🔄 [CHART] Chart creation failed, but continuing with dashboard initialization');
+            // Don't throw error - allow dashboard to continue working without chart
         }
     }
 
