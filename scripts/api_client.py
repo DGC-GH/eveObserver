@@ -4,6 +4,9 @@ EVE Observer API Client
 Handles ESI API and WordPress REST API interactions.
 """
 
+import warnings
+warnings.filterwarnings("ignore", message="urllib3 v2 only supports OpenSSL", category=Warning)
+
 import asyncio
 import functools
 import logging
