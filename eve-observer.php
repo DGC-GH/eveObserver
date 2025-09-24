@@ -291,7 +291,7 @@ class EVE_Observer {
         // Try multiple methods to find Python executable
         $python_cmd = '';
         $python_paths = array(
-            '/usr/bin/python3',
+            '/usr/bin/python3',  // Hostinger cron job path (highest priority)
             '/usr/local/bin/python3', 
             '/usr/bin/python',
             '/usr/local/bin/python',
@@ -308,6 +308,19 @@ class EVE_Observer {
                 $python_cmd = $path;
                 error_log("✅ [AJAX PHP STEP 3] Found working Python at: {$path}");
                 break;
+            }
+        }
+        
+        // If no Python found through PATH, try direct path access (Hostinger specific)
+        if (empty($python_cmd)) {
+            error_log("🔄 [AJAX PHP STEP 3.1] PATH-based detection failed, trying direct path access...");
+            $direct_paths = array('/usr/bin/python3', '/usr/local/bin/python3');
+            foreach ($direct_paths as $path) {
+                if (file_exists($path) && is_executable($path)) {
+                    $python_cmd = $path;
+                    error_log("✅ [AJAX PHP STEP 3.2] Found executable Python directly at: {$path}");
+                    break;
+                }
             }
         }
         
