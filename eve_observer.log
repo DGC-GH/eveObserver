@@ -1,454 +1,994 @@
-2025-09-24 03:25:32,125 - INFO - ESI authenticated fetch successful: /characters/90020513/ in 0.14s
-2025-09-24 03:25:32,125 - INFO - _fetch_esi_with_retry completed in 0.139s
-2025-09-24 03:25:32,452 - INFO - WordPress GET successful: /wp/v2/eve_character?slug=character-90020513 in 0.33s
-2025-09-24 03:25:32,453 - INFO - wp_request completed in 0.326s
-2025-09-24 03:25:32,487 - INFO - ESI public fetch successful: /characters/90020513/portrait/ in 0.03s
-2025-09-24 03:25:32,488 - INFO - _fetch_esi_with_retry completed in 0.035s
-2025-09-24 03:25:32,488 - INFO - Portrait unchanged for character: Mr FiLiN
-2025-09-24 03:25:33,358 - INFO - WordPress PUT successful: /wp/v2/eve_character/56 in 0.87s
-2025-09-24 03:25:33,359 - INFO - wp_request completed in 0.871s
-2025-09-24 03:25:33,359 - INFO - Updated character: Mr FiLiN
-2025-09-24 03:25:33,360 - INFO - EVENT: CHARACTER_UPDATE | USER: 90020513 | DETAILS: {'name': 'Mr FiLiN', 'post_id': 56}
-2025-09-24 03:25:33,396 - INFO - ESI authenticated fetch successful: /characters/90045731/ in 0.04s
-2025-09-24 03:25:33,396 - INFO - _fetch_esi_with_retry completed in 0.036s
-2025-09-24 03:25:33,396 - INFO - Rate limiter adjusted: base=60.0, current=50.56, factor=0.8
-2025-09-24 03:25:33,798 - INFO - WordPress GET successful: /wp/v2/eve_character?slug=character-90045731 in 0.40s
-2025-09-24 03:25:33,799 - INFO - wp_request completed in 0.403s
-2025-09-24 03:25:33,835 - INFO - ESI public fetch successful: /characters/90045731/portrait/ in 0.04s
-2025-09-24 03:25:33,836 - INFO - _fetch_esi_with_retry completed in 0.036s
-2025-09-24 03:25:33,836 - INFO - Portrait unchanged for character: Dr FiLiN
-2025-09-24 03:25:33,836 - INFO - Rate limiter adjusted: base=60.0, current=46.42, factor=0.8
-2025-09-24 03:25:35,090 - INFO - WordPress PUT successful: /wp/v2/eve_character/85 in 1.25s
-2025-09-24 03:25:35,090 - INFO - wp_request completed in 1.254s
-2025-09-24 03:25:35,090 - INFO - Updated character: Dr FiLiN
-2025-09-24 03:25:35,090 - INFO - EVENT: CHARACTER_UPDATE | USER: 90045731 | DETAILS: {'name': 'Dr FiLiN', 'post_id': 85}
-2025-09-24 03:25:35,126 - INFO - ESI authenticated fetch successful: /characters/90522765/ in 0.03s
-2025-09-24 03:25:35,126 - INFO - _fetch_esi_with_retry completed in 0.035s
-2025-09-24 03:25:35,126 - INFO - Rate limiter adjusted: base=60.0, current=42.61, factor=0.7
-2025-09-24 03:25:35,370 - INFO - WordPress GET successful: /wp/v2/eve_character?slug=character-90522765 in 0.24s
-2025-09-24 03:25:35,371 - INFO - wp_request completed in 0.245s
-2025-09-24 03:25:35,404 - INFO - ESI public fetch successful: /characters/90522765/portrait/ in 0.03s
-2025-09-24 03:25:35,404 - INFO - _fetch_esi_with_retry completed in 0.033s
-2025-09-24 03:25:35,404 - INFO - Portrait unchanged for character: Orev Khazar
-2025-09-24 03:25:35,404 - INFO - Rate limiter adjusted: base=60.0, current=39.12, factor=0.7
-2025-09-24 03:25:36,737 - INFO - WordPress PUT successful: /wp/v2/eve_character/86 in 1.33s
-2025-09-24 03:25:36,738 - INFO - wp_request completed in 1.334s
-2025-09-24 03:25:36,739 - INFO - Updated character: Orev Khazar
-2025-09-24 03:25:36,739 - INFO - EVENT: CHARACTER_UPDATE | USER: 90522765 | DETAILS: {'name': 'Orev Khazar', 'post_id': 86}
-2025-09-24 03:25:36,772 - INFO - ESI authenticated fetch successful: /characters/90162477/ in 0.03s
-2025-09-24 03:25:36,773 - INFO - _fetch_esi_with_retry completed in 0.034s
-2025-09-24 03:25:36,773 - INFO - Rate limiter adjusted: base=60.0, current=35.91, factor=0.6
-2025-09-24 03:25:37,148 - INFO - WordPress GET successful: /wp/v2/eve_character?slug=character-90162477 in 0.37s
-2025-09-24 03:25:37,148 - INFO - wp_request completed in 0.376s
-2025-09-24 03:25:37,186 - INFO - ESI public fetch successful: /characters/90162477/portrait/ in 0.04s
-2025-09-24 03:25:37,186 - INFO - _fetch_esi_with_retry completed in 0.037s
-2025-09-24 03:25:37,186 - INFO - Portrait unchanged for character: Sir FiLiN
-2025-09-24 03:25:37,186 - INFO - Rate limiter adjusted: base=60.0, current=32.96, factor=0.5
-2025-09-24 03:25:38,709 - INFO - WordPress PUT successful: /wp/v2/eve_character/87 in 1.52s
-2025-09-24 03:25:38,710 - INFO - wp_request completed in 1.524s
-2025-09-24 03:25:38,711 - INFO - Updated character: Sir FiLiN
-2025-09-24 03:25:38,711 - INFO - EVENT: CHARACTER_UPDATE | USER: 90162477 | DETAILS: {'name': 'Sir FiLiN', 'post_id': 87}
-2025-09-24 03:25:38,747 - INFO - ESI authenticated fetch successful: /characters/95937458/ in 0.04s
-2025-09-24 03:25:38,747 - INFO - _fetch_esi_with_retry completed in 0.036s
-2025-09-24 03:25:38,747 - INFO - Rate limiter adjusted: base=60.0, current=30.60, factor=0.5
-2025-09-24 03:25:39,220 - INFO - WordPress GET successful: /wp/v2/eve_character?slug=character-95937458 in 0.47s
-2025-09-24 03:25:39,221 - INFO - wp_request completed in 0.474s
-2025-09-24 03:25:39,256 - INFO - ESI public fetch successful: /characters/95937458/portrait/ in 0.03s
-2025-09-24 03:25:39,256 - INFO - _fetch_esi_with_retry completed in 0.034s
-2025-09-24 03:25:39,256 - INFO - Portrait unchanged for character: Filin Khan
-2025-09-24 03:25:39,256 - INFO - Rate limiter adjusted: base=60.0, current=30.60, factor=0.5
-2025-09-24 03:25:40,792 - INFO - WordPress PUT successful: /wp/v2/eve_character/88 in 1.54s
-2025-09-24 03:25:40,793 - INFO - wp_request completed in 1.537s
-2025-09-24 03:25:40,793 - INFO - Updated character: Filin Khan
-2025-09-24 03:25:40,793 - INFO - EVENT: CHARACTER_UPDATE | USER: 95937458 | DETAILS: {'name': 'Filin Khan', 'post_id': 88}
-2025-09-24 03:25:40,828 - INFO - ESI authenticated fetch successful: /characters/95985116/ in 0.03s
-2025-09-24 03:25:40,828 - INFO - _fetch_esi_with_retry completed in 0.035s
-2025-09-24 03:25:40,829 - INFO - Rate limiter adjusted: base=60.0, current=30.60, factor=0.5
-2025-09-24 03:25:41,285 - INFO - WordPress GET successful: /wp/v2/eve_character?slug=character-95985116 in 0.46s
-2025-09-24 03:25:41,285 - INFO - wp_request completed in 0.457s
-2025-09-24 03:25:41,321 - INFO - ESI public fetch successful: /characters/95985116/portrait/ in 0.04s
-2025-09-24 03:25:41,321 - INFO - _fetch_esi_with_retry completed in 0.036s
-2025-09-24 03:25:41,321 - INFO - Portrait unchanged for character: Corvin Khan
-2025-09-24 03:25:41,321 - INFO - Rate limiter adjusted: base=60.0, current=30.60, factor=0.5
-2025-09-24 03:25:42,882 - INFO - WordPress PUT successful: /wp/v2/eve_character/89 in 1.56s
-2025-09-24 03:25:42,882 - INFO - wp_request completed in 1.561s
-2025-09-24 03:25:42,882 - INFO - Updated character: Corvin Khan
-2025-09-24 03:25:42,882 - INFO - EVENT: CHARACTER_UPDATE | USER: 95985116 | DETAILS: {'name': 'Corvin Khan', 'post_id': 89}
-2025-09-24 03:25:42,916 - INFO - ESI authenticated fetch successful: /characters/1316070855/ in 0.03s
-2025-09-24 03:25:42,916 - INFO - _fetch_esi_with_retry completed in 0.034s
-2025-09-24 03:25:42,916 - INFO - Rate limiter adjusted: base=60.0, current=30.60, factor=0.5
-2025-09-24 03:25:43,361 - INFO - WordPress GET successful: /wp/v2/eve_character?slug=character-1316070855 in 0.44s
-2025-09-24 03:25:43,361 - INFO - wp_request completed in 0.445s
-2025-09-24 03:25:43,395 - INFO - ESI public fetch successful: /characters/1316070855/portrait/ in 0.03s
-2025-09-24 03:25:43,395 - INFO - _fetch_esi_with_retry completed in 0.034s
-2025-09-24 03:25:43,395 - INFO - Portrait unchanged for character: FiLiN Core
-2025-09-24 03:25:43,395 - INFO - Rate limiter adjusted: base=60.0, current=30.60, factor=0.5
-2025-09-24 03:25:44,957 - INFO - WordPress PUT successful: /wp/v2/eve_character/91 in 1.56s
-2025-09-24 03:25:44,958 - INFO - wp_request completed in 1.563s
-2025-09-24 03:25:44,958 - INFO - Updated character: FiLiN Core
-2025-09-24 03:25:44,958 - INFO - EVENT: CHARACTER_UPDATE | USER: 1316070855 | DETAILS: {'name': 'FiLiN Core', 'post_id': 91}
-2025-09-24 03:25:44,994 - INFO - ESI authenticated fetch successful: /characters/91594850/ in 0.04s
-2025-09-24 03:25:44,994 - INFO - _fetch_esi_with_retry completed in 0.036s
-2025-09-24 03:25:44,995 - INFO - Rate limiter adjusted: base=60.0, current=30.60, factor=0.5
-2025-09-24 03:25:45,429 - INFO - WordPress GET successful: /wp/v2/eve_character?slug=character-91594850 in 0.43s
-2025-09-24 03:25:45,430 - INFO - wp_request completed in 0.435s
-2025-09-24 03:25:45,468 - INFO - ESI public fetch successful: /characters/91594850/portrait/ in 0.04s
-2025-09-24 03:25:45,468 - INFO - _fetch_esi_with_retry completed in 0.038s
-2025-09-24 03:25:45,468 - INFO - Portrait unchanged for character: Raven Madyar
-2025-09-24 03:25:45,468 - INFO - Rate limiter adjusted: base=60.0, current=30.60, factor=0.5
-2025-09-24 03:25:47,050 - INFO - WordPress PUT successful: /wp/v2/eve_character/92 in 1.58s
-2025-09-24 03:25:47,050 - INFO - wp_request completed in 1.582s
-2025-09-24 03:25:47,050 - INFO - Updated character: Raven Madyar
-2025-09-24 03:25:47,050 - INFO - EVENT: CHARACTER_UPDATE | USER: 91594850 | DETAILS: {'name': 'Raven Madyar', 'post_id': 92}
-2025-09-24 03:25:47,087 - INFO - ESI authenticated fetch successful: /characters/90483242/ in 0.04s
-2025-09-24 03:25:47,087 - INFO - _fetch_esi_with_retry completed in 0.036s
-2025-09-24 03:25:47,087 - INFO - Rate limiter adjusted: base=60.0, current=30.60, factor=0.5
-2025-09-24 03:25:47,501 - INFO - WordPress GET successful: /wp/v2/eve_character?slug=character-90483242 in 0.41s
-2025-09-24 03:25:47,502 - INFO - wp_request completed in 0.415s
-2025-09-24 03:25:47,536 - INFO - ESI public fetch successful: /characters/90483242/portrait/ in 0.03s
-2025-09-24 03:25:47,536 - INFO - _fetch_esi_with_retry completed in 0.034s
-2025-09-24 03:25:47,536 - INFO - Portrait unchanged for character: Vran Ruthen
-2025-09-24 03:25:47,536 - INFO - Rate limiter adjusted: base=60.0, current=30.60, factor=0.5
-2025-09-24 03:25:49,129 - INFO - WordPress PUT successful: /wp/v2/eve_character/93 in 1.59s
-2025-09-24 03:25:49,130 - INFO - wp_request completed in 1.594s
-2025-09-24 03:25:49,130 - INFO - Updated character: Vran Ruthen
-2025-09-24 03:25:49,130 - INFO - EVENT: CHARACTER_UPDATE | USER: 90483242 | DETAILS: {'name': 'Vran Ruthen', 'post_id': 93}
-2025-09-24 03:25:49,130 - INFO - Starting cleanup of old posts...
-2025-09-24 03:25:49,130 - INFO - Cleaning up contract posts...
-2025-09-24 03:25:49,131 - INFO - Rate limiter adjusted: base=60.0, current=30.60, factor=0.5
-2025-09-24 03:25:49,644 - INFO - WordPress GET successful: /wp/v2/eve_contract in 0.51s
-2025-09-24 03:25:49,644 - INFO - wp_request completed in 0.514s
-2025-09-24 03:25:49,644 - INFO - Cleaning up blueprint posts...
-2025-09-24 03:25:49,797 - INFO - Cleanup completed.
-2025-09-24 03:25:49,797 - INFO - Processing character: Mr FiLiN (ID: 90020513)
-2025-09-24 03:25:49,927 - INFO - ESI authenticated fetch successful: /characters/90020513/contracts/ in 0.13s
-2025-09-24 03:25:49,927 - INFO - _fetch_esi_with_retry completed in 0.130s
-2025-09-24 03:25:49,927 - INFO - Processing character: Dr FiLiN (ID: 90045731)
-2025-09-24 03:25:50,087 - INFO - ESI authenticated fetch successful: /characters/90045731/contracts/ in 0.16s
-2025-09-24 03:25:50,087 - INFO - _fetch_esi_with_retry completed in 0.160s
-2025-09-24 03:25:50,087 - INFO - Character contracts for Dr FiLiN: 61 items
-2025-09-24 03:25:50,088 - INFO - Fetching all expanded contracts from The Forge region for competition analysis...
-2025-09-24 03:25:50,088 - INFO - Starting streamlined fetch and expand of all Forge contracts...
-2025-09-24 03:25:50,088 - INFO - Loading contracts from existing cache file: cache/all_contracts_forge.json
-2025-09-24 03:25:50,155 - INFO - ✓ Loaded 30008 contracts from cache
-2025-09-24 03:25:50,156 - INFO - Rate limiter adjusted: base=60.0, current=30.60, factor=0.5
-2025-09-24 03:25:51,176 - INFO - WordPress GET successful: /wp/v2/eve_contract?slug=contract-222641777 in 1.02s
-2025-09-24 03:25:51,176 - INFO - wp_request completed in 1.020s
-2025-09-24 03:25:51,179 - INFO - Contract 222641777 contains no blueprints, skipping
-2025-09-24 03:25:51,179 - INFO - Rate limiter adjusted: base=60.0, current=30.60, factor=0.5
-2025-09-24 03:25:52,241 - INFO - WordPress GET successful: /wp/v2/eve_contract?slug=contract-222641803 in 1.06s
-2025-09-24 03:25:52,242 - INFO - wp_request completed in 1.062s
-2025-09-24 03:25:52,250 - INFO - Contract 222641803 contains no blueprints, skipping
-2025-09-24 03:25:52,251 - INFO - Rate limiter adjusted: base=60.0, current=30.60, factor=0.5
-2025-09-24 03:25:53,277 - INFO - WordPress GET successful: /wp/v2/eve_contract?slug=contract-222641814 in 1.03s
-2025-09-24 03:25:53,277 - INFO - wp_request completed in 1.027s
-2025-09-24 03:25:53,286 - INFO - Contract 222641814 contains no blueprints, skipping
-2025-09-24 03:25:53,288 - INFO - Rate limiter adjusted: base=60.0, current=30.60, factor=0.5
-2025-09-24 03:25:54,325 - INFO - WordPress GET successful: /wp/v2/eve_contract?slug=contract-222641822 in 1.04s
-2025-09-24 03:25:54,325 - INFO - wp_request completed in 1.038s
-2025-09-24 03:25:54,327 - INFO - Contract 222641822 contains no blueprints, skipping
-2025-09-24 03:25:54,328 - INFO - Rate limiter adjusted: base=60.0, current=30.60, factor=0.5
-2025-09-24 03:25:55,359 - INFO - WordPress GET successful: /wp/v2/eve_contract?slug=contract-222641828 in 1.03s
-2025-09-24 03:25:55,360 - INFO - wp_request completed in 1.032s
-2025-09-24 03:25:55,369 - INFO - Contract 222641828 contains no blueprints, skipping
-2025-09-24 03:25:55,370 - INFO - Rate limiter adjusted: base=60.0, current=30.60, factor=0.5
-2025-09-24 03:25:56,420 - INFO - WordPress GET successful: /wp/v2/eve_contract?slug=contract-222641837 in 1.05s
-2025-09-24 03:25:56,421 - INFO - wp_request completed in 1.052s
-2025-09-24 03:25:56,430 - INFO - Contract 222641837 contains no blueprints, skipping
-2025-09-24 03:25:56,431 - INFO - Rate limiter adjusted: base=60.0, current=30.60, factor=0.5
-2025-09-24 03:25:57,473 - INFO - WordPress GET successful: /wp/v2/eve_contract?slug=contract-222641849 in 1.04s
-2025-09-24 03:25:57,474 - INFO - wp_request completed in 1.043s
-2025-09-24 03:25:57,483 - INFO - Contract 222641849 contains no blueprints, skipping
-2025-09-24 03:25:57,484 - INFO - Rate limiter adjusted: base=60.0, current=30.60, factor=0.5
-2025-09-24 03:25:58,508 - INFO - WordPress GET successful: /wp/v2/eve_contract?slug=contract-222641864 in 1.02s
-2025-09-24 03:25:58,509 - INFO - wp_request completed in 1.025s
-2025-09-24 03:25:58,520 - INFO - Contract 222641864 contains no blueprints, skipping
-2025-09-24 03:25:58,521 - INFO - Rate limiter adjusted: base=60.0, current=30.60, factor=0.5
-2025-09-24 03:25:59,564 - INFO - WordPress GET successful: /wp/v2/eve_contract?slug=contract-222641882 in 1.04s
-2025-09-24 03:25:59,565 - INFO - wp_request completed in 1.044s
-2025-09-24 03:25:59,573 - INFO - Contract 222641882 contains no blueprints, skipping
-2025-09-24 03:25:59,574 - INFO - Rate limiter adjusted: base=60.0, current=30.60, factor=0.5
-2025-09-24 03:26:00,603 - INFO - WordPress GET successful: /wp/v2/eve_contract?slug=contract-222641897 in 1.03s
-2025-09-24 03:26:00,604 - INFO - wp_request completed in 1.030s
-2025-09-24 03:26:00,614 - INFO - Contract 222641897 contains no blueprints, skipping
-2025-09-24 03:26:00,615 - INFO - Rate limiter adjusted: base=60.0, current=30.60, factor=0.5
-2025-09-24 03:26:01,658 - INFO - WordPress GET successful: /wp/v2/eve_contract?slug=contract-222641914 in 1.04s
-2025-09-24 03:26:01,658 - INFO - wp_request completed in 1.043s
-2025-09-24 03:26:01,663 - INFO - Contract 222641914 contains no blueprints, skipping
-2025-09-24 03:26:01,664 - INFO - Rate limiter adjusted: base=60.0, current=30.60, factor=0.5
-2025-09-24 03:26:02,718 - INFO - WordPress GET successful: /wp/v2/eve_contract?slug=contract-222641925 in 1.05s
-2025-09-24 03:26:02,718 - INFO - wp_request completed in 1.054s
-2025-09-24 03:26:02,729 - INFO - Contract 222641925 contains no blueprints, skipping
-2025-09-24 03:26:02,730 - INFO - Rate limiter adjusted: base=60.0, current=30.60, factor=0.5
-2025-09-24 03:26:03,751 - INFO - WordPress GET successful: /wp/v2/eve_contract?slug=contract-222641937 in 1.02s
-2025-09-24 03:26:03,751 - INFO - wp_request completed in 1.021s
-2025-09-24 03:26:03,762 - INFO - Contract 222641937 contains no blueprints, skipping
-2025-09-24 03:26:03,763 - INFO - Rate limiter adjusted: base=60.0, current=30.60, factor=0.5
-2025-09-24 03:26:04,815 - INFO - WordPress GET successful: /wp/v2/eve_contract?slug=contract-222641948 in 1.05s
-2025-09-24 03:26:04,815 - INFO - wp_request completed in 1.053s
-2025-09-24 03:26:04,826 - INFO - Contract 222641948 contains no blueprints, skipping
-2025-09-24 03:26:04,826 - INFO - Rate limiter adjusted: base=60.0, current=30.60, factor=0.5
-2025-09-24 03:26:05,876 - INFO - WordPress GET successful: /wp/v2/eve_contract?slug=contract-222641961 in 1.05s
-2025-09-24 03:26:05,877 - INFO - wp_request completed in 1.051s
-2025-09-24 03:26:05,886 - INFO - Contract 222641961 contains no blueprints, skipping
-2025-09-24 03:26:05,887 - INFO - Rate limiter adjusted: base=60.0, current=30.60, factor=0.5
-2025-09-24 03:26:06,899 - INFO - WordPress GET successful: /wp/v2/eve_contract?slug=contract-222641973 in 1.01s
-2025-09-24 03:26:06,900 - INFO - wp_request completed in 1.013s
-2025-09-24 03:26:06,905 - INFO - Contract 222641973 contains no blueprints, skipping
-2025-09-24 03:26:06,907 - INFO - Rate limiter adjusted: base=60.0, current=30.60, factor=0.5
-2025-09-24 03:26:07,940 - INFO - WordPress GET successful: /wp/v2/eve_contract?slug=contract-222641983 in 1.03s
-2025-09-24 03:26:07,940 - INFO - wp_request completed in 1.033s
-2025-09-24 03:26:07,942 - INFO - Contract 222641983 contains no blueprints, skipping
-2025-09-24 03:26:07,943 - INFO - Rate limiter adjusted: base=60.0, current=30.60, factor=0.5
-2025-09-24 03:26:09,043 - INFO - WordPress GET successful: /wp/v2/eve_contract?slug=contract-222641993 in 1.10s
-2025-09-24 03:26:09,044 - INFO - wp_request completed in 1.101s
-2025-09-24 03:26:09,053 - INFO - Contract 222641993 contains no blueprints, skipping
-2025-09-24 03:26:09,054 - INFO - Rate limiter adjusted: base=60.0, current=30.60, factor=0.5
-2025-09-24 03:26:10,065 - INFO - WordPress GET successful: /wp/v2/eve_contract?slug=contract-222642004 in 1.01s
-2025-09-24 03:26:10,065 - INFO - wp_request completed in 1.011s
-2025-09-24 03:26:10,076 - INFO - Contract 222642004 contains no blueprints, skipping
-2025-09-24 03:26:10,077 - INFO - Rate limiter adjusted: base=60.0, current=30.60, factor=0.5
-2025-09-24 03:26:11,089 - INFO - WordPress GET successful: /wp/v2/eve_contract?slug=contract-222642013 in 1.01s
-2025-09-24 03:26:11,090 - INFO - wp_request completed in 1.013s
-2025-09-24 03:26:11,093 - INFO - Contract 222642013 contains no blueprints, skipping
-2025-09-24 03:26:11,094 - INFO - Rate limiter adjusted: base=60.0, current=30.60, factor=0.5
-2025-09-24 03:26:12,147 - INFO - WordPress GET successful: /wp/v2/eve_contract?slug=contract-222642020 in 1.05s
-2025-09-24 03:26:12,147 - INFO - wp_request completed in 1.054s
-2025-09-24 03:26:12,156 - INFO - Contract 222642020 contains no blueprints, skipping
-2025-09-24 03:26:12,158 - INFO - Rate limiter adjusted: base=60.0, current=30.60, factor=0.5
-2025-09-24 03:26:13,196 - INFO - WordPress GET successful: /wp/v2/eve_contract?slug=contract-222642026 in 1.04s
-2025-09-24 03:26:13,197 - INFO - wp_request completed in 1.039s
-2025-09-24 03:26:13,206 - INFO - Contract 222642026 contains no blueprints, skipping
-2025-09-24 03:26:13,207 - INFO - Rate limiter adjusted: base=60.0, current=30.60, factor=0.5
-2025-09-24 03:26:14,233 - INFO - WordPress GET successful: /wp/v2/eve_contract?slug=contract-222642037 in 1.03s
-2025-09-24 03:26:14,234 - INFO - wp_request completed in 1.027s
-2025-09-24 03:26:14,242 - INFO - Contract 222642037 contains no blueprints, skipping
-2025-09-24 03:26:14,243 - INFO - Rate limiter adjusted: base=60.0, current=30.60, factor=0.5
-2025-09-24 03:26:15,304 - INFO - WordPress GET successful: /wp/v2/eve_contract?slug=contract-222642061 in 1.06s
-2025-09-24 03:26:15,305 - INFO - wp_request completed in 1.062s
-2025-09-24 03:26:15,310 - INFO - Contract 222642061 contains no blueprints, skipping
-2025-09-24 03:26:15,312 - INFO - Rate limiter adjusted: base=60.0, current=30.60, factor=0.5
-2025-09-24 03:26:16,343 - INFO - WordPress GET successful: /wp/v2/eve_contract?slug=contract-222642072 in 1.03s
-2025-09-24 03:26:16,344 - INFO - wp_request completed in 1.032s
-2025-09-24 03:26:16,346 - INFO - Contract 222642072 contains no blueprints, skipping
-2025-09-24 03:26:16,346 - INFO - Rate limiter adjusted: base=60.0, current=30.60, factor=0.5
-2025-09-24 03:26:17,380 - INFO - WordPress GET successful: /wp/v2/eve_contract?slug=contract-222642077 in 1.03s
-2025-09-24 03:26:17,381 - INFO - wp_request completed in 1.035s
-2025-09-24 03:26:17,386 - INFO - Contract 222642077 contains no blueprints, skipping
-2025-09-24 03:26:17,388 - INFO - Rate limiter adjusted: base=60.0, current=30.60, factor=0.5
-2025-09-24 03:26:18,443 - INFO - WordPress GET successful: /wp/v2/eve_contract?slug=contract-222642089 in 1.06s
-2025-09-24 03:26:18,444 - INFO - wp_request completed in 1.056s
-2025-09-24 03:26:18,446 - INFO - Contract 222642089 contains no blueprints, skipping
-2025-09-24 03:26:18,446 - INFO - Rate limiter adjusted: base=60.0, current=30.60, factor=0.5
-2025-09-24 03:26:19,524 - INFO - WordPress GET successful: /wp/v2/eve_contract?slug=contract-222642107 in 1.08s
-2025-09-24 03:26:19,524 - INFO - wp_request completed in 1.078s
-2025-09-24 03:26:19,526 - INFO - Contract 222642107 contains no blueprints, skipping
-2025-09-24 03:26:19,527 - INFO - Rate limiter adjusted: base=60.0, current=30.60, factor=0.5
-2025-09-24 03:26:20,524 - INFO - WordPress GET successful: /wp/v2/eve_contract?slug=contract-222642133 in 1.00s
-2025-09-24 03:26:20,524 - INFO - wp_request completed in 0.998s
-2025-09-24 03:26:20,534 - INFO - Contract 222642133 contains no blueprints, skipping
-2025-09-24 03:26:20,536 - INFO - Rate limiter adjusted: base=60.0, current=30.60, factor=0.5
-2025-09-24 03:26:21,588 - INFO - WordPress GET successful: /wp/v2/eve_contract?slug=contract-222642153 in 1.05s
-2025-09-24 03:26:21,589 - INFO - wp_request completed in 1.054s
-2025-09-24 03:26:21,598 - INFO - Contract 222642153 contains no blueprints, skipping
-2025-09-24 03:26:21,599 - INFO - Rate limiter adjusted: base=60.0, current=30.60, factor=0.5
-2025-09-24 03:26:22,642 - INFO - WordPress GET successful: /wp/v2/eve_contract?slug=contract-222642169 in 1.04s
-2025-09-24 03:26:22,642 - INFO - wp_request completed in 1.043s
-2025-09-24 03:26:22,644 - INFO - Contract 222642169 contains no blueprints, skipping
-2025-09-24 03:26:22,645 - INFO - Rate limiter adjusted: base=60.0, current=30.60, factor=0.5
-2025-09-24 03:26:23,693 - INFO - WordPress GET successful: /wp/v2/eve_contract?slug=contract-222642246 in 1.05s
-2025-09-24 03:26:23,694 - INFO - wp_request completed in 1.049s
-2025-09-24 03:26:23,696 - INFO - Contract 222642246 contains no blueprints, skipping
-2025-09-24 03:26:23,696 - INFO - Rate limiter adjusted: base=60.0, current=30.60, factor=0.5
-2025-09-24 03:26:24,765 - INFO - WordPress GET successful: /wp/v2/eve_contract?slug=contract-222642285 in 1.07s
-2025-09-24 03:26:24,765 - INFO - wp_request completed in 1.069s
-2025-09-24 03:26:24,767 - INFO - Contract 222642285 contains no blueprints, skipping
-2025-09-24 03:26:24,767 - INFO - Rate limiter adjusted: base=60.0, current=30.60, factor=0.5
-2025-09-24 03:26:25,797 - INFO - WordPress GET successful: /wp/v2/eve_contract?slug=contract-222642299 in 1.03s
-2025-09-24 03:26:25,797 - INFO - wp_request completed in 1.030s
-2025-09-24 03:26:25,806 - INFO - Contract 222642299 contains no blueprints, skipping
-2025-09-24 03:26:25,807 - INFO - Rate limiter adjusted: base=60.0, current=30.60, factor=0.5
-2025-09-24 03:26:26,834 - INFO - WordPress GET successful: /wp/v2/eve_contract?slug=contract-222642381 in 1.03s
-2025-09-24 03:26:26,835 - INFO - wp_request completed in 1.028s
-2025-09-24 03:26:26,841 - INFO - Contract 222642381 contains no blueprints, skipping
-2025-09-24 03:26:26,842 - INFO - Rate limiter adjusted: base=60.0, current=30.60, factor=0.5
-2025-09-24 03:26:27,870 - INFO - WordPress GET successful: /wp/v2/eve_contract?slug=contract-222642390 in 1.03s
-2025-09-24 03:26:27,870 - INFO - wp_request completed in 1.029s
-2025-09-24 03:26:27,875 - INFO - Contract 222642390 contains no blueprints, skipping
-2025-09-24 03:26:27,875 - INFO - Rate limiter adjusted: base=60.0, current=30.60, factor=0.5
-2025-09-24 03:26:28,938 - INFO - WordPress GET successful: /wp/v2/eve_contract?slug=contract-222642413 in 1.06s
-2025-09-24 03:26:28,938 - INFO - wp_request completed in 1.063s
-2025-09-24 03:26:28,942 - INFO - Contract 222642413 contains no blueprints, skipping
-2025-09-24 03:26:28,942 - INFO - Rate limiter adjusted: base=60.0, current=30.60, factor=0.5
-2025-09-24 03:26:30,009 - INFO - WordPress GET successful: /wp/v2/eve_contract?slug=contract-222697423 in 1.07s
-2025-09-24 03:26:30,010 - INFO - wp_request completed in 1.067s
-2025-09-24 03:26:30,020 - INFO - Contract 222697423 contains no blueprints, skipping
-2025-09-24 03:26:30,022 - INFO - Rate limiter adjusted: base=60.0, current=30.60, factor=0.5
-2025-09-24 03:26:31,015 - INFO - WordPress GET successful: /wp/v2/eve_contract?slug=contract-222697456 in 0.99s
-2025-09-24 03:26:31,016 - INFO - wp_request completed in 0.994s
-2025-09-24 03:26:31,026 - INFO - Contract 222697456 contains no blueprints, skipping
-2025-09-24 03:26:31,027 - INFO - Rate limiter adjusted: base=60.0, current=30.60, factor=0.5
-2025-09-24 03:26:32,069 - INFO - WordPress GET successful: /wp/v2/eve_contract?slug=contract-222697477 in 1.04s
-2025-09-24 03:26:32,069 - INFO - wp_request completed in 1.043s
-2025-09-24 03:26:32,078 - INFO - Contract 222697477 contains no blueprints, skipping
-2025-09-24 03:26:32,080 - INFO - Rate limiter adjusted: base=60.0, current=30.60, factor=0.5
-2025-09-24 03:26:33,124 - INFO - WordPress GET successful: /wp/v2/eve_contract?slug=contract-222697508 in 1.04s
-2025-09-24 03:26:33,125 - INFO - wp_request completed in 1.046s
-2025-09-24 03:26:33,135 - INFO - Contract 222697508 contains no blueprints, skipping
-2025-09-24 03:26:33,136 - INFO - Rate limiter adjusted: base=60.0, current=30.60, factor=0.5
-2025-09-24 03:26:34,201 - INFO - WordPress GET successful: /wp/v2/eve_contract?slug=contract-222697519 in 1.06s
-2025-09-24 03:26:34,201 - INFO - wp_request completed in 1.065s
-2025-09-24 03:26:34,211 - INFO - Contract 222697519 contains no blueprints, skipping
-2025-09-24 03:26:34,212 - INFO - Rate limiter adjusted: base=60.0, current=30.60, factor=0.5
-2025-09-24 03:26:35,210 - INFO - WordPress GET successful: /wp/v2/eve_contract?slug=contract-222697538 in 1.00s
-2025-09-24 03:26:35,210 - INFO - wp_request completed in 0.998s
-2025-09-24 03:26:35,213 - INFO - Contract 222697538 contains no blueprints, skipping
-2025-09-24 03:26:35,213 - INFO - Rate limiter adjusted: base=60.0, current=30.60, factor=0.5
-2025-09-24 03:26:36,274 - INFO - WordPress GET successful: /wp/v2/eve_contract?slug=contract-222697552 in 1.06s
-2025-09-24 03:26:36,275 - INFO - wp_request completed in 1.061s
-2025-09-24 03:26:36,277 - INFO - Contract 222697552 contains no blueprints, skipping
-2025-09-24 03:26:36,278 - INFO - Rate limiter adjusted: base=60.0, current=30.60, factor=0.5
-2025-09-24 03:26:37,336 - INFO - WordPress GET successful: /wp/v2/eve_contract?slug=contract-222697571 in 1.06s
-2025-09-24 03:26:37,336 - INFO - wp_request completed in 1.058s
-2025-09-24 03:26:37,340 - INFO - Contract 222697571 contains no blueprints, skipping
-2025-09-24 03:26:37,341 - INFO - Rate limiter adjusted: base=60.0, current=30.60, factor=0.5
-2025-09-24 03:26:38,372 - INFO - WordPress GET successful: /wp/v2/eve_contract?slug=contract-222697575 in 1.03s
-2025-09-24 03:26:38,373 - INFO - wp_request completed in 1.032s
-2025-09-24 03:26:38,382 - INFO - Contract 222697575 contains no blueprints, skipping
-2025-09-24 03:26:38,391 - INFO - Processing character: Orev Khazar (ID: 90522765)
-2025-09-24 03:26:38,579 - INFO - ESI authenticated fetch successful: /characters/90522765/contracts/ in 0.19s
-2025-09-24 03:26:38,580 - INFO - _fetch_esi_with_retry completed in 0.188s
-2025-09-24 03:26:38,580 - INFO - Processing character: Sir FiLiN (ID: 90162477)
-2025-09-24 03:26:38,809 - INFO - ESI authenticated fetch successful: /characters/90162477/contracts/ in 0.23s
-2025-09-24 03:26:38,809 - INFO - _fetch_esi_with_retry completed in 0.229s
-2025-09-24 03:26:38,810 - INFO - Processing character: Filin Khan (ID: 95937458)
-2025-09-24 03:26:38,939 - INFO - ESI authenticated fetch successful: /characters/95937458/contracts/ in 0.13s
-2025-09-24 03:26:38,939 - INFO - _fetch_esi_with_retry completed in 0.129s
-2025-09-24 03:26:38,939 - INFO - Processing character: Corvin Khan (ID: 95985116)
-2025-09-24 03:26:39,061 - INFO - ESI authenticated fetch successful: /characters/95985116/contracts/ in 0.12s
-2025-09-24 03:26:39,062 - INFO - _fetch_esi_with_retry completed in 0.122s
-2025-09-24 03:26:39,062 - INFO - Processing character: FiLiN Core (ID: 1316070855)
-2025-09-24 03:26:39,206 - INFO - ESI authenticated fetch successful: /characters/1316070855/contracts/ in 0.14s
-2025-09-24 03:26:39,207 - INFO - _fetch_esi_with_retry completed in 0.145s
-2025-09-24 03:26:39,207 - INFO - Processing character: Raven Madyar (ID: 91594850)
-2025-09-24 03:26:39,342 - INFO - ESI authenticated fetch successful: /characters/91594850/contracts/ in 0.13s
-2025-09-24 03:26:39,342 - INFO - _fetch_esi_with_retry completed in 0.135s
-2025-09-24 03:26:39,343 - INFO - Processing character: Vran Ruthen (ID: 90483242)
-2025-09-24 03:26:39,460 - INFO - ESI authenticated fetch successful: /characters/90483242/contracts/ in 0.12s
-2025-09-24 03:26:39,461 - INFO - _fetch_esi_with_retry completed in 0.118s
-2025-09-24 03:55:45,758 - INFO - Starting streamlined fetch and expand of all Forge contracts...
-2025-09-24 03:55:45,759 - INFO - Phase 1: Fetching all basic contract data from The Forge region...
-2025-09-24 03:55:45,759 - INFO - Fetching all contracts from region 10000002
-2025-09-24 03:55:45,759 - INFO - Fetching page 1...
-2025-09-24 03:55:45,927 - INFO - Found 1000 contracts on page 1
-2025-09-24 03:55:45,927 - INFO - Contract 0: type=item_exchange, status=None, price=50000000.0
-2025-09-24 03:55:45,927 - INFO - Contract 1: type=item_exchange, status=None, price=400000000.0
-2025-09-24 03:55:45,927 - INFO - Contract 2: type=item_exchange, status=None, price=90000000.0
-2025-09-24 03:55:45,927 - INFO - Contract 3: type=item_exchange, status=None, price=200000000.0
-2025-09-24 03:55:45,927 - INFO - Contract 4: type=item_exchange, status=None, price=200000000.0
-2025-09-24 03:55:45,928 - INFO - Fetching page 2...
-2025-09-24 03:55:46,083 - INFO - Found 1000 contracts on page 2
-2025-09-24 03:55:46,085 - INFO - Fetching page 3...
-2025-09-24 03:55:46,151 - INFO - Found 1000 contracts on page 3
-2025-09-24 03:55:46,152 - INFO - Fetching page 4...
-2025-09-24 03:55:46,226 - INFO - Found 1000 contracts on page 4
-2025-09-24 03:55:46,227 - INFO - Fetching page 5...
-2025-09-24 03:55:46,300 - INFO - Found 1000 contracts on page 5
-2025-09-24 03:55:46,300 - INFO - Fetching page 6...
-2025-09-24 03:55:46,361 - INFO - Found 1000 contracts on page 6
-2025-09-24 03:55:46,362 - INFO - Fetching page 7...
-2025-09-24 03:55:46,444 - INFO - Found 1000 contracts on page 7
-2025-09-24 03:55:46,445 - INFO - Fetching page 8...
-2025-09-24 03:55:46,595 - INFO - Found 1000 contracts on page 8
-2025-09-24 03:55:46,596 - INFO - Fetching page 9...
-2025-09-24 03:55:46,666 - INFO - Found 1000 contracts on page 9
-2025-09-24 03:55:46,667 - INFO - Fetching page 10...
-2025-09-24 03:55:46,731 - INFO - Found 1000 contracts on page 10
-2025-09-24 03:55:46,732 - INFO - Fetching page 11...
-2025-09-24 03:55:46,775 - INFO - Found 1000 contracts on page 11
-2025-09-24 03:55:46,775 - INFO - Fetching page 12...
-2025-09-24 03:55:46,818 - INFO - Found 1000 contracts on page 12
-2025-09-24 03:55:46,819 - INFO - Fetching page 13...
-2025-09-24 03:55:46,889 - INFO - Found 1000 contracts on page 13
-2025-09-24 03:55:46,890 - INFO - Fetching page 14...
-2025-09-24 03:55:46,934 - INFO - Found 1000 contracts on page 14
-2025-09-24 03:55:46,935 - INFO - Fetching page 15...
-2025-09-24 03:55:46,977 - INFO - Found 1000 contracts on page 15
-2025-09-24 03:55:46,978 - INFO - Fetching page 16...
-2025-09-24 03:55:47,103 - INFO - Found 1000 contracts on page 16
-2025-09-24 03:55:47,104 - INFO - Fetching page 17...
-2025-09-24 03:55:47,145 - INFO - Found 1000 contracts on page 17
-2025-09-24 03:55:47,146 - INFO - Fetching page 18...
-2025-09-24 03:55:47,187 - INFO - Found 1000 contracts on page 18
-2025-09-24 03:55:47,188 - INFO - Fetching page 19...
-2025-09-24 03:55:47,244 - INFO - Found 1000 contracts on page 19
-2025-09-24 03:55:47,245 - INFO - Fetching page 20...
-2025-09-24 03:55:47,308 - INFO - Found 1000 contracts on page 20
-2025-09-24 03:55:47,310 - INFO - Fetching page 21...
-2025-09-24 03:55:47,360 - INFO - Found 1000 contracts on page 21
-2025-09-24 03:55:47,362 - INFO - Fetching page 22...
-2025-09-24 03:55:47,403 - INFO - Found 1000 contracts on page 22
-2025-09-24 03:55:47,404 - INFO - Fetching page 23...
-2025-09-24 03:55:47,446 - INFO - Found 1000 contracts on page 23
-2025-09-24 03:55:47,447 - INFO - Fetching page 24...
-2025-09-24 03:55:47,490 - INFO - Found 1000 contracts on page 24
-2025-09-24 03:55:47,492 - INFO - Fetching page 25...
-2025-09-24 03:55:47,537 - INFO - Found 1000 contracts on page 25
-2025-09-24 03:55:47,538 - INFO - Fetching page 26...
-2025-09-24 03:55:47,664 - INFO - Found 1000 contracts on page 26
-2025-09-24 03:55:47,665 - INFO - Fetching page 27...
-2025-09-24 03:55:47,708 - INFO - Found 1000 contracts on page 27
-2025-09-24 03:55:47,710 - INFO - Fetching page 28...
-2025-09-24 03:55:47,753 - INFO - Found 1000 contracts on page 28
-2025-09-24 03:55:47,754 - INFO - Fetching page 29...
-2025-09-24 03:55:47,796 - INFO - Found 1000 contracts on page 29
-2025-09-24 03:55:47,797 - INFO - Fetching page 30...
-2025-09-24 03:55:47,838 - INFO - Found 1000 contracts on page 30
-2025-09-24 03:55:47,839 - INFO - Fetching page 31...
-2025-09-24 03:55:47,872 - INFO - Found 75 contracts on page 31
-2025-09-24 03:55:47,872 - INFO - Fetching page 32...
-2025-09-24 03:55:48,041 - WARNING - ESI request failed (attempt 1/3): 404, message='Not Found', url='https://esi.evetech.net/latest/contracts/public/10000002/?page=32'. Retrying in 1s
-2025-09-24 03:55:49,191 - WARNING - ESI request failed (attempt 2/3): 404, message='Not Found', url='https://esi.evetech.net/latest/contracts/public/10000002/?page=32'. Retrying in 2s
-2025-09-24 03:55:51,436 - ERROR - ESI request failed after 3 attempts: 404, message='Not Found', url='https://esi.evetech.net/latest/contracts/public/10000002/?page=32'
-2025-09-24 03:55:51,437 - INFO - No more contracts on page 32, stopping
-2025-09-24 03:55:51,437 - INFO - Total contracts found: 30075
-2025-09-24 03:55:51,437 - INFO - ✓ Fetched 30075 basic contracts
-2025-09-24 03:55:51,437 - INFO - Phase 2: Starting asynchronous expansion with on-demand data fetching...
-2025-09-24 03:55:51,437 - INFO - expand_all_contracts_async called with 30075 contracts
-2025-09-24 03:55:51,438 - INFO - Loading existing caches...
-2025-09-24 03:55:51,476 - INFO - Initial caches loaded - Issuer: 3876, Type: 4425, Corporation: 1516
-2025-09-24 03:55:51,476 - INFO - Processing batch 1: contracts 0 to 999
-2025-09-24 03:55:51,476 - INFO - Processing batch 2: contracts 1000 to 1999
-2025-09-24 03:55:51,476 - INFO - Processing batch 3: contracts 2000 to 2999
-2025-09-24 03:55:51,476 - INFO - Processing batch 4: contracts 3000 to 3999
-2025-09-24 03:55:51,476 - INFO - Processing batch 5: contracts 4000 to 4999
-2025-09-24 03:55:51,476 - INFO - Processing batch 6: contracts 5000 to 5999
-2025-09-24 03:55:51,476 - INFO - Processing batch 7: contracts 6000 to 6999
-2025-09-24 03:55:51,476 - INFO - Processing batch 8: contracts 7000 to 7999
-2025-09-24 03:55:51,476 - INFO - Processing batch 9: contracts 8000 to 8999
-2025-09-24 03:55:51,476 - INFO - Processing batch 10: contracts 9000 to 9999
-2025-09-24 03:55:51,476 - INFO - Processing batch 11: contracts 10000 to 10999
-2025-09-24 03:55:51,476 - INFO - Processing batch 12: contracts 11000 to 11999
-2025-09-24 03:55:51,476 - INFO - Processing batch 13: contracts 12000 to 12999
-2025-09-24 03:55:51,476 - INFO - Processing batch 14: contracts 13000 to 13999
-2025-09-24 03:55:51,476 - INFO - Processing batch 15: contracts 14000 to 14999
-2025-09-24 03:55:51,476 - INFO - Processing batch 16: contracts 15000 to 15999
-2025-09-24 03:55:51,476 - INFO - Processing batch 17: contracts 16000 to 16999
-2025-09-24 03:55:51,476 - INFO - Processing batch 18: contracts 17000 to 17999
-2025-09-24 03:55:51,476 - INFO - Processing batch 19: contracts 18000 to 18999
-2025-09-24 03:55:51,476 - INFO - Processing batch 20: contracts 19000 to 19999
-2025-09-24 03:55:51,477 - INFO - Processing batch 21: contracts 20000 to 20999
-2025-09-24 03:55:51,477 - INFO - Processing batch 22: contracts 21000 to 21999
-2025-09-24 03:55:51,477 - INFO - Processing batch 23: contracts 22000 to 22999
-2025-09-24 03:55:51,477 - INFO - Processing batch 24: contracts 23000 to 23999
-2025-09-24 03:55:51,477 - INFO - Processing batch 25: contracts 24000 to 24999
-2025-09-24 03:55:51,477 - INFO - Processing batch 26: contracts 25000 to 25999
-2025-09-24 03:55:51,477 - INFO - Processing batch 27: contracts 26000 to 26999
-2025-09-24 03:55:51,477 - INFO - Processing batch 28: contracts 27000 to 27999
-2025-09-24 03:55:51,477 - INFO - Processing batch 29: contracts 28000 to 28999
-2025-09-24 03:55:51,477 - INFO - Processing batch 30: contracts 29000 to 29999
-2025-09-24 03:55:51,477 - INFO - Processing batch 31: contracts 30000 to 30074
-2025-09-24 04:33:42,261 - INFO - Starting extraction of contract items to cache...
-2025-09-24 04:33:42,406 - INFO - Loaded 30075 contracts from /Users/dg/Documents/GitHub/eveObserver/cache/all_contracts_forge.json
-2025-09-24 04:33:42,464 - INFO - Extracted items for 29582 contracts with 120103 total items
-2025-09-24 04:33:42,912 - INFO - Saved contract items cache to /Users/dg/Documents/GitHub/eveObserver/cache/contract_items_cache.json
+2025-09-24 05:05:23,825 - INFO - Loading cache from /Users/dg/Documents/GitHub/eveObserver/cache/blueprint_names.json...
+2025-09-24 05:05:23,825 - INFO - ✓ Cache loaded from /Users/dg/Documents/GitHub/eveObserver/cache/blueprint_names.json: 110 entries in 0.00s
+2025-09-24 05:05:23,825 - INFO - Loading cache from /Users/dg/Documents/GitHub/eveObserver/cache/location_names.json...
+2025-09-24 05:05:23,825 - INFO - ✓ Cache loaded from /Users/dg/Documents/GitHub/eveObserver/cache/location_names.json: 1 entries in 0.00s
+2025-09-24 05:05:23,826 - INFO - Loading cache from /Users/dg/Documents/GitHub/eveObserver/cache/structure_names.json...
+2025-09-24 05:05:23,826 - INFO - ✓ Cache loaded from /Users/dg/Documents/GitHub/eveObserver/cache/structure_names.json: 1 entries in 0.00s
+2025-09-24 05:05:23,826 - INFO - Loading cache from /Users/dg/Documents/GitHub/eveObserver/cache/failed_structures.json...
+2025-09-24 05:05:23,826 - INFO - ✓ Cache loaded from /Users/dg/Documents/GitHub/eveObserver/cache/failed_structures.json: 2 entries in 0.00s
+2025-09-24 05:05:23,826 - INFO - Loading cache from /Users/dg/Documents/GitHub/eveObserver/cache/wp_post_ids.json...
+2025-09-24 05:05:23,826 - INFO - ✓ Cache loaded from /Users/dg/Documents/GitHub/eveObserver/cache/wp_post_ids.json: 1 entries in 0.00s
+2025-09-24 05:05:23,945 - INFO - EVENT: TOKEN_REFRESH_SUCCESS | USER: system | DETAILS: {'client_id': '8b221bf2...'}
+2025-09-24 05:05:24,215 - INFO - ESI authenticated fetch successful: /characters/90020513/ in 0.27s
+2025-09-24 05:05:24,216 - INFO - _fetch_esi_with_retry completed in 0.270s
+2025-09-24 05:05:24,405 - INFO - WordPress GET successful: /wp/v2/eve_character?slug=character-90020513 in 0.19s
+2025-09-24 05:05:24,406 - INFO - wp_request completed in 0.188s
+2025-09-24 05:05:24,439 - INFO - ESI public fetch successful: /characters/90020513/portrait/ in 0.03s
+2025-09-24 05:05:24,439 - INFO - _fetch_esi_with_retry completed in 0.033s
+2025-09-24 05:05:24,439 - INFO - Portrait unchanged for character: Mr FiLiN
+2025-09-24 05:05:25,290 - INFO - WordPress PUT successful: /wp/v2/eve_character/56 in 0.85s
+2025-09-24 05:05:25,290 - INFO - wp_request completed in 0.851s
+2025-09-24 05:05:25,290 - INFO - Updated character: Mr FiLiN
+2025-09-24 05:05:25,290 - INFO - EVENT: CHARACTER_UPDATE | USER: 90020513 | DETAILS: {'name': 'Mr FiLiN', 'post_id': 56}
+2025-09-24 05:05:25,390 - INFO - EVENT: TOKEN_REFRESH_SUCCESS | USER: system | DETAILS: {'client_id': '8b221bf2...'}
+2025-09-24 05:05:25,426 - INFO - ESI authenticated fetch successful: /characters/90045731/ in 0.03s
+2025-09-24 05:05:25,427 - INFO - _fetch_esi_with_retry completed in 0.033s
+2025-09-24 05:05:25,646 - INFO - WordPress GET successful: /wp/v2/eve_character?slug=character-90045731 in 0.22s
+2025-09-24 05:05:25,646 - INFO - wp_request completed in 0.219s
+2025-09-24 05:05:25,682 - INFO - ESI public fetch successful: /characters/90045731/portrait/ in 0.04s
+2025-09-24 05:05:25,682 - INFO - _fetch_esi_with_retry completed in 0.037s
+2025-09-24 05:05:25,682 - INFO - Portrait unchanged for character: Dr FiLiN
+2025-09-24 05:05:25,683 - INFO - Rate limiter adjusted: base=60.0, current=51.57, factor=0.9
+2025-09-24 05:05:26,695 - INFO - WordPress PUT successful: /wp/v2/eve_character/85 in 1.01s
+2025-09-24 05:05:26,696 - INFO - wp_request completed in 1.014s
+2025-09-24 05:05:26,697 - INFO - Updated character: Dr FiLiN
+2025-09-24 05:05:26,697 - INFO - EVENT: CHARACTER_UPDATE | USER: 90045731 | DETAILS: {'name': 'Dr FiLiN', 'post_id': 85}
+2025-09-24 05:05:26,787 - INFO - EVENT: TOKEN_REFRESH_SUCCESS | USER: system | DETAILS: {'client_id': '8b221bf2...'}
+2025-09-24 05:05:26,827 - INFO - ESI authenticated fetch successful: /characters/90522765/ in 0.03s
+2025-09-24 05:05:26,827 - INFO - _fetch_esi_with_retry completed in 0.035s
+2025-09-24 05:05:26,828 - INFO - Rate limiter adjusted: base=60.0, current=47.35, factor=0.8
+2025-09-24 05:05:27,029 - INFO - WordPress GET successful: /wp/v2/eve_character?slug=character-90522765 in 0.20s
+2025-09-24 05:05:27,031 - INFO - wp_request completed in 0.204s
+2025-09-24 05:05:27,067 - INFO - ESI public fetch successful: /characters/90522765/portrait/ in 0.03s
+2025-09-24 05:05:27,067 - INFO - _fetch_esi_with_retry completed in 0.036s
+2025-09-24 05:05:27,068 - INFO - Portrait unchanged for character: Orev Khazar
+2025-09-24 05:05:27,068 - INFO - Rate limiter adjusted: base=60.0, current=43.46, factor=0.7
+2025-09-24 05:05:28,388 - INFO - WordPress PUT successful: /wp/v2/eve_character/86 in 1.32s
+2025-09-24 05:05:28,388 - INFO - wp_request completed in 1.320s
+2025-09-24 05:05:28,388 - INFO - Updated character: Orev Khazar
+2025-09-24 05:05:28,388 - INFO - EVENT: CHARACTER_UPDATE | USER: 90522765 | DETAILS: {'name': 'Orev Khazar', 'post_id': 86}
+2025-09-24 05:05:28,472 - INFO - EVENT: TOKEN_REFRESH_SUCCESS | USER: system | DETAILS: {'client_id': '8b221bf2...'}
+2025-09-24 05:05:28,509 - INFO - ESI authenticated fetch successful: /characters/90162477/ in 0.04s
+2025-09-24 05:05:28,509 - INFO - _fetch_esi_with_retry completed in 0.036s
+2025-09-24 05:05:28,509 - INFO - Rate limiter adjusted: base=60.0, current=39.90, factor=0.7
+2025-09-24 05:05:28,661 - INFO - WordPress GET successful: /wp/v2/eve_character?slug=character-90162477 in 0.15s
+2025-09-24 05:05:28,661 - INFO - wp_request completed in 0.153s
+2025-09-24 05:05:28,700 - INFO - ESI public fetch successful: /characters/90162477/portrait/ in 0.04s
+2025-09-24 05:05:28,700 - INFO - _fetch_esi_with_retry completed in 0.038s
+2025-09-24 05:05:28,700 - INFO - Portrait unchanged for character: Sir FiLiN
+2025-09-24 05:05:28,700 - INFO - Rate limiter adjusted: base=60.0, current=36.63, factor=0.6
+2025-09-24 05:05:30,234 - INFO - WordPress PUT successful: /wp/v2/eve_character/87 in 1.53s
+2025-09-24 05:05:30,234 - INFO - wp_request completed in 1.535s
+2025-09-24 05:05:30,235 - INFO - Updated character: Sir FiLiN
+2025-09-24 05:05:30,235 - INFO - EVENT: CHARACTER_UPDATE | USER: 90162477 | DETAILS: {'name': 'Sir FiLiN', 'post_id': 87}
+2025-09-24 05:05:30,366 - INFO - EVENT: TOKEN_REFRESH_SUCCESS | USER: system | DETAILS: {'client_id': '8b221bf2...'}
+2025-09-24 05:05:30,404 - INFO - ESI authenticated fetch successful: /characters/95937458/ in 0.03s
+2025-09-24 05:05:30,404 - INFO - _fetch_esi_with_retry completed in 0.035s
+2025-09-24 05:05:30,405 - INFO - Rate limiter adjusted: base=60.0, current=33.62, factor=0.6
+2025-09-24 05:05:30,557 - INFO - WordPress GET successful: /wp/v2/eve_character?slug=character-95937458 in 0.15s
+2025-09-24 05:05:30,558 - INFO - wp_request completed in 0.153s
+2025-09-24 05:05:30,593 - INFO - ESI public fetch successful: /characters/95937458/portrait/ in 0.03s
+2025-09-24 05:05:30,594 - INFO - _fetch_esi_with_retry completed in 0.035s
+2025-09-24 05:05:30,594 - INFO - Portrait unchanged for character: Filin Khan
+2025-09-24 05:05:30,594 - INFO - Rate limiter adjusted: base=60.0, current=30.87, factor=0.5
+2025-09-24 05:05:32,465 - INFO - WordPress PUT successful: /wp/v2/eve_character/88 in 1.87s
+2025-09-24 05:05:32,465 - INFO - wp_request completed in 1.871s
+2025-09-24 05:05:32,466 - INFO - Updated character: Filin Khan
+2025-09-24 05:05:32,466 - INFO - EVENT: CHARACTER_UPDATE | USER: 95937458 | DETAILS: {'name': 'Filin Khan', 'post_id': 88}
+2025-09-24 05:05:32,561 - INFO - EVENT: TOKEN_REFRESH_SUCCESS | USER: system | DETAILS: {'client_id': '8b221bf2...'}
+2025-09-24 05:05:32,603 - INFO - ESI authenticated fetch successful: /characters/95985116/ in 0.04s
+2025-09-24 05:05:32,604 - INFO - _fetch_esi_with_retry completed in 0.039s
+2025-09-24 05:05:32,604 - INFO - Rate limiter adjusted: base=60.0, current=30.60, factor=0.5
+2025-09-24 05:05:32,685 - INFO - WordPress GET successful: /wp/v2/eve_character?slug=character-95985116 in 0.08s
+2025-09-24 05:05:32,686 - INFO - wp_request completed in 0.081s
+2025-09-24 05:05:32,720 - INFO - ESI public fetch successful: /characters/95985116/portrait/ in 0.03s
+2025-09-24 05:05:32,721 - INFO - _fetch_esi_with_retry completed in 0.034s
+2025-09-24 05:05:32,721 - INFO - Portrait unchanged for character: Corvin Khan
+2025-09-24 05:05:32,721 - INFO - Rate limiter adjusted: base=60.0, current=30.60, factor=0.5
+2025-09-24 05:05:34,676 - INFO - WordPress PUT successful: /wp/v2/eve_character/89 in 1.96s
+2025-09-24 05:05:34,676 - INFO - wp_request completed in 1.956s
+2025-09-24 05:05:34,676 - INFO - Updated character: Corvin Khan
+2025-09-24 05:05:34,677 - INFO - EVENT: CHARACTER_UPDATE | USER: 95985116 | DETAILS: {'name': 'Corvin Khan', 'post_id': 89}
+2025-09-24 05:05:34,770 - INFO - EVENT: TOKEN_REFRESH_SUCCESS | USER: system | DETAILS: {'client_id': '8b221bf2...'}
+2025-09-24 05:05:34,805 - INFO - ESI authenticated fetch successful: /characters/1316070855/ in 0.03s
+2025-09-24 05:05:34,805 - INFO - _fetch_esi_with_retry completed in 0.034s
+2025-09-24 05:05:34,805 - INFO - Rate limiter adjusted: base=60.0, current=30.60, factor=0.5
+2025-09-24 05:05:34,877 - INFO - WordPress GET successful: /wp/v2/eve_character?slug=character-1316070855 in 0.07s
+2025-09-24 05:05:34,878 - INFO - wp_request completed in 0.072s
+2025-09-24 05:05:34,911 - INFO - ESI public fetch successful: /characters/1316070855/portrait/ in 0.03s
+2025-09-24 05:05:34,911 - INFO - _fetch_esi_with_retry completed in 0.034s
+2025-09-24 05:05:34,911 - INFO - Portrait unchanged for character: FiLiN Core
+2025-09-24 05:05:34,911 - INFO - Rate limiter adjusted: base=60.0, current=30.60, factor=0.5
+2025-09-24 05:05:36,856 - INFO - WordPress PUT successful: /wp/v2/eve_character/91 in 1.95s
+2025-09-24 05:05:36,858 - INFO - wp_request completed in 1.946s
+2025-09-24 05:05:36,858 - INFO - Updated character: FiLiN Core
+2025-09-24 05:05:36,858 - INFO - EVENT: CHARACTER_UPDATE | USER: 1316070855 | DETAILS: {'name': 'FiLiN Core', 'post_id': 91}
+2025-09-24 05:05:36,951 - INFO - EVENT: TOKEN_REFRESH_SUCCESS | USER: system | DETAILS: {'client_id': '8b221bf2...'}
+2025-09-24 05:05:36,991 - INFO - ESI authenticated fetch successful: /characters/91594850/ in 0.03s
+2025-09-24 05:05:36,991 - INFO - _fetch_esi_with_retry completed in 0.034s
+2025-09-24 05:05:36,991 - INFO - Rate limiter adjusted: base=60.0, current=30.60, factor=0.5
+2025-09-24 05:05:37,064 - INFO - WordPress GET successful: /wp/v2/eve_character?slug=character-91594850 in 0.07s
+2025-09-24 05:05:37,065 - INFO - wp_request completed in 0.074s
+2025-09-24 05:05:37,180 - INFO - ESI public fetch successful: /characters/91594850/portrait/ in 0.11s
+2025-09-24 05:05:37,181 - INFO - _fetch_esi_with_retry completed in 0.115s
+2025-09-24 05:05:37,182 - INFO - Portrait unchanged for character: Raven Madyar
+2025-09-24 05:05:37,182 - INFO - Rate limiter adjusted: base=60.0, current=30.60, factor=0.5
+2025-09-24 05:05:39,035 - INFO - WordPress PUT successful: /wp/v2/eve_character/92 in 1.85s
+2025-09-24 05:05:39,036 - INFO - wp_request completed in 1.854s
+2025-09-24 05:05:39,036 - INFO - Updated character: Raven Madyar
+2025-09-24 05:05:39,036 - INFO - EVENT: CHARACTER_UPDATE | USER: 91594850 | DETAILS: {'name': 'Raven Madyar', 'post_id': 92}
+2025-09-24 05:05:39,145 - INFO - EVENT: TOKEN_REFRESH_SUCCESS | USER: system | DETAILS: {'client_id': '8b221bf2...'}
+2025-09-24 05:05:39,186 - INFO - ESI authenticated fetch successful: /characters/90483242/ in 0.04s
+2025-09-24 05:05:39,187 - INFO - _fetch_esi_with_retry completed in 0.036s
+2025-09-24 05:05:39,188 - INFO - Rate limiter adjusted: base=60.0, current=30.60, factor=0.5
+2025-09-24 05:05:39,352 - INFO - WordPress GET successful: /wp/v2/eve_character?slug=character-90483242 in 0.16s
+2025-09-24 05:05:39,353 - INFO - wp_request completed in 0.166s
+2025-09-24 05:05:39,387 - INFO - ESI public fetch successful: /characters/90483242/portrait/ in 0.03s
+2025-09-24 05:05:39,388 - INFO - _fetch_esi_with_retry completed in 0.034s
+2025-09-24 05:05:39,388 - INFO - Portrait unchanged for character: Vran Ruthen
+2025-09-24 05:05:39,388 - INFO - Rate limiter adjusted: base=60.0, current=30.60, factor=0.5
+2025-09-24 05:05:41,251 - INFO - WordPress PUT successful: /wp/v2/eve_character/93 in 1.86s
+2025-09-24 05:05:41,252 - INFO - wp_request completed in 1.864s
+2025-09-24 05:05:41,252 - INFO - Updated character: Vran Ruthen
+2025-09-24 05:05:41,252 - INFO - EVENT: CHARACTER_UPDATE | USER: 90483242 | DETAILS: {'name': 'Vran Ruthen', 'post_id': 93}
+2025-09-24 05:05:41,252 - INFO - Corporation collection completed in 17.43s
+2025-09-24 05:05:41,252 - INFO - Starting cleanup of old posts...
+2025-09-24 05:05:41,252 - INFO - Cleaning up contract posts...
+2025-09-24 05:05:41,252 - INFO - Rate limiter adjusted: base=60.0, current=30.60, factor=0.5
+2025-09-24 05:05:41,463 - INFO - WordPress GET successful: /wp/v2/eve_contract in 0.21s
+2025-09-24 05:05:41,464 - INFO - wp_request completed in 0.212s
+2025-09-24 05:05:41,464 - INFO - Cleaning up blueprint posts...
+2025-09-24 05:05:41,601 - INFO - Cleanup completed.
+2025-09-24 05:05:41,601 - INFO - Post cleanup completed in 0.35s
+2025-09-24 05:05:41,602 - INFO - Processing character: Mr FiLiN (ID: 90020513)
+2025-09-24 05:05:41,602 - INFO - Starting contract processing for Mr FiLiN
+2025-09-24 05:05:41,900 - INFO - ESI authenticated fetch successful: /characters/90020513/contracts/ in 0.30s
+2025-09-24 05:05:41,900 - INFO - _fetch_esi_with_retry completed in 0.298s
+2025-09-24 05:05:41,900 - INFO - Processing character: Dr FiLiN (ID: 90045731)
+2025-09-24 05:05:41,901 - INFO - Starting contract processing for Dr FiLiN
+2025-09-24 05:05:41,939 - INFO - ESI authenticated fetch successful: /characters/90045731/contracts/ in 0.04s
+2025-09-24 05:05:41,940 - INFO - _fetch_esi_with_retry completed in 0.039s
+2025-09-24 05:05:41,940 - INFO - Character contracts for Dr FiLiN: 61 items
+2025-09-24 05:05:41,940 - INFO - Loading cache from /Users/dg/Documents/GitHub/eveObserver/cache/blueprint_types.json...
+2025-09-24 05:05:41,941 - INFO - ✓ Cache loaded from /Users/dg/Documents/GitHub/eveObserver/cache/blueprint_types.json: 1019 entries in 0.00s
+2025-09-24 05:05:41,942 - INFO - Fetching all expanded contracts from The Forge region for competition analysis...
+2025-09-24 05:05:41,942 - INFO - Starting streamlined fetch and expand of all Forge contracts...
+2025-09-24 05:05:41,942 - INFO - Loading contracts from existing cache file: /Users/dg/Documents/GitHub/eveObserver/cache/all_contracts_forge.json
+2025-09-24 05:05:42,110 - INFO - ✓ Loaded 30075 contracts from cache
+2025-09-24 05:05:42,156 - INFO - Running concurrent competition checks for 46 contracts...
+2025-09-24 05:05:42,156 - INFO - Checking competition for contract 222641777 (type_id: 29040, price_per_item: 299999999.00) in region 10000002
+2025-09-24 05:05:42,161 - INFO - Checking competition for contract 222641803 (type_id: 29044, price_per_item: 49990000.00) in region 10000002
+2025-09-24 05:05:42,165 - INFO - Checking competition for contract 222641814 (type_id: 29046, price_per_item: 51990000.00) in region 10000002
+2025-09-24 05:05:42,169 - INFO - Checking competition for contract 222641822 (type_id: 29048, price_per_item: 31970000.00) in region 10000002
+2025-09-24 05:05:42,173 - INFO - Checking competition for contract 222641828 (type_id: 29050, price_per_item: 248990000.00) in region 10000002
+2025-09-24 05:05:42,177 - INFO - Checking competition for contract 222641837 (type_id: 29054, price_per_item: 299999999.00) in region 10000002
+2025-09-24 05:05:42,182 - INFO - Checking competition for contract 222641849 (type_id: 29056, price_per_item: 148990000.00) in region 10000002
+2025-09-24 05:05:42,186 - INFO - Checking competition for contract 222641864 (type_id: 29058, price_per_item: 22970000.00) in region 10000002
+2025-09-24 05:05:42,190 - INFO - Checking competition for contract 222641882 (type_id: 29060, price_per_item: 53990000.00) in region 10000002
+2025-09-24 05:05:42,194 - INFO - Checking competition for contract 222641897 (type_id: 29062, price_per_item: 38980000.00) in region 10000002
+2025-09-24 05:05:42,198 - INFO - Checking competition for contract 222641914 (type_id: 29066, price_per_item: 51990000.00) in region 10000002
+2025-09-24 05:05:42,202 - INFO - Checking competition for contract 222641925 (type_id: 29064, price_per_item: 29960000.00) in region 10000002
+2025-09-24 05:05:42,206 - INFO - Checking competition for contract 222641937 (type_id: 29068, price_per_item: 299999999.00) in region 10000002
+2025-09-24 05:05:42,211 - INFO - Checking competition for contract 222641948 (type_id: 29070, price_per_item: 38980000.00) in region 10000002
+2025-09-24 05:05:42,215 - INFO - Checking competition for contract 222641961 (type_id: 29072, price_per_item: 298990000.00) in region 10000002
+2025-09-24 05:05:42,219 - INFO - Checking competition for contract 222641973 (type_id: 29074, price_per_item: 299999999.00) in region 10000002
+2025-09-24 05:05:42,223 - INFO - Checking competition for contract 222641983 (type_id: 29076, price_per_item: 88980000.00) in region 10000002
+2025-09-24 05:05:42,227 - INFO - Checking competition for contract 222641993 (type_id: 29078, price_per_item: 46990000.00) in region 10000002
+2025-09-24 05:05:42,231 - INFO - Checking competition for contract 222642004 (type_id: 29082, price_per_item: 83980000.00) in region 10000002
+2025-09-24 05:05:42,235 - INFO - Checking competition for contract 222642013 (type_id: 29084, price_per_item: 44990000.00) in region 10000002
+2025-09-24 05:05:42,240 - INFO - Checking competition for contract 222642020 (type_id: 29086, price_per_item: 48999999.00) in region 10000002
+2025-09-24 05:05:42,244 - INFO - Checking competition for contract 222642026 (type_id: 29088, price_per_item: 17760000.00) in region 10000002
+2025-09-24 05:05:42,248 - INFO - Checking competition for contract 222642037 (type_id: 29090, price_per_item: 50799999.00) in region 10000002
+2025-09-24 05:05:42,252 - INFO - Checking competition for contract 222642061 (type_id: 29092, price_per_item: 48979999.00) in region 10000002
+2025-09-24 05:05:42,256 - INFO - Checking competition for contract 222642072 (type_id: 29094, price_per_item: 52990000.00) in region 10000002
+2025-09-24 05:05:42,261 - INFO - Checking competition for contract 222642077 (type_id: 29096, price_per_item: 299999999.00) in region 10000002
+2025-09-24 05:05:42,265 - INFO - Checking competition for contract 222642089 (type_id: 29098, price_per_item: 53990000.00) in region 10000002
+2025-09-24 05:05:42,269 - INFO - Checking competition for contract 222642107 (type_id: 29100, price_per_item: 99990000.00) in region 10000002
+2025-09-24 05:05:42,273 - INFO - Checking competition for contract 222642133 (type_id: 29102, price_per_item: 52980000.00) in region 10000002
+2025-09-24 05:05:42,277 - INFO - Checking competition for contract 222642153 (type_id: 29104, price_per_item: 299999999.00) in region 10000002
+2025-09-24 05:05:42,281 - INFO - Checking competition for contract 222642169 (type_id: 29106, price_per_item: 43990000.00) in region 10000002
+2025-09-24 05:05:42,286 - INFO - Checking competition for contract 222642246 (type_id: 17355, price_per_item: 25899999.00) in region 10000002
+2025-09-24 05:05:42,290 - INFO - Checking competition for contract 222642285 (type_id: 17325, price_per_item: 14740000.00) in region 10000002
+2025-09-24 05:05:42,294 - INFO - Checking competition for contract 222642299 (type_id: 17339, price_per_item: 9970000.00) in region 10000002
+2025-09-24 05:05:42,298 - INFO - Checking competition for contract 222642381 (type_id: 687, price_per_item: 144000000.00) in region 10000002
+2025-09-24 05:05:42,302 - INFO - Checking competition for contract 222642390 (type_id: 971, price_per_item: 199000000.00) in region 10000002
+2025-09-24 05:05:42,307 - INFO - Checking competition for contract 222642413 (type_id: 81043, price_per_item: 219999999.00) in region 10000002
+2025-09-24 05:05:42,311 - INFO - Checking competition for contract 222697423 (type_id: 29040, price_per_item: 197999999.00) in region 10000002
+2025-09-24 05:05:42,315 - INFO - Checking competition for contract 222697456 (type_id: 29044, price_per_item: 49990000.00) in region 10000002
+2025-09-24 05:05:42,319 - INFO - Checking competition for contract 222697477 (type_id: 29046, price_per_item: 51990000.00) in region 10000002
+2025-09-24 05:05:42,323 - INFO - Checking competition for contract 222697508 (type_id: 29048, price_per_item: 31499999.00) in region 10000002
+2025-09-24 05:05:42,327 - INFO - Checking competition for contract 222697519 (type_id: 29050, price_per_item: 247999999.00) in region 10000002
+2025-09-24 05:05:42,331 - INFO - Checking competition for contract 222697538 (type_id: 29054, price_per_item: 289999999.00) in region 10000002
+2025-09-24 05:05:42,336 - INFO - Checking competition for contract 222697552 (type_id: 29056, price_per_item: 148989999.00) in region 10000002
+2025-09-24 05:05:42,341 - INFO - Checking competition for contract 222697571 (type_id: 29062, price_per_item: 38969999.00) in region 10000002
+2025-09-24 05:05:42,345 - INFO - Checking competition for contract 222697575 (type_id: 29066, price_per_item: 51799999.00) in region 10000002
+2025-09-24 05:06:00,839 - INFO - Found competing contract 222670421: price_per_item=200000000.00, our_price=299999999.00
+2025-09-24 05:06:00,839 - INFO - Contract 222641777 outbid by contract 222670421 with price_per_item: 200000000.00
+2025-09-24 05:06:00,978 - INFO - Found competing contract 221972020: price_per_item=45000000.00, our_price=38980000.00
+2025-09-24 05:06:00,982 - INFO - Found competing contract 222122524: price_per_item=44900000.00, our_price=38980000.00
+2025-09-24 05:06:00,982 - INFO - Found competing contract 222127928: price_per_item=44899999.00, our_price=38980000.00
+2025-09-24 05:06:01,006 - INFO - Found competing contract 222663857: price_per_item=38979999.00, our_price=38980000.00
+2025-09-24 05:06:01,006 - INFO - Contract 222641897 outbid by contract 222663857 with price_per_item: 38979999.00
+2025-09-24 05:06:01,086 - INFO - Found competing contract 222127979: price_per_item=299999999.00, our_price=298990000.00
+2025-09-24 05:06:01,114 - INFO - Found competing contract 222712568: price_per_item=297990000.00, our_price=298990000.00
+2025-09-24 05:06:01,114 - INFO - Contract 222641961 outbid by contract 222712568 with price_per_item: 297990000.00
+2025-09-24 05:06:01,340 - INFO - Found competing contract 222581519: price_per_item=88990000.00, our_price=88980000.00
+2025-09-24 05:06:01,347 - INFO - Found competing contract 222664248: price_per_item=88979999.00, our_price=88980000.00
+2025-09-24 05:06:01,347 - INFO - Contract 222641983 outbid by contract 222664248 with price_per_item: 88979999.00
+2025-09-24 05:06:01,598 - INFO - Found competing contract 222610806: price_per_item=300000000.00, our_price=299999999.00
+2025-09-24 05:06:01,604 - INFO - Found competing contract 222679486: price_per_item=290000000.00, our_price=299999999.00
+2025-09-24 05:06:01,604 - INFO - Contract 222641837 outbid by contract 222679486 with price_per_item: 290000000.00
+2025-09-24 05:06:01,981 - INFO - Found competing contract 221972030: price_per_item=47000000.00, our_price=38980000.00
+2025-09-24 05:06:01,985 - INFO - Found competing contract 222127974: price_per_item=46989999.00, our_price=38980000.00
+2025-09-24 05:06:02,009 - INFO - Found competing contract 222664240: price_per_item=38979999.00, our_price=38980000.00
+2025-09-24 05:06:02,010 - INFO - Contract 222641948 outbid by contract 222664240 with price_per_item: 38979999.00
+2025-09-24 05:06:02,042 - INFO - Found competing contract 222127952: price_per_item=40989999.00, our_price=29960000.00
+2025-09-24 05:06:02,045 - INFO - Found competing contract 222222615: price_per_item=35000000.00, our_price=29960000.00
+2025-09-24 05:06:02,054 - INFO - Found competing contract 222478103: price_per_item=33900000.00, our_price=29960000.00
+2025-09-24 05:06:02,059 - INFO - Found competing contract 222563977: price_per_item=30000000.00, our_price=29960000.00
+2025-09-24 05:06:02,060 - INFO - Found competing contract 222581499: price_per_item=29980000.00, our_price=29960000.00
+2025-09-24 05:06:02,063 - INFO - Found competing contract 222622097: price_per_item=29960000.00, our_price=29960000.00
+2025-09-24 05:06:02,067 - INFO - Found competing contract 222663869: price_per_item=29959999.00, our_price=29960000.00
+2025-09-24 05:06:02,067 - INFO - Contract 222641925 outbid by contract 222663869 with price_per_item: 29959999.00
+2025-09-24 05:06:02,305 - INFO - Found competing contract 222127786: price_per_item=46989999.00, our_price=31970000.00
+2025-09-24 05:06:02,308 - INFO - Found competing contract 222222610: price_per_item=35000000.00, our_price=31970000.00
+2025-09-24 05:06:02,325 - INFO - Found competing contract 222622060: price_per_item=31970000.00, our_price=31970000.00
+2025-09-24 05:06:02,329 - INFO - Found competing contract 222663847: price_per_item=31969999.00, our_price=31970000.00
+2025-09-24 05:06:02,329 - INFO - Contract 222641822 outbid by contract 222663847 with price_per_item: 31969999.00
+2025-09-24 05:06:02,499 - INFO - Found competing contract 222122531: price_per_item=23800000.00, our_price=22970000.00
+2025-09-24 05:06:02,499 - INFO - Found competing contract 222127824: price_per_item=22989999.00, our_price=22970000.00
+2025-09-24 05:06:02,524 - INFO - Found competing contract 222679500: price_per_item=22900000.00, our_price=22970000.00
+2025-09-24 05:06:02,524 - INFO - Contract 222641864 outbid by contract 222679500 with price_per_item: 22900000.00
+2025-09-24 05:06:02,693 - INFO - Found competing contract 222127840: price_per_item=54999999.00, our_price=53990000.00
+2025-09-24 05:06:02,713 - INFO - Found competing contract 222610820: price_per_item=53990000.00, our_price=53990000.00
+2025-09-24 05:06:02,721 - INFO - Found competing contract 222712516: price_per_item=52990000.00, our_price=53990000.00
+2025-09-24 05:06:02,721 - INFO - Contract 222641882 outbid by contract 222712516 with price_per_item: 52990000.00
+2025-09-24 05:06:03,047 - INFO - Found competing contract 222679548: price_per_item=299000000.00, our_price=299999999.00
+2025-09-24 05:06:03,047 - INFO - Contract 222641937 outbid by contract 222679548 with price_per_item: 299000000.00
+2025-09-24 05:06:03,506 - INFO - Found competing contract 222419329: price_per_item=51000000.00, our_price=49990000.00
+2025-09-24 05:06:03,514 - INFO - Found competing contract 222581909: price_per_item=50000000.00, our_price=49990000.00
+2025-09-24 05:06:03,515 - INFO - Found competing contract 222591444: price_per_item=49990000.00, our_price=49990000.00
+2025-09-24 05:06:03,524 - INFO - Found competing contract 222712465: price_per_item=48990000.00, our_price=49990000.00
+2025-09-24 05:06:03,525 - INFO - Contract 222641803 outbid by contract 222712465 with price_per_item: 48990000.00
+2025-09-24 05:06:03,681 - INFO - Found competing contract 222712478: price_per_item=50990000.00, our_price=51990000.00
+2025-09-24 05:06:03,681 - INFO - Contract 222641814 outbid by contract 222712478 with price_per_item: 50990000.00
+2025-09-24 05:06:03,860 - INFO - Found competing contract 222695925: price_per_item=248000000.00, our_price=248990000.00
+2025-09-24 05:06:03,860 - INFO - Contract 222641828 outbid by contract 222695925 with price_per_item: 248000000.00
+2025-09-24 05:06:03,892 - INFO - Found competing contract 222127814: price_per_item=250000000.00, our_price=148990000.00
+2025-09-24 05:06:03,920 - INFO - Found competing contract 222712505: price_per_item=147990000.00, our_price=148990000.00
+2025-09-24 05:06:03,920 - INFO - Contract 222641849 outbid by contract 222712505 with price_per_item: 147990000.00
+2025-09-24 05:06:04,046 - INFO - Found competing contract 222610838: price_per_item=300000000.00, our_price=299999999.00
+2025-09-24 05:06:04,052 - INFO - Found competing contract 222679557: price_per_item=299000000.00, our_price=299999999.00
+2025-09-24 05:06:04,052 - INFO - Contract 222641973 outbid by contract 222679557 with price_per_item: 299000000.00
+2025-09-24 05:06:04,262 - INFO - Found competing contract 222128026: price_per_item=50989999.00, our_price=44990000.00
+2025-09-24 05:06:04,282 - INFO - Found competing contract 222622158: price_per_item=44990000.00, our_price=44990000.00
+2025-09-24 05:06:04,286 - INFO - Found competing contract 222664276: price_per_item=44998999.00, our_price=44990000.00
+2025-09-24 05:06:04,290 - INFO - Found competing contract 222712605: price_per_item=43990000.00, our_price=44990000.00
+2025-09-24 05:06:04,290 - INFO - Contract 222642013 outbid by contract 222712605 with price_per_item: 43990000.00
+2025-09-24 05:06:04,496 - INFO - Found competing contract 222128004: price_per_item=52989999.00, our_price=46990000.00
+2025-09-24 05:06:04,518 - INFO - Found competing contract 222622151: price_per_item=46990000.00, our_price=46990000.00
+2025-09-24 05:06:04,522 - INFO - Found competing contract 222664255: price_per_item=46989999.00, our_price=46990000.00
+2025-09-24 05:06:04,522 - INFO - Contract 222641993 outbid by contract 222664255 with price_per_item: 46989999.00
+2025-09-24 05:06:04,863 - INFO - Found competing contract 222679514: price_per_item=51900000.00, our_price=51990000.00
+2025-09-24 05:06:04,863 - INFO - Contract 222641914 outbid by contract 222679514 with price_per_item: 51900000.00
+2025-09-24 05:06:05,229 - INFO - Found competing contract 221972036: price_per_item=139000000.00, our_price=83980000.00
+2025-09-24 05:06:05,232 - INFO - Found competing contract 222108882: price_per_item=100000000.00, our_price=83980000.00
+2025-09-24 05:06:05,257 - INFO - Found competing contract 222664271: price_per_item=83979999.00, our_price=83980000.00
+2025-09-24 05:06:05,257 - INFO - Contract 222642004 outbid by contract 222664271 with price_per_item: 83979999.00
+2025-09-24 05:06:20,951 - INFO - Found competing contract 222331729: price_per_item=100000000.00, our_price=99990000.00
+2025-09-24 05:06:20,971 - INFO - Found competing contract 222679646: price_per_item=99900000.00, our_price=99990000.00
+2025-09-24 05:06:20,971 - INFO - Contract 222642107 outbid by contract 222679646 with price_per_item: 99900000.00
+2025-09-24 05:06:21,000 - INFO - Found competing contract 221950231: price_per_item=17999999.00, our_price=14740000.00
+2025-09-24 05:06:21,011 - INFO - Found competing contract 222344935: price_per_item=39930000.00, our_price=14740000.00
+2025-09-24 05:06:21,011 - INFO - Found competing contract 222344942: price_per_item=39930000.00, our_price=14740000.00
+2025-09-24 05:06:21,013 - INFO - Found competing contract 222383558: price_per_item=15000000.00, our_price=14740000.00
+2025-09-24 05:06:21,013 - INFO - Found competing contract 222383568: price_per_item=15000000.00, our_price=14740000.00
+2025-09-24 05:06:21,013 - INFO - Found competing contract 222383573: price_per_item=15000000.00, our_price=14740000.00
+2025-09-24 05:06:21,013 - INFO - Found competing contract 222383579: price_per_item=15000000.00, our_price=14740000.00
+2025-09-24 05:06:21,021 - INFO - Found competing contract 222553923: price_per_item=14850000.00, our_price=14740000.00
+2025-09-24 05:06:21,022 - INFO - Found competing contract 222577973: price_per_item=14849999.00, our_price=14740000.00
+2025-09-24 05:06:21,022 - INFO - Found competing contract 222581220: price_per_item=14830000.00, our_price=14740000.00
+2025-09-24 05:06:21,023 - INFO - Found competing contract 222591376: price_per_item=14760000.00, our_price=14740000.00
+2025-09-24 05:06:21,024 - INFO - Found competing contract 222609048: price_per_item=14759999.00, our_price=14740000.00
+2025-09-24 05:06:21,024 - INFO - Found competing contract 222610024: price_per_item=14740000.00, our_price=14740000.00
+2025-09-24 05:06:21,030 - INFO - Found competing contract 222675912: price_per_item=14739999.00, our_price=14740000.00
+2025-09-24 05:06:21,030 - INFO - Contract 222642285 outbid by contract 222675912 with price_per_item: 14739999.00
+2025-09-24 05:06:21,819 - INFO - Found competing contract 222418720: price_per_item=29000000.00, our_price=25899999.00
+2025-09-24 05:06:21,822 - INFO - Found competing contract 222477705: price_per_item=29000000.00, our_price=25899999.00
+2025-09-24 05:06:21,822 - INFO - Found competing contract 222490114: price_per_item=39990000.00, our_price=25899999.00
+2025-09-24 05:06:21,826 - INFO - Found competing contract 222562272: price_per_item=27000000.00, our_price=25899999.00
+2025-09-24 05:06:21,826 - INFO - Found competing contract 222562281: price_per_item=27000000.00, our_price=25899999.00
+2025-09-24 05:06:21,826 - INFO - Found competing contract 222562856: price_per_item=26990000.00, our_price=25899999.00
+2025-09-24 05:06:21,826 - INFO - Found competing contract 222564096: price_per_item=26000000.00, our_price=25899999.00
+2025-09-24 05:06:21,826 - INFO - Found competing contract 222564223: price_per_item=26000000.00, our_price=25899999.00
+2025-09-24 05:06:21,827 - INFO - Found competing contract 222573245: price_per_item=25980000.00, our_price=25899999.00
+2025-09-24 05:06:21,827 - INFO - Found competing contract 222577918: price_per_item=25979999.00, our_price=25899999.00
+2025-09-24 05:06:21,828 - INFO - Found competing contract 222581071: price_per_item=25960000.00, our_price=25899999.00
+2025-09-24 05:06:21,829 - INFO - Found competing contract 222608956: price_per_item=25959999.00, our_price=25899999.00
+2025-09-24 05:06:21,829 - INFO - Found competing contract 222609899: price_per_item=25940000.00, our_price=25899999.00
+2025-09-24 05:06:21,831 - INFO - Found competing contract 222626853: price_per_item=25900000.00, our_price=25899999.00
+2025-09-24 05:06:21,841 - INFO - Found competing contract 222730291: price_per_item=25889999.00, our_price=25899999.00
+2025-09-24 05:06:21,841 - INFO - Contract 222642246 outbid by contract 222730291 with price_per_item: 25889999.00
+2025-09-24 05:06:21,873 - INFO - Found competing contract 222128045: price_per_item=19989999.00, our_price=17760000.00
+2025-09-24 05:06:21,885 - INFO - Found competing contract 222461044: price_per_item=17777777.00, our_price=17760000.00
+2025-09-24 05:06:21,898 - INFO - Found competing contract 222664233: price_per_item=17759999.00, our_price=17760000.00
+2025-09-24 05:06:21,898 - INFO - Contract 222642026 outbid by contract 222664233 with price_per_item: 17759999.00
+2025-09-24 05:06:21,965 - INFO - Found competing contract 222750546: price_per_item=165000000.00, our_price=144000000.00
+2025-09-24 05:06:21,967 - INFO - No competing contracts found for contract 222642381 (checked 1 potential competitors)
+2025-09-24 05:06:22,335 - INFO - Found competing contract 222045267: price_per_item=54000000.00, our_price=52980000.00
+2025-09-24 05:06:22,336 - INFO - Found competing contract 222065096: price_per_item=54000000.00, our_price=52980000.00
+2025-09-24 05:06:22,338 - INFO - Found competing contract 222128127: price_per_item=53999999.00, our_price=52980000.00
+2025-09-24 05:06:22,352 - INFO - Found competing contract 222517375: price_per_item=52989999.00, our_price=52980000.00
+2025-09-24 05:06:22,367 - INFO - Found competing contract 222712654: price_per_item=51990000.00, our_price=52980000.00
+2025-09-24 05:06:22,367 - INFO - Contract 222642133 outbid by contract 222712654 with price_per_item: 51990000.00
+2025-09-24 05:06:22,594 - INFO - Found competing contract 222419329: price_per_item=51000000.00, our_price=49990000.00
+2025-09-24 05:06:22,602 - INFO - Found competing contract 222581909: price_per_item=50000000.00, our_price=49990000.00
+2025-09-24 05:06:22,603 - INFO - Found competing contract 222591444: price_per_item=49990000.00, our_price=49990000.00
+2025-09-24 05:06:22,613 - INFO - Found competing contract 222712465: price_per_item=48990000.00, our_price=49990000.00
+2025-09-24 05:06:22,613 - INFO - Contract 222697456 outbid by contract 222712465 with price_per_item: 48990000.00
+2025-09-24 05:06:22,836 - INFO - Found competing contract 221972060: price_per_item=49000000.00, our_price=48999999.00
+2025-09-24 05:06:22,871 - INFO - Found competing contract 222727076: price_per_item=47990000.00, our_price=48999999.00
+2025-09-24 05:06:22,871 - INFO - Contract 222642020 outbid by contract 222727076 with price_per_item: 47990000.00
+2025-09-24 05:06:23,110 - INFO - Found competing contract 222638097: price_per_item=50800000.00, our_price=50799999.00
+2025-09-24 05:06:23,114 - INFO - Found competing contract 222679594: price_per_item=50700000.00, our_price=50799999.00
+2025-09-24 05:06:23,114 - INFO - Contract 222642037 outbid by contract 222679594 with price_per_item: 50700000.00
+2025-09-24 05:06:23,561 - INFO - Found competing contract 222017095: price_per_item=53800000.00, our_price=52990000.00
+2025-09-24 05:06:23,564 - INFO - Found competing contract 222128083: price_per_item=53799999.00, our_price=52990000.00
+2025-09-24 05:06:23,582 - INFO - Found competing contract 222581581: price_per_item=52990000.00, our_price=52990000.00
+2025-09-24 05:06:23,589 - INFO - Found competing contract 222679606: price_per_item=52900000.00, our_price=52990000.00
+2025-09-24 05:06:23,589 - INFO - Contract 222642072 outbid by contract 222679606 with price_per_item: 52900000.00
+2025-09-24 05:06:23,761 - INFO - Found competing contract 221972045: price_per_item=49000000.00, our_price=48979999.00
+2025-09-24 05:06:23,765 - INFO - Found competing contract 222128068: price_per_item=48989999.00, our_price=48979999.00
+2025-09-24 05:06:23,795 - INFO - Found competing contract 222727088: price_per_item=47990000.00, our_price=48979999.00
+2025-09-24 05:06:23,795 - INFO - Contract 222642061 outbid by contract 222727088 with price_per_item: 47990000.00
+2025-09-24 05:06:23,887 - INFO - Found competing contract 221881847: price_per_item=228000000.00, our_price=199000000.00
+2025-09-24 05:06:23,889 - INFO - Found competing contract 221961024: price_per_item=227900000.00, our_price=199000000.00
+2025-09-24 05:06:23,889 - INFO - Found competing contract 221961088: price_per_item=227900000.00, our_price=199000000.00
+2025-09-24 05:06:23,889 - INFO - Found competing contract 221961118: price_per_item=227900000.00, our_price=199000000.00
+2025-09-24 05:06:23,889 - INFO - Found competing contract 221961123: price_per_item=227900000.00, our_price=199000000.00
+2025-09-24 05:06:23,902 - INFO - Found competing contract 222403279: price_per_item=228000000.00, our_price=199000000.00
+2025-09-24 05:06:23,908 - INFO - Found competing contract 222541385: price_per_item=120000000000.00, our_price=199000000.00
+2025-09-24 05:06:23,914 - INFO - Found competing contract 222624494: price_per_item=220000000.00, our_price=199000000.00
+2025-09-24 05:06:23,918 - INFO - Found competing contract 222667672: price_per_item=159000000.00, our_price=199000000.00
+2025-09-24 05:06:23,918 - INFO - Contract 222642390 outbid by contract 222667672 with price_per_item: 159000000.00
+2025-09-24 05:06:24,183 - INFO - Found competing contract 222128102: price_per_item=54999999.00, our_price=53990000.00
+2025-09-24 05:06:24,200 - INFO - Found competing contract 222581595: price_per_item=53990000.00, our_price=53990000.00
+2025-09-24 05:06:24,208 - INFO - Found competing contract 222679629: price_per_item=53900000.00, our_price=53990000.00
+2025-09-24 05:06:24,208 - INFO - Contract 222642089 outbid by contract 222679629 with price_per_item: 53900000.00
+2025-09-24 05:06:24,334 - INFO - Found competing contract 222670421: price_per_item=200000000.00, our_price=197999999.00
+2025-09-24 05:06:24,335 - INFO - Found competing contract 222679461: price_per_item=199000000.00, our_price=197999999.00
+2025-09-24 05:06:24,337 - INFO - Found competing contract 222712448: price_per_item=196990000.00, our_price=197999999.00
+2025-09-24 05:06:24,337 - INFO - Contract 222697423 outbid by contract 222712448 with price_per_item: 196990000.00
+2025-09-24 05:06:24,469 - INFO - Found competing contract 222679661: price_per_item=299000000.00, our_price=299999999.00
+2025-09-24 05:06:24,469 - INFO - Contract 222642153 outbid by contract 222679661 with price_per_item: 299000000.00
+2025-09-24 05:06:24,624 - INFO - Found competing contract 222128160: price_per_item=48989999.00, our_price=43990000.00
+2025-09-24 05:06:24,642 - INFO - Found competing contract 222581605: price_per_item=43990000.00, our_price=43990000.00
+2025-09-24 05:06:24,648 - INFO - Found competing contract 222663322: price_per_item=43989999.00, our_price=43990000.00
+2025-09-24 05:06:24,648 - INFO - Contract 222642169 outbid by contract 222663322 with price_per_item: 43989999.00
+2025-09-24 05:06:25,091 - INFO - Found competing contract 222679617: price_per_item=299000000.00, our_price=299999999.00
+2025-09-24 05:06:25,091 - INFO - Contract 222642077 outbid by contract 222679617 with price_per_item: 299000000.00
+2025-09-24 05:06:25,216 - INFO - Found competing contract 222712478: price_per_item=50990000.00, our_price=51990000.00
+2025-09-24 05:06:25,216 - INFO - Contract 222697477 outbid by contract 222712478 with price_per_item: 50990000.00
+2025-09-24 05:06:25,709 - INFO - Found competing contract 222127786: price_per_item=46989999.00, our_price=31499999.00
+2025-09-24 05:06:25,711 - INFO - Found competing contract 222222610: price_per_item=35000000.00, our_price=31499999.00
+2025-09-24 05:06:25,729 - INFO - Found competing contract 222622060: price_per_item=31970000.00, our_price=31499999.00
+2025-09-24 05:06:25,733 - INFO - Found competing contract 222663847: price_per_item=31969999.00, our_price=31499999.00
+2025-09-24 05:06:25,734 - INFO - Found competing contract 222679475: price_per_item=31500000.00, our_price=31499999.00
+2025-09-24 05:06:25,737 - INFO - Found competing contract 222712484: price_per_item=30990000.00, our_price=31499999.00
+2025-09-24 05:06:25,737 - INFO - Contract 222697508 outbid by contract 222712484 with price_per_item: 30990000.00
+2025-09-24 05:06:25,778 - INFO - Found competing contract 222406977: price_per_item=775000000.00, our_price=219999999.00
+2025-09-24 05:06:25,800 - INFO - Found competing contract 222731938: price_per_item=200000000.00, our_price=219999999.00
+2025-09-24 05:06:25,800 - INFO - Contract 222642413 outbid by contract 222731938 with price_per_item: 200000000.00
+2025-09-24 05:06:35,936 - INFO - Found competing contract 221972020: price_per_item=45000000.00, our_price=38969999.00
+2025-09-24 05:06:35,940 - INFO - Found competing contract 222122524: price_per_item=44900000.00, our_price=38969999.00
+2025-09-24 05:06:35,941 - INFO - Found competing contract 222127928: price_per_item=44899999.00, our_price=38969999.00
+2025-09-24 05:06:35,966 - INFO - Found competing contract 222663857: price_per_item=38979999.00, our_price=38969999.00
+2025-09-24 05:06:35,970 - INFO - Found competing contract 222712418: price_per_item=37990000.00, our_price=38969999.00
+2025-09-24 05:06:35,970 - INFO - Contract 222697571 outbid by contract 222712418 with price_per_item: 37990000.00
+2025-09-24 05:06:36,230 - INFO - Found competing contract 222129037: price_per_item=12359999.00, our_price=9970000.00
+2025-09-24 05:06:36,241 - INFO - Found competing contract 222458183: price_per_item=11500000.00, our_price=9970000.00
+2025-09-24 05:06:36,241 - INFO - Found competing contract 222461096: price_per_item=11444444.00, our_price=9970000.00
+2025-09-24 05:06:36,243 - INFO - Found competing contract 222503098: price_per_item=11000000.00, our_price=9970000.00
+2025-09-24 05:06:36,246 - INFO - Found competing contract 222569222: price_per_item=10970000.00, our_price=9970000.00
+2025-09-24 05:06:36,247 - INFO - Found competing contract 222578020: price_per_item=10969999.00, our_price=9970000.00
+2025-09-24 05:06:36,247 - INFO - Found competing contract 222581285: price_per_item=10950000.00, our_price=9970000.00
+2025-09-24 05:06:36,248 - INFO - Found competing contract 222597501: price_per_item=9999999.00, our_price=9970000.00
+2025-09-24 05:06:36,249 - INFO - Found competing contract 222608932: price_per_item=9989999.00, our_price=9970000.00
+2025-09-24 05:06:36,255 - INFO - Found competing contract 222672813: price_per_item=9969999.00, our_price=9970000.00
+2025-09-24 05:06:36,255 - INFO - Contract 222642299 outbid by contract 222672813 with price_per_item: 9969999.00
+2025-09-24 05:06:36,889 - INFO - Found competing contract 222679514: price_per_item=51900000.00, our_price=51799999.00
+2025-09-24 05:06:36,891 - INFO - Found competing contract 222695918: price_per_item=51800000.00, our_price=51799999.00
+2025-09-24 05:06:36,892 - INFO - Found competing contract 222712523: price_per_item=50990000.00, our_price=51799999.00
+2025-09-24 05:06:36,892 - INFO - Contract 222697575 outbid by contract 222712523 with price_per_item: 50990000.00
+2025-09-24 05:06:37,018 - INFO - Found competing contract 222610806: price_per_item=300000000.00, our_price=289999999.00
+2025-09-24 05:06:37,023 - INFO - Found competing contract 222679486: price_per_item=290000000.00, our_price=289999999.00
+2025-09-24 05:06:37,026 - INFO - Found competing contract 222712498: price_per_item=288990000.00, our_price=289999999.00
+2025-09-24 05:06:37,026 - INFO - Contract 222697538 outbid by contract 222712498 with price_per_item: 288990000.00
+2025-09-24 05:06:37,548 - INFO - Found competing contract 222127814: price_per_item=250000000.00, our_price=148989999.00
+2025-09-24 05:06:37,579 - INFO - Found competing contract 222712505: price_per_item=147990000.00, our_price=148989999.00
+2025-09-24 05:06:37,579 - INFO - Contract 222697552 outbid by contract 222712505 with price_per_item: 147990000.00
+2025-09-24 05:06:37,636 - INFO - Found competing contract 222695925: price_per_item=248000000.00, our_price=247999999.00
+2025-09-24 05:06:37,638 - INFO - Found competing contract 222712491: price_per_item=246990000.00, our_price=247999999.00
+2025-09-24 05:06:37,638 - INFO - Contract 222697519 outbid by contract 222712491 with price_per_item: 246990000.00
+2025-09-24 05:06:37,638 - INFO - Running concurrent WordPress updates for 46 contracts...
+2025-09-24 05:06:37,638 - INFO - Loading cache from /Users/dg/Documents/GitHub/eveObserver/cache/blueprint_types.json...
+2025-09-24 05:06:37,639 - INFO - ✓ Cache loaded from /Users/dg/Documents/GitHub/eveObserver/cache/blueprint_types.json: 1019 entries in 0.00s
+2025-09-24 05:06:37,639 - INFO - Loading cache from /Users/dg/Documents/GitHub/eveObserver/cache/blueprint_types.json...
+2025-09-24 05:06:37,639 - INFO - ✓ Cache loaded from /Users/dg/Documents/GitHub/eveObserver/cache/blueprint_types.json: 1019 entries in 0.00s
+2025-09-24 05:06:37,639 - INFO - Loading cache from /Users/dg/Documents/GitHub/eveObserver/cache/blueprint_types.json...
+2025-09-24 05:06:37,639 - INFO - ✓ Cache loaded from /Users/dg/Documents/GitHub/eveObserver/cache/blueprint_types.json: 1019 entries in 0.00s
+2025-09-24 05:06:37,639 - INFO - Loading cache from /Users/dg/Documents/GitHub/eveObserver/cache/blueprint_types.json...
+2025-09-24 05:06:37,639 - INFO - ✓ Cache loaded from /Users/dg/Documents/GitHub/eveObserver/cache/blueprint_types.json: 1019 entries in 0.00s
+2025-09-24 05:06:37,640 - INFO - Loading cache from /Users/dg/Documents/GitHub/eveObserver/cache/blueprint_types.json...
+2025-09-24 05:06:37,640 - INFO - ✓ Cache loaded from /Users/dg/Documents/GitHub/eveObserver/cache/blueprint_types.json: 1019 entries in 0.00s
+2025-09-24 05:06:37,640 - INFO - Loading cache from /Users/dg/Documents/GitHub/eveObserver/cache/blueprint_types.json...
+2025-09-24 05:06:37,640 - INFO - ✓ Cache loaded from /Users/dg/Documents/GitHub/eveObserver/cache/blueprint_types.json: 1019 entries in 0.00s
+2025-09-24 05:06:37,640 - INFO - Loading cache from /Users/dg/Documents/GitHub/eveObserver/cache/blueprint_types.json...
+2025-09-24 05:06:37,640 - INFO - ✓ Cache loaded from /Users/dg/Documents/GitHub/eveObserver/cache/blueprint_types.json: 1019 entries in 0.00s
+2025-09-24 05:06:37,640 - INFO - Loading cache from /Users/dg/Documents/GitHub/eveObserver/cache/blueprint_types.json...
+2025-09-24 05:06:37,641 - INFO - ✓ Cache loaded from /Users/dg/Documents/GitHub/eveObserver/cache/blueprint_types.json: 1019 entries in 0.00s
+2025-09-24 05:06:37,641 - INFO - Loading cache from /Users/dg/Documents/GitHub/eveObserver/cache/blueprint_types.json...
+2025-09-24 05:06:37,641 - INFO - ✓ Cache loaded from /Users/dg/Documents/GitHub/eveObserver/cache/blueprint_types.json: 1019 entries in 0.00s
+2025-09-24 05:06:37,641 - INFO - Loading cache from /Users/dg/Documents/GitHub/eveObserver/cache/blueprint_types.json...
+2025-09-24 05:06:37,641 - INFO - ✓ Cache loaded from /Users/dg/Documents/GitHub/eveObserver/cache/blueprint_types.json: 1019 entries in 0.00s
+2025-09-24 05:06:37,641 - INFO - Loading cache from /Users/dg/Documents/GitHub/eveObserver/cache/blueprint_types.json...
+2025-09-24 05:06:37,641 - INFO - ✓ Cache loaded from /Users/dg/Documents/GitHub/eveObserver/cache/blueprint_types.json: 1019 entries in 0.00s
+2025-09-24 05:06:37,641 - INFO - Loading cache from /Users/dg/Documents/GitHub/eveObserver/cache/blueprint_types.json...
+2025-09-24 05:06:37,642 - INFO - ✓ Cache loaded from /Users/dg/Documents/GitHub/eveObserver/cache/blueprint_types.json: 1019 entries in 0.00s
+2025-09-24 05:06:37,642 - INFO - Loading cache from /Users/dg/Documents/GitHub/eveObserver/cache/blueprint_types.json...
+2025-09-24 05:06:37,642 - INFO - ✓ Cache loaded from /Users/dg/Documents/GitHub/eveObserver/cache/blueprint_types.json: 1019 entries in 0.00s
+2025-09-24 05:06:37,642 - INFO - Loading cache from /Users/dg/Documents/GitHub/eveObserver/cache/blueprint_types.json...
+2025-09-24 05:06:37,642 - INFO - ✓ Cache loaded from /Users/dg/Documents/GitHub/eveObserver/cache/blueprint_types.json: 1019 entries in 0.00s
+2025-09-24 05:06:37,643 - INFO - Loading cache from /Users/dg/Documents/GitHub/eveObserver/cache/blueprint_types.json...
+2025-09-24 05:06:37,643 - INFO - ✓ Cache loaded from /Users/dg/Documents/GitHub/eveObserver/cache/blueprint_types.json: 1019 entries in 0.00s
+2025-09-24 05:06:37,643 - INFO - Loading cache from /Users/dg/Documents/GitHub/eveObserver/cache/blueprint_types.json...
+2025-09-24 05:06:37,643 - INFO - ✓ Cache loaded from /Users/dg/Documents/GitHub/eveObserver/cache/blueprint_types.json: 1019 entries in 0.00s
+2025-09-24 05:06:37,643 - INFO - Loading cache from /Users/dg/Documents/GitHub/eveObserver/cache/blueprint_types.json...
+2025-09-24 05:06:37,643 - INFO - ✓ Cache loaded from /Users/dg/Documents/GitHub/eveObserver/cache/blueprint_types.json: 1019 entries in 0.00s
+2025-09-24 05:06:37,643 - INFO - Loading cache from /Users/dg/Documents/GitHub/eveObserver/cache/blueprint_types.json...
+2025-09-24 05:06:37,644 - INFO - ✓ Cache loaded from /Users/dg/Documents/GitHub/eveObserver/cache/blueprint_types.json: 1019 entries in 0.00s
+2025-09-24 05:06:37,644 - INFO - Loading cache from /Users/dg/Documents/GitHub/eveObserver/cache/blueprint_types.json...
+2025-09-24 05:06:37,644 - INFO - ✓ Cache loaded from /Users/dg/Documents/GitHub/eveObserver/cache/blueprint_types.json: 1019 entries in 0.00s
+2025-09-24 05:06:37,644 - INFO - Loading cache from /Users/dg/Documents/GitHub/eveObserver/cache/blueprint_types.json...
+2025-09-24 05:06:37,644 - INFO - ✓ Cache loaded from /Users/dg/Documents/GitHub/eveObserver/cache/blueprint_types.json: 1019 entries in 0.00s
+2025-09-24 05:06:37,644 - INFO - Loading cache from /Users/dg/Documents/GitHub/eveObserver/cache/blueprint_types.json...
+2025-09-24 05:06:37,644 - INFO - ✓ Cache loaded from /Users/dg/Documents/GitHub/eveObserver/cache/blueprint_types.json: 1019 entries in 0.00s
+2025-09-24 05:06:37,644 - INFO - Loading cache from /Users/dg/Documents/GitHub/eveObserver/cache/blueprint_types.json...
+2025-09-24 05:06:37,645 - INFO - ✓ Cache loaded from /Users/dg/Documents/GitHub/eveObserver/cache/blueprint_types.json: 1019 entries in 0.00s
+2025-09-24 05:06:37,645 - INFO - Loading cache from /Users/dg/Documents/GitHub/eveObserver/cache/blueprint_types.json...
+2025-09-24 05:06:37,645 - INFO - ✓ Cache loaded from /Users/dg/Documents/GitHub/eveObserver/cache/blueprint_types.json: 1019 entries in 0.00s
+2025-09-24 05:06:37,645 - INFO - Loading cache from /Users/dg/Documents/GitHub/eveObserver/cache/blueprint_types.json...
+2025-09-24 05:06:37,645 - INFO - ✓ Cache loaded from /Users/dg/Documents/GitHub/eveObserver/cache/blueprint_types.json: 1019 entries in 0.00s
+2025-09-24 05:06:37,645 - INFO - Loading cache from /Users/dg/Documents/GitHub/eveObserver/cache/blueprint_types.json...
+2025-09-24 05:06:37,645 - INFO - ✓ Cache loaded from /Users/dg/Documents/GitHub/eveObserver/cache/blueprint_types.json: 1019 entries in 0.00s
+2025-09-24 05:06:37,645 - INFO - Loading cache from /Users/dg/Documents/GitHub/eveObserver/cache/blueprint_types.json...
+2025-09-24 05:06:37,646 - INFO - ✓ Cache loaded from /Users/dg/Documents/GitHub/eveObserver/cache/blueprint_types.json: 1019 entries in 0.00s
+2025-09-24 05:06:37,646 - INFO - Loading cache from /Users/dg/Documents/GitHub/eveObserver/cache/blueprint_types.json...
+2025-09-24 05:06:37,646 - INFO - ✓ Cache loaded from /Users/dg/Documents/GitHub/eveObserver/cache/blueprint_types.json: 1019 entries in 0.00s
+2025-09-24 05:06:37,646 - INFO - Loading cache from /Users/dg/Documents/GitHub/eveObserver/cache/blueprint_types.json...
+2025-09-24 05:06:37,646 - INFO - ✓ Cache loaded from /Users/dg/Documents/GitHub/eveObserver/cache/blueprint_types.json: 1019 entries in 0.00s
+2025-09-24 05:06:37,646 - INFO - Loading cache from /Users/dg/Documents/GitHub/eveObserver/cache/blueprint_types.json...
+2025-09-24 05:06:37,646 - INFO - ✓ Cache loaded from /Users/dg/Documents/GitHub/eveObserver/cache/blueprint_types.json: 1019 entries in 0.00s
+2025-09-24 05:06:37,647 - INFO - Loading cache from /Users/dg/Documents/GitHub/eveObserver/cache/blueprint_types.json...
+2025-09-24 05:06:37,647 - INFO - ✓ Cache loaded from /Users/dg/Documents/GitHub/eveObserver/cache/blueprint_types.json: 1019 entries in 0.00s
+2025-09-24 05:06:37,647 - INFO - Loading cache from /Users/dg/Documents/GitHub/eveObserver/cache/blueprint_types.json...
+2025-09-24 05:06:37,647 - INFO - ✓ Cache loaded from /Users/dg/Documents/GitHub/eveObserver/cache/blueprint_types.json: 1019 entries in 0.00s
+2025-09-24 05:06:37,647 - INFO - Loading cache from /Users/dg/Documents/GitHub/eveObserver/cache/blueprint_types.json...
+2025-09-24 05:06:37,647 - INFO - ✓ Cache loaded from /Users/dg/Documents/GitHub/eveObserver/cache/blueprint_types.json: 1019 entries in 0.00s
+2025-09-24 05:06:37,647 - INFO - Loading cache from /Users/dg/Documents/GitHub/eveObserver/cache/blueprint_types.json...
+2025-09-24 05:06:37,648 - INFO - ✓ Cache loaded from /Users/dg/Documents/GitHub/eveObserver/cache/blueprint_types.json: 1019 entries in 0.00s
+2025-09-24 05:06:37,648 - INFO - Loading cache from /Users/dg/Documents/GitHub/eveObserver/cache/blueprint_types.json...
+2025-09-24 05:06:37,648 - INFO - ✓ Cache loaded from /Users/dg/Documents/GitHub/eveObserver/cache/blueprint_types.json: 1019 entries in 0.00s
+2025-09-24 05:06:37,648 - INFO - Loading cache from /Users/dg/Documents/GitHub/eveObserver/cache/blueprint_types.json...
+2025-09-24 05:06:37,649 - INFO - ✓ Cache loaded from /Users/dg/Documents/GitHub/eveObserver/cache/blueprint_types.json: 1019 entries in 0.00s
+2025-09-24 05:06:37,649 - INFO - Loading cache from /Users/dg/Documents/GitHub/eveObserver/cache/blueprint_types.json...
+2025-09-24 05:06:37,649 - INFO - ✓ Cache loaded from /Users/dg/Documents/GitHub/eveObserver/cache/blueprint_types.json: 1019 entries in 0.00s
+2025-09-24 05:06:37,649 - INFO - Loading cache from /Users/dg/Documents/GitHub/eveObserver/cache/blueprint_types.json...
+2025-09-24 05:06:37,649 - INFO - ✓ Cache loaded from /Users/dg/Documents/GitHub/eveObserver/cache/blueprint_types.json: 1019 entries in 0.00s
+2025-09-24 05:06:37,649 - INFO - Loading cache from /Users/dg/Documents/GitHub/eveObserver/cache/blueprint_types.json...
+2025-09-24 05:06:37,649 - INFO - ✓ Cache loaded from /Users/dg/Documents/GitHub/eveObserver/cache/blueprint_types.json: 1019 entries in 0.00s
+2025-09-24 05:06:37,649 - INFO - Loading cache from /Users/dg/Documents/GitHub/eveObserver/cache/blueprint_types.json...
+2025-09-24 05:06:37,649 - INFO - ✓ Cache loaded from /Users/dg/Documents/GitHub/eveObserver/cache/blueprint_types.json: 1019 entries in 0.00s
+2025-09-24 05:06:37,650 - INFO - Loading cache from /Users/dg/Documents/GitHub/eveObserver/cache/blueprint_types.json...
+2025-09-24 05:06:37,650 - INFO - ✓ Cache loaded from /Users/dg/Documents/GitHub/eveObserver/cache/blueprint_types.json: 1019 entries in 0.00s
+2025-09-24 05:06:37,650 - INFO - Loading cache from /Users/dg/Documents/GitHub/eveObserver/cache/blueprint_types.json...
+2025-09-24 05:06:37,650 - INFO - ✓ Cache loaded from /Users/dg/Documents/GitHub/eveObserver/cache/blueprint_types.json: 1019 entries in 0.00s
+2025-09-24 05:06:37,650 - INFO - Loading cache from /Users/dg/Documents/GitHub/eveObserver/cache/blueprint_types.json...
+2025-09-24 05:06:37,650 - INFO - ✓ Cache loaded from /Users/dg/Documents/GitHub/eveObserver/cache/blueprint_types.json: 1019 entries in 0.00s
+2025-09-24 05:06:37,650 - INFO - Loading cache from /Users/dg/Documents/GitHub/eveObserver/cache/blueprint_types.json...
+2025-09-24 05:06:37,650 - INFO - ✓ Cache loaded from /Users/dg/Documents/GitHub/eveObserver/cache/blueprint_types.json: 1019 entries in 0.00s
+2025-09-24 05:06:37,650 - INFO - Loading cache from /Users/dg/Documents/GitHub/eveObserver/cache/blueprint_types.json...
+2025-09-24 05:06:37,651 - INFO - ✓ Cache loaded from /Users/dg/Documents/GitHub/eveObserver/cache/blueprint_types.json: 1019 entries in 0.00s
+2025-09-24 05:06:37,651 - INFO - Loading cache from /Users/dg/Documents/GitHub/eveObserver/cache/blueprint_types.json...
+2025-09-24 05:06:37,651 - INFO - ✓ Cache loaded from /Users/dg/Documents/GitHub/eveObserver/cache/blueprint_types.json: 1019 entries in 0.00s
+2025-09-24 05:06:37,651 - INFO - Loading cache from /Users/dg/Documents/GitHub/eveObserver/cache/blueprint_types.json...
+2025-09-24 05:06:37,651 - INFO - ✓ Cache loaded from /Users/dg/Documents/GitHub/eveObserver/cache/blueprint_types.json: 1019 entries in 0.00s
+2025-09-24 05:06:37,652 - INFO - Rate limiter adjusted: base=60.0, current=30.60, factor=0.5
+2025-09-24 05:06:37,652 - INFO - Rate limiter adjusted: base=60.0, current=30.60, factor=0.5
+2025-09-24 05:06:37,652 - INFO - Rate limiter adjusted: base=60.0, current=30.60, factor=0.5
+2025-09-24 05:06:37,652 - INFO - Rate limiter adjusted: base=60.0, current=30.60, factor=0.5
+2025-09-24 05:06:37,652 - INFO - Rate limiter adjusted: base=60.0, current=30.60, factor=0.5
+2025-09-24 05:06:37,652 - INFO - Rate limiter adjusted: base=60.0, current=30.60, factor=0.5
+2025-09-24 05:06:37,652 - INFO - Rate limiter adjusted: base=60.0, current=30.60, factor=0.5
+2025-09-24 05:06:37,652 - INFO - Rate limiter adjusted: base=60.0, current=30.60, factor=0.5
+2025-09-24 05:06:37,652 - INFO - Rate limiter adjusted: base=60.0, current=30.60, factor=0.5
+2025-09-24 05:06:37,652 - INFO - Rate limiter adjusted: base=60.0, current=30.60, factor=0.5
+2025-09-24 05:06:37,652 - INFO - Rate limiter adjusted: base=60.0, current=30.60, factor=0.5
+2025-09-24 05:06:37,652 - INFO - Rate limiter adjusted: base=60.0, current=30.60, factor=0.5
+2025-09-24 05:06:37,652 - INFO - Rate limiter adjusted: base=60.0, current=30.60, factor=0.5
+2025-09-24 05:06:37,652 - INFO - Rate limiter adjusted: base=60.0, current=30.60, factor=0.5
+2025-09-24 05:06:37,652 - INFO - Rate limiter adjusted: base=60.0, current=30.60, factor=0.5
+2025-09-24 05:06:37,652 - INFO - Rate limiter adjusted: base=60.0, current=30.60, factor=0.5
+2025-09-24 05:06:37,652 - INFO - Rate limiter adjusted: base=60.0, current=30.60, factor=0.5
+2025-09-24 05:06:37,652 - INFO - Rate limiter adjusted: base=60.0, current=30.60, factor=0.5
+2025-09-24 05:06:37,652 - INFO - Rate limiter adjusted: base=60.0, current=30.60, factor=0.5
+2025-09-24 05:06:37,652 - INFO - Rate limiter adjusted: base=60.0, current=30.60, factor=0.5
+2025-09-24 05:06:37,652 - INFO - Rate limiter adjusted: base=60.0, current=30.60, factor=0.5
+2025-09-24 05:06:37,652 - INFO - Rate limiter adjusted: base=60.0, current=30.60, factor=0.5
+2025-09-24 05:06:37,652 - INFO - Rate limiter adjusted: base=60.0, current=30.60, factor=0.5
+2025-09-24 05:06:37,652 - INFO - Rate limiter adjusted: base=60.0, current=30.60, factor=0.5
+2025-09-24 05:06:37,652 - INFO - Rate limiter adjusted: base=60.0, current=30.60, factor=0.5
+2025-09-24 05:06:37,652 - INFO - Rate limiter adjusted: base=60.0, current=30.60, factor=0.5
+2025-09-24 05:06:37,652 - INFO - Rate limiter adjusted: base=60.0, current=30.60, factor=0.5
+2025-09-24 05:06:37,652 - INFO - Rate limiter adjusted: base=60.0, current=30.60, factor=0.5
+2025-09-24 05:06:37,652 - INFO - Rate limiter adjusted: base=60.0, current=30.60, factor=0.5
+2025-09-24 05:06:37,652 - INFO - Rate limiter adjusted: base=60.0, current=30.60, factor=0.5
+2025-09-24 05:06:37,653 - INFO - Rate limiter adjusted: base=60.0, current=30.60, factor=0.5
+2025-09-24 05:06:37,653 - INFO - Rate limiter adjusted: base=60.0, current=30.60, factor=0.5
+2025-09-24 05:06:37,653 - INFO - Rate limiter adjusted: base=60.0, current=30.60, factor=0.5
+2025-09-24 05:06:37,653 - INFO - Rate limiter adjusted: base=60.0, current=30.60, factor=0.5
+2025-09-24 05:06:37,653 - INFO - Rate limiter adjusted: base=60.0, current=30.60, factor=0.5
+2025-09-24 05:06:37,653 - INFO - Rate limiter adjusted: base=60.0, current=30.60, factor=0.5
+2025-09-24 05:06:37,653 - INFO - Rate limiter adjusted: base=60.0, current=30.60, factor=0.5
+2025-09-24 05:06:37,653 - INFO - Rate limiter adjusted: base=60.0, current=30.60, factor=0.5
+2025-09-24 05:06:37,653 - INFO - Rate limiter adjusted: base=60.0, current=30.60, factor=0.5
+2025-09-24 05:06:37,653 - INFO - Rate limiter adjusted: base=60.0, current=30.60, factor=0.5
+2025-09-24 05:06:37,653 - INFO - Rate limiter adjusted: base=60.0, current=30.60, factor=0.5
+2025-09-24 05:06:37,653 - INFO - Rate limiter adjusted: base=60.0, current=30.60, factor=0.5
+2025-09-24 05:06:37,653 - INFO - Rate limiter adjusted: base=60.0, current=30.60, factor=0.5
+2025-09-24 05:06:37,653 - INFO - Rate limiter adjusted: base=60.0, current=30.60, factor=0.5
+2025-09-24 05:06:37,653 - INFO - Rate limiter adjusted: base=60.0, current=30.60, factor=0.5
+2025-09-24 05:06:37,653 - INFO - Rate limiter adjusted: base=60.0, current=30.60, factor=0.5
+2025-09-24 05:06:38,012 - INFO - WordPress GET successful: /wp/v2/eve_contract?slug=contract-222641777 in 0.36s
+2025-09-24 05:06:38,012 - INFO - wp_request completed in 0.374s
+2025-09-24 05:06:38,022 - INFO - Loading cache from /Users/dg/Documents/GitHub/eveObserver/cache/blueprint_types.json...
+2025-09-24 05:06:38,022 - INFO - ✓ Cache loaded from /Users/dg/Documents/GitHub/eveObserver/cache/blueprint_types.json: 1019 entries in 0.00s
+2025-09-24 05:06:38,023 - INFO - Loading cache from /Users/dg/Documents/GitHub/eveObserver/cache/blueprint_names.json...
+2025-09-24 05:06:38,023 - INFO - ✓ Cache loaded from /Users/dg/Documents/GitHub/eveObserver/cache/blueprint_names.json: 110 entries in 0.00s
+2025-09-24 05:06:38,023 - WARNING - Contract 222641777 is outbid by contract price: 200000000.0
+2025-09-24 05:06:38,023 - INFO - Rate limiter adjusted: base=60.0, current=30.60, factor=0.5
+2025-09-24 05:06:39,816 - INFO - WordPress GET successful: /wp/v2/eve_contract?slug=contract-222642013 in 2.16s
+2025-09-24 05:06:39,821 - INFO - wp_request completed in 2.176s
+2025-09-24 05:06:39,827 - INFO - Loading cache from /Users/dg/Documents/GitHub/eveObserver/cache/blueprint_types.json...
+2025-09-24 05:06:39,827 - INFO - ✓ Cache loaded from /Users/dg/Documents/GitHub/eveObserver/cache/blueprint_types.json: 1019 entries in 0.00s
+2025-09-24 05:06:39,828 - WARNING - Contract 222642013 is outbid by contract price: 43990000.0
+2025-09-24 05:06:39,829 - INFO - Rate limiter adjusted: base=60.0, current=30.60, factor=0.5
+2025-09-24 05:06:39,940 - INFO - WordPress GET successful: /wp/v2/eve_contract?slug=contract-222642133 in 2.29s
+2025-09-24 05:06:39,941 - INFO - wp_request completed in 2.294s
+2025-09-24 05:06:39,947 - INFO - Loading cache from /Users/dg/Documents/GitHub/eveObserver/cache/blueprint_types.json...
+2025-09-24 05:06:39,948 - INFO - ✓ Cache loaded from /Users/dg/Documents/GitHub/eveObserver/cache/blueprint_types.json: 1019 entries in 0.00s
+2025-09-24 05:06:39,948 - WARNING - Contract 222642133 is outbid by contract price: 51990000.0
+2025-09-24 05:06:39,948 - INFO - Rate limiter adjusted: base=60.0, current=30.60, factor=0.5
+2025-09-24 05:06:40,104 - INFO - WordPress GET successful: /wp/v2/eve_contract?slug=contract-222641948 in 2.45s
+2025-09-24 05:06:40,105 - INFO - WordPress GET successful: /wp/v2/eve_contract?slug=contract-222642381 in 2.45s
+2025-09-24 05:06:40,106 - INFO - WordPress GET successful: /wp/v2/eve_contract?slug=contract-222642390 in 2.45s
+2025-09-24 05:06:40,107 - INFO - wp_request completed in 2.464s
+2025-09-24 05:06:40,112 - INFO - Loading cache from /Users/dg/Documents/GitHub/eveObserver/cache/blueprint_types.json...
+2025-09-24 05:06:40,113 - INFO - ✓ Cache loaded from /Users/dg/Documents/GitHub/eveObserver/cache/blueprint_types.json: 1019 entries in 0.00s
+2025-09-24 05:06:40,113 - WARNING - Contract 222641948 is outbid by contract price: 38979999.0
+2025-09-24 05:06:40,114 - INFO - WordPress GET successful: /wp/v2/eve_contract?slug=contract-222697552 in 2.46s
+2025-09-24 05:06:40,115 - INFO - Rate limiter adjusted: base=60.0, current=30.60, factor=0.5
+2025-09-24 05:06:40,115 - INFO - wp_request completed in 2.466s
+2025-09-24 05:06:40,120 - INFO - Loading cache from /Users/dg/Documents/GitHub/eveObserver/cache/blueprint_types.json...
+2025-09-24 05:06:40,121 - INFO - ✓ Cache loaded from /Users/dg/Documents/GitHub/eveObserver/cache/blueprint_types.json: 1019 entries in 0.00s
+2025-09-24 05:06:40,121 - INFO - wp_request completed in 2.472s
+2025-09-24 05:06:40,124 - INFO - Loading cache from /Users/dg/Documents/GitHub/eveObserver/cache/blueprint_types.json...
+2025-09-24 05:06:40,124 - INFO - ✓ Cache loaded from /Users/dg/Documents/GitHub/eveObserver/cache/blueprint_types.json: 1019 entries in 0.00s
+2025-09-24 05:06:40,124 - WARNING - Contract 222642390 is outbid by contract price: 159000000.0
+2025-09-24 05:06:40,125 - INFO - Rate limiter adjusted: base=60.0, current=30.60, factor=0.5
+2025-09-24 05:06:40,125 - INFO - Rate limiter adjusted: base=60.0, current=30.60, factor=0.5
+2025-09-24 05:06:40,125 - INFO - wp_request completed in 2.474s
+2025-09-24 05:06:40,128 - INFO - Loading cache from /Users/dg/Documents/GitHub/eveObserver/cache/blueprint_types.json...
+2025-09-24 05:06:40,128 - INFO - ✓ Cache loaded from /Users/dg/Documents/GitHub/eveObserver/cache/blueprint_types.json: 1019 entries in 0.00s
+2025-09-24 05:06:40,128 - WARNING - Contract 222697552 is outbid by contract price: 147990000.0
+2025-09-24 05:06:40,129 - INFO - Rate limiter adjusted: base=60.0, current=30.60, factor=0.5
+2025-09-24 05:06:40,278 - INFO - WordPress GET successful: /wp/v2/eve_contract?slug=contract-222641973 in 2.63s
+2025-09-24 05:06:40,279 - INFO - WordPress GET successful: /wp/v2/eve_contract?slug=contract-222642413 in 2.63s
+2025-09-24 05:06:40,279 - INFO - WordPress GET successful: /wp/v2/eve_contract?slug=contract-222641925 in 2.63s
+2025-09-24 05:06:40,281 - INFO - wp_request completed in 2.638s
+2025-09-24 05:06:40,289 - INFO - Loading cache from /Users/dg/Documents/GitHub/eveObserver/cache/blueprint_types.json...
+2025-09-24 05:06:40,290 - INFO - ✓ Cache loaded from /Users/dg/Documents/GitHub/eveObserver/cache/blueprint_types.json: 1019 entries in 0.00s
+2025-09-24 05:06:40,291 - WARNING - Contract 222641973 is outbid by contract price: 299000000.0
+2025-09-24 05:06:40,291 - INFO - wp_request completed in 2.642s
+2025-09-24 05:06:40,296 - INFO - Loading cache from /Users/dg/Documents/GitHub/eveObserver/cache/blueprint_types.json...
+2025-09-24 05:06:40,296 - INFO - ✓ Cache loaded from /Users/dg/Documents/GitHub/eveObserver/cache/blueprint_types.json: 1019 entries in 0.00s
+2025-09-24 05:06:40,296 - WARNING - Contract 222642413 is outbid by contract price: 200000000.0
+2025-09-24 05:06:40,296 - INFO - wp_request completed in 2.654s
+2025-09-24 05:06:40,298 - INFO - Loading cache from /Users/dg/Documents/GitHub/eveObserver/cache/blueprint_types.json...
+2025-09-24 05:06:40,298 - INFO - ✓ Cache loaded from /Users/dg/Documents/GitHub/eveObserver/cache/blueprint_types.json: 1019 entries in 0.00s
+2025-09-24 05:06:40,298 - WARNING - Contract 222641925 is outbid by contract price: 29959999.0
+2025-09-24 05:06:40,298 - INFO - Rate limiter adjusted: base=60.0, current=30.60, factor=0.5
+2025-09-24 05:06:40,298 - INFO - Rate limiter adjusted: base=60.0, current=30.60, factor=0.5
+2025-09-24 05:06:40,298 - INFO - Rate limiter adjusted: base=60.0, current=30.60, factor=0.5
+2025-09-24 05:06:40,299 - INFO - WordPress GET successful: /wp/v2/eve_contract?slug=contract-222642061 in 2.65s
+2025-09-24 05:06:40,299 - INFO - wp_request completed in 2.654s
+2025-09-24 05:06:40,301 - INFO - Loading cache from /Users/dg/Documents/GitHub/eveObserver/cache/blueprint_types.json...
+2025-09-24 05:06:40,302 - INFO - ✓ Cache loaded from /Users/dg/Documents/GitHub/eveObserver/cache/blueprint_types.json: 1019 entries in 0.00s
+2025-09-24 05:06:40,302 - WARNING - Contract 222642061 is outbid by contract price: 47990000.0
+2025-09-24 05:06:40,302 - INFO - Rate limiter adjusted: base=60.0, current=30.60, factor=0.5
+2025-09-24 05:06:40,440 - INFO - WordPress GET successful: /wp/v2/eve_contract?slug=contract-222642077 in 2.79s
+2025-09-24 05:06:40,441 - INFO - WordPress GET successful: /wp/v2/eve_contract?slug=contract-222641983 in 2.79s
+2025-09-24 05:06:40,442 - INFO - WordPress GET successful: /wp/v2/eve_contract?slug=contract-222697508 in 2.79s
+2025-09-24 05:06:40,442 - INFO - WordPress GET successful: /wp/v2/eve_contract?slug=contract-222641993 in 2.79s
+2025-09-24 05:06:40,442 - INFO - WordPress GET successful: /wp/v2/eve_contract?slug=contract-222642107 in 2.79s
+2025-09-24 05:06:40,443 - INFO - WordPress GET successful: /wp/v2/eve_contract?slug=contract-222642299 in 2.79s
+2025-09-24 05:06:40,443 - INFO - wp_request completed in 2.797s
+2025-09-24 05:06:40,447 - INFO - Loading cache from /Users/dg/Documents/GitHub/eveObserver/cache/blueprint_types.json...
+2025-09-24 05:06:40,448 - INFO - ✓ Cache loaded from /Users/dg/Documents/GitHub/eveObserver/cache/blueprint_types.json: 1019 entries in 0.00s
+2025-09-24 05:06:40,448 - WARNING - Contract 222642077 is outbid by contract price: 299000000.0
+2025-09-24 05:06:40,448 - INFO - WordPress GET successful: /wp/v2/eve_contract?slug=contract-222642246 in 2.80s
+2025-09-24 05:06:40,449 - INFO - Rate limiter adjusted: base=60.0, current=30.60, factor=0.5
+2025-09-24 05:06:40,449 - INFO - wp_request completed in 2.805s
+2025-09-24 05:06:40,452 - INFO - Loading cache from /Users/dg/Documents/GitHub/eveObserver/cache/blueprint_types.json...
+2025-09-24 05:06:40,452 - INFO - ✓ Cache loaded from /Users/dg/Documents/GitHub/eveObserver/cache/blueprint_types.json: 1019 entries in 0.00s
+2025-09-24 05:06:40,452 - WARNING - Contract 222641983 is outbid by contract price: 88979999.0
+2025-09-24 05:06:40,452 - INFO - wp_request completed in 2.802s
+2025-09-24 05:06:40,455 - INFO - Loading cache from /Users/dg/Documents/GitHub/eveObserver/cache/blueprint_types.json...
+2025-09-24 05:06:40,455 - INFO - ✓ Cache loaded from /Users/dg/Documents/GitHub/eveObserver/cache/blueprint_types.json: 1019 entries in 0.00s
+2025-09-24 05:06:40,455 - WARNING - Contract 222697508 is outbid by contract price: 30990000.0
+2025-09-24 05:06:40,455 - INFO - wp_request completed in 2.812s
+2025-09-24 05:06:40,457 - INFO - Loading cache from /Users/dg/Documents/GitHub/eveObserver/cache/blueprint_types.json...
+2025-09-24 05:06:40,457 - INFO - ✓ Cache loaded from /Users/dg/Documents/GitHub/eveObserver/cache/blueprint_types.json: 1019 entries in 0.00s
+2025-09-24 05:06:40,457 - WARNING - Contract 222641993 is outbid by contract price: 46989999.0
+2025-09-24 05:06:40,457 - INFO - wp_request completed in 2.811s
+2025-09-24 05:06:40,459 - INFO - Loading cache from /Users/dg/Documents/GitHub/eveObserver/cache/blueprint_types.json...
+2025-09-24 05:06:40,459 - INFO - ✓ Cache loaded from /Users/dg/Documents/GitHub/eveObserver/cache/blueprint_types.json: 1019 entries in 0.00s
+2025-09-24 05:06:40,459 - WARNING - Contract 222642107 is outbid by contract price: 99900000.0
+2025-09-24 05:06:40,459 - INFO - wp_request completed in 2.811s
+2025-09-24 05:06:40,461 - INFO - Loading cache from /Users/dg/Documents/GitHub/eveObserver/cache/blueprint_types.json...
+2025-09-24 05:06:40,461 - INFO - ✓ Cache loaded from /Users/dg/Documents/GitHub/eveObserver/cache/blueprint_types.json: 1019 entries in 0.00s
+2025-09-24 05:06:40,461 - WARNING - Contract 222642299 is outbid by contract price: 9969999.0
+2025-09-24 05:06:40,462 - INFO - Rate limiter adjusted: base=60.0, current=30.60, factor=0.5
+2025-09-24 05:06:40,462 - INFO - Rate limiter adjusted: base=60.0, current=30.60, factor=0.5
+2025-09-24 05:06:40,462 - INFO - Rate limiter adjusted: base=60.0, current=30.60, factor=0.5
+2025-09-24 05:06:40,462 - INFO - Rate limiter adjusted: base=60.0, current=30.60, factor=0.5
+2025-09-24 05:06:40,462 - INFO - Rate limiter adjusted: base=60.0, current=30.60, factor=0.5
+2025-09-24 05:06:40,462 - INFO - wp_request completed in 2.814s
+2025-09-24 05:06:40,463 - INFO - Loading cache from /Users/dg/Documents/GitHub/eveObserver/cache/blueprint_types.json...
+2025-09-24 05:06:40,463 - INFO - ✓ Cache loaded from /Users/dg/Documents/GitHub/eveObserver/cache/blueprint_types.json: 1019 entries in 0.00s
+2025-09-24 05:06:40,463 - WARNING - Contract 222642246 is outbid by contract price: 25889999.0
+2025-09-24 05:06:40,464 - INFO - Rate limiter adjusted: base=60.0, current=30.60, factor=0.5
+2025-09-24 05:06:40,464 - INFO - WordPress GET successful: /wp/v2/eve_contract?slug=contract-222641961 in 2.81s
+2025-09-24 05:06:40,465 - INFO - WordPress GET successful: /wp/v2/eve_contract?slug=contract-222697538 in 2.81s
+2025-09-24 05:06:40,465 - INFO - wp_request completed in 2.822s
+2025-09-24 05:06:40,467 - INFO - Loading cache from /Users/dg/Documents/GitHub/eveObserver/cache/blueprint_types.json...
+2025-09-24 05:06:40,467 - INFO - ✓ Cache loaded from /Users/dg/Documents/GitHub/eveObserver/cache/blueprint_types.json: 1019 entries in 0.00s
+2025-09-24 05:06:40,467 - WARNING - Contract 222641961 is outbid by contract price: 297990000.0
+2025-09-24 05:06:40,467 - INFO - wp_request completed in 2.817s
+2025-09-24 05:06:40,469 - INFO - Loading cache from /Users/dg/Documents/GitHub/eveObserver/cache/blueprint_types.json...
+2025-09-24 05:06:40,469 - INFO - ✓ Cache loaded from /Users/dg/Documents/GitHub/eveObserver/cache/blueprint_types.json: 1019 entries in 0.00s
+2025-09-24 05:06:40,469 - WARNING - Contract 222697538 is outbid by contract price: 288990000.0
+2025-09-24 05:06:40,470 - INFO - WordPress GET successful: /wp/v2/eve_contract?slug=contract-222642285 in 2.82s
+2025-09-24 05:06:40,470 - INFO - Rate limiter adjusted: base=60.0, current=30.60, factor=0.5
+2025-09-24 05:06:40,470 - INFO - Rate limiter adjusted: base=60.0, current=30.60, factor=0.5
+2025-09-24 05:06:40,470 - INFO - WordPress GET successful: /wp/v2/eve_contract?slug=contract-222642026 in 2.82s
+2025-09-24 05:06:40,471 - INFO - wp_request completed in 2.823s
+2025-09-24 05:06:40,472 - INFO - Loading cache from /Users/dg/Documents/GitHub/eveObserver/cache/blueprint_types.json...
+2025-09-24 05:06:40,472 - INFO - ✓ Cache loaded from /Users/dg/Documents/GitHub/eveObserver/cache/blueprint_types.json: 1019 entries in 0.00s
+2025-09-24 05:06:40,472 - WARNING - Contract 222642285 is outbid by contract price: 14739999.0
+2025-09-24 05:06:40,473 - INFO - WordPress GET successful: /wp/v2/eve_contract?slug=contract-222697423 in 2.82s
+2025-09-24 05:06:40,473 - INFO - WordPress GET successful: /wp/v2/eve_contract?slug=contract-222641937 in 2.82s
+2025-09-24 05:06:40,473 - INFO - WordPress GET successful: /wp/v2/eve_contract?slug=contract-222642004 in 2.82s
+2025-09-24 05:06:40,473 - INFO - Rate limiter adjusted: base=60.0, current=30.60, factor=0.5
+2025-09-24 05:06:40,473 - INFO - wp_request completed in 2.829s
+2025-09-24 05:06:40,476 - INFO - Loading cache from /Users/dg/Documents/GitHub/eveObserver/cache/blueprint_types.json...
+2025-09-24 05:06:40,476 - INFO - ✓ Cache loaded from /Users/dg/Documents/GitHub/eveObserver/cache/blueprint_types.json: 1019 entries in 0.00s
+2025-09-24 05:06:40,476 - WARNING - Contract 222642026 is outbid by contract price: 17759999.0
+2025-09-24 05:06:40,477 - INFO - WordPress GET successful: /wp/v2/eve_contract?slug=contract-222641849 in 2.82s
+2025-09-24 05:06:40,477 - INFO - Rate limiter adjusted: base=60.0, current=30.60, factor=0.5
+2025-09-24 05:06:40,477 - INFO - wp_request completed in 2.827s
+2025-09-24 05:06:40,479 - INFO - Loading cache from /Users/dg/Documents/GitHub/eveObserver/cache/blueprint_types.json...
+2025-09-24 05:06:40,479 - INFO - ✓ Cache loaded from /Users/dg/Documents/GitHub/eveObserver/cache/blueprint_types.json: 1019 entries in 0.00s
+2025-09-24 05:06:40,479 - WARNING - Contract 222697423 is outbid by contract price: 196990000.0
+2025-09-24 05:06:40,479 - INFO - wp_request completed in 2.837s
+2025-09-24 05:06:40,481 - INFO - Loading cache from /Users/dg/Documents/GitHub/eveObserver/cache/blueprint_types.json...
+2025-09-24 05:06:40,481 - INFO - ✓ Cache loaded from /Users/dg/Documents/GitHub/eveObserver/cache/blueprint_types.json: 1019 entries in 0.00s
+2025-09-24 05:06:40,481 - WARNING - Contract 222641937 is outbid by contract price: 299000000.0
+2025-09-24 05:06:40,482 - INFO - wp_request completed in 2.838s
+2025-09-24 05:06:40,483 - INFO - Loading cache from /Users/dg/Documents/GitHub/eveObserver/cache/blueprint_types.json...
+2025-09-24 05:06:40,483 - INFO - ✓ Cache loaded from /Users/dg/Documents/GitHub/eveObserver/cache/blueprint_types.json: 1019 entries in 0.00s
+2025-09-24 05:06:40,483 - WARNING - Contract 222642004 is outbid by contract price: 83979999.0
+2025-09-24 05:06:40,484 - INFO - Rate limiter adjusted: base=60.0, current=30.60, factor=0.5
+2025-09-24 05:06:40,484 - INFO - Rate limiter adjusted: base=60.0, current=30.60, factor=0.5
+2025-09-24 05:06:40,484 - INFO - Rate limiter adjusted: base=60.0, current=30.60, factor=0.5
+2025-09-24 05:06:40,484 - INFO - wp_request completed in 2.843s
+2025-09-24 05:06:40,485 - INFO - Loading cache from /Users/dg/Documents/GitHub/eveObserver/cache/blueprint_types.json...
+2025-09-24 05:06:40,485 - INFO - ✓ Cache loaded from /Users/dg/Documents/GitHub/eveObserver/cache/blueprint_types.json: 1019 entries in 0.00s
+2025-09-24 05:06:40,485 - WARNING - Contract 222641849 is outbid by contract price: 147990000.0
+2025-09-24 05:06:40,485 - INFO - Rate limiter adjusted: base=60.0, current=30.60, factor=0.5
+2025-09-24 05:06:40,524 - INFO - WordPress GET successful: /wp/v2/eve_contract?slug=contract-222697571 in 2.87s
+2025-09-24 05:06:40,524 - INFO - wp_request completed in 2.873s
+2025-09-24 05:06:40,527 - INFO - Loading cache from /Users/dg/Documents/GitHub/eveObserver/cache/blueprint_types.json...
+2025-09-24 05:06:40,527 - INFO - ✓ Cache loaded from /Users/dg/Documents/GitHub/eveObserver/cache/blueprint_types.json: 1019 entries in 0.00s
+2025-09-24 05:06:40,528 - WARNING - Contract 222697571 is outbid by contract price: 37990000.0
+2025-09-24 05:06:40,528 - INFO - Rate limiter adjusted: base=60.0, current=30.60, factor=0.5
+2025-09-24 05:06:40,528 - INFO - WordPress GET successful: /wp/v2/eve_contract?slug=contract-222642169 in 2.88s
+2025-09-24 05:06:40,528 - INFO - WordPress GET successful: /wp/v2/eve_contract?slug=contract-222642089 in 2.88s
+2025-09-24 05:06:40,529 - INFO - WordPress GET successful: /wp/v2/eve_contract?slug=contract-222641914 in 2.88s
+2025-09-24 05:06:40,529 - INFO - WordPress GET successful: /wp/v2/eve_contract?slug=contract-222642020 in 2.88s
+2025-09-24 05:06:40,529 - INFO - wp_request completed in 2.882s
+2025-09-24 05:06:40,531 - INFO - Loading cache from /Users/dg/Documents/GitHub/eveObserver/cache/blueprint_types.json...
+2025-09-24 05:06:40,531 - INFO - ✓ Cache loaded from /Users/dg/Documents/GitHub/eveObserver/cache/blueprint_types.json: 1019 entries in 0.00s
+2025-09-24 05:06:40,531 - WARNING - Contract 222642169 is outbid by contract price: 43989999.0
+2025-09-24 05:06:40,531 - INFO - wp_request completed in 2.885s
+2025-09-24 05:06:40,533 - INFO - Loading cache from /Users/dg/Documents/GitHub/eveObserver/cache/blueprint_types.json...
+2025-09-24 05:06:40,533 - INFO - ✓ Cache loaded from /Users/dg/Documents/GitHub/eveObserver/cache/blueprint_types.json: 1019 entries in 0.00s
+2025-09-24 05:06:40,533 - WARNING - Contract 222642089 is outbid by contract price: 53900000.0
+2025-09-24 05:06:40,533 - INFO - wp_request completed in 2.892s
+2025-09-24 05:06:40,534 - INFO - Loading cache from /Users/dg/Documents/GitHub/eveObserver/cache/blueprint_types.json...
+2025-09-24 05:06:40,535 - INFO - ✓ Cache loaded from /Users/dg/Documents/GitHub/eveObserver/cache/blueprint_types.json: 1019 entries in 0.00s
+2025-09-24 05:06:40,535 - WARNING - Contract 222641914 is outbid by contract price: 51900000.0
+2025-09-24 05:06:40,535 - INFO - wp_request completed in 2.891s
+2025-09-24 05:06:40,537 - INFO - Loading cache from /Users/dg/Documents/GitHub/eveObserver/cache/blueprint_types.json...
+2025-09-24 05:06:40,537 - INFO - ✓ Cache loaded from /Users/dg/Documents/GitHub/eveObserver/cache/blueprint_types.json: 1019 entries in 0.00s
+2025-09-24 05:06:40,537 - WARNING - Contract 222642020 is outbid by contract price: 47990000.0
+2025-09-24 05:06:40,537 - INFO - Rate limiter adjusted: base=60.0, current=30.60, factor=0.5
+2025-09-24 05:06:40,537 - INFO - Rate limiter adjusted: base=60.0, current=30.60, factor=0.5
+2025-09-24 05:06:40,537 - INFO - Rate limiter adjusted: base=60.0, current=30.60, factor=0.5
+2025-09-24 05:06:40,537 - INFO - Rate limiter adjusted: base=60.0, current=30.60, factor=0.5
+2025-09-24 05:06:40,625 - INFO - WordPress GET successful: /wp/v2/eve_contract?slug=contract-222697575 in 2.97s
+2025-09-24 05:06:40,625 - INFO - WordPress GET successful: /wp/v2/eve_contract?slug=contract-222642037 in 2.97s
+2025-09-24 05:06:40,625 - INFO - WordPress GET successful: /wp/v2/eve_contract?slug=contract-222697519 in 2.97s
+2025-09-24 05:06:40,626 - INFO - wp_request completed in 2.974s
+2025-09-24 05:06:40,629 - INFO - Loading cache from /Users/dg/Documents/GitHub/eveObserver/cache/blueprint_types.json...
+2025-09-24 05:06:40,629 - INFO - ✓ Cache loaded from /Users/dg/Documents/GitHub/eveObserver/cache/blueprint_types.json: 1019 entries in 0.00s
+2025-09-24 05:06:40,629 - WARNING - Contract 222697575 is outbid by contract price: 50990000.0
+2025-09-24 05:06:40,630 - INFO - Rate limiter adjusted: base=60.0, current=30.60, factor=0.5
+2025-09-24 05:06:40,630 - INFO - wp_request completed in 2.985s
+2025-09-24 05:06:40,632 - INFO - Loading cache from /Users/dg/Documents/GitHub/eveObserver/cache/blueprint_types.json...
+2025-09-24 05:06:40,633 - INFO - ✓ Cache loaded from /Users/dg/Documents/GitHub/eveObserver/cache/blueprint_types.json: 1019 entries in 0.00s
+2025-09-24 05:06:40,633 - WARNING - Contract 222642037 is outbid by contract price: 50700000.0
+2025-09-24 05:06:40,633 - INFO - wp_request completed in 2.983s
+2025-09-24 05:06:40,636 - INFO - Loading cache from /Users/dg/Documents/GitHub/eveObserver/cache/blueprint_types.json...
+2025-09-24 05:06:40,636 - INFO - ✓ Cache loaded from /Users/dg/Documents/GitHub/eveObserver/cache/blueprint_types.json: 1019 entries in 0.00s
+2025-09-24 05:06:40,636 - WARNING - Contract 222697519 is outbid by contract price: 246990000.0
+2025-09-24 05:06:40,637 - INFO - WordPress GET successful: /wp/v2/eve_contract?slug=contract-222641864 in 2.98s
+2025-09-24 05:06:40,637 - INFO - Rate limiter adjusted: base=60.0, current=30.60, factor=0.5
+2025-09-24 05:06:40,637 - INFO - Rate limiter adjusted: base=60.0, current=30.60, factor=0.5
+2025-09-24 05:06:40,637 - INFO - WordPress GET successful: /wp/v2/eve_contract?slug=contract-222641828 in 2.99s
+2025-09-24 05:06:40,637 - INFO - wp_request completed in 2.997s
+2025-09-24 05:06:40,639 - INFO - Contract 222641864 contains no blueprints, skipping
+2025-09-24 05:06:40,639 - INFO - wp_request completed in 3.000s
+2025-09-24 05:06:40,641 - INFO - Loading cache from /Users/dg/Documents/GitHub/eveObserver/cache/blueprint_types.json...
+2025-09-24 05:06:40,642 - INFO - ✓ Cache loaded from /Users/dg/Documents/GitHub/eveObserver/cache/blueprint_types.json: 1019 entries in 0.00s
+2025-09-24 05:06:40,642 - WARNING - Contract 222641828 is outbid by contract price: 248000000.0
+2025-09-24 05:06:40,642 - INFO - Rate limiter adjusted: base=60.0, current=30.60, factor=0.5
+2025-09-24 05:06:40,654 - INFO - WordPress GET successful: /wp/v2/eve_contract?slug=contract-222642072 in 3.00s
+2025-09-24 05:06:40,654 - INFO - wp_request completed in 3.008s
+2025-09-24 05:06:40,656 - INFO - Loading cache from /Users/dg/Documents/GitHub/eveObserver/cache/blueprint_types.json...
+2025-09-24 05:06:40,657 - INFO - ✓ Cache loaded from /Users/dg/Documents/GitHub/eveObserver/cache/blueprint_types.json: 1019 entries in 0.00s
+2025-09-24 05:06:40,657 - WARNING - Contract 222642072 is outbid by contract price: 52900000.0
+2025-09-24 05:06:40,657 - INFO - Rate limiter adjusted: base=60.0, current=30.60, factor=0.5
+2025-09-24 05:06:40,658 - INFO - WordPress GET successful: /wp/v2/eve_contract?slug=contract-222641837 in 3.01s
+2025-09-24 05:06:40,658 - INFO - wp_request completed in 3.018s
+2025-09-24 05:06:40,660 - INFO - Loading cache from /Users/dg/Documents/GitHub/eveObserver/cache/blueprint_types.json...
+2025-09-24 05:06:40,661 - INFO - ✓ Cache loaded from /Users/dg/Documents/GitHub/eveObserver/cache/blueprint_types.json: 1019 entries in 0.00s
+2025-09-24 05:06:40,661 - WARNING - Contract 222641837 is outbid by contract price: 290000000.0
+2025-09-24 05:06:40,661 - INFO - Rate limiter adjusted: base=60.0, current=30.60, factor=0.5
+2025-09-24 05:06:40,661 - INFO - WordPress GET successful: /wp/v2/eve_contract?slug=contract-222697456 in 3.01s
+2025-09-24 05:06:40,661 - INFO - wp_request completed in 3.012s
+2025-09-24 05:06:40,664 - INFO - Loading cache from /Users/dg/Documents/GitHub/eveObserver/cache/blueprint_types.json...
+2025-09-24 05:06:40,664 - INFO - ✓ Cache loaded from /Users/dg/Documents/GitHub/eveObserver/cache/blueprint_types.json: 1019 entries in 0.00s
+2025-09-24 05:06:40,664 - WARNING - Contract 222697456 is outbid by contract price: 48990000.0
+2025-09-24 05:06:40,664 - INFO - Rate limiter adjusted: base=60.0, current=30.60, factor=0.5
+2025-09-24 05:06:40,665 - INFO - WordPress GET successful: /wp/v2/eve_contract?slug=contract-222641897 in 3.01s
+2025-09-24 05:06:40,665 - INFO - WordPress GET successful: /wp/v2/eve_contract?slug=contract-222642153 in 3.01s
+2025-09-24 05:06:40,665 - INFO - wp_request completed in 3.024s
+2025-09-24 05:06:40,668 - INFO - Loading cache from /Users/dg/Documents/GitHub/eveObserver/cache/blueprint_types.json...
+2025-09-24 05:06:40,668 - INFO - ✓ Cache loaded from /Users/dg/Documents/GitHub/eveObserver/cache/blueprint_types.json: 1019 entries in 0.00s
+2025-09-24 05:06:40,668 - WARNING - Contract 222641897 is outbid by contract price: 38979999.0
+2025-09-24 05:06:40,668 - INFO - Rate limiter adjusted: base=60.0, current=30.60, factor=0.5
+2025-09-24 05:06:40,669 - INFO - wp_request completed in 3.022s
+2025-09-24 05:06:40,671 - INFO - Loading cache from /Users/dg/Documents/GitHub/eveObserver/cache/blueprint_types.json...
+2025-09-24 05:06:40,671 - INFO - ✓ Cache loaded from /Users/dg/Documents/GitHub/eveObserver/cache/blueprint_types.json: 1019 entries in 0.00s
+2025-09-24 05:06:40,671 - WARNING - Contract 222642153 is outbid by contract price: 299000000.0
+2025-09-24 05:06:40,671 - INFO - Rate limiter adjusted: base=60.0, current=30.60, factor=0.5
+2025-09-24 05:06:40,748 - INFO - WordPress PUT successful: /wp/v2/eve_contract/3431 in 2.72s
+2025-09-24 05:06:40,748 - INFO - wp_request completed in 2.725s
+2025-09-24 05:06:40,748 - INFO - Updated contract: 222641777 - Capital Antimatter Reactor Unit - Contract 222641777
+2025-09-24 05:06:40,752 - INFO - WordPress GET successful: /wp/v2/eve_contract?slug=contract-222641882 in 3.10s
+2025-09-24 05:06:40,753 - INFO - WordPress PUT successful: /wp/v2/eve_contract/3451 in 0.92s
+2025-09-24 05:06:40,753 - INFO - WordPress GET successful: /wp/v2/eve_contract?slug=contract-222641803 in 3.10s
+2025-09-24 05:06:40,753 - INFO - WordPress GET successful: /wp/v2/eve_contract?slug=contract-222641814 in 3.10s
+2025-09-24 05:06:40,754 - INFO - WordPress GET successful: /wp/v2/eve_contract?slug=contract-222697477 in 3.10s
+2025-09-24 05:06:40,754 - INFO - WordPress PUT successful: /wp/v2/eve_contract/3460 in 0.81s
+2025-09-24 05:06:40,754 - INFO - WordPress GET successful: /wp/v2/eve_contract?slug=contract-222641822 in 3.10s
+2025-09-24 05:06:40,755 - INFO - wp_request completed in 3.114s
+2025-09-24 05:06:40,757 - INFO - Loading cache from /Users/dg/Documents/GitHub/eveObserver/cache/blueprint_types.json...
+2025-09-24 05:06:40,758 - INFO - ✓ Cache loaded from /Users/dg/Documents/GitHub/eveObserver/cache/blueprint_types.json: 1019 entries in 0.00s
+2025-09-24 05:06:40,758 - WARNING - Contract 222641882 is outbid by contract price: 52990000.0
+2025-09-24 05:06:40,758 - INFO - Rate limiter adjusted: base=60.0, current=30.60, factor=0.5
+2025-09-24 05:06:40,758 - INFO - wp_request completed in 0.930s
+2025-09-24 05:06:40,758 - INFO - Updated contract: 222642013 - Capital Particle Accelerator Unit - Contract 222642013
+2025-09-24 05:06:40,758 - INFO - wp_request completed in 3.119s
+2025-09-24 05:06:40,760 - INFO - Loading cache from /Users/dg/Documents/GitHub/eveObserver/cache/blueprint_types.json...
+2025-09-24 05:06:40,760 - INFO - ✓ Cache loaded from /Users/dg/Documents/GitHub/eveObserver/cache/blueprint_types.json: 1019 entries in 0.00s
+2025-09-24 05:06:40,761 - WARNING - Contract 222641803 is outbid by contract price: 48990000.0
+2025-09-24 05:06:40,761 - INFO - wp_request completed in 3.121s
+2025-09-24 05:06:40,762 - INFO - Loading cache from /Users/dg/Documents/GitHub/eveObserver/cache/blueprint_types.json...
+2025-09-24 05:06:40,762 - INFO - ✓ Cache loaded from /Users/dg/Documents/GitHub/eveObserver/cache/blueprint_types.json: 1019 entries in 0.00s
+2025-09-24 05:06:40,762 - WARNING - Contract 222641814 is outbid by contract price: 50990000.0
+2025-09-24 05:06:40,763 - INFO - wp_request completed in 3.113s
+2025-09-24 05:06:40,764 - INFO - Loading cache from /Users/dg/Documents/GitHub/eveObserver/cache/blueprint_types.json...
+2025-09-24 05:06:40,765 - INFO - ✓ Cache loaded from /Users/dg/Documents/GitHub/eveObserver/cache/blueprint_types.json: 1019 entries in 0.00s
+2025-09-24 05:06:40,765 - WARNING - Contract 222697477 is outbid by contract price: 50990000.0
+2025-09-24 05:06:40,765 - INFO - wp_request completed in 0.817s
+2025-09-24 05:06:40,765 - INFO - Updated contract: 222642133 - Capital Sustained Shield Emitter - Contract 222642133
+2025-09-24 05:06:40,765 - INFO - wp_request completed in 3.125s
+2025-09-24 05:06:40,766 - INFO - Loading cache from /Users/dg/Documents/GitHub/eveObserver/cache/blueprint_types.json...
+2025-09-24 05:06:40,767 - INFO - ✓ Cache loaded from /Users/dg/Documents/GitHub/eveObserver/cache/blueprint_types.json: 1019 entries in 0.00s
+2025-09-24 05:06:40,767 - WARNING - Contract 222641822 is outbid by contract price: 31969999.0
+2025-09-24 05:06:40,767 - INFO - Rate limiter adjusted: base=60.0, current=30.60, factor=0.5
+2025-09-24 05:06:40,767 - INFO - Rate limiter adjusted: base=60.0, current=30.60, factor=0.5
+2025-09-24 05:06:40,767 - INFO - Rate limiter adjusted: base=60.0, current=30.60, factor=0.5
+2025-09-24 05:06:40,767 - INFO - Rate limiter adjusted: base=60.0, current=30.60, factor=0.5
+2025-09-24 05:06:42,228 - INFO - WordPress PUT successful: /wp/v2/eve_contract/3474 in 1.77s
+2025-09-24 05:06:42,230 - INFO - WordPress PUT successful: /wp/v2/eve_contract/3450 in 1.75s
+2025-09-24 05:06:42,231 - INFO - WordPress PUT successful: /wp/v2/eve_contract/3476 in 1.76s
+2025-09-24 05:06:42,232 - INFO - WordPress PUT successful: /wp/v2/eve_contract/3446 in 1.93s
+2025-09-24 05:06:42,232 - INFO - WordPress PUT successful: /wp/v2/eve_contract/3442 in 1.93s
+2025-09-24 05:06:42,233 - INFO - WordPress PUT successful: /wp/v2/eve_contract/3458 in 1.70s
+2025-09-24 05:06:42,233 - INFO - WordPress PUT successful: /wp/v2/eve_contract/3473 in 1.47s
+2025-09-24 05:06:42,233 - INFO - WordPress PUT successful: /wp/v2/eve_contract/3466 in 1.77s
+2025-09-24 05:06:42,234 - INFO - WordPress PUT successful: /wp/v2/eve_contract/3469 in 1.94s
+2025-09-24 05:06:42,235 - INFO - WordPress PUT successful: /wp/v2/eve_contract/3452 in 1.70s
+2025-09-24 05:06:42,235 - INFO - WordPress PUT successful: /wp/v2/eve_contract/3448 in 1.77s
+2025-09-24 05:06:42,235 - INFO - WordPress PUT successful: /wp/v2/eve_contract/3441 in 1.70s
+2025-09-24 05:06:42,237 - INFO - wp_request completed in 1.781s
+2025-09-24 05:06:42,237 - INFO - Updated contract: 222697508 - Capital EM Pulse Generator - Contract 222697508
+2025-09-24 05:06:42,238 - INFO - WordPress PUT successful: /wp/v2/eve_contract/3443 in 1.75s
+2025-09-24 05:06:42,238 - INFO - WordPress PUT successful: /wp/v2/eve_contract/3453 in 1.76s
+2025-09-24 05:06:42,238 - INFO - WordPress PUT successful: /wp/v2/eve_contract/3478 in 1.71s
+2025-09-24 05:06:42,239 - INFO - WordPress PUT successful: /wp/v2/eve_contract/3433 in 1.47s
+2025-09-24 05:06:42,239 - INFO - WordPress PUT successful: /wp/v2/eve_contract/3455 in 1.94s
+2025-09-24 05:06:42,240 - INFO - WordPress PUT successful: /wp/v2/eve_contract/3459 in 1.78s
+2025-09-24 05:06:42,241 - INFO - WordPress PUT successful: /wp/v2/eve_contract/3434 in 1.47s
+2025-09-24 05:06:42,241 - INFO - WordPress PUT successful: /wp/v2/eve_contract/3470 in 1.76s
+2025-09-24 05:06:42,241 - INFO - wp_request completed in 1.758s
+2025-09-24 05:06:42,242 - INFO - Updated contract: 222642004 - Capital Oscillator Capacitor Unit - Contract 222642004
+2025-09-24 05:06:42,242 - INFO - wp_request completed in 1.772s
+2025-09-24 05:06:42,242 - INFO - Updated contract: 222697538 - Capital Fusion Thruster - Contract 222697538
+2025-09-24 05:06:42,242 - INFO - wp_request completed in 1.951s
+2025-09-24 05:06:42,242 - INFO - Updated contract: 222641973 - Capital Nanoelectrical Microprocessor - Contract 222641973
+2025-09-24 05:06:42,242 - INFO - wp_request completed in 1.944s
+2025-09-24 05:06:42,242 - INFO - Updated contract: 222641925 - Capital Laser Focusing Crystals - Contract 222641925
+2025-09-24 05:06:42,242 - INFO - wp_request completed in 1.709s
+2025-09-24 05:06:42,242 - INFO - Updated contract: 222642089 - Capital Scalar Capacitor Unit - Contract 222642089
+2025-09-24 05:06:42,242 - INFO - wp_request completed in 1.478s
+2025-09-24 05:06:42,242 - INFO - Updated contract: 222697477 - Capital Electrolytic Capacitor Unit - Contract 222697477
+2025-09-24 05:06:42,243 - INFO - wp_request completed in 1.781s
+2025-09-24 05:06:42,243 - INFO - Updated contract: 222642299 - Plasma Pulse Generator - Contract 222642299
+2025-09-24 05:06:42,243 - INFO - wp_request completed in 1.947s
+2025-09-24 05:06:42,243 - INFO - Updated contract: 222642413 - Squall - Contract 222642413
+2025-09-24 05:06:42,243 - INFO - wp_request completed in 1.706s
+2025-09-24 05:06:42,243 - INFO - Updated contract: 222642020 - Capital Photon Microprocessor - Contract 222642020
+2025-09-24 05:06:42,243 - INFO - wp_request completed in 1.786s
+2025-09-24 05:06:42,243 - INFO - Updated contract: 222641993 - Capital Nuclear Pulse Generator - Contract 222641993
+2025-09-24 05:06:42,243 - INFO - wp_request completed in 1.708s
+2025-09-24 05:06:42,243 - INFO - Updated contract: 222641914 - Capital Ladar Sensor Cluster - Contract 222641914
+2025-09-24 05:06:42,244 - INFO - wp_request completed in 1.763s
+2025-09-24 05:06:42,244 - INFO - Updated contract: 222641937 - Capital Linear Shield Emitter - Contract 222641937
+2025-09-24 05:06:42,244 - INFO - wp_request completed in 1.768s
+2025-09-24 05:06:42,244 - INFO - Updated contract: 222642026 - Capital Plasma Pulse Generator - Contract 222642026
+2025-09-24 05:06:42,244 - INFO - wp_request completed in 1.717s
+2025-09-24 05:06:42,244 - INFO - Updated contract: 222697571 - Capital Ion Thruster - Contract 222697571
+2025-09-24 05:06:42,245 - INFO - wp_request completed in 1.482s
+2025-09-24 05:06:42,245 - INFO - Updated contract: 222641814 - Capital Electrolytic Capacitor Unit - Contract 222641814
+2025-09-24 05:06:42,245 - INFO - wp_request completed in 1.942s
+2025-09-24 05:06:42,245 - INFO - Updated contract: 222642061 - Capital Pulse Shield Emitter - Contract 222642061
+2025-09-24 05:06:42,245 - INFO - wp_request completed in 1.785s
+2025-09-24 05:06:42,245 - INFO - Updated contract: 222642107 - Capital Superconductor Rails - Contract 222642107
+2025-09-24 05:06:42,245 - INFO - wp_request completed in 1.478s
+2025-09-24 05:06:42,245 - INFO - Updated contract: 222641822 - Capital EM Pulse Generator - Contract 222641822
+2025-09-24 05:06:42,245 - INFO - wp_request completed in 1.766s
+2025-09-24 05:06:42,245 - INFO - Updated contract: 222697423 - Capital Antimatter Reactor Unit - Contract 222697423
+2025-09-24 05:06:42,534 - INFO - WordPress PUT successful: /wp/v2/eve_contract/3440 in 1.87s
+2025-09-24 05:06:42,537 - INFO - WordPress PUT successful: /wp/v2/eve_contract/3472 in 1.87s
+2025-09-24 05:06:42,538 - INFO - WordPress PUT successful: /wp/v2/eve_contract/3435 in 1.90s
+2025-09-24 05:06:42,539 - INFO - WordPress PUT successful: /wp/v2/eve_contract/3447 in 2.08s
+2025-09-24 05:06:42,540 - INFO - WordPress PUT successful: /wp/v2/eve_contract/3436 in 1.88s
+2025-09-24 05:06:42,540 - INFO - WordPress PUT successful: /wp/v2/eve_contract/3456 in 1.88s
+2025-09-24 05:06:42,542 - INFO - WordPress PUT successful: /wp/v2/eve_contract/3475 in 1.90s
+2025-09-24 05:06:42,542 - INFO - WordPress PUT successful: /wp/v2/eve_contract/3468 in 2.42s
+2025-09-24 05:06:42,543 - INFO - WordPress PUT successful: /wp/v2/eve_contract/3477 in 2.41s
+2025-09-24 05:06:42,544 - INFO - WordPress PUT successful: /wp/v2/eve_contract/3445 in 2.07s
+2025-09-24 05:06:42,544 - INFO - WordPress PUT successful: /wp/v2/eve_contract/3454 in 1.91s
+2025-09-24 05:06:42,545 - INFO - WordPress PUT successful: /wp/v2/eve_contract/3437 in 2.06s
+2025-09-24 05:06:42,545 - INFO - wp_request completed in 1.877s
+2025-09-24 05:06:42,545 - INFO - Updated contract: 222641897 - Capital Ion Thruster - Contract 222641897
+2025-09-24 05:06:42,546 - INFO - wp_request completed in 1.882s
+2025-09-24 05:06:42,546 - INFO - Updated contract: 222697456 - Capital Deflection Shield Emitter - Contract 222697456
+2025-09-24 05:06:42,546 - INFO - wp_request completed in 1.905s
+2025-09-24 05:06:42,547 - INFO - Updated contract: 222641828 - Capital Fernite Carbide Composite Armor Plate - Contract 222641828
+2025-09-24 05:06:42,547 - INFO - wp_request completed in 2.095s
+2025-09-24 05:06:42,547 - INFO - Updated contract: 222641983 - Capital Nanomechanical Microprocessor - Contract 222641983
+2025-09-24 05:06:42,547 - INFO - wp_request completed in 1.886s
+2025-09-24 05:06:42,547 - INFO - Updated contract: 222641837 - Capital Fusion Thruster - Contract 222641837
+2025-09-24 05:06:42,547 - INFO - wp_request completed in 1.890s
+2025-09-24 05:06:42,547 - INFO - Updated contract: 222642072 - Capital Quantum Microprocessor - Contract 222642072
+2025-09-24 05:06:42,547 - INFO - wp_request completed in 1.911s
+2025-09-24 05:06:42,547 - INFO - Updated contract: 222697519 - Capital Fernite Carbide Composite Armor Plate - Contract 222697519
+2025-09-24 05:06:42,547 - INFO - wp_request completed in 2.423s
+2025-09-24 05:06:42,547 - INFO - Updated contract: 222642390 - Vexor - Contract 222642390
+2025-09-24 05:06:42,547 - INFO - wp_request completed in 2.419s
+2025-09-24 05:06:42,547 - INFO - Updated contract: 222697552 - Capital Gravimetric Sensor Cluster - Contract 222697552
+2025-09-24 05:06:42,547 - INFO - wp_request completed in 2.080s
+2025-09-24 05:06:42,547 - INFO - Updated contract: 222641961 - Capital Magpulse Thruster - Contract 222641961
+2025-09-24 05:06:42,547 - INFO - wp_request completed in 1.914s
+2025-09-24 05:06:42,547 - INFO - Updated contract: 222642037 - Capital Plasma Thruster - Contract 222642037
+2025-09-24 05:06:42,548 - INFO - wp_request completed in 2.062s
+2025-09-24 05:06:42,548 - INFO - Updated contract: 222641849 - Capital Gravimetric Sensor Cluster - Contract 222641849
+2025-09-24 05:06:42,548 - INFO - WordPress PUT successful: /wp/v2/eve_contract/3444 in 2.43s
+2025-09-24 05:06:42,548 - INFO - WordPress PUT successful: /wp/v2/eve_contract/3439 in 1.79s
+2025-09-24 05:06:42,549 - INFO - WordPress PUT successful: /wp/v2/eve_contract/3462 in 2.01s
+2025-09-24 05:06:42,549 - INFO - WordPress PUT successful: /wp/v2/eve_contract/3465 in 2.08s
+2025-09-24 05:06:42,549 - INFO - wp_request completed in 2.436s
+2025-09-24 05:06:42,550 - INFO - Updated contract: 222641948 - Capital Magnetometric Sensor Cluster - Contract 222641948
+2025-09-24 05:06:42,550 - INFO - wp_request completed in 1.792s
+2025-09-24 05:06:42,550 - INFO - Updated contract: 222641882 - Capital Graviton Reactor Unit - Contract 222641882
+2025-09-24 05:06:42,550 - INFO - wp_request completed in 2.018s
+2025-09-24 05:06:42,550 - INFO - Updated contract: 222642169 - Capital Thermonuclear Trigger Unit - Contract 222642169
+2025-09-24 05:06:42,550 - INFO - wp_request completed in 2.077s
+2025-09-24 05:06:42,550 - INFO - Updated contract: 222642285 - Nanomechanical Microprocessor - Contract 222642285
+2025-09-24 05:06:42,564 - INFO - WordPress PUT successful: /wp/v2/eve_contract/3461 in 1.89s
+2025-09-24 05:06:42,564 - INFO - wp_request completed in 1.893s
+2025-09-24 05:06:42,564 - INFO - Updated contract: 222642153 - Capital Tesseract Capacitor Unit - Contract 222642153
+2025-09-24 05:06:42,579 - INFO - WordPress PUT successful: /wp/v2/eve_contract/3467 in 2.45s
+2025-09-24 05:06:42,579 - INFO - wp_request completed in 2.459s
+2025-09-24 05:06:42,580 - INFO - Updated contract: 222642381 - Caracal - Contract 222642381
+2025-09-24 05:06:42,583 - INFO - WordPress PUT successful: /wp/v2/eve_contract/3464 in 2.12s
+2025-09-24 05:06:42,583 - INFO - wp_request completed in 2.119s
+2025-09-24 05:06:42,583 - INFO - Updated contract: 222642246 - Fernite Carbide Composite Armor Plate - Contract 222642246
+2025-09-24 05:06:42,584 - INFO - WordPress PUT successful: /wp/v2/eve_contract/3432 in 1.82s
+2025-09-24 05:06:42,585 - INFO - wp_request completed in 1.824s
+2025-09-24 05:06:42,585 - INFO - Updated contract: 222641803 - Capital Deflection Shield Emitter - Contract 222641803
+2025-09-24 05:06:42,724 - INFO - WordPress PUT successful: /wp/v2/eve_contract/3479 in 2.09s
+2025-09-24 05:06:42,724 - INFO - WordPress PUT successful: /wp/v2/eve_contract/3457 in 2.28s
+2025-09-24 05:06:42,725 - INFO - wp_request completed in 2.095s
+2025-09-24 05:06:42,725 - INFO - Updated contract: 222697575 - Capital Ladar Sensor Cluster - Contract 222697575
+2025-09-24 05:06:42,725 - INFO - wp_request completed in 2.277s
+2025-09-24 05:06:42,725 - INFO - Updated contract: 222642077 - Capital Radar Sensor Cluster - Contract 222642077
+2025-09-24 05:06:42,725 - INFO - Completed concurrent updates for 46 contracts
+2025-09-24 05:06:42,748 - INFO - Processing character: Orev Khazar (ID: 90522765)
+2025-09-24 05:06:42,749 - INFO - Starting contract processing for Orev Khazar
+2025-09-24 05:06:42,779 - INFO - ERROR LIMIT: Waiting 19 seconds for  endpoint...
+2025-09-24 05:07:01,942 - INFO - ESI authenticated fetch successful: /characters/90522765/contracts/ in 19.19s
+2025-09-24 05:07:01,943 - INFO - _fetch_esi_with_retry completed in 19.194s
+2025-09-24 05:07:01,943 - INFO - Processing character: Sir FiLiN (ID: 90162477)
+2025-09-24 05:07:01,943 - INFO - Starting contract processing for Sir FiLiN
+2025-09-24 05:07:01,980 - INFO - ESI authenticated fetch successful: /characters/90162477/contracts/ in 0.04s
+2025-09-24 05:07:01,980 - INFO - _fetch_esi_with_retry completed in 0.037s
+2025-09-24 05:07:01,981 - INFO - Processing character: Filin Khan (ID: 95937458)
+2025-09-24 05:07:01,981 - INFO - Starting contract processing for Filin Khan
+2025-09-24 05:07:02,019 - INFO - ESI authenticated fetch successful: /characters/95937458/contracts/ in 0.04s
+2025-09-24 05:07:02,019 - INFO - _fetch_esi_with_retry completed in 0.038s
+2025-09-24 05:07:02,019 - INFO - Processing character: Corvin Khan (ID: 95985116)
+2025-09-24 05:07:02,019 - INFO - Starting contract processing for Corvin Khan
+2025-09-24 05:07:02,119 - INFO - ESI authenticated fetch successful: /characters/95985116/contracts/ in 0.10s
+2025-09-24 05:07:02,119 - INFO - _fetch_esi_with_retry completed in 0.100s
+2025-09-24 05:07:02,119 - INFO - Processing character: FiLiN Core (ID: 1316070855)
+2025-09-24 05:07:02,119 - INFO - Starting contract processing for FiLiN Core
+2025-09-24 05:07:02,237 - INFO - ESI authenticated fetch successful: /characters/1316070855/contracts/ in 0.12s
+2025-09-24 05:07:02,238 - INFO - _fetch_esi_with_retry completed in 0.118s
+2025-09-24 05:07:02,238 - INFO - Processing character: Raven Madyar (ID: 91594850)
+2025-09-24 05:07:02,238 - INFO - Starting contract processing for Raven Madyar
+2025-09-24 05:07:02,281 - INFO - ESI authenticated fetch successful: /characters/91594850/contracts/ in 0.04s
+2025-09-24 05:07:02,281 - INFO - _fetch_esi_with_retry completed in 0.043s
+2025-09-24 05:07:02,281 - INFO - Processing character: Vran Ruthen (ID: 90483242)
+2025-09-24 05:07:02,281 - INFO - Starting contract processing for Vran Ruthen
+2025-09-24 05:07:02,319 - INFO - ESI authenticated fetch successful: /characters/90483242/contracts/ in 0.04s
+2025-09-24 05:07:02,325 - INFO - _fetch_esi_with_retry completed in 0.044s
+2025-09-24 05:07:02,326 - INFO - Data processing completed in 80.72s
+2025-09-24 05:07:02,326 - INFO - Total execution completed in 98.50s
+2025-09-24 05:07:02,327 - INFO - Flushed all pending cache saves
+2025-09-24 05:07:02,327 - INFO - Cache Performance - Hits: 36, Misses: 0, Hit Rate: 100.0%, Loads: 98, Saves: 0, Compressed Saves: 0, Batch Saves: 0, Expired Cleanups: 0

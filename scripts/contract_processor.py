@@ -1050,6 +1050,9 @@ async def process_character_contracts(
         contracts_to_check = []
         contract_items_to_check = []
         
+        # Collect all contracts that need updating
+        contracts_to_update = []
+        
         # Process contracts themselves
         for contract in char_contracts:
             contract_status = contract.get("status", "")
@@ -1076,26 +1079,28 @@ async def process_character_contracts(
                     contract_items_to_check.append(contract_items)
                 else:
                     # No items available, still update the contract but without competition check
-                    await update_contract_in_wp(
-                        contract["contract_id"],
-                        contract,
-                        for_corp=False,
-                        entity_id=char_id,
-                        access_token=access_token,
-                        blueprint_cache=blueprint_cache,
-                        all_expanded_contracts=all_expanded_contracts,
-                    )
+                    contracts_to_update.append({
+                        'contract': contract,
+                        'is_outbid': False,
+                        'competing_price': None,
+                        'for_corp': False,
+                        'entity_id': char_id,
+                        'access_token': access_token,
+                        'blueprint_cache': blueprint_cache,
+                        'all_expanded_contracts': all_expanded_contracts,
+                    })
             else:
                 # Not an outstanding sell contract, just update normally
-                await update_contract_in_wp(
-                    contract["contract_id"],
-                    contract,
-                    for_corp=False,
-                    entity_id=char_id,
-                    access_token=access_token,
-                    blueprint_cache=blueprint_cache,
-                    all_expanded_contracts=all_expanded_contracts,
-                )
+                contracts_to_update.append({
+                    'contract': contract,
+                    'is_outbid': False,
+                    'competing_price': None,
+                    'for_corp': False,
+                    'entity_id': char_id,
+                    'access_token': access_token,
+                    'blueprint_cache': blueprint_cache,
+                    'all_expanded_contracts': all_expanded_contracts,
+                })
 
         # Run competition checks concurrently for contracts that need them
         if contracts_to_check:
@@ -1104,19 +1109,40 @@ async def process_character_contracts(
                 contracts_to_check, contract_items_to_check, all_expanded_contracts
             )
             
-            # Update contracts with competition results
+            # Add competition results to update list
             for contract, (is_outbid, competing_price) in zip(contracts_to_check, competition_results):
-                await update_contract_in_wp_with_competition_result(
-                    contract["contract_id"],
-                    contract,
-                    is_outbid,
-                    competing_price,
-                    for_corp=False,
-                    entity_id=char_id,
-                    access_token=access_token,
-                    blueprint_cache=blueprint_cache,
-                    all_expanded_contracts=all_expanded_contracts,
+                contracts_to_update.append({
+                    'contract': contract,
+                    'is_outbid': is_outbid,
+                    'competing_price': competing_price,
+                    'for_corp': False,
+                    'entity_id': char_id,
+                    'access_token': access_token,
+                    'blueprint_cache': blueprint_cache,
+                    'all_expanded_contracts': all_expanded_contracts,
+                })
+
+        # Run all WordPress updates concurrently
+        if contracts_to_update:
+            logger.info(f"Running concurrent WordPress updates for {len(contracts_to_update)} contracts...")
+            update_tasks = []
+            for update_info in contracts_to_update:
+                task = update_contract_in_wp_with_competition_result(
+                    update_info['contract']["contract_id"],
+                    update_info['contract'],
+                    update_info['is_outbid'],
+                    update_info['competing_price'],
+                    update_info['for_corp'],
+                    update_info['entity_id'],
+                    update_info['access_token'],
+                    update_info['blueprint_cache'],
+                    update_info['all_expanded_contracts'],
                 )
+                update_tasks.append(task)
+            
+            # Execute all updates concurrently
+            await asyncio.gather(*update_tasks, return_exceptions=True)
+            logger.info(f"Completed concurrent updates for {len(update_tasks)} contracts")
 
 
 async def fetch_and_expand_all_forge_contracts() -> List[Dict[str, Any]]:
