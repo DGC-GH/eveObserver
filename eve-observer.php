@@ -236,18 +236,44 @@ class EVE_Observer {
         // Change to scripts directory and run the command synchronously
         error_log("🔄 [PHP STEP 12] Preparing shell command...");
         
-        // Try to find Python executable
-        $python_cmd = 'python3';
-        if (!shell_exec("which python3 2>/dev/null")) {
-            // Fallback to python if python3 not found
-            $python_cmd = 'python';
-            if (!shell_exec("which python 2>/dev/null")) {
-                error_log("❌ [PHP ERROR] Neither python3 nor python found in PATH");
-                return new WP_Error('python_not_found', 'Python executable not found in system PATH', array('status' => 500));
+        // Try multiple methods to find Python executable
+        $python_cmd = '';
+        $python_paths = array(
+            '/usr/bin/python3',
+            '/usr/local/bin/python3', 
+            '/usr/bin/python',
+            '/usr/local/bin/python',
+            'python3',
+            'python'
+        );
+        
+        error_log("🔄 [PHP STEP 12.1] Checking for Python in common locations...");
+        foreach ($python_paths as $path) {
+            // Test if the Python executable exists and is executable
+            $test_cmd = 'command -v ' . escapeshellarg($path) . ' 2>/dev/null && ' . escapeshellarg($path) . ' --version 2>/dev/null';
+            $test_output = shell_exec($test_cmd);
+            if (!empty($test_output) && strpos($test_output, 'Python') !== false) {
+                $python_cmd = $path;
+                error_log("✅ [PHP STEP 12.2] Found working Python at: {$path}");
+                break;
             }
         }
-        error_log("✅ [PHP STEP 12.5] Using Python command: {$python_cmd}");
         
+        if (empty($python_cmd)) {
+            error_log("❌ [PHP ERROR] No working Python executable found");
+            error_log("🔄 [PHP STEP 12.3] Available commands check:");
+            
+            // Check what commands are available
+            $which_output = shell_exec('which python3 python 2>/dev/null');
+            error_log("🔄 [PHP STEP 12.4] which output: " . ($which_output ?: 'none'));
+            
+            $ls_output = shell_exec('ls -la /usr/bin/python* /usr/local/bin/python* 2>/dev/null | head -10');
+            error_log("🔄 [PHP STEP 12.5] Python files in common dirs: " . ($ls_output ?: 'none'));
+            
+            return new WP_Error('python_not_found', 'Python executable not found. Your hosting provider (Hostinger) may not support Python, or it may be installed in a non-standard location. Please contact Hostinger support to enable Python or check if they offer Python hosting plans.', array('status' => 500));
+        }
+        
+        error_log("✅ [PHP STEP 12.6] Using Python command: {$python_cmd}");
         $command = 'cd ' . escapeshellarg($scripts_dir) . ' && ' . escapeshellarg($python_cmd) . ' ' . escapeshellarg($script_map[$section]) . ' 2>&1';
         error_log("🔄 [PHP STEP 13] Full command: {$command}");
 
