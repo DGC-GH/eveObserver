@@ -81,9 +81,10 @@ async def process_character_contracts(
                 failed_structures,
             )
 
-        # Fetch and expand all Forge contracts once for competition checking
-        logger.info("Fetching all expanded contracts from The Forge region for competition analysis...")
-        all_expanded_contracts = await fetch_and_expand_all_forge_contracts()
+        # Use provided all_expanded_contracts or fetch if not provided
+        if all_expanded_contracts is None:
+            logger.info("Fetching all expanded contracts from The Forge region for competition analysis...")
+            all_expanded_contracts = await fetch_and_expand_all_forge_contracts()
 
         # Collect contracts that need competition checking
         contracts_to_check = []

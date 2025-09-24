@@ -267,7 +267,7 @@ async def process_corporation_data(
 
     # Corporation contracts are processed via character contracts (issued by corp members)
     if args.all or args.contracts:
-        await process_corporation_contracts(corp_id, access_token, corp_data, blueprint_cache)
+        await process_corporation_contracts(corp_id, access_token, corp_data, blueprint_cache, all_expanded_contracts)
 
 
 async def process_corporation_blueprints_from_endpoint(
@@ -498,7 +498,7 @@ async def process_corporation_blueprints(
 
 
 async def process_corporation_contracts(
-    corp_id: int, access_token: str, corp_data: Dict[str, Any], blueprint_cache: Dict[str, Any]
+    corp_id: int, access_token: str, corp_data: Dict[str, Any], blueprint_cache: Dict[str, Any], all_expanded_contracts: Optional[List[Dict[str, Any]]] = None
 ) -> None:
     """
     Process contracts for a corporation.
@@ -511,12 +511,15 @@ async def process_corporation_contracts(
         access_token: Valid access token for corporation data.
         corp_data: Corporation data dictionary.
         blueprint_cache: Blueprint name cache for contract title generation.
+        all_expanded_contracts: Optional list of pre-expanded contracts for competition analysis.
     """
     from contract_processor import update_contract_in_wp
     from contract_expansion import fetch_and_expand_all_forge_contracts
 
-    # Fetch all expanded contracts once for competition analysis
-    all_expanded_contracts = await fetch_and_expand_all_forge_contracts()
+    # Use provided all_expanded_contracts or fetch if not provided
+    if all_expanded_contracts is None:
+        logger.info("No expanded contracts provided, fetching for corporation contract processing...")
+        all_expanded_contracts = await fetch_and_expand_all_forge_contracts()
 
     corp_contracts = await fetch_corporation_contracts(corp_id, access_token)
     if corp_contracts:
