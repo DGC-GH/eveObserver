@@ -216,6 +216,7 @@ async def process_corporation_data(
     structure_cache: Dict[str, Any],
     failed_structures: Dict[str, Any],
     args: argparse.Namespace,
+    all_expanded_contracts: Optional[List[Dict[str, Any]]] = None,
 ) -> None:
     """
     Process data for a single corporation and its members.
@@ -512,6 +513,10 @@ async def process_corporation_contracts(
         blueprint_cache: Blueprint name cache for contract title generation.
     """
     from contract_processor import update_contract_in_wp
+    from contract_expansion import fetch_and_expand_all_forge_contracts
+
+    # Fetch all expanded contracts once for competition analysis
+    all_expanded_contracts = await fetch_and_expand_all_forge_contracts()
 
     corp_contracts = await fetch_corporation_contracts(corp_id, access_token)
     if corp_contracts:
@@ -535,7 +540,7 @@ async def process_corporation_contracts(
                 entity_id=corp_id,
                 access_token=access_token,
                 blueprint_cache=blueprint_cache,
-                all_expanded_contracts=None,
+                all_expanded_contracts=all_expanded_contracts,
             )
 
 

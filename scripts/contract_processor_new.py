@@ -39,6 +39,7 @@ async def process_character_contracts(
     location_cache: Dict[str, Any],
     structure_cache: Dict[str, Any],
     failed_structures: Dict[str, Any],
+    all_expanded_contracts: Optional[List[Dict[str, Any]]] = None,
 ) -> None:
     """
     Process contracts for a character.

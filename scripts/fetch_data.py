@@ -9,7 +9,7 @@ import asyncio
 import logging
 import os
 from datetime import datetime, timezone
-from typing import Any, Dict, List, Tuple
+from typing import Any, Dict, List, Optional, Tuple
 
 from api_client import cleanup_session, fetch_esi, refresh_token, send_email
 from blueprint_processor import (
@@ -78,6 +78,7 @@ async def process_character_data(
     structure_cache: Dict[str, Any],
     failed_structures: Dict[str, Any],
     args: argparse.Namespace,
+    all_expanded_contracts: Optional[List[Dict[str, Any]]] = None,
 ) -> None:
     """
     Process all data for a single character based on command line arguments.

@@ -146,6 +146,17 @@ async def process_all_data(
     """Process all corporation and character data."""
     blueprint_cache, location_cache, structure_cache, failed_structures, wp_post_id_cache = caches
 
+    # Fetch all expanded contracts once for competition analysis if processing contracts
+    all_expanded_contracts = None
+    if args.all or args.contracts:
+        from contract_expansion import fetch_and_expand_all_forge_contracts
+        try:
+            all_expanded_contracts = await fetch_and_expand_all_forge_contracts()
+            logger.info(f"Fetched {len(all_expanded_contracts) if all_expanded_contracts else 0} expanded contracts for competition analysis")
+        except Exception as e:
+            logger.error(f"Failed to fetch expanded contracts: {e}")
+            all_expanded_contracts = None
+
     # Process each corporation with any available member token
     processed_corps = set()
     for corp_id, members in corp_members.items():
@@ -163,6 +174,7 @@ async def process_all_data(
                 structure_cache,
                 failed_structures,
                 args,
+                all_expanded_contracts,
             )
 
         processed_corps.add(corp_id)
@@ -182,6 +194,7 @@ async def process_all_data(
                 structure_cache,
                 failed_structures,
                 args,
+                all_expanded_contracts,
             )
             character_tasks.append(task)
 
