@@ -341,6 +341,39 @@ def flush_pending_saves() -> None:
     logger.info("Flushed all pending cache saves")
 
 
+async def async_flush_pending_saves() -> None:
+    """Flush all pending batch saves asynchronously."""
+    import asyncio
+    loop = asyncio.get_event_loop()
+    await loop.run_in_executor(None, flush_pending_saves)
+
+
+def preload_common_caches() -> None:
+    """Preload frequently accessed caches on startup for better performance."""
+    logger.info("Preloading common caches...")
+    
+    # Preload blueprint type cache (used for determining if items are blueprints)
+    try:
+        bp_type_cache = load_blueprint_type_cache()
+        logger.info(f"Preloaded blueprint type cache: {len(bp_type_cache)} entries")
+    except Exception as e:
+        logger.warning(f"Failed to preload blueprint type cache: {e}")
+    
+    # Preload blueprint name cache
+    try:
+        bp_cache = load_blueprint_cache()
+        logger.info(f"Preloaded blueprint cache: {len(bp_cache)} entries")
+    except Exception as e:
+        logger.warning(f"Failed to preload blueprint cache: {e}")
+    
+    # Preload location cache
+    try:
+        loc_cache = load_location_cache()
+        logger.info(f"Preloaded location cache: {len(loc_cache)} entries")
+    except Exception as e:
+        logger.warning(f"Failed to preload location cache: {e}")
+
+
 def load_blueprint_cache() -> Dict[str, Any]:
     """Load blueprint name cache."""
     return load_cache(BLUEPRINT_CACHE_FILE)

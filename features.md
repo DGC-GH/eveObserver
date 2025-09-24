@@ -96,18 +96,23 @@ This document describes the general features implemented in this data aggregatio
 - Activity monitoring and automated reporting capabilities
 - **Key Functions**: `fetch_character_data`, `fetch_character_skills`, `fetch_character_planets`, `fetch_corporation_data`, `collect_corporation_members`, `process_corporation_data`, `process_character_data`
 
-### Environment-Based Corporation Filtering
-- Configurable corporation ID filtering via environment variables
-- Dynamic issuer filtering based on allowed corporation memberships
-- Secure configuration management without hardcoded values
-- **Key Functions**: `get_allowed_entities`, `ALLOWED_CORP_IDS` configuration
+### Intelligent Region Resolution with Hierarchical Caching
+- Automated location-to-region mapping through universe hierarchy traversal
+- Cached resolution to minimize API calls for repeated location lookups
+- Support for both station and structure location types with unified interface
+- **Key Functions**: `get_region_from_location`, `_fetch_universe_data`, `_get_region_from_system_id`
 
-### API Call Tracking and Performance Metrics
-- Global counter for tracking all ESI API calls
-- Integration with performance logging and monitoring
-- Accurate metrics collection for optimization and debugging
-- Non-intrusive tracking with minimal overhead
-- **Key Functions**: `APICallCounter` class, `api_call_counter.increment()`, performance metrics logging
+### Safe Pagination with Configurable Limits
+- Robust pagination handling for large dataset fetching with safety bounds
+- Input validation and error recovery for malformed API responses
+- Configurable limits to prevent resource exhaustion and infinite loops
+- **Key Functions**: `fetch_all_contracts_in_region`
+
+### Asynchronous Cache Management with Preloading
+- Batch save operations with delayed writes to reduce I/O overhead
+- Asynchronous flush capabilities for non-blocking cache persistence
+- Startup preload strategies for frequently accessed data
+- **Key Functions**: `async_flush_pending_saves`, `preload_common_caches`, `_schedule_batch_save`
 
 ## Key Learnings for Similar Projects
 

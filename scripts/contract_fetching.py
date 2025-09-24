@@ -26,6 +26,37 @@ logger = logging.getLogger(__name__)
 FORGE_REGION_ID = 10000002
 
 
+async def _fetch_universe_data(sess, endpoint: str) -> Optional[Dict[str, Any]]:
+    """Fetch data from ESI universe endpoints with error handling."""
+    try:
+        async with sess.get(
+            f"{ESI_BASE_URL}{endpoint}",
+            headers={"Accept": "application/json"},
+            timeout=aiohttp.ClientTimeout(total=30),
+        ) as response:
+            response.raise_for_status()
+            return await response.json()
+    except (aiohttp.ClientError, asyncio.TimeoutError):
+        return None
+
+
+async def _get_region_from_system_id(sess, system_id: int) -> Optional[int]:
+    """Get region ID from solar system ID."""
+    system_data = await _fetch_universe_data(sess, f"/universe/systems/{system_id}")
+    if not system_data:
+        return None
+
+    constellation_id = system_data.get("constellation_id")
+    if not constellation_id:
+        return None
+
+    constellation_data = await _fetch_universe_data(sess, f"/universe/constellations/{constellation_id}")
+    if not constellation_data:
+        return None
+
+    return constellation_data.get("region_id")
+
+
 @validate_input_params((int, type(None)))
 async def get_region_from_location(location_id: Optional[int]) -> Optional[int]:
     """Get region ID from a location ID (station or structure) with caching.
@@ -60,91 +91,20 @@ async def get_region_from_location(location_id: Optional[int]) -> Optional[int]:
 
     region_id = None
     sess = await get_session()
-    if location_id >= 1000000000000:  # Structure
-        # For structures, we need to fetch structure info to get solar_system_id, then region
-        try:
-            async with sess.get(
-                f"{ESI_BASE_URL}/universe/structures/{location_id}",
-                headers={"Accept": "application/json"},
-                timeout=aiohttp.ClientTimeout(total=30),
-            ) as response:
-                response.raise_for_status()
-                struct_data = await response.json()
-        except (aiohttp.ClientError, asyncio.TimeoutError):
-            struct_data = None
 
+    # Determine solar system ID based on location type
+    solar_system_id = None
+    if location_id >= 1000000000000:  # Structure
+        struct_data = await _fetch_universe_data(sess, f"/universe/structures/{location_id}")
         if struct_data:
             solar_system_id = struct_data.get("solar_system_id")
-            if solar_system_id:
-                try:
-                    async with sess.get(
-                        f"{ESI_BASE_URL}/universe/systems/{solar_system_id}",
-                        headers={"Accept": "application/json"},
-                        timeout=aiohttp.ClientTimeout(total=30),
-                    ) as response:
-                        response.raise_for_status()
-                        system_data = await response.json()
-                except (aiohttp.ClientError, asyncio.TimeoutError):
-                    system_data = None
-
-                if system_data:
-                    constellation_id = system_data.get("constellation_id")
-                    if constellation_id:
-                        try:
-                            async with sess.get(
-                                f"{ESI_BASE_URL}/universe/constellations/{constellation_id}",
-                                headers={"Accept": "application/json"},
-                                timeout=aiohttp.ClientTimeout(total=30),
-                            ) as response:
-                                response.raise_for_status()
-                                constellation_data = await response.json()
-                        except (aiohttp.ClientError, asyncio.TimeoutError):
-                            constellation_data = None
-
-                        if constellation_data:
-                            region_id = constellation_data.get("region_id")
     else:  # Station
-        try:
-            async with sess.get(
-                f"{ESI_BASE_URL}/universe/stations/{location_id}",
-                headers={"Accept": "application/json"},
-                timeout=aiohttp.ClientTimeout(total=30),
-            ) as response:
-                response.raise_for_status()
-                station_data = await response.json()
-        except (aiohttp.ClientError, asyncio.TimeoutError):
-            station_data = None
-
+        station_data = await _fetch_universe_data(sess, f"/universe/stations/{location_id}")
         if station_data:
-            system_id = station_data.get("system_id")
-            if system_id:
-                try:
-                    async with sess.get(
-                        f"{ESI_BASE_URL}/universe/systems/{system_id}",
-                        headers={"Accept": "application/json"},
-                        timeout=aiohttp.ClientTimeout(total=30),
-                    ) as response:
-                        response.raise_for_status()
-                        system_data = await response.json()
-                except (aiohttp.ClientError, asyncio.TimeoutError):
-                    system_data = None
+            solar_system_id = station_data.get("system_id")
 
-                if system_data:
-                    constellation_id = system_data.get("constellation_id")
-                    if constellation_id:
-                        try:
-                            async with sess.get(
-                                f"{ESI_BASE_URL}/universe/constellations/{constellation_id}",
-                                headers={"Accept": "application/json"},
-                                timeout=aiohttp.ClientTimeout(total=30),
-                            ) as response:
-                                response.raise_for_status()
-                                constellation_data = await response.json()
-                        except (aiohttp.ClientError, asyncio.TimeoutError):
-                            constellation_data = None
-
-                        if constellation_data:
-                            region_id = constellation_data.get("region_id")
+    if solar_system_id:
+        region_id = await _get_region_from_system_id(sess, solar_system_id)
 
     # Cache the result
     if region_id:
@@ -291,18 +251,20 @@ async def fetch_corporation_contracts(corp_id: int, access_token: str) -> Option
 
 
 async def fetch_all_contracts_in_region(region_id: int) -> List[Dict[str, Any]]:
-    """Fetch all contracts from a region."""
+    """Fetch all contracts from a region with safety limits."""
     logger.info(f"Fetching all contracts from region {region_id}")
 
     all_contracts = []
     page = 1
+    max_pages = 100  # Increased safety limit
+    max_contracts = 50000  # Configurable limit to prevent excessive memory usage
 
-    while True:
+    while page <= max_pages:
         logger.info(f"Fetching page {page}...")
         contracts = await fetch_public_contracts_async(region_id, page=page)
 
-        if not contracts:
-            logger.info(f"No more contracts on page {page}, stopping")
+        if not contracts or not isinstance(contracts, list):
+            logger.info(f"No more contracts or invalid response on page {page}, stopping")
             break
 
         logger.info(f"Found {len(contracts)} contracts on page {page}")
@@ -312,8 +274,12 @@ async def fetch_all_contracts_in_region(region_id: int) -> List[Dict[str, Any]]:
             for i, c in enumerate(contracts[:5]):
                 logger.info(f"Contract {i}: type={c.get('type')}, status={c.get('status')}, price={c.get('price')}")
 
-        # Store all contracts
+        # Validate and store contracts
         for contract in contracts:
+            if not isinstance(contract, dict) or "contract_id" not in contract:
+                logger.warning(f"Invalid contract data on page {page}: {contract}")
+                continue
+
             contract_id = contract["contract_id"]
             contract_type = contract.get("type")
 
@@ -334,12 +300,12 @@ async def fetch_all_contracts_in_region(region_id: int) -> List[Dict[str, Any]]:
             all_contracts.append(contract_data)
             logger.debug(f"Stored contract {contract_id} of type {contract_type}")
 
-        page += 1
+            # Check contract limit
+            if len(all_contracts) >= max_contracts:
+                logger.warning(f"Reached contract limit of {max_contracts}, stopping")
+                return all_contracts
 
-        # Safety limit
-        if page > 50:  # Limit to 50 pages for now
-            logger.warning("Reached page limit of 50, stopping")
-            break
+        page += 1
 
     logger.info(f"Total contracts found: {len(all_contracts)}")
     return all_contracts
