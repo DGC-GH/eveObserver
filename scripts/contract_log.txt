@@ -5333,3 +5333,147 @@
 2025-09-24 04:23:24,788 - INFO - Expanding contract 222137811
 2025-09-24 04:23:24,988 - WARNING - ESI rate limit low: 11 requests remaining, resets in 36s
 2025-09-24 04:23:24,989 - INFO - Expanding contract 222137813
+2025-09-24 04:23:25,158 - WARNING - ESI rate limit low: 7 requests remaining, resets in 35s
+2025-09-24 04:23:25,158 - INFO - Expanding contract 222137814
+2025-09-24 04:23:25,280 - WARNING - ESI rate limit low: 2 requests remaining, resets in 35s
+2025-09-24 04:23:25,281 - INFO - Expanding contract 222137816
+2025-09-24 04:23:25,473 - WARNING - ESI request failed (attempt 1/3): 420 Client Error: status code 420 for url: https://esi.evetech.net/latest/contracts/public/items/222137816/. Retrying in 1s
+2025-09-24 04:23:26,636 - WARNING - ESI request failed (attempt 2/3): 420 Client Error: status code 420 for url: https://esi.evetech.net/latest/contracts/public/items/222137816/. Retrying in 2s
+2025-09-24 04:23:28,764 - ERROR - ESI request failed after 3 attempts: 420 Client Error: status code 420 for url: https://esi.evetech.net/latest/contracts/public/items/222137816/
+2025-09-24 04:23:28,765 - INFO - Expanding contract 222137818
+2025-09-24 04:23:28,881 - WARNING - ESI request failed (attempt 1/3): 420 Client Error: status code 420 for url: https://esi.evetech.net/latest/contracts/public/items/222137818/. Retrying in 1s
+2025-09-24 04:23:30,004 - WARNING - ESI request failed (attempt 2/3): 420 Client Error: status code 420 for url: https://esi.evetech.net/latest/contracts/public/items/222137818/. Retrying in 2s
+2025-09-24 04:23:32,133 - ERROR - ESI request failed after 3 attempts: 420 Client Error: status code 420 for url: https://esi.evetech.net/latest/contracts/public/items/222137818/
+2025-09-24 04:23:32,134 - INFO - Expanding contract 222137820
+2025-09-24 04:23:32,319 - WARNING - ESI request failed (attempt 1/3): 420 Client Error: status code 420 for url: https://esi.evetech.net/latest/contracts/public/items/222137820/. Retrying in 1s
+2025-09-24 04:23:33,454 - WARNING - ESI request failed (attempt 2/3): 420 Client Error: status code 420 for url: https://esi.evetech.net/latest/contracts/public/items/222137820/. Retrying in 2s
+2025-09-24 04:23:35,575 - ERROR - ESI request failed after 3 attempts: 420 Client Error: status code 420 for url: https://esi.evetech.net/latest/contracts/public/items/222137820/
+2025-09-24 04:23:35,576 - INFO - Expanding contract 222137826
+2025-09-24 04:23:35,691 - WARNING - ESI request failed (attempt 1/3): 420 Client Error: status code 420 for url: https://esi.evetech.net/latest/contracts/public/items/222137826/. Retrying in 1s
+2025-09-24 04:23:36,806 - WARNING - ESI request failed (attempt 2/3): 420 Client Error: status code 420 for url: https://esi.evetech.net/latest/contracts/public/items/222137826/. Retrying in 2s
+2025-09-24 04:23:38,928 - ERROR - ESI request failed after 3 attempts: 420 Client Error: status code 420 for url: https://esi.evetech.net/latest/contracts/public/items/222137826/
+2025-09-24 04:23:38,928 - INFO - Expanding contract 222137829
+2025-09-24 04:23:39,133 - WARNING - ESI request failed (attempt 1/3): 420 Client Error: status code 420 for url: https://esi.evetech.net/latest/contracts/public/items/222137829/. Retrying in 1s
+2025-09-24 04:23:40,263 - WARNING - ESI request failed (attempt 2/3): 420 Client Error: status code 420 for url: https://esi.evetech.net/latest/contracts/public/items/222137829/. Retrying in 2s
+2025-09-24 04:23:42,387 - ERROR - ESI request failed after 3 attempts: 420 Client Error: status code 420 for url: https://esi.evetech.net/latest/contracts/public/items/222137829/
+2025-09-24 04:23:42,387 - INFO - Expanding contract 222137902
+2025-09-24 04:23:42,508 - WARNING - ESI request failed (attempt 1/3): 420 Client Error: status code 420 for url: https://esi.evetech.net/latest/contracts/public/items/222137902/. Retrying in 1s
+2025-09-24 04:23:43,658 - WARNING - ESI request failed (attempt 2/3): 420 Client Error: status code 420 for url: https://esi.evetech.net/latest/contracts/public/items/222137902/. Retrying in 2s
+2025-09-24 04:23:45,775 - ERROR - ESI request failed after 3 attempts: 420 Client Error: status code 420 for url: https://esi.evetech.net/latest/contracts/public/items/222137902/
+2025-09-24 04:23:45,775 - INFO - Expanding contract 222137905
+2025-09-24 04:23:45,975 - WARNING - ESI request failed (attempt 1/3): 420 Client Error: status code 420 for url: https://esi.evetech.net/latest/contracts/public/items/222137905/. Retrying in 1s
+2025-09-24 04:23:47,097 - WARNING - ESI request failed (attempt 2/3): 420 Client Error: status code 420 for url: https://esi.evetech.net/latest/contracts/public/items/222137905/. Retrying in 2s
+2025-09-24 04:23:49,221 - ERROR - ESI request failed after 3 attempts: 420 Client Error: status code 420 for url: https://esi.evetech.net/latest/contracts/public/items/222137905/
+2025-09-24 04:23:49,221 - INFO - Expanding contract 222137907
+2025-09-24 04:23:49,334 - WARNING - ESI request failed (attempt 1/3): 420 Client Error: status code 420 for url: https://esi.evetech.net/latest/contracts/public/items/222137907/. Retrying in 1s
+2025-09-24 04:23:50,453 - WARNING - ESI request failed (attempt 2/3): 420 Client Error: status code 420 for url: https://esi.evetech.net/latest/contracts/public/items/222137907/. Retrying in 2s
+2025-09-24 04:23:52,574 - ERROR - ESI request failed after 3 attempts: 420 Client Error: status code 420 for url: https://esi.evetech.net/latest/contracts/public/items/222137907/
+2025-09-24 04:23:52,574 - INFO - Expanding contract 222138295
+2025-09-24 04:23:52,768 - WARNING - ESI request failed (attempt 1/3): 420 Client Error: status code 420 for url: https://esi.evetech.net/latest/contracts/public/items/222138295/. Retrying in 1s
+2025-09-24 04:23:53,919 - WARNING - ESI request failed (attempt 2/3): 420 Client Error: status code 420 for url: https://esi.evetech.net/latest/contracts/public/items/222138295/. Retrying in 2s
+2025-09-24 04:23:56,041 - ERROR - ESI request failed after 3 attempts: 420 Client Error: status code 420 for url: https://esi.evetech.net/latest/contracts/public/items/222138295/
+2025-09-24 04:23:56,042 - INFO - Expanding contract 222138304
+2025-09-24 04:23:56,157 - WARNING - ESI request failed (attempt 1/3): 420 Client Error: status code 420 for url: https://esi.evetech.net/latest/contracts/public/items/222138304/. Retrying in 1s
+2025-09-24 04:23:57,283 - WARNING - ESI request failed (attempt 2/3): 420 Client Error: status code 420 for url: https://esi.evetech.net/latest/contracts/public/items/222138304/. Retrying in 2s
+2025-09-24 04:23:59,403 - ERROR - ESI request failed after 3 attempts: 420 Client Error: status code 420 for url: https://esi.evetech.net/latest/contracts/public/items/222138304/
+2025-09-24 04:23:59,403 - INFO - Expanding contract 222138315
+2025-09-24 04:23:59,608 - WARNING - ESI request failed (attempt 1/3): 420 Client Error: status code 420 for url: https://esi.evetech.net/latest/contracts/public/items/222138315/. Retrying in 1s
+2025-09-24 04:24:00,731 - INFO - Expanding contract 222138373
+2025-09-24 04:24:00,855 - INFO - Expanding contract 222138962
+2025-09-24 04:24:00,971 - INFO - Expanding contract 222139007
+2025-09-24 04:24:01,160 - INFO - Expanding contract 222139080
+2025-09-24 04:24:01,279 - INFO - Expanding contract 222139101
+2025-09-24 04:24:01,402 - INFO - Expanding contract 222139119
+2025-09-24 04:24:01,524 - INFO - Expanding contract 222139129
+2025-09-24 04:24:01,713 - INFO - Expanding contract 222139201
+2025-09-24 04:24:01,833 - INFO - Expanding contract 222139202
+2025-09-24 04:24:01,955 - INFO - Expanding contract 222139203
+2025-09-24 04:24:02,075 - INFO - Expanding contract 222139204
+2025-09-24 04:24:02,270 - INFO - Expanding contract 222139205
+2025-09-24 04:24:02,389 - INFO - Expanding contract 222139208
+2025-09-24 04:24:02,509 - INFO - Expanding contract 222139209
+2025-09-24 04:24:02,700 - INFO - Expanding contract 222139211
+2025-09-24 04:24:02,820 - INFO - Expanding contract 222139212
+2025-09-24 04:24:02,941 - INFO - Expanding contract 222139235
+2025-09-24 04:24:03,078 - INFO - Expanding contract 222139236
+2025-09-24 04:24:03,287 - INFO - Expanding contract 222139238
+2025-09-24 04:24:03,432 - INFO - Expanding contract 222139239
+2025-09-24 04:24:03,560 - INFO - Expanding contract 222139241
+2025-09-24 04:24:03,748 - INFO - Expanding contract 222139279
+2025-09-24 04:24:03,874 - WARNING - ESI rate limit low: 18 requests remaining, resets in 57s
+2025-09-24 04:24:03,874 - INFO - Expanding contract 222139584
+2025-09-24 04:24:03,996 - WARNING - ESI rate limit low: 15 requests remaining, resets in 57s
+2025-09-24 04:24:03,996 - INFO - Expanding contract 222139766
+2025-09-24 04:24:04,126 - WARNING - ESI rate limit low: 14 requests remaining, resets in 56s
+2025-09-24 04:24:04,127 - INFO - Expanding contract 222139787
+2025-09-24 04:24:04,335 - WARNING - ESI rate limit low: 11 requests remaining, resets in 56s
+2025-09-24 04:24:04,336 - INFO - Expanding contract 222139885
+2025-09-24 04:24:04,457 - WARNING - ESI rate limit low: 7 requests remaining, resets in 56s
+2025-09-24 04:24:04,458 - INFO - Expanding contract 222139972
+2025-09-24 04:24:04,579 - WARNING - ESI rate limit low: 3 requests remaining, resets in 56s
+2025-09-24 04:24:04,580 - INFO - Expanding contract 222140251
+2025-09-24 04:24:04,692 - WARNING - ESI request failed (attempt 1/3): 420 Client Error: status code 420 for url: https://esi.evetech.net/latest/contracts/public/items/222140251/. Retrying in 1s
+2025-09-24 04:24:05,898 - WARNING - ESI request failed (attempt 2/3): 420 Client Error: status code 420 for url: https://esi.evetech.net/latest/contracts/public/items/222140251/. Retrying in 2s
+2025-09-24 04:24:08,068 - ERROR - ESI request failed after 3 attempts: 420 Client Error: status code 420 for url: https://esi.evetech.net/latest/contracts/public/items/222140251/
+2025-09-24 04:24:08,068 - INFO - Expanding contract 222140277
+2025-09-24 04:24:08,187 - WARNING - ESI request failed (attempt 1/3): 420 Client Error: status code 420 for url: https://esi.evetech.net/latest/contracts/public/items/222140277/. Retrying in 1s
+2025-09-24 04:24:09,308 - WARNING - ESI request failed (attempt 2/3): 420 Client Error: status code 420 for url: https://esi.evetech.net/latest/contracts/public/items/222140277/. Retrying in 2s
+2025-09-24 04:24:11,433 - ERROR - ESI request failed after 3 attempts: 420 Client Error: status code 420 for url: https://esi.evetech.net/latest/contracts/public/items/222140277/
+2025-09-24 04:24:11,433 - INFO - Expanding contract 222140374
+2025-09-24 04:24:11,612 - WARNING - ESI request failed (attempt 1/3): 420 Client Error: status code 420 for url: https://esi.evetech.net/latest/contracts/public/items/222140374/. Retrying in 1s
+2025-09-24 04:24:12,773 - WARNING - ESI request failed (attempt 2/3): 420 Client Error: status code 420 for url: https://esi.evetech.net/latest/contracts/public/items/222140374/. Retrying in 2s
+2025-09-24 04:24:14,897 - ERROR - ESI request failed after 3 attempts: 420 Client Error: status code 420 for url: https://esi.evetech.net/latest/contracts/public/items/222140374/
+2025-09-24 04:24:14,898 - INFO - Expanding contract 222140390
+2025-09-24 04:24:15,013 - WARNING - ESI request failed (attempt 1/3): 420 Client Error: status code 420 for url: https://esi.evetech.net/latest/contracts/public/items/222140390/. Retrying in 1s
+2025-09-24 04:24:16,136 - WARNING - ESI request failed (attempt 2/3): 420 Client Error: status code 420 for url: https://esi.evetech.net/latest/contracts/public/items/222140390/. Retrying in 2s
+2025-09-24 04:24:18,272 - ERROR - ESI request failed after 3 attempts: 420 Client Error: status code 420 for url: https://esi.evetech.net/latest/contracts/public/items/222140390/
+2025-09-24 04:24:18,272 - INFO - Expanding contract 222140400
+2025-09-24 04:24:18,492 - WARNING - ESI request failed (attempt 1/3): 420 Client Error: status code 420 for url: https://esi.evetech.net/latest/contracts/public/items/222140400/. Retrying in 1s
+2025-09-24 04:24:19,612 - WARNING - ESI request failed (attempt 2/3): 420 Client Error: status code 420 for url: https://esi.evetech.net/latest/contracts/public/items/222140400/. Retrying in 2s
+2025-09-24 04:24:21,735 - ERROR - ESI request failed after 3 attempts: 420 Client Error: status code 420 for url: https://esi.evetech.net/latest/contracts/public/items/222140400/
+2025-09-24 04:24:21,735 - INFO - Expanding contract 222140415
+2025-09-24 04:24:21,853 - WARNING - ESI request failed (attempt 1/3): 420 Client Error: status code 420 for url: https://esi.evetech.net/latest/contracts/public/items/222140415/. Retrying in 1s
+2025-09-24 04:24:22,975 - WARNING - ESI request failed (attempt 2/3): 420 Client Error: status code 420 for url: https://esi.evetech.net/latest/contracts/public/items/222140415/. Retrying in 2s
+2025-09-24 04:24:25,092 - ERROR - ESI request failed after 3 attempts: 420 Client Error: status code 420 for url: https://esi.evetech.net/latest/contracts/public/items/222140415/
+2025-09-24 04:24:25,093 - INFO - Expanding contract 222140479
+2025-09-24 04:24:25,272 - WARNING - ESI request failed (attempt 1/3): 420 Client Error: status code 420 for url: https://esi.evetech.net/latest/contracts/public/items/222140479/. Retrying in 1s
+2025-09-24 04:24:26,404 - WARNING - ESI request failed (attempt 2/3): 420 Client Error: status code 420 for url: https://esi.evetech.net/latest/contracts/public/items/222140479/. Retrying in 2s
+2025-09-24 04:24:28,532 - ERROR - ESI request failed after 3 attempts: 420 Client Error: status code 420 for url: https://esi.evetech.net/latest/contracts/public/items/222140479/
+2025-09-24 04:24:28,532 - INFO - Expanding contract 222140485
+2025-09-24 04:24:28,647 - WARNING - ESI request failed (attempt 1/3): 420 Client Error: status code 420 for url: https://esi.evetech.net/latest/contracts/public/items/222140485/. Retrying in 1s
+2025-09-24 04:24:29,770 - WARNING - ESI request failed (attempt 2/3): 420 Client Error: status code 420 for url: https://esi.evetech.net/latest/contracts/public/items/222140485/. Retrying in 2s
+2025-09-24 04:24:31,887 - ERROR - ESI request failed after 3 attempts: 420 Client Error: status code 420 for url: https://esi.evetech.net/latest/contracts/public/items/222140485/
+2025-09-24 04:24:31,887 - INFO - Expanding contract 222140521
+2025-09-24 04:24:32,088 - WARNING - ESI request failed (attempt 1/3): 420 Client Error: status code 420 for url: https://esi.evetech.net/latest/contracts/public/items/222140521/. Retrying in 1s
+2025-09-24 04:24:33,221 - WARNING - ESI request failed (attempt 2/3): 420 Client Error: status code 420 for url: https://esi.evetech.net/latest/contracts/public/items/222140521/. Retrying in 2s
+2025-09-24 04:24:35,339 - ERROR - ESI request failed after 3 attempts: 420 Client Error: status code 420 for url: https://esi.evetech.net/latest/contracts/public/items/222140521/
+2025-09-24 04:24:35,340 - INFO - Expanding contract 222140584
+2025-09-24 04:24:35,458 - WARNING - ESI request failed (attempt 1/3): 420 Client Error: status code 420 for url: https://esi.evetech.net/latest/contracts/public/items/222140584/. Retrying in 1s
+2025-09-24 04:24:36,582 - WARNING - ESI request failed (attempt 2/3): 420 Client Error: status code 420 for url: https://esi.evetech.net/latest/contracts/public/items/222140584/. Retrying in 2s
+2025-09-24 04:24:38,702 - ERROR - ESI request failed after 3 attempts: 420 Client Error: status code 420 for url: https://esi.evetech.net/latest/contracts/public/items/222140584/
+2025-09-24 04:24:38,703 - INFO - Expanding contract 222140597
+2025-09-24 04:24:38,934 - WARNING - ESI request failed (attempt 1/3): 420 Client Error: status code 420 for url: https://esi.evetech.net/latest/contracts/public/items/222140597/. Retrying in 1s
+2025-09-24 04:24:40,054 - WARNING - ESI request failed (attempt 2/3): 420 Client Error: status code 420 for url: https://esi.evetech.net/latest/contracts/public/items/222140597/. Retrying in 2s
+2025-09-24 04:24:42,180 - ERROR - ESI request failed after 3 attempts: 420 Client Error: status code 420 for url: https://esi.evetech.net/latest/contracts/public/items/222140597/
+2025-09-24 04:24:42,180 - INFO - Expanding contract 222140683
+2025-09-24 04:24:42,300 - WARNING - ESI request failed (attempt 1/3): 420 Client Error: status code 420 for url: https://esi.evetech.net/latest/contracts/public/items/222140683/. Retrying in 1s
+2025-09-24 04:24:43,431 - WARNING - ESI request failed (attempt 2/3): 420 Client Error: status code 420 for url: https://esi.evetech.net/latest/contracts/public/items/222140683/. Retrying in 2s
+2025-09-24 04:24:45,557 - ERROR - ESI request failed after 3 attempts: 420 Client Error: status code 420 for url: https://esi.evetech.net/latest/contracts/public/items/222140683/
+2025-09-24 04:24:45,557 - INFO - Expanding contract 222140705
+2025-09-24 04:24:45,748 - WARNING - ESI request failed (attempt 1/3): 420 Client Error: status code 420 for url: https://esi.evetech.net/latest/contracts/public/items/222140705/. Retrying in 1s
+2025-09-24 04:24:46,870 - WARNING - ESI request failed (attempt 2/3): 420 Client Error: status code 420 for url: https://esi.evetech.net/latest/contracts/public/items/222140705/. Retrying in 2s
+2025-09-24 04:24:48,992 - ERROR - ESI request failed after 3 attempts: 420 Client Error: status code 420 for url: https://esi.evetech.net/latest/contracts/public/items/222140705/
+2025-09-24 04:24:48,992 - INFO - Expanding contract 222140709
+2025-09-24 04:24:49,113 - WARNING - ESI request failed (attempt 1/3): 420 Client Error: status code 420 for url: https://esi.evetech.net/latest/contracts/public/items/222140709/. Retrying in 1s
+2025-09-24 04:24:50,244 - WARNING - ESI request failed (attempt 2/3): 420 Client Error: status code 420 for url: https://esi.evetech.net/latest/contracts/public/items/222140709/. Retrying in 2s
+2025-09-24 04:24:52,362 - ERROR - ESI request failed after 3 attempts: 420 Client Error: status code 420 for url: https://esi.evetech.net/latest/contracts/public/items/222140709/
+2025-09-24 04:24:52,362 - INFO - Expanding contract 222140724
+2025-09-24 04:24:52,566 - WARNING - ESI request failed (attempt 1/3): 420 Client Error: status code 420 for url: https://esi.evetech.net/latest/contracts/public/items/222140724/. Retrying in 1s
+2025-09-24 04:24:53,722 - WARNING - ESI request failed (attempt 2/3): 420 Client Error: status code 420 for url: https://esi.evetech.net/latest/contracts/public/items/222140724/. Retrying in 2s
+2025-09-24 04:24:55,840 - ERROR - ESI request failed after 3 attempts: 420 Client Error: status code 420 for url: https://esi.evetech.net/latest/contracts/public/items/222140724/
+2025-09-24 04:24:55,840 - INFO - Expanding contract 222140728
+2025-09-24 04:24:55,960 - WARNING - ESI request failed (attempt 1/3): 420 Client Error: status code 420 for url: https://esi.evetech.net/latest/contracts/public/items/222140728/. Retrying in 1s
+2025-09-24 04:24:57,085 - WARNING - ESI request failed (attempt 2/3): 420 Client Error: status code 420 for url: https://esi.evetech.net/latest/contracts/public/items/222140728/. Retrying in 2s
+2025-09-24 04:24:59,205 - ERROR - ESI request failed after 3 attempts: 420 Client Error: status code 420 for url: https://esi.evetech.net/latest/contracts/public/items/222140728/
+2025-09-24 04:24:59,206 - INFO - Expanding contract 222140733
+2025-09-24 04:24:59,407 - WARNING - ESI request failed (attempt 1/3): 420 Client Error: status code 420 for url: https://esi.evetech.net/latest/contracts/public/items/222140733/. Retrying in 1s
