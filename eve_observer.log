@@ -1503,3 +1503,1306 @@
 2025-09-24 02:01:23,706 - INFO - Saved 267 contract items to cache
 2025-09-24 02:01:23,831 - INFO - Saved 268 contract items to cache
 2025-09-24 02:01:23,979 - INFO - Saved 269 contract items to cache
+2025-09-24 02:18:49,297 - INFO - === Starting debug of all_contracts_forge.json cache creation ===
+2025-09-24 02:18:49,297 - INFO - Cache file location: cache/all_contracts_forge.json
+2025-09-24 02:18:49,297 - INFO - 
+=== Step 1: Fetching basic contracts from The Forge region ===
+2025-09-24 02:18:49,297 - INFO - Region ID: 10000002
+2025-09-24 02:18:49,297 - INFO - Fetching all contracts from region 10000002
+2025-09-24 02:18:49,297 - INFO - Fetching page 1...
+2025-09-24 02:18:49,480 - INFO - Found 1000 contracts on page 1
+2025-09-24 02:18:49,480 - INFO - Contract 0: type=item_exchange, status=None, price=9500000.0
+2025-09-24 02:18:49,480 - INFO - Contract 1: type=item_exchange, status=None, price=115000000.0
+2025-09-24 02:18:49,480 - INFO - Contract 2: type=item_exchange, status=None, price=150000000.0
+2025-09-24 02:18:49,480 - INFO - Contract 3: type=item_exchange, status=None, price=4000000.0
+2025-09-24 02:18:49,480 - INFO - Contract 4: type=item_exchange, status=None, price=0.0
+2025-09-24 02:18:49,482 - INFO - Fetching page 2...
+2025-09-24 02:18:49,687 - INFO - Found 1000 contracts on page 2
+2025-09-24 02:18:49,688 - INFO - Fetching page 3...
+2025-09-24 02:18:49,733 - INFO - Found 1000 contracts on page 3
+2025-09-24 02:18:49,734 - INFO - Fetching page 4...
+2025-09-24 02:18:49,776 - INFO - Found 1000 contracts on page 4
+2025-09-24 02:18:49,777 - INFO - Fetching page 5...
+2025-09-24 02:18:49,821 - INFO - Found 1000 contracts on page 5
+2025-09-24 02:18:49,822 - INFO - Fetching page 6...
+2025-09-24 02:18:49,865 - INFO - Found 1000 contracts on page 6
+2025-09-24 02:18:49,866 - INFO - Fetching page 7...
+2025-09-24 02:18:49,908 - INFO - Found 1000 contracts on page 7
+2025-09-24 02:18:49,909 - INFO - Fetching page 8...
+2025-09-24 02:18:49,955 - INFO - Found 1000 contracts on page 8
+2025-09-24 02:18:49,956 - INFO - Fetching page 9...
+2025-09-24 02:18:50,000 - INFO - Found 1000 contracts on page 9
+2025-09-24 02:18:50,001 - INFO - Fetching page 10...
+2025-09-24 02:18:50,047 - INFO - Found 1000 contracts on page 10
+2025-09-24 02:18:50,048 - WARNING - Reached page limit of 10, stopping
+2025-09-24 02:18:50,048 - INFO - Total contracts found: 10000
+2025-09-24 02:18:50,048 - INFO - ✓ Fetched 10000 basic contracts
+2025-09-24 02:18:50,048 - INFO - Sample basic contract data:
+2025-09-24 02:18:50,049 - INFO -   Contract 1: ID=221874167, type=item_exchange, price=9500000.0, issuer_id=1083569535
+2025-09-24 02:18:50,049 - INFO -   Contract 2: ID=221874190, type=item_exchange, price=115000000.0, issuer_id=94756291
+2025-09-24 02:18:50,049 - INFO -   Contract 3: ID=221874194, type=item_exchange, price=150000000.0, issuer_id=94756291
+2025-09-24 02:18:50,050 - INFO - Contract type breakdown: {'item_exchange': 9945, 'courier': 17, 'auction': 38}
+2025-09-24 02:18:50,050 - INFO - 
+=== Step 2: Expanding contracts with full details ===
+2025-09-24 02:18:50,050 - INFO - expand_all_contracts called with 10000 contracts
+2025-09-24 02:18:50,050 - INFO - Pre-fetching contract items for 10000 contracts...
+2025-09-24 02:18:50,101 - INFO - Found 1872 contracts that need item fetching
+2025-09-24 02:19:02,970 - INFO - Saved 9980 contract items to cache
+2025-09-24 02:19:02,970 - INFO - Pre-fetched and cached items for 1872 contracts
+2025-09-24 02:19:02,975 - INFO - Found 3876 unique issuer IDs
+2025-09-24 02:19:02,976 - INFO - Issuer cache: 7508 total entries
+2025-09-24 02:19:03,035 - INFO - Type cache: 3906 total entries
+2025-09-24 02:19:03,035 - INFO - Contract items cache: 9980 total entries
+2025-09-24 02:19:03,043 - INFO - Fetching 523 missing type IDs...
+2025-09-24 02:19:03,043 - INFO - Fetching 523 missing type data entries...
+2025-09-24 02:19:03,103 - INFO - ESI public fetch successful: /universe/types/55296/ in 0.06s
+2025-09-24 02:19:03,104 - INFO - _fetch_esi_with_retry completed in 0.060s
+2025-09-24 02:19:03,150 - INFO - ESI public fetch successful: /universe/types/55297/ in 0.05s
+2025-09-24 02:19:03,150 - INFO - _fetch_esi_with_retry completed in 0.046s
+2025-09-24 02:19:03,202 - INFO - ESI public fetch successful: /universe/types/55298/ in 0.05s
+2025-09-24 02:19:03,202 - INFO - _fetch_esi_with_retry completed in 0.052s
+2025-09-24 02:19:03,235 - INFO - ESI public fetch successful: /universe/types/55299/ in 0.03s
+2025-09-24 02:19:03,235 - INFO - _fetch_esi_with_retry completed in 0.033s
+2025-09-24 02:19:03,269 - INFO - ESI public fetch successful: /universe/types/24580/ in 0.03s
+2025-09-24 02:19:03,269 - INFO - _fetch_esi_with_retry completed in 0.033s
+2025-09-24 02:19:03,302 - INFO - ESI public fetch successful: /universe/types/55301/ in 0.03s
+2025-09-24 02:19:03,303 - INFO - _fetch_esi_with_retry completed in 0.034s
+2025-09-24 02:19:03,341 - INFO - ESI public fetch successful: /universe/types/55300/ in 0.04s
+2025-09-24 02:19:03,341 - INFO - _fetch_esi_with_retry completed in 0.038s
+2025-09-24 02:19:03,373 - INFO - ESI public fetch successful: /universe/types/47109/ in 0.03s
+2025-09-24 02:19:03,373 - INFO - _fetch_esi_with_retry completed in 0.032s
+2025-09-24 02:19:03,424 - INFO - ESI public fetch successful: /universe/types/28680/ in 0.05s
+2025-09-24 02:19:03,424 - INFO - _fetch_esi_with_retry completed in 0.051s
+2025-09-24 02:19:03,457 - INFO - ESI public fetch successful: /universe/types/88076/ in 0.03s
+2025-09-24 02:19:03,458 - INFO - _fetch_esi_with_retry completed in 0.033s
+2025-09-24 02:19:03,492 - INFO - ESI public fetch successful: /universe/types/12301/ in 0.03s
+2025-09-24 02:19:03,492 - INFO - _fetch_esi_with_retry completed in 0.035s
+2025-09-24 02:19:03,597 - INFO - ESI public fetch successful: /universe/types/55310/ in 0.10s
+2025-09-24 02:19:03,597 - INFO - _fetch_esi_with_retry completed in 0.105s
+2025-09-24 02:19:03,645 - INFO - ESI public fetch successful: /universe/types/55311/ in 0.05s
+2025-09-24 02:19:03,646 - INFO - _fetch_esi_with_retry completed in 0.048s
+2025-09-24 02:19:03,679 - INFO - ESI public fetch successful: /universe/types/55308/ in 0.03s
+2025-09-24 02:19:03,679 - INFO - _fetch_esi_with_retry completed in 0.033s
+2025-09-24 02:19:03,715 - INFO - ESI public fetch successful: /universe/types/55313/ in 0.04s
+2025-09-24 02:19:03,715 - INFO - _fetch_esi_with_retry completed in 0.035s
+2025-09-24 02:19:03,750 - INFO - ESI public fetch successful: /universe/types/55309/ in 0.03s
+2025-09-24 02:19:03,750 - INFO - _fetch_esi_with_retry completed in 0.035s
+2025-09-24 02:19:03,782 - INFO - ESI public fetch successful: /universe/types/55315/ in 0.03s
+2025-09-24 02:19:03,782 - INFO - _fetch_esi_with_retry completed in 0.032s
+2025-09-24 02:19:03,815 - INFO - ESI public fetch successful: /universe/types/55316/ in 0.03s
+2025-09-24 02:19:03,815 - INFO - _fetch_esi_with_retry completed in 0.033s
+2025-09-24 02:19:03,867 - INFO - ESI public fetch successful: /universe/types/55317/ in 0.05s
+2025-09-24 02:19:03,867 - INFO - _fetch_esi_with_retry completed in 0.051s
+2025-09-24 02:19:03,901 - INFO - ESI public fetch successful: /universe/types/55314/ in 0.03s
+2025-09-24 02:19:03,902 - INFO - _fetch_esi_with_retry completed in 0.035s
+2025-09-24 02:19:03,937 - INFO - ESI public fetch successful: /universe/types/55319/ in 0.04s
+2025-09-24 02:19:03,937 - INFO - _fetch_esi_with_retry completed in 0.036s
+2025-09-24 02:19:03,972 - INFO - ESI public fetch successful: /universe/types/55320/ in 0.03s
+2025-09-24 02:19:03,972 - INFO - _fetch_esi_with_retry completed in 0.034s
+2025-09-24 02:19:04,006 - INFO - ESI public fetch successful: /universe/types/55321/ in 0.03s
+2025-09-24 02:19:04,006 - INFO - _fetch_esi_with_retry completed in 0.034s
+2025-09-24 02:19:04,118 - INFO - ESI public fetch successful: /universe/types/4119/ in 0.11s
+2025-09-24 02:19:04,119 - INFO - _fetch_esi_with_retry completed in 0.112s
+2025-09-24 02:19:04,152 - INFO - ESI public fetch successful: /universe/types/55325/ in 0.03s
+2025-09-24 02:19:04,153 - INFO - _fetch_esi_with_retry completed in 0.034s
+2025-09-24 02:19:04,189 - INFO - ESI public fetch successful: /universe/types/55330/ in 0.04s
+2025-09-24 02:19:04,189 - INFO - _fetch_esi_with_retry completed in 0.036s
+2025-09-24 02:19:04,223 - INFO - ESI public fetch successful: /universe/types/55331/ in 0.03s
+2025-09-24 02:19:04,223 - INFO - _fetch_esi_with_retry completed in 0.034s
+2025-09-24 02:19:04,256 - INFO - ESI public fetch successful: /universe/types/55333/ in 0.03s
+2025-09-24 02:19:04,256 - INFO - _fetch_esi_with_retry completed in 0.033s
+2025-09-24 02:19:04,291 - INFO - ESI public fetch successful: /universe/types/55334/ in 0.03s
+2025-09-24 02:19:04,291 - INFO - _fetch_esi_with_retry completed in 0.035s
+2025-09-24 02:19:04,325 - INFO - ESI public fetch successful: /universe/types/16423/ in 0.03s
+2025-09-24 02:19:04,325 - INFO - _fetch_esi_with_retry completed in 0.034s
+2025-09-24 02:19:04,358 - INFO - ESI public fetch successful: /universe/types/55336/ in 0.03s
+2025-09-24 02:19:04,358 - INFO - _fetch_esi_with_retry completed in 0.033s
+2025-09-24 02:19:04,391 - INFO - ESI public fetch successful: /universe/types/55335/ in 0.03s
+2025-09-24 02:19:04,391 - INFO - _fetch_esi_with_retry completed in 0.033s
+2025-09-24 02:19:04,424 - INFO - ESI public fetch successful: /universe/types/55337/ in 0.03s
+2025-09-24 02:19:04,424 - INFO - _fetch_esi_with_retry completed in 0.033s
+2025-09-24 02:19:04,455 - INFO - ESI public fetch successful: /universe/types/55339/ in 0.03s
+2025-09-24 02:19:04,455 - INFO - _fetch_esi_with_retry completed in 0.031s
+2025-09-24 02:19:04,490 - INFO - ESI public fetch successful: /universe/types/55340/ in 0.03s
+2025-09-24 02:19:04,490 - INFO - _fetch_esi_with_retry completed in 0.035s
+2025-09-24 02:19:04,523 - INFO - ESI public fetch successful: /universe/types/55341/ in 0.03s
+2025-09-24 02:19:04,523 - INFO - _fetch_esi_with_retry completed in 0.032s
+2025-09-24 02:19:04,554 - INFO - ESI public fetch successful: /universe/types/55338/ in 0.03s
+2025-09-24 02:19:04,554 - INFO - _fetch_esi_with_retry completed in 0.032s
+2025-09-24 02:19:04,674 - INFO - ESI public fetch successful: /universe/types/55343/ in 0.12s
+2025-09-24 02:19:04,675 - INFO - _fetch_esi_with_retry completed in 0.120s
+2025-09-24 02:19:04,706 - INFO - ESI public fetch successful: /universe/types/4138/ in 0.03s
+2025-09-24 02:19:04,706 - INFO - _fetch_esi_with_retry completed in 0.031s
+2025-09-24 02:19:04,740 - INFO - ESI public fetch successful: /universe/types/55345/ in 0.03s
+2025-09-24 02:19:04,740 - INFO - _fetch_esi_with_retry completed in 0.034s
+2025-09-24 02:19:04,775 - INFO - ESI public fetch successful: /universe/types/55346/ in 0.03s
+2025-09-24 02:19:04,775 - INFO - _fetch_esi_with_retry completed in 0.035s
+2025-09-24 02:19:04,811 - INFO - ESI public fetch successful: /universe/types/55347/ in 0.04s
+2025-09-24 02:19:04,811 - INFO - _fetch_esi_with_retry completed in 0.036s
+2025-09-24 02:19:04,843 - INFO - ESI public fetch successful: /universe/types/55348/ in 0.03s
+2025-09-24 02:19:04,843 - INFO - _fetch_esi_with_retry completed in 0.031s
+2025-09-24 02:19:04,878 - INFO - ESI public fetch successful: /universe/types/55350/ in 0.04s
+2025-09-24 02:19:04,878 - INFO - _fetch_esi_with_retry completed in 0.036s
+2025-09-24 02:19:04,911 - INFO - ESI public fetch successful: /universe/types/55351/ in 0.03s
+2025-09-24 02:19:04,911 - INFO - _fetch_esi_with_retry completed in 0.033s
+2025-09-24 02:19:04,945 - INFO - ESI public fetch successful: /universe/types/55352/ in 0.03s
+2025-09-24 02:19:04,946 - INFO - _fetch_esi_with_retry completed in 0.034s
+2025-09-24 02:19:04,978 - INFO - ESI public fetch successful: /universe/types/55353/ in 0.03s
+2025-09-24 02:19:04,979 - INFO - _fetch_esi_with_retry completed in 0.033s
+2025-09-24 02:19:05,012 - INFO - ESI public fetch successful: /universe/types/55354/ in 0.03s
+2025-09-24 02:19:05,012 - INFO - _fetch_esi_with_retry completed in 0.033s
+2025-09-24 02:19:05,044 - INFO - ESI public fetch successful: /universe/types/55355/ in 0.03s
+2025-09-24 02:19:05,044 - INFO - _fetch_esi_with_retry completed in 0.032s
+2025-09-24 02:19:05,167 - INFO - ESI public fetch successful: /universe/types/55356/ in 0.12s
+2025-09-24 02:19:05,167 - INFO - _fetch_esi_with_retry completed in 0.123s
+2025-09-24 02:19:05,200 - INFO - ESI public fetch successful: /universe/types/88142/ in 0.03s
+2025-09-24 02:19:05,200 - INFO - _fetch_esi_with_retry completed in 0.033s
+2025-09-24 02:19:05,232 - INFO - ESI public fetch successful: /universe/types/16477/ in 0.03s
+2025-09-24 02:19:05,232 - INFO - _fetch_esi_with_retry completed in 0.032s
+2025-09-24 02:19:05,263 - INFO - ESI public fetch successful: /universe/types/4200/ in 0.03s
+2025-09-24 02:19:05,263 - INFO - _fetch_esi_with_retry completed in 0.030s
+2025-09-24 02:19:05,297 - INFO - ESI public fetch successful: /universe/types/84073/ in 0.03s
+2025-09-24 02:19:05,297 - INFO - _fetch_esi_with_retry completed in 0.034s
+2025-09-24 02:19:05,331 - INFO - ESI public fetch successful: /universe/types/47210/ in 0.03s
+2025-09-24 02:19:05,331 - INFO - _fetch_esi_with_retry completed in 0.034s
+2025-09-24 02:19:05,364 - INFO - ESI public fetch successful: /universe/types/47211/ in 0.03s
+2025-09-24 02:19:05,364 - INFO - _fetch_esi_with_retry completed in 0.033s
+2025-09-24 02:19:05,398 - INFO - ESI public fetch successful: /universe/types/86126/ in 0.03s
+2025-09-24 02:19:05,399 - INFO - _fetch_esi_with_retry completed in 0.034s
+2025-09-24 02:19:05,431 - INFO - ESI public fetch successful: /universe/types/86128/ in 0.03s
+2025-09-24 02:19:05,431 - INFO - _fetch_esi_with_retry completed in 0.032s
+2025-09-24 02:19:05,466 - INFO - ESI public fetch successful: /universe/types/47216/ in 0.03s
+2025-09-24 02:19:05,466 - INFO - _fetch_esi_with_retry completed in 0.035s
+2025-09-24 02:19:05,501 - INFO - ESI public fetch successful: /universe/types/47218/ in 0.03s
+2025-09-24 02:19:05,501 - INFO - _fetch_esi_with_retry completed in 0.035s
+2025-09-24 02:19:05,536 - INFO - ESI public fetch successful: /universe/types/41075/ in 0.03s
+2025-09-24 02:19:05,536 - INFO - _fetch_esi_with_retry completed in 0.035s
+2025-09-24 02:19:05,572 - INFO - ESI public fetch successful: /universe/types/47220/ in 0.04s
+2025-09-24 02:19:05,572 - INFO - _fetch_esi_with_retry completed in 0.036s
+2025-09-24 02:19:05,692 - INFO - ESI public fetch successful: /universe/types/47219/ in 0.12s
+2025-09-24 02:19:05,693 - INFO - _fetch_esi_with_retry completed in 0.121s
+2025-09-24 02:19:05,727 - INFO - ESI public fetch successful: /universe/types/20598/ in 0.03s
+2025-09-24 02:19:05,727 - INFO - _fetch_esi_with_retry completed in 0.034s
+2025-09-24 02:19:05,760 - INFO - ESI public fetch successful: /universe/types/47222/ in 0.03s
+2025-09-24 02:19:05,760 - INFO - _fetch_esi_with_retry completed in 0.033s
+2025-09-24 02:19:05,794 - INFO - ESI public fetch successful: /universe/types/47224/ in 0.03s
+2025-09-24 02:19:05,794 - INFO - _fetch_esi_with_retry completed in 0.034s
+2025-09-24 02:19:05,827 - INFO - ESI public fetch successful: /universe/types/47225/ in 0.03s
+2025-09-24 02:19:05,828 - INFO - _fetch_esi_with_retry completed in 0.033s
+2025-09-24 02:19:05,860 - INFO - ESI public fetch successful: /universe/types/47226/ in 0.03s
+2025-09-24 02:19:05,861 - INFO - _fetch_esi_with_retry completed in 0.033s
+2025-09-24 02:19:05,894 - INFO - ESI public fetch successful: /universe/types/4215/ in 0.03s
+2025-09-24 02:19:05,894 - INFO - _fetch_esi_with_retry completed in 0.034s
+2025-09-24 02:19:05,929 - INFO - ESI public fetch successful: /universe/types/47228/ in 0.03s
+2025-09-24 02:19:05,929 - INFO - _fetch_esi_with_retry completed in 0.035s
+2025-09-24 02:19:05,964 - INFO - ESI public fetch successful: /universe/types/20606/ in 0.03s
+2025-09-24 02:19:05,964 - INFO - _fetch_esi_with_retry completed in 0.035s
+2025-09-24 02:19:05,997 - INFO - ESI public fetch successful: /universe/types/47237/ in 0.03s
+2025-09-24 02:19:05,997 - INFO - _fetch_esi_with_retry completed in 0.033s
+2025-09-24 02:19:06,028 - INFO - ESI public fetch successful: /universe/types/47240/ in 0.03s
+2025-09-24 02:19:06,029 - INFO - _fetch_esi_with_retry completed in 0.031s
+2025-09-24 02:19:06,062 - INFO - ESI public fetch successful: /universe/types/86152/ in 0.03s
+2025-09-24 02:19:06,062 - INFO - _fetch_esi_with_retry completed in 0.033s
+2025-09-24 02:19:06,100 - INFO - ESI public fetch successful: /universe/types/47244/ in 0.04s
+2025-09-24 02:19:06,100 - INFO - _fetch_esi_with_retry completed in 0.038s
+2025-09-24 02:19:06,216 - INFO - ESI public fetch successful: /universe/types/82078/ in 0.12s
+2025-09-24 02:19:06,216 - INFO - _fetch_esi_with_retry completed in 0.116s
+2025-09-24 02:19:06,248 - INFO - ESI public fetch successful: /universe/types/41124/ in 0.03s
+2025-09-24 02:19:06,248 - INFO - _fetch_esi_with_retry completed in 0.032s
+2025-09-24 02:19:06,281 - INFO - ESI public fetch successful: /universe/types/88230/ in 0.03s
+2025-09-24 02:19:06,281 - INFO - _fetch_esi_with_retry completed in 0.033s
+2025-09-24 02:19:06,313 - INFO - ESI public fetch successful: /universe/types/88233/ in 0.03s
+2025-09-24 02:19:06,314 - INFO - _fetch_esi_with_retry completed in 0.033s
+2025-09-24 02:19:06,345 - INFO - ESI public fetch successful: /universe/types/55513/ in 0.03s
+2025-09-24 02:19:06,345 - INFO - _fetch_esi_with_retry completed in 0.031s
+2025-09-24 02:19:06,378 - INFO - ESI public fetch successful: /universe/types/55515/ in 0.03s
+2025-09-24 02:19:06,378 - INFO - _fetch_esi_with_retry completed in 0.033s
+2025-09-24 02:19:06,414 - INFO - ESI public fetch successful: /universe/types/55516/ in 0.04s
+2025-09-24 02:19:06,414 - INFO - _fetch_esi_with_retry completed in 0.036s
+2025-09-24 02:19:06,447 - INFO - ESI public fetch successful: /universe/types/55517/ in 0.03s
+2025-09-24 02:19:06,447 - INFO - _fetch_esi_with_retry completed in 0.032s
+2025-09-24 02:19:06,480 - INFO - ESI public fetch successful: /universe/types/55518/ in 0.03s
+2025-09-24 02:19:06,480 - INFO - _fetch_esi_with_retry completed in 0.033s
+2025-09-24 02:19:06,515 - INFO - ESI public fetch successful: /universe/types/55519/ in 0.03s
+2025-09-24 02:19:06,516 - INFO - _fetch_esi_with_retry completed in 0.035s
+2025-09-24 02:19:06,550 - INFO - ESI public fetch successful: /universe/types/55520/ in 0.03s
+2025-09-24 02:19:06,550 - INFO - _fetch_esi_with_retry completed in 0.034s
+2025-09-24 02:19:06,586 - INFO - ESI public fetch successful: /universe/types/55521/ in 0.04s
+2025-09-24 02:19:06,586 - INFO - _fetch_esi_with_retry completed in 0.036s
+2025-09-24 02:19:06,620 - INFO - ESI public fetch successful: /universe/types/55522/ in 0.03s
+2025-09-24 02:19:06,620 - INFO - _fetch_esi_with_retry completed in 0.034s
+2025-09-24 02:19:06,741 - INFO - ESI public fetch successful: /universe/types/41184/ in 0.12s
+2025-09-24 02:19:06,741 - INFO - _fetch_esi_with_retry completed in 0.121s
+2025-09-24 02:19:06,775 - INFO - ESI public fetch successful: /universe/types/55524/ in 0.03s
+2025-09-24 02:19:06,775 - INFO - _fetch_esi_with_retry completed in 0.034s
+2025-09-24 02:19:06,810 - INFO - ESI public fetch successful: /universe/types/55527/ in 0.03s
+2025-09-24 02:19:06,810 - INFO - _fetch_esi_with_retry completed in 0.035s
+2025-09-24 02:19:06,844 - INFO - ESI public fetch successful: /universe/types/55529/ in 0.03s
+2025-09-24 02:19:06,845 - INFO - _fetch_esi_with_retry completed in 0.034s
+2025-09-24 02:19:06,882 - INFO - ESI public fetch successful: /universe/types/55531/ in 0.04s
+2025-09-24 02:19:06,882 - INFO - _fetch_esi_with_retry completed in 0.038s
+2025-09-24 02:19:06,915 - INFO - ESI public fetch successful: /universe/types/55532/ in 0.03s
+2025-09-24 02:19:06,916 - INFO - _fetch_esi_with_retry completed in 0.033s
+2025-09-24 02:19:06,951 - INFO - ESI public fetch successful: /universe/types/55533/ in 0.03s
+2025-09-24 02:19:06,951 - INFO - _fetch_esi_with_retry completed in 0.035s
+2025-09-24 02:19:06,986 - INFO - ESI public fetch successful: /universe/types/55535/ in 0.03s
+2025-09-24 02:19:06,986 - INFO - _fetch_esi_with_retry completed in 0.035s
+2025-09-24 02:19:07,019 - INFO - ESI public fetch successful: /universe/types/59632/ in 0.03s
+2025-09-24 02:19:07,019 - INFO - _fetch_esi_with_retry completed in 0.033s
+2025-09-24 02:19:07,055 - INFO - ESI public fetch successful: /universe/types/2289/ in 0.04s
+2025-09-24 02:19:07,056 - INFO - _fetch_esi_with_retry completed in 0.036s
+2025-09-24 02:19:07,089 - INFO - ESI public fetch successful: /universe/types/2293/ in 0.03s
+2025-09-24 02:19:07,089 - INFO - _fetch_esi_with_retry completed in 0.034s
+2025-09-24 02:19:07,120 - INFO - ESI public fetch successful: /universe/types/55542/ in 0.03s
+2025-09-24 02:19:07,120 - INFO - _fetch_esi_with_retry completed in 0.031s
+2025-09-24 02:19:07,154 - INFO - ESI public fetch successful: /universe/types/55541/ in 0.03s
+2025-09-24 02:19:07,154 - INFO - _fetch_esi_with_retry completed in 0.033s
+2025-09-24 02:19:07,265 - INFO - ESI public fetch successful: /universe/types/55544/ in 0.11s
+2025-09-24 02:19:07,265 - INFO - _fetch_esi_with_retry completed in 0.111s
+2025-09-24 02:19:07,299 - INFO - ESI public fetch successful: /universe/types/55545/ in 0.03s
+2025-09-24 02:19:07,300 - INFO - _fetch_esi_with_retry completed in 0.035s
+2025-09-24 02:19:07,333 - INFO - ESI public fetch successful: /universe/types/55546/ in 0.03s
+2025-09-24 02:19:07,334 - INFO - _fetch_esi_with_retry completed in 0.033s
+2025-09-24 02:19:07,370 - INFO - ESI public fetch successful: /universe/types/55547/ in 0.04s
+2025-09-24 02:19:07,371 - INFO - _fetch_esi_with_retry completed in 0.037s
+2025-09-24 02:19:07,405 - INFO - ESI public fetch successful: /universe/types/55548/ in 0.03s
+2025-09-24 02:19:07,405 - INFO - _fetch_esi_with_retry completed in 0.034s
+2025-09-24 02:19:07,441 - INFO - ESI public fetch successful: /universe/types/55549/ in 0.04s
+2025-09-24 02:19:07,441 - INFO - _fetch_esi_with_retry completed in 0.036s
+2025-09-24 02:19:07,475 - INFO - ESI public fetch successful: /universe/types/55550/ in 0.03s
+2025-09-24 02:19:07,475 - INFO - _fetch_esi_with_retry completed in 0.034s
+2025-09-24 02:19:07,512 - INFO - ESI public fetch successful: /universe/types/55551/ in 0.04s
+2025-09-24 02:19:07,512 - INFO - _fetch_esi_with_retry completed in 0.037s
+2025-09-24 02:19:07,546 - INFO - ESI public fetch successful: /universe/types/55552/ in 0.03s
+2025-09-24 02:19:07,546 - INFO - _fetch_esi_with_retry completed in 0.034s
+2025-09-24 02:19:07,578 - INFO - ESI public fetch successful: /universe/types/55553/ in 0.03s
+2025-09-24 02:19:07,578 - INFO - _fetch_esi_with_retry completed in 0.032s
+2025-09-24 02:19:07,614 - INFO - ESI public fetch successful: /universe/types/55554/ in 0.04s
+2025-09-24 02:19:07,615 - INFO - _fetch_esi_with_retry completed in 0.036s
+2025-09-24 02:19:07,649 - INFO - ESI public fetch successful: /universe/types/55555/ in 0.03s
+2025-09-24 02:19:07,650 - INFO - _fetch_esi_with_retry completed in 0.035s
+2025-09-24 02:19:07,682 - INFO - ESI public fetch successful: /universe/types/55556/ in 0.03s
+2025-09-24 02:19:07,683 - INFO - _fetch_esi_with_retry completed in 0.033s
+2025-09-24 02:19:07,789 - INFO - ESI public fetch successful: /universe/types/55557/ in 0.11s
+2025-09-24 02:19:07,790 - INFO - _fetch_esi_with_retry completed in 0.107s
+2025-09-24 02:19:07,823 - INFO - ESI public fetch successful: /universe/types/55558/ in 0.03s
+2025-09-24 02:19:07,823 - INFO - _fetch_esi_with_retry completed in 0.033s
+2025-09-24 02:19:07,856 - INFO - ESI public fetch successful: /universe/types/55559/ in 0.03s
+2025-09-24 02:19:07,857 - INFO - _fetch_esi_with_retry completed in 0.034s
+2025-09-24 02:19:07,891 - INFO - ESI public fetch successful: /universe/types/55560/ in 0.03s
+2025-09-24 02:19:07,892 - INFO - _fetch_esi_with_retry completed in 0.035s
+2025-09-24 02:19:07,926 - INFO - ESI public fetch successful: /universe/types/55561/ in 0.03s
+2025-09-24 02:19:07,927 - INFO - _fetch_esi_with_retry completed in 0.035s
+2025-09-24 02:19:07,961 - INFO - ESI public fetch successful: /universe/types/82184/ in 0.03s
+2025-09-24 02:19:07,961 - INFO - _fetch_esi_with_retry completed in 0.035s
+2025-09-24 02:19:08,001 - INFO - ESI public fetch successful: /universe/types/55563/ in 0.04s
+2025-09-24 02:19:08,001 - INFO - _fetch_esi_with_retry completed in 0.040s
+2025-09-24 02:19:08,037 - INFO - ESI public fetch successful: /universe/types/55564/ in 0.04s
+2025-09-24 02:19:08,037 - INFO - _fetch_esi_with_retry completed in 0.035s
+2025-09-24 02:19:08,069 - INFO - ESI public fetch successful: /universe/types/55565/ in 0.03s
+2025-09-24 02:19:08,069 - INFO - _fetch_esi_with_retry completed in 0.033s
+2025-09-24 02:19:08,106 - INFO - ESI public fetch successful: /universe/types/55566/ in 0.04s
+2025-09-24 02:19:08,106 - INFO - _fetch_esi_with_retry completed in 0.037s
+2025-09-24 02:19:08,139 - INFO - ESI public fetch successful: /universe/types/55567/ in 0.03s
+2025-09-24 02:19:08,139 - INFO - _fetch_esi_with_retry completed in 0.033s
+2025-09-24 02:19:08,172 - INFO - ESI public fetch successful: /universe/types/55568/ in 0.03s
+2025-09-24 02:19:08,173 - INFO - _fetch_esi_with_retry completed in 0.033s
+2025-09-24 02:19:08,223 - INFO - ESI public fetch successful: /universe/types/55569/ in 0.05s
+2025-09-24 02:19:08,223 - INFO - _fetch_esi_with_retry completed in 0.050s
+2025-09-24 02:19:08,342 - INFO - ESI public fetch successful: /universe/types/55570/ in 0.12s
+2025-09-24 02:19:08,342 - INFO - _fetch_esi_with_retry completed in 0.119s
+2025-09-24 02:19:08,376 - INFO - ESI public fetch successful: /universe/types/55571/ in 0.03s
+2025-09-24 02:19:08,377 - INFO - _fetch_esi_with_retry completed in 0.034s
+2025-09-24 02:19:08,444 - INFO - ESI public fetch successful: /universe/types/55574/ in 0.07s
+2025-09-24 02:19:08,445 - INFO - _fetch_esi_with_retry completed in 0.068s
+2025-09-24 02:19:08,479 - INFO - ESI public fetch successful: /universe/types/41239/ in 0.03s
+2025-09-24 02:19:08,479 - INFO - _fetch_esi_with_retry completed in 0.034s
+2025-09-24 02:19:08,513 - INFO - ESI public fetch successful: /universe/types/55577/ in 0.03s
+2025-09-24 02:19:08,513 - INFO - _fetch_esi_with_retry completed in 0.034s
+2025-09-24 02:19:08,545 - INFO - ESI public fetch successful: /universe/types/55578/ in 0.03s
+2025-09-24 02:19:08,546 - INFO - _fetch_esi_with_retry completed in 0.033s
+2025-09-24 02:19:08,582 - INFO - ESI public fetch successful: /universe/types/55581/ in 0.04s
+2025-09-24 02:19:08,583 - INFO - _fetch_esi_with_retry completed in 0.037s
+2025-09-24 02:19:08,617 - INFO - ESI public fetch successful: /universe/types/55582/ in 0.03s
+2025-09-24 02:19:08,617 - INFO - _fetch_esi_with_retry completed in 0.034s
+2025-09-24 02:19:08,666 - INFO - ESI public fetch successful: /universe/types/55584/ in 0.05s
+2025-09-24 02:19:08,667 - INFO - _fetch_esi_with_retry completed in 0.049s
+2025-09-24 02:19:08,703 - INFO - ESI public fetch successful: /universe/types/55586/ in 0.04s
+2025-09-24 02:19:08,703 - INFO - _fetch_esi_with_retry completed in 0.036s
+2025-09-24 02:19:08,743 - INFO - ESI public fetch successful: /universe/types/55587/ in 0.04s
+2025-09-24 02:19:08,744 - INFO - _fetch_esi_with_retry completed in 0.040s
+2025-09-24 02:19:08,839 - INFO - ESI public fetch successful: /universe/types/41253/ in 0.10s
+2025-09-24 02:19:08,840 - INFO - _fetch_esi_with_retry completed in 0.096s
+2025-09-24 02:19:08,888 - INFO - ESI public fetch successful: /universe/types/55590/ in 0.05s
+2025-09-24 02:19:08,889 - INFO - _fetch_esi_with_retry completed in 0.049s
+2025-09-24 02:19:08,924 - INFO - ESI public fetch successful: /universe/types/4391/ in 0.04s
+2025-09-24 02:19:08,925 - INFO - _fetch_esi_with_retry completed in 0.036s
+2025-09-24 02:19:08,960 - INFO - ESI public fetch successful: /universe/types/55592/ in 0.03s
+2025-09-24 02:19:08,960 - INFO - _fetch_esi_with_retry completed in 0.035s
+2025-09-24 02:19:08,995 - INFO - ESI public fetch successful: /universe/types/55591/ in 0.03s
+2025-09-24 02:19:08,995 - INFO - _fetch_esi_with_retry completed in 0.035s
+2025-09-24 02:19:09,029 - INFO - ESI public fetch successful: /universe/types/33064/ in 0.03s
+2025-09-24 02:19:09,029 - INFO - _fetch_esi_with_retry completed in 0.034s
+2025-09-24 02:19:09,062 - INFO - ESI public fetch successful: /universe/types/41262/ in 0.03s
+2025-09-24 02:19:09,062 - INFO - _fetch_esi_with_retry completed in 0.033s
+2025-09-24 02:19:09,111 - INFO - ESI public fetch successful: /universe/types/55599/ in 0.05s
+2025-09-24 02:19:09,111 - INFO - _fetch_esi_with_retry completed in 0.049s
+2025-09-24 02:19:09,145 - INFO - ESI public fetch successful: /universe/types/55598/ in 0.03s
+2025-09-24 02:19:09,146 - INFO - _fetch_esi_with_retry completed in 0.034s
+2025-09-24 02:19:09,178 - INFO - ESI public fetch successful: /universe/types/55601/ in 0.03s
+2025-09-24 02:19:09,179 - INFO - _fetch_esi_with_retry completed in 0.033s
+2025-09-24 02:19:09,209 - INFO - ESI public fetch successful: /universe/types/55602/ in 0.03s
+2025-09-24 02:19:09,209 - INFO - _fetch_esi_with_retry completed in 0.031s
+2025-09-24 02:19:09,245 - INFO - ESI public fetch successful: /universe/types/55603/ in 0.04s
+2025-09-24 02:19:09,245 - INFO - _fetch_esi_with_retry completed in 0.036s
+2025-09-24 02:19:09,363 - INFO - ESI public fetch successful: /universe/types/55604/ in 0.12s
+2025-09-24 02:19:09,364 - INFO - _fetch_esi_with_retry completed in 0.119s
+2025-09-24 02:19:09,396 - INFO - ESI public fetch successful: /universe/types/55605/ in 0.03s
+2025-09-24 02:19:09,396 - INFO - _fetch_esi_with_retry completed in 0.033s
+2025-09-24 02:19:09,428 - INFO - ESI public fetch successful: /universe/types/55606/ in 0.03s
+2025-09-24 02:19:09,428 - INFO - _fetch_esi_with_retry completed in 0.032s
+2025-09-24 02:19:09,460 - INFO - ESI public fetch successful: /universe/types/55607/ in 0.03s
+2025-09-24 02:19:09,460 - INFO - _fetch_esi_with_retry completed in 0.032s
+2025-09-24 02:19:09,494 - INFO - ESI public fetch successful: /universe/types/55608/ in 0.03s
+2025-09-24 02:19:09,494 - INFO - _fetch_esi_with_retry completed in 0.034s
+2025-09-24 02:19:09,528 - INFO - ESI public fetch successful: /universe/types/55609/ in 0.03s
+2025-09-24 02:19:09,528 - INFO - _fetch_esi_with_retry completed in 0.034s
+2025-09-24 02:19:09,564 - INFO - ESI public fetch successful: /universe/types/55610/ in 0.04s
+2025-09-24 02:19:09,564 - INFO - _fetch_esi_with_retry completed in 0.036s
+2025-09-24 02:19:09,600 - INFO - ESI public fetch successful: /universe/types/55611/ in 0.04s
+2025-09-24 02:19:09,600 - INFO - _fetch_esi_with_retry completed in 0.036s
+2025-09-24 02:19:09,635 - INFO - ESI public fetch successful: /universe/types/55612/ in 0.03s
+2025-09-24 02:19:09,635 - INFO - _fetch_esi_with_retry completed in 0.035s
+2025-09-24 02:19:09,672 - INFO - ESI public fetch successful: /universe/types/55613/ in 0.04s
+2025-09-24 02:19:09,672 - INFO - _fetch_esi_with_retry completed in 0.036s
+2025-09-24 02:19:09,707 - INFO - ESI public fetch successful: /universe/types/55614/ in 0.04s
+2025-09-24 02:19:09,707 - INFO - _fetch_esi_with_retry completed in 0.035s
+2025-09-24 02:19:09,743 - INFO - ESI public fetch successful: /universe/types/55615/ in 0.04s
+2025-09-24 02:19:09,743 - INFO - _fetch_esi_with_retry completed in 0.036s
+2025-09-24 02:19:09,775 - INFO - ESI public fetch successful: /universe/types/55616/ in 0.03s
+2025-09-24 02:19:09,777 - INFO - _fetch_esi_with_retry completed in 0.033s
+2025-09-24 02:19:09,887 - INFO - ESI public fetch successful: /universe/types/55617/ in 0.11s
+2025-09-24 02:19:09,888 - INFO - _fetch_esi_with_retry completed in 0.111s
+2025-09-24 02:19:09,926 - INFO - ESI public fetch successful: /universe/types/55618/ in 0.04s
+2025-09-24 02:19:09,926 - INFO - _fetch_esi_with_retry completed in 0.038s
+2025-09-24 02:19:09,959 - INFO - ESI public fetch successful: /universe/types/55620/ in 0.03s
+2025-09-24 02:19:09,960 - INFO - _fetch_esi_with_retry completed in 0.033s
+2025-09-24 02:19:09,994 - INFO - ESI public fetch successful: /universe/types/55621/ in 0.03s
+2025-09-24 02:19:09,995 - INFO - _fetch_esi_with_retry completed in 0.035s
+2025-09-24 02:19:10,029 - INFO - ESI public fetch successful: /universe/types/55623/ in 0.03s
+2025-09-24 02:19:10,029 - INFO - _fetch_esi_with_retry completed in 0.034s
+2025-09-24 02:19:10,061 - INFO - ESI public fetch successful: /universe/types/55624/ in 0.03s
+2025-09-24 02:19:10,061 - INFO - _fetch_esi_with_retry completed in 0.032s
+2025-09-24 02:19:10,095 - INFO - ESI public fetch successful: /universe/types/55625/ in 0.03s
+2025-09-24 02:19:10,095 - INFO - _fetch_esi_with_retry completed in 0.034s
+2025-09-24 02:19:10,128 - INFO - ESI public fetch successful: /universe/types/29002/ in 0.03s
+2025-09-24 02:19:10,128 - INFO - _fetch_esi_with_retry completed in 0.032s
+2025-09-24 02:19:10,161 - INFO - ESI public fetch successful: /universe/types/55626/ in 0.03s
+2025-09-24 02:19:10,162 - INFO - _fetch_esi_with_retry completed in 0.034s
+2025-09-24 02:19:10,196 - INFO - ESI public fetch successful: /universe/types/29004/ in 0.03s
+2025-09-24 02:19:10,196 - INFO - _fetch_esi_with_retry completed in 0.034s
+2025-09-24 02:19:10,228 - INFO - ESI public fetch successful: /universe/types/55628/ in 0.03s
+2025-09-24 02:19:10,228 - INFO - _fetch_esi_with_retry completed in 0.032s
+2025-09-24 02:19:10,264 - INFO - ESI public fetch successful: /universe/types/55629/ in 0.04s
+2025-09-24 02:19:10,264 - INFO - _fetch_esi_with_retry completed in 0.036s
+2025-09-24 02:19:10,298 - INFO - ESI public fetch successful: /universe/types/55632/ in 0.03s
+2025-09-24 02:19:10,298 - INFO - _fetch_esi_with_retry completed in 0.034s
+2025-09-24 02:19:10,410 - INFO - ESI public fetch successful: /universe/types/55633/ in 0.11s
+2025-09-24 02:19:10,410 - INFO - _fetch_esi_with_retry completed in 0.111s
+2025-09-24 02:19:10,447 - INFO - ESI public fetch successful: /universe/types/55634/ in 0.04s
+2025-09-24 02:19:10,447 - INFO - _fetch_esi_with_retry completed in 0.036s
+2025-09-24 02:19:10,482 - INFO - ESI public fetch successful: /universe/types/55635/ in 0.03s
+2025-09-24 02:19:10,482 - INFO - _fetch_esi_with_retry completed in 0.035s
+2025-09-24 02:19:10,515 - INFO - ESI public fetch successful: /universe/types/55638/ in 0.03s
+2025-09-24 02:19:10,516 - INFO - _fetch_esi_with_retry completed in 0.033s
+2025-09-24 02:19:10,550 - INFO - ESI public fetch successful: /universe/types/55639/ in 0.03s
+2025-09-24 02:19:10,551 - INFO - _fetch_esi_with_retry completed in 0.035s
+2025-09-24 02:19:10,589 - INFO - ESI public fetch successful: /universe/types/55647/ in 0.04s
+2025-09-24 02:19:10,590 - INFO - _fetch_esi_with_retry completed in 0.038s
+2025-09-24 02:19:10,625 - INFO - ESI public fetch successful: /universe/types/55650/ in 0.03s
+2025-09-24 02:19:10,625 - INFO - _fetch_esi_with_retry completed in 0.035s
+2025-09-24 02:19:10,660 - INFO - ESI public fetch successful: /universe/types/55652/ in 0.03s
+2025-09-24 02:19:10,661 - INFO - _fetch_esi_with_retry completed in 0.035s
+2025-09-24 02:19:10,695 - INFO - ESI public fetch successful: /universe/types/55653/ in 0.03s
+2025-09-24 02:19:10,696 - INFO - _fetch_esi_with_retry completed in 0.035s
+2025-09-24 02:19:10,728 - INFO - ESI public fetch successful: /universe/types/55657/ in 0.03s
+2025-09-24 02:19:10,729 - INFO - _fetch_esi_with_retry completed in 0.033s
+2025-09-24 02:19:10,764 - INFO - ESI public fetch successful: /universe/types/55658/ in 0.04s
+2025-09-24 02:19:10,765 - INFO - _fetch_esi_with_retry completed in 0.036s
+2025-09-24 02:19:10,804 - INFO - ESI public fetch successful: /universe/types/55659/ in 0.04s
+2025-09-24 02:19:10,805 - INFO - _fetch_esi_with_retry completed in 0.040s
+2025-09-24 02:19:10,841 - INFO - ESI public fetch successful: /universe/types/55660/ in 0.03s
+2025-09-24 02:19:10,841 - INFO - _fetch_esi_with_retry completed in 0.036s
+2025-09-24 02:19:10,938 - INFO - ESI public fetch successful: /universe/types/55664/ in 0.10s
+2025-09-24 02:19:10,940 - INFO - _fetch_esi_with_retry completed in 0.098s
+2025-09-24 02:19:10,974 - INFO - ESI public fetch successful: /universe/types/55665/ in 0.03s
+2025-09-24 02:19:10,975 - INFO - _fetch_esi_with_retry completed in 0.035s
+2025-09-24 02:19:11,007 - INFO - ESI public fetch successful: /universe/types/55666/ in 0.03s
+2025-09-24 02:19:11,008 - INFO - _fetch_esi_with_retry completed in 0.033s
+2025-09-24 02:19:11,038 - INFO - ESI public fetch successful: /universe/types/55667/ in 0.03s
+2025-09-24 02:19:11,038 - INFO - _fetch_esi_with_retry completed in 0.031s
+2025-09-24 02:19:11,076 - INFO - ESI public fetch successful: /universe/types/57717/ in 0.04s
+2025-09-24 02:19:11,077 - INFO - _fetch_esi_with_retry completed in 0.038s
+2025-09-24 02:19:11,117 - INFO - ESI public fetch successful: /universe/types/57718/ in 0.04s
+2025-09-24 02:19:11,118 - INFO - _fetch_esi_with_retry completed in 0.041s
+2025-09-24 02:19:11,153 - INFO - ESI public fetch successful: /universe/types/55671/ in 0.03s
+2025-09-24 02:19:11,154 - INFO - _fetch_esi_with_retry completed in 0.035s
+2025-09-24 02:19:11,190 - INFO - ESI public fetch successful: /universe/types/55672/ in 0.04s
+2025-09-24 02:19:11,190 - INFO - _fetch_esi_with_retry completed in 0.036s
+2025-09-24 02:19:11,224 - INFO - ESI public fetch successful: /universe/types/55673/ in 0.03s
+2025-09-24 02:19:11,224 - INFO - _fetch_esi_with_retry completed in 0.034s
+2025-09-24 02:19:11,257 - INFO - ESI public fetch successful: /universe/types/55669/ in 0.03s
+2025-09-24 02:19:11,257 - INFO - _fetch_esi_with_retry completed in 0.033s
+2025-09-24 02:19:11,289 - INFO - ESI public fetch successful: /universe/types/55674/ in 0.03s
+2025-09-24 02:19:11,290 - INFO - _fetch_esi_with_retry completed in 0.032s
+2025-09-24 02:19:11,321 - INFO - ESI public fetch successful: /universe/types/55675/ in 0.03s
+2025-09-24 02:19:11,322 - INFO - _fetch_esi_with_retry completed in 0.032s
+2025-09-24 02:19:11,357 - INFO - ESI public fetch successful: /universe/types/55677/ in 0.04s
+2025-09-24 02:19:11,358 - INFO - _fetch_esi_with_retry completed in 0.036s
+2025-09-24 02:19:11,461 - INFO - ESI public fetch successful: /universe/types/55678/ in 0.10s
+2025-09-24 02:19:11,461 - INFO - _fetch_esi_with_retry completed in 0.103s
+2025-09-24 02:19:11,497 - INFO - ESI public fetch successful: /universe/types/55679/ in 0.04s
+2025-09-24 02:19:11,497 - INFO - _fetch_esi_with_retry completed in 0.036s
+2025-09-24 02:19:11,532 - INFO - ESI public fetch successful: /universe/types/55680/ in 0.03s
+2025-09-24 02:19:11,532 - INFO - _fetch_esi_with_retry completed in 0.035s
+2025-09-24 02:19:11,567 - INFO - ESI public fetch successful: /universe/types/55681/ in 0.03s
+2025-09-24 02:19:11,567 - INFO - _fetch_esi_with_retry completed in 0.035s
+2025-09-24 02:19:11,601 - INFO - ESI public fetch successful: /universe/types/55682/ in 0.03s
+2025-09-24 02:19:11,602 - INFO - _fetch_esi_with_retry completed in 0.035s
+2025-09-24 02:19:11,636 - INFO - ESI public fetch successful: /universe/types/57729/ in 0.03s
+2025-09-24 02:19:11,636 - INFO - _fetch_esi_with_retry completed in 0.034s
+2025-09-24 02:19:11,670 - INFO - ESI public fetch successful: /universe/types/57732/ in 0.03s
+2025-09-24 02:19:11,670 - INFO - _fetch_esi_with_retry completed in 0.034s
+2025-09-24 02:19:11,707 - INFO - ESI public fetch successful: /universe/types/55685/ in 0.04s
+2025-09-24 02:19:11,707 - INFO - _fetch_esi_with_retry completed in 0.037s
+2025-09-24 02:19:11,740 - INFO - ESI public fetch successful: /universe/types/55686/ in 0.03s
+2025-09-24 02:19:11,740 - INFO - _fetch_esi_with_retry completed in 0.033s
+2025-09-24 02:19:11,772 - INFO - ESI public fetch successful: /universe/types/41351/ in 0.03s
+2025-09-24 02:19:11,772 - INFO - _fetch_esi_with_retry completed in 0.032s
+2025-09-24 02:19:11,805 - INFO - ESI public fetch successful: /universe/types/55688/ in 0.03s
+2025-09-24 02:19:11,805 - INFO - _fetch_esi_with_retry completed in 0.033s
+2025-09-24 02:19:11,839 - INFO - ESI public fetch successful: /universe/types/55687/ in 0.03s
+2025-09-24 02:19:11,839 - INFO - _fetch_esi_with_retry completed in 0.033s
+2025-09-24 02:19:11,872 - INFO - ESI public fetch successful: /universe/types/55690/ in 0.03s
+2025-09-24 02:19:11,873 - INFO - _fetch_esi_with_retry completed in 0.034s
+2025-09-24 02:19:11,985 - INFO - ESI public fetch successful: /universe/types/55691/ in 0.11s
+2025-09-24 02:19:11,986 - INFO - _fetch_esi_with_retry completed in 0.113s
+2025-09-24 02:19:12,020 - INFO - ESI public fetch successful: /universe/types/55689/ in 0.03s
+2025-09-24 02:19:12,020 - INFO - _fetch_esi_with_retry completed in 0.034s
+2025-09-24 02:19:12,055 - INFO - ESI public fetch successful: /universe/types/41356/ in 0.03s
+2025-09-24 02:19:12,057 - INFO - _fetch_esi_with_retry completed in 0.036s
+2025-09-24 02:19:12,091 - INFO - ESI public fetch successful: /universe/types/22926/ in 0.03s
+2025-09-24 02:19:12,091 - INFO - _fetch_esi_with_retry completed in 0.034s
+2025-09-24 02:19:12,125 - INFO - ESI public fetch successful: /universe/types/2447/ in 0.03s
+2025-09-24 02:19:12,125 - INFO - _fetch_esi_with_retry completed in 0.034s
+2025-09-24 02:19:12,160 - INFO - ESI public fetch successful: /universe/types/55696/ in 0.03s
+2025-09-24 02:19:12,160 - INFO - _fetch_esi_with_retry completed in 0.035s
+2025-09-24 02:19:12,197 - INFO - ESI public fetch successful: /universe/types/55697/ in 0.04s
+2025-09-24 02:19:12,197 - INFO - _fetch_esi_with_retry completed in 0.038s
+2025-09-24 02:19:12,231 - INFO - ESI public fetch successful: /universe/types/55698/ in 0.03s
+2025-09-24 02:19:12,231 - INFO - _fetch_esi_with_retry completed in 0.033s
+2025-09-24 02:19:12,266 - INFO - ESI public fetch successful: /universe/types/55694/ in 0.03s
+2025-09-24 02:19:12,266 - INFO - _fetch_esi_with_retry completed in 0.035s
+2025-09-24 02:19:12,301 - INFO - ESI public fetch successful: /universe/types/55695/ in 0.03s
+2025-09-24 02:19:12,301 - INFO - _fetch_esi_with_retry completed in 0.035s
+2025-09-24 02:19:12,337 - INFO - ESI public fetch successful: /universe/types/41366/ in 0.04s
+2025-09-24 02:19:12,337 - INFO - _fetch_esi_with_retry completed in 0.036s
+2025-09-24 02:19:12,370 - INFO - ESI public fetch successful: /universe/types/41372/ in 0.03s
+2025-09-24 02:19:12,370 - INFO - _fetch_esi_with_retry completed in 0.033s
+2025-09-24 02:19:12,402 - INFO - ESI public fetch successful: /universe/types/41375/ in 0.03s
+2025-09-24 02:19:12,402 - INFO - _fetch_esi_with_retry completed in 0.032s
+2025-09-24 02:19:12,510 - INFO - ESI public fetch successful: /universe/types/41377/ in 0.11s
+2025-09-24 02:19:12,510 - INFO - _fetch_esi_with_retry completed in 0.107s
+2025-09-24 02:19:12,542 - INFO - ESI public fetch successful: /universe/types/41384/ in 0.03s
+2025-09-24 02:19:12,543 - INFO - _fetch_esi_with_retry completed in 0.033s
+2025-09-24 02:19:12,576 - INFO - ESI public fetch successful: /universe/types/2486/ in 0.03s
+2025-09-24 02:19:12,576 - INFO - _fetch_esi_with_retry completed in 0.033s
+2025-09-24 02:19:12,610 - INFO - ESI public fetch successful: /universe/types/33213/ in 0.03s
+2025-09-24 02:19:12,611 - INFO - _fetch_esi_with_retry completed in 0.034s
+2025-09-24 02:19:12,643 - INFO - ESI public fetch successful: /universe/types/33214/ in 0.03s
+2025-09-24 02:19:12,643 - INFO - _fetch_esi_with_retry completed in 0.032s
+2025-09-24 02:19:12,675 - INFO - ESI public fetch successful: /universe/types/33215/ in 0.03s
+2025-09-24 02:19:12,675 - INFO - _fetch_esi_with_retry completed in 0.032s
+2025-09-24 02:19:12,708 - INFO - ESI public fetch successful: /universe/types/33217/ in 0.03s
+2025-09-24 02:19:12,708 - INFO - _fetch_esi_with_retry completed in 0.033s
+2025-09-24 02:19:12,741 - INFO - ESI public fetch successful: /universe/types/33218/ in 0.03s
+2025-09-24 02:19:12,741 - INFO - _fetch_esi_with_retry completed in 0.033s
+2025-09-24 02:19:12,772 - INFO - ESI public fetch successful: /universe/types/33219/ in 0.03s
+2025-09-24 02:19:12,772 - INFO - _fetch_esi_with_retry completed in 0.031s
+2025-09-24 02:19:12,809 - INFO - ESI public fetch successful: /universe/types/33220/ in 0.04s
+2025-09-24 02:19:12,809 - INFO - _fetch_esi_with_retry completed in 0.037s
+2025-09-24 02:19:12,842 - INFO - ESI public fetch successful: /universe/types/33221/ in 0.03s
+2025-09-24 02:19:12,842 - INFO - _fetch_esi_with_retry completed in 0.033s
+2025-09-24 02:19:12,875 - INFO - ESI public fetch successful: /universe/types/33223/ in 0.03s
+2025-09-24 02:19:12,875 - INFO - _fetch_esi_with_retry completed in 0.033s
+2025-09-24 02:19:12,908 - INFO - ESI public fetch successful: /universe/types/33224/ in 0.03s
+2025-09-24 02:19:12,908 - INFO - _fetch_esi_with_retry completed in 0.033s
+2025-09-24 02:19:12,940 - INFO - ESI public fetch successful: /universe/types/33225/ in 0.03s
+2025-09-24 02:19:12,941 - INFO - _fetch_esi_with_retry completed in 0.033s
+2025-09-24 02:19:13,061 - INFO - ESI public fetch successful: /universe/types/33226/ in 0.12s
+2025-09-24 02:19:13,061 - INFO - _fetch_esi_with_retry completed in 0.120s
+2025-09-24 02:19:13,095 - INFO - ESI public fetch successful: /universe/types/33227/ in 0.03s
+2025-09-24 02:19:13,095 - INFO - _fetch_esi_with_retry completed in 0.034s
+2025-09-24 02:19:13,127 - INFO - ESI public fetch successful: /universe/types/82380/ in 0.03s
+2025-09-24 02:19:13,127 - INFO - _fetch_esi_with_retry completed in 0.032s
+2025-09-24 02:19:13,159 - INFO - ESI public fetch successful: /universe/types/33228/ in 0.03s
+2025-09-24 02:19:13,159 - INFO - _fetch_esi_with_retry completed in 0.031s
+2025-09-24 02:19:13,194 - INFO - ESI public fetch successful: /universe/types/33229/ in 0.04s
+2025-09-24 02:19:13,194 - INFO - _fetch_esi_with_retry completed in 0.035s
+2025-09-24 02:19:13,244 - INFO - ESI public fetch successful: /universe/types/33230/ in 0.05s
+2025-09-24 02:19:13,244 - INFO - _fetch_esi_with_retry completed in 0.050s
+2025-09-24 02:19:13,276 - INFO - ESI public fetch successful: /universe/types/33231/ in 0.03s
+2025-09-24 02:19:13,277 - INFO - _fetch_esi_with_retry completed in 0.032s
+2025-09-24 02:19:13,310 - INFO - ESI public fetch successful: /universe/types/33232/ in 0.03s
+2025-09-24 02:19:13,311 - INFO - _fetch_esi_with_retry completed in 0.034s
+2025-09-24 02:19:13,343 - INFO - ESI public fetch successful: /universe/types/37330/ in 0.03s
+2025-09-24 02:19:13,343 - INFO - _fetch_esi_with_retry completed in 0.033s
+2025-09-24 02:19:13,377 - INFO - ESI public fetch successful: /universe/types/45523/ in 0.03s
+2025-09-24 02:19:13,377 - INFO - _fetch_esi_with_retry completed in 0.034s
+2025-09-24 02:19:13,406 - INFO - ESI public fetch successful: /universe/types/37332/ in 0.03s
+2025-09-24 02:19:13,406 - INFO - _fetch_esi_with_retry completed in 0.029s
+2025-09-24 02:19:13,463 - INFO - ESI public fetch successful: /universe/types/37338/ in 0.06s
+2025-09-24 02:19:13,464 - INFO - _fetch_esi_with_retry completed in 0.057s
+2025-09-24 02:19:13,556 - INFO - ESI public fetch successful: /universe/types/31031/ in 0.09s
+2025-09-24 02:19:13,556 - INFO - _fetch_esi_with_retry completed in 0.092s
+2025-09-24 02:19:13,590 - INFO - ESI public fetch successful: /universe/types/45547/ in 0.03s
+2025-09-24 02:19:13,590 - INFO - _fetch_esi_with_retry completed in 0.034s
+2025-09-24 02:19:13,624 - INFO - ESI public fetch successful: /universe/types/45551/ in 0.03s
+2025-09-24 02:19:13,625 - INFO - _fetch_esi_with_retry completed in 0.034s
+2025-09-24 02:19:13,684 - INFO - ESI public fetch successful: /universe/types/12790/ in 0.06s
+2025-09-24 02:19:13,684 - INFO - _fetch_esi_with_retry completed in 0.059s
+2025-09-24 02:19:13,719 - INFO - ESI public fetch successful: /universe/types/31259/ in 0.03s
+2025-09-24 02:19:13,719 - INFO - _fetch_esi_with_retry completed in 0.034s
+2025-09-24 02:19:13,751 - INFO - ESI public fetch successful: /universe/types/43547/ in 0.03s
+2025-09-24 02:19:13,751 - INFO - _fetch_esi_with_retry completed in 0.032s
+2025-09-24 02:19:13,787 - INFO - ESI public fetch successful: /universe/types/37410/ in 0.04s
+2025-09-24 02:19:13,787 - INFO - _fetch_esi_with_retry completed in 0.036s
+2025-09-24 02:19:13,827 - INFO - ESI public fetch successful: /universe/types/31271/ in 0.04s
+2025-09-24 02:19:13,828 - INFO - _fetch_esi_with_retry completed in 0.041s
+2025-09-24 02:19:13,861 - INFO - ESI public fetch successful: /universe/types/29226/ in 0.03s
+2025-09-24 02:19:13,861 - INFO - _fetch_esi_with_retry completed in 0.033s
+2025-09-24 02:19:13,906 - INFO - ESI public fetch successful: /universe/types/37421/ in 0.04s
+2025-09-24 02:19:13,906 - INFO - _fetch_esi_with_retry completed in 0.045s
+2025-09-24 02:19:13,941 - INFO - ESI public fetch successful: /universe/types/37431/ in 0.03s
+2025-09-24 02:19:13,941 - INFO - _fetch_esi_with_retry completed in 0.035s
+2025-09-24 02:19:13,973 - INFO - ESI public fetch successful: /universe/types/37432/ in 0.03s
+2025-09-24 02:19:13,973 - INFO - _fetch_esi_with_retry completed in 0.032s
+2025-09-24 02:19:14,080 - INFO - ESI public fetch successful: /universe/types/37435/ in 0.11s
+2025-09-24 02:19:14,080 - INFO - _fetch_esi_with_retry completed in 0.107s
+2025-09-24 02:19:14,126 - INFO - ESI public fetch successful: /universe/types/37436/ in 0.05s
+2025-09-24 02:19:14,127 - INFO - _fetch_esi_with_retry completed in 0.046s
+2025-09-24 02:19:14,159 - INFO - ESI public fetch successful: /universe/types/82502/ in 0.03s
+2025-09-24 02:19:14,159 - INFO - _fetch_esi_with_retry completed in 0.032s
+2025-09-24 02:19:14,193 - INFO - ESI public fetch successful: /universe/types/82504/ in 0.03s
+2025-09-24 02:19:14,193 - INFO - _fetch_esi_with_retry completed in 0.034s
+2025-09-24 02:19:14,225 - INFO - ESI public fetch successful: /universe/types/587/ in 0.03s
+2025-09-24 02:19:14,225 - INFO - _fetch_esi_with_retry completed in 0.032s
+2025-09-24 02:19:14,259 - INFO - ESI public fetch successful: /universe/types/29267/ in 0.03s
+2025-09-24 02:19:14,259 - INFO - _fetch_esi_with_retry completed in 0.033s
+2025-09-24 02:19:14,291 - INFO - ESI public fetch successful: /universe/types/10839/ in 0.03s
+2025-09-24 02:19:14,291 - INFO - _fetch_esi_with_retry completed in 0.032s
+2025-09-24 02:19:14,324 - INFO - ESI public fetch successful: /universe/types/10841/ in 0.03s
+2025-09-24 02:19:14,325 - INFO - _fetch_esi_with_retry completed in 0.033s
+2025-09-24 02:19:14,358 - INFO - ESI public fetch successful: /universe/types/33373/ in 0.03s
+2025-09-24 02:19:14,358 - INFO - _fetch_esi_with_retry completed in 0.034s
+2025-09-24 02:19:14,391 - INFO - ESI public fetch successful: /universe/types/33374/ in 0.03s
+2025-09-24 02:19:14,391 - INFO - _fetch_esi_with_retry completed in 0.033s
+2025-09-24 02:19:14,423 - INFO - ESI public fetch successful: /universe/types/53862/ in 0.03s
+2025-09-24 02:19:14,423 - INFO - _fetch_esi_with_retry completed in 0.031s
+2025-09-24 02:19:14,458 - INFO - ESI public fetch successful: /universe/types/33385/ in 0.04s
+2025-09-24 02:19:14,458 - INFO - _fetch_esi_with_retry completed in 0.036s
+2025-09-24 02:19:14,495 - INFO - ESI public fetch successful: /universe/types/33386/ in 0.04s
+2025-09-24 02:19:14,495 - INFO - _fetch_esi_with_retry completed in 0.036s
+2025-09-24 02:19:14,604 - INFO - ESI public fetch successful: /universe/types/33387/ in 0.11s
+2025-09-24 02:19:14,604 - INFO - _fetch_esi_with_retry completed in 0.109s
+2025-09-24 02:19:14,641 - INFO - ESI public fetch successful: /universe/types/33388/ in 0.04s
+2025-09-24 02:19:14,641 - INFO - _fetch_esi_with_retry completed in 0.037s
+2025-09-24 02:19:14,675 - INFO - ESI public fetch successful: /universe/types/33389/ in 0.03s
+2025-09-24 02:19:14,676 - INFO - _fetch_esi_with_retry completed in 0.034s
+2025-09-24 02:19:14,709 - INFO - ESI public fetch successful: /universe/types/33390/ in 0.03s
+2025-09-24 02:19:14,709 - INFO - _fetch_esi_with_retry completed in 0.034s
+2025-09-24 02:19:14,744 - INFO - ESI public fetch successful: /universe/types/33391/ in 0.03s
+2025-09-24 02:19:14,744 - INFO - _fetch_esi_with_retry completed in 0.035s
+2025-09-24 02:19:14,777 - INFO - ESI public fetch successful: /universe/types/33392/ in 0.03s
+2025-09-24 02:19:14,777 - INFO - _fetch_esi_with_retry completed in 0.032s
+2025-09-24 02:19:14,810 - INFO - ESI public fetch successful: /universe/types/37488/ in 0.03s
+2025-09-24 02:19:14,810 - INFO - _fetch_esi_with_retry completed in 0.033s
+2025-09-24 02:19:14,845 - INFO - ESI public fetch successful: /universe/types/33401/ in 0.03s
+2025-09-24 02:19:14,845 - INFO - _fetch_esi_with_retry completed in 0.035s
+2025-09-24 02:19:14,879 - INFO - ESI public fetch successful: /universe/types/60031/ in 0.03s
+2025-09-24 02:19:14,880 - INFO - _fetch_esi_with_retry completed in 0.034s
+2025-09-24 02:19:14,912 - INFO - ESI public fetch successful: /universe/types/49798/ in 0.03s
+2025-09-24 02:19:14,912 - INFO - _fetch_esi_with_retry completed in 0.032s
+2025-09-24 02:19:14,946 - INFO - ESI public fetch successful: /universe/types/41611/ in 0.03s
+2025-09-24 02:19:14,946 - INFO - _fetch_esi_with_retry completed in 0.034s
+2025-09-24 02:19:14,980 - INFO - ESI public fetch successful: /universe/types/31377/ in 0.03s
+2025-09-24 02:19:14,980 - INFO - _fetch_esi_with_retry completed in 0.034s
+2025-09-24 02:19:15,012 - INFO - ESI public fetch successful: /universe/types/41618/ in 0.03s
+2025-09-24 02:19:15,012 - INFO - _fetch_esi_with_retry completed in 0.032s
+2025-09-24 02:19:15,128 - INFO - ESI public fetch successful: /universe/types/82596/ in 0.12s
+2025-09-24 02:19:15,128 - INFO - _fetch_esi_with_retry completed in 0.117s
+2025-09-24 02:19:15,160 - INFO - ESI public fetch successful: /universe/types/41640/ in 0.03s
+2025-09-24 02:19:15,160 - INFO - _fetch_esi_with_retry completed in 0.032s
+2025-09-24 02:19:15,195 - INFO - ESI public fetch successful: /universe/types/82601/ in 0.03s
+2025-09-24 02:19:15,195 - INFO - _fetch_esi_with_retry completed in 0.035s
+2025-09-24 02:19:15,227 - INFO - ESI public fetch successful: /universe/types/82603/ in 0.03s
+2025-09-24 02:19:15,227 - INFO - _fetch_esi_with_retry completed in 0.032s
+2025-09-24 02:19:15,259 - INFO - ESI public fetch successful: /universe/types/2752/ in 0.03s
+2025-09-24 02:19:15,259 - INFO - _fetch_esi_with_retry completed in 0.032s
+2025-09-24 02:19:15,294 - INFO - ESI public fetch successful: /universe/types/41666/ in 0.03s
+2025-09-24 02:19:15,294 - INFO - _fetch_esi_with_retry completed in 0.035s
+2025-09-24 02:19:15,329 - INFO - ESI public fetch successful: /universe/types/2757/ in 0.03s
+2025-09-24 02:19:15,329 - INFO - _fetch_esi_with_retry completed in 0.035s
+2025-09-24 02:19:15,367 - INFO - ESI public fetch successful: /universe/types/76486/ in 0.04s
+2025-09-24 02:19:15,367 - INFO - _fetch_esi_with_retry completed in 0.038s
+2025-09-24 02:19:15,401 - INFO - ESI public fetch successful: /universe/types/76490/ in 0.03s
+2025-09-24 02:19:15,401 - INFO - _fetch_esi_with_retry completed in 0.034s
+2025-09-24 02:19:15,435 - INFO - ESI public fetch successful: /universe/types/76491/ in 0.03s
+2025-09-24 02:19:15,435 - INFO - _fetch_esi_with_retry completed in 0.034s
+2025-09-24 02:19:15,472 - INFO - ESI public fetch successful: /universe/types/76496/ in 0.04s
+2025-09-24 02:19:15,472 - INFO - _fetch_esi_with_retry completed in 0.037s
+2025-09-24 02:19:15,504 - INFO - ESI public fetch successful: /universe/types/88787/ in 0.03s
+2025-09-24 02:19:15,504 - INFO - _fetch_esi_with_retry completed in 0.032s
+2025-09-24 02:19:15,538 - INFO - ESI public fetch successful: /universe/types/2803/ in 0.03s
+2025-09-24 02:19:15,538 - INFO - _fetch_esi_with_retry completed in 0.034s
+2025-09-24 02:19:15,653 - INFO - ESI public fetch successful: /universe/types/2804/ in 0.11s
+2025-09-24 02:19:15,653 - INFO - _fetch_esi_with_retry completed in 0.115s
+2025-09-24 02:19:15,692 - INFO - ESI public fetch successful: /universe/types/2815/ in 0.04s
+2025-09-24 02:19:15,692 - INFO - _fetch_esi_with_retry completed in 0.039s
+2025-09-24 02:19:15,724 - INFO - ESI public fetch successful: /universe/types/31487/ in 0.03s
+2025-09-24 02:19:15,725 - INFO - _fetch_esi_with_retry completed in 0.032s
+2025-09-24 02:19:15,757 - INFO - ESI public fetch successful: /universe/types/33547/ in 0.03s
+2025-09-24 02:19:15,757 - INFO - _fetch_esi_with_retry completed in 0.032s
+2025-09-24 02:19:15,793 - INFO - ESI public fetch successful: /universe/types/33551/ in 0.04s
+2025-09-24 02:19:15,793 - INFO - _fetch_esi_with_retry completed in 0.036s
+2025-09-24 02:19:15,825 - INFO - ESI public fetch successful: /universe/types/33552/ in 0.03s
+2025-09-24 02:19:15,825 - INFO - _fetch_esi_with_retry completed in 0.032s
+2025-09-24 02:19:15,857 - INFO - ESI public fetch successful: /universe/types/33556/ in 0.03s
+2025-09-24 02:19:15,857 - INFO - _fetch_esi_with_retry completed in 0.031s
+2025-09-24 02:19:15,890 - INFO - ESI public fetch successful: /universe/types/25366/ in 0.03s
+2025-09-24 02:19:15,890 - INFO - _fetch_esi_with_retry completed in 0.033s
+2025-09-24 02:19:15,924 - INFO - ESI public fetch successful: /universe/types/2838/ in 0.03s
+2025-09-24 02:19:15,925 - INFO - _fetch_esi_with_retry completed in 0.034s
+2025-09-24 02:19:15,959 - INFO - ESI public fetch successful: /universe/types/49947/ in 0.03s
+2025-09-24 02:19:15,960 - INFO - _fetch_esi_with_retry completed in 0.035s
+2025-09-24 02:19:15,993 - INFO - ESI public fetch successful: /universe/types/824/ in 0.03s
+2025-09-24 02:19:15,994 - INFO - _fetch_esi_with_retry completed in 0.034s
+2025-09-24 02:19:16,027 - INFO - ESI public fetch successful: /universe/types/825/ in 0.03s
+2025-09-24 02:19:16,028 - INFO - _fetch_esi_with_retry completed in 0.034s
+2025-09-24 02:19:16,065 - INFO - ESI public fetch successful: /universe/types/826/ in 0.04s
+2025-09-24 02:19:16,065 - INFO - _fetch_esi_with_retry completed in 0.037s
+2025-09-24 02:19:16,177 - INFO - ESI public fetch successful: /universe/types/827/ in 0.11s
+2025-09-24 02:19:16,178 - INFO - _fetch_esi_with_retry completed in 0.112s
+2025-09-24 02:19:16,210 - INFO - ESI public fetch successful: /universe/types/828/ in 0.03s
+2025-09-24 02:19:16,210 - INFO - _fetch_esi_with_retry completed in 0.033s
+2025-09-24 02:19:16,242 - INFO - ESI public fetch successful: /universe/types/88891/ in 0.03s
+2025-09-24 02:19:16,242 - INFO - _fetch_esi_with_retry completed in 0.032s
+2025-09-24 02:19:16,277 - INFO - ESI public fetch successful: /universe/types/832/ in 0.03s
+2025-09-24 02:19:16,277 - INFO - _fetch_esi_with_retry completed in 0.035s
+2025-09-24 02:19:16,310 - INFO - ESI public fetch successful: /universe/types/833/ in 0.03s
+2025-09-24 02:19:16,310 - INFO - _fetch_esi_with_retry completed in 0.033s
+2025-09-24 02:19:16,345 - INFO - ESI public fetch successful: /universe/types/837/ in 0.03s
+2025-09-24 02:19:16,345 - INFO - _fetch_esi_with_retry completed in 0.035s
+2025-09-24 02:19:16,376 - INFO - ESI public fetch successful: /universe/types/840/ in 0.03s
+2025-09-24 02:19:16,376 - INFO - _fetch_esi_with_retry completed in 0.031s
+2025-09-24 02:19:16,408 - INFO - ESI public fetch successful: /universe/types/841/ in 0.03s
+2025-09-24 02:19:16,408 - INFO - _fetch_esi_with_retry completed in 0.032s
+2025-09-24 02:19:16,440 - INFO - ESI public fetch successful: /universe/types/842/ in 0.03s
+2025-09-24 02:19:16,440 - INFO - _fetch_esi_with_retry completed in 0.033s
+2025-09-24 02:19:16,473 - INFO - ESI public fetch successful: /universe/types/843/ in 0.03s
+2025-09-24 02:19:16,473 - INFO - _fetch_esi_with_retry completed in 0.033s
+2025-09-24 02:19:16,518 - INFO - ESI public fetch successful: /universe/types/60232/ in 0.05s
+2025-09-24 02:19:16,519 - INFO - _fetch_esi_with_retry completed in 0.045s
+2025-09-24 02:19:16,551 - INFO - ESI public fetch successful: /universe/types/60237/ in 0.03s
+2025-09-24 02:19:16,551 - INFO - _fetch_esi_with_retry completed in 0.032s
+2025-09-24 02:19:16,583 - INFO - ESI public fetch successful: /universe/types/60238/ in 0.03s
+2025-09-24 02:19:16,583 - INFO - _fetch_esi_with_retry completed in 0.032s
+2025-09-24 02:19:16,702 - INFO - ESI public fetch successful: /universe/types/60236/ in 0.12s
+2025-09-24 02:19:16,702 - INFO - _fetch_esi_with_retry completed in 0.119s
+2025-09-24 02:19:16,737 - INFO - ESI public fetch successful: /universe/types/848/ in 0.03s
+2025-09-24 02:19:16,737 - INFO - _fetch_esi_with_retry completed in 0.035s
+2025-09-24 02:19:16,771 - INFO - ESI public fetch successful: /universe/types/60239/ in 0.03s
+2025-09-24 02:19:16,771 - INFO - _fetch_esi_with_retry completed in 0.034s
+2025-09-24 02:19:16,806 - INFO - ESI public fetch successful: /universe/types/31571/ in 0.03s
+2025-09-24 02:19:16,806 - INFO - _fetch_esi_with_retry completed in 0.035s
+2025-09-24 02:19:16,839 - INFO - ESI public fetch successful: /universe/types/882/ in 0.03s
+2025-09-24 02:19:16,839 - INFO - _fetch_esi_with_retry completed in 0.033s
+2025-09-24 02:19:16,872 - INFO - ESI public fetch successful: /universe/types/889/ in 0.03s
+2025-09-24 02:19:16,872 - INFO - _fetch_esi_with_retry completed in 0.033s
+2025-09-24 02:19:16,906 - INFO - ESI public fetch successful: /universe/types/2946/ in 0.03s
+2025-09-24 02:19:16,906 - INFO - _fetch_esi_with_retry completed in 0.034s
+2025-09-24 02:19:16,940 - INFO - ESI public fetch successful: /universe/types/2949/ in 0.03s
+2025-09-24 02:19:16,940 - INFO - _fetch_esi_with_retry completed in 0.034s
+2025-09-24 02:19:16,973 - INFO - ESI public fetch successful: /universe/types/27536/ in 0.03s
+2025-09-24 02:19:16,973 - INFO - _fetch_esi_with_retry completed in 0.033s
+2025-09-24 02:19:17,007 - INFO - ESI public fetch successful: /universe/types/55543/ in 0.03s
+2025-09-24 02:19:17,007 - INFO - _fetch_esi_with_retry completed in 0.034s
+2025-09-24 02:19:17,044 - INFO - ESI public fetch successful: /universe/types/25504/ in 0.04s
+2025-09-24 02:19:17,044 - INFO - _fetch_esi_with_retry completed in 0.037s
+2025-09-24 02:19:17,076 - INFO - ESI public fetch successful: /universe/types/23474/ in 0.03s
+2025-09-24 02:19:17,076 - INFO - _fetch_esi_with_retry completed in 0.032s
+2025-09-24 02:19:17,107 - INFO - ESI public fetch successful: /universe/types/46005/ in 0.03s
+2025-09-24 02:19:17,107 - INFO - _fetch_esi_with_retry completed in 0.032s
+2025-09-24 02:19:17,225 - INFO - ESI public fetch successful: /universe/types/11189/ in 0.12s
+2025-09-24 02:19:17,226 - INFO - _fetch_esi_with_retry completed in 0.118s
+2025-09-24 02:19:17,258 - INFO - ESI public fetch successful: /universe/types/33720/ in 0.03s
+2025-09-24 02:19:17,259 - INFO - _fetch_esi_with_retry completed in 0.033s
+2025-09-24 02:19:17,292 - INFO - ESI public fetch successful: /universe/types/31687/ in 0.03s
+2025-09-24 02:19:17,293 - INFO - _fetch_esi_with_retry completed in 0.034s
+2025-09-24 02:19:17,326 - INFO - ESI public fetch successful: /universe/types/33739/ in 0.03s
+2025-09-24 02:19:17,326 - INFO - _fetch_esi_with_retry completed in 0.033s
+2025-09-24 02:19:17,359 - INFO - ESI public fetch successful: /universe/types/60364/ in 0.03s
+2025-09-24 02:19:17,360 - INFO - _fetch_esi_with_retry completed in 0.034s
+2025-09-24 02:19:17,397 - INFO - ESI public fetch successful: /universe/types/60367/ in 0.04s
+2025-09-24 02:19:17,397 - INFO - _fetch_esi_with_retry completed in 0.037s
+2025-09-24 02:19:17,431 - INFO - ESI public fetch successful: /universe/types/60369/ in 0.03s
+2025-09-24 02:19:17,431 - INFO - _fetch_esi_with_retry completed in 0.034s
+2025-09-24 02:19:17,464 - INFO - ESI public fetch successful: /universe/types/23513/ in 0.03s
+2025-09-24 02:19:17,464 - INFO - _fetch_esi_with_retry completed in 0.033s
+2025-09-24 02:19:17,495 - INFO - ESI public fetch successful: /universe/types/33754/ in 0.03s
+2025-09-24 02:19:17,495 - INFO - _fetch_esi_with_retry completed in 0.031s
+2025-09-24 02:19:17,528 - INFO - ESI public fetch successful: /universe/types/56303/ in 0.03s
+2025-09-24 02:19:17,529 - INFO - _fetch_esi_with_retry completed in 0.033s
+2025-09-24 02:19:17,561 - INFO - ESI public fetch successful: /universe/types/33775/ in 0.03s
+2025-09-24 02:19:17,561 - INFO - _fetch_esi_with_retry completed in 0.032s
+2025-09-24 02:19:17,593 - INFO - ESI public fetch successful: /universe/types/23537/ in 0.03s
+2025-09-24 02:19:17,593 - INFO - _fetch_esi_with_retry completed in 0.032s
+2025-09-24 02:19:17,625 - INFO - ESI public fetch successful: /universe/types/33782/ in 0.03s
+2025-09-24 02:19:17,625 - INFO - _fetch_esi_with_retry completed in 0.032s
+2025-09-24 02:19:17,658 - INFO - ESI public fetch successful: /universe/types/33792/ in 0.03s
+2025-09-24 02:19:17,658 - INFO - _fetch_esi_with_retry completed in 0.032s
+2025-09-24 02:19:17,750 - INFO - ESI public fetch successful: /universe/types/11268/ in 0.09s
+2025-09-24 02:19:17,751 - INFO - _fetch_esi_with_retry completed in 0.093s
+2025-09-24 02:19:17,784 - INFO - ESI public fetch successful: /universe/types/21528/ in 0.03s
+2025-09-24 02:19:17,784 - INFO - _fetch_esi_with_retry completed in 0.033s
+2025-09-24 02:19:17,817 - INFO - ESI public fetch successful: /universe/types/89116/ in 0.03s
+2025-09-24 02:19:17,818 - INFO - _fetch_esi_with_retry completed in 0.034s
+2025-09-24 02:19:17,852 - INFO - ESI public fetch successful: /universe/types/44074/ in 0.03s
+2025-09-24 02:19:17,852 - INFO - _fetch_esi_with_retry completed in 0.035s
+2025-09-24 02:19:17,892 - INFO - ESI public fetch successful: /universe/types/44076/ in 0.04s
+2025-09-24 02:19:17,893 - INFO - _fetch_esi_with_retry completed in 0.040s
+2025-09-24 02:19:17,925 - INFO - ESI public fetch successful: /universe/types/44078/ in 0.03s
+2025-09-24 02:19:17,925 - INFO - _fetch_esi_with_retry completed in 0.033s
+2025-09-24 02:19:17,959 - INFO - ESI public fetch successful: /universe/types/44080/ in 0.03s
+2025-09-24 02:19:17,960 - INFO - _fetch_esi_with_retry completed in 0.035s
+2025-09-24 02:19:18,001 - INFO - ESI public fetch successful: /universe/types/54320/ in 0.04s
+2025-09-24 02:19:18,002 - INFO - _fetch_esi_with_retry completed in 0.042s
+2025-09-24 02:19:18,044 - INFO - ESI public fetch successful: /universe/types/54322/ in 0.04s
+2025-09-24 02:19:18,045 - INFO - _fetch_esi_with_retry completed in 0.043s
+2025-09-24 02:19:18,079 - INFO - ESI public fetch successful: /universe/types/44084/ in 0.03s
+2025-09-24 02:19:18,080 - INFO - _fetch_esi_with_retry completed in 0.035s
+2025-09-24 02:19:18,112 - INFO - ESI public fetch successful: /universe/types/44086/ in 0.03s
+2025-09-24 02:19:18,113 - INFO - _fetch_esi_with_retry completed in 0.033s
+2025-09-24 02:19:18,146 - INFO - ESI public fetch successful: /universe/types/54327/ in 0.03s
+2025-09-24 02:19:18,147 - INFO - _fetch_esi_with_retry completed in 0.034s
+2025-09-24 02:19:18,181 - INFO - ESI public fetch successful: /universe/types/54328/ in 0.03s
+2025-09-24 02:19:18,182 - INFO - _fetch_esi_with_retry completed in 0.035s
+2025-09-24 02:19:18,274 - INFO - ESI public fetch successful: /universe/types/44092/ in 0.09s
+2025-09-24 02:19:18,274 - INFO - _fetch_esi_with_retry completed in 0.092s
+2025-09-24 02:19:18,306 - INFO - ESI public fetch successful: /universe/types/44094/ in 0.03s
+2025-09-24 02:19:18,306 - INFO - _fetch_esi_with_retry completed in 0.032s
+2025-09-24 02:19:18,340 - INFO - ESI public fetch successful: /universe/types/44106/ in 0.03s
+2025-09-24 02:19:18,340 - INFO - _fetch_esi_with_retry completed in 0.034s
+2025-09-24 02:19:18,375 - INFO - ESI public fetch successful: /universe/types/48226/ in 0.03s
+2025-09-24 02:19:18,375 - INFO - _fetch_esi_with_retry completed in 0.035s
+2025-09-24 02:19:18,408 - INFO - ESI public fetch successful: /universe/types/48230/ in 0.03s
+2025-09-24 02:19:18,409 - INFO - _fetch_esi_with_retry completed in 0.033s
+2025-09-24 02:19:18,440 - INFO - ESI public fetch successful: /universe/types/21620/ in 0.03s
+2025-09-24 02:19:18,440 - INFO - _fetch_esi_with_retry completed in 0.032s
+2025-09-24 02:19:18,483 - INFO - ESI public fetch successful: /universe/types/11382/ in 0.04s
+2025-09-24 02:19:18,483 - INFO - _fetch_esi_with_retry completed in 0.043s
+2025-09-24 02:19:18,517 - INFO - ESI public fetch successful: /universe/types/81016/ in 0.03s
+2025-09-24 02:19:18,517 - INFO - _fetch_esi_with_retry completed in 0.034s
+2025-09-24 02:19:18,550 - INFO - ESI public fetch successful: /universe/types/84081/ in 0.03s
+2025-09-24 02:19:18,551 - INFO - _fetch_esi_with_retry completed in 0.033s
+2025-09-24 02:19:18,584 - INFO - ESI public fetch successful: /universe/types/81020/ in 0.03s
+2025-09-24 02:19:18,584 - INFO - _fetch_esi_with_retry completed in 0.034s
+2025-09-24 02:19:18,621 - INFO - ESI public fetch successful: /universe/types/81022/ in 0.04s
+2025-09-24 02:19:18,621 - INFO - _fetch_esi_with_retry completed in 0.036s
+2025-09-24 02:19:18,652 - INFO - ESI public fetch successful: /universe/types/81026/ in 0.03s
+2025-09-24 02:19:18,652 - INFO - _fetch_esi_with_retry completed in 0.031s
+2025-09-24 02:19:18,705 - INFO - ESI public fetch successful: /universe/types/42125/ in 0.05s
+2025-09-24 02:19:18,705 - INFO - _fetch_esi_with_retry completed in 0.054s
+2025-09-24 02:19:18,800 - INFO - ESI public fetch successful: /universe/types/60566/ in 0.09s
+2025-09-24 02:19:18,800 - INFO - _fetch_esi_with_retry completed in 0.095s
+2025-09-24 02:19:18,836 - INFO - ESI public fetch successful: /universe/types/17559/ in 0.03s
+2025-09-24 02:19:18,836 - INFO - _fetch_esi_with_retry completed in 0.036s
+2025-09-24 02:19:18,870 - INFO - ESI public fetch successful: /universe/types/42149/ in 0.03s
+2025-09-24 02:19:18,870 - INFO - _fetch_esi_with_retry completed in 0.034s
+2025-09-24 02:19:18,926 - INFO - ESI public fetch successful: /universe/types/87209/ in 0.06s
+2025-09-24 02:19:18,927 - INFO - _fetch_esi_with_retry completed in 0.056s
+2025-09-24 02:19:18,961 - INFO - ESI public fetch successful: /universe/types/81071/ in 0.03s
+2025-09-24 02:19:18,962 - INFO - _fetch_esi_with_retry completed in 0.035s
+2025-09-24 02:19:18,996 - INFO - ESI public fetch successful: /universe/types/81072/ in 0.03s
+2025-09-24 02:19:18,996 - INFO - _fetch_esi_with_retry completed in 0.034s
+2025-09-24 02:19:19,029 - INFO - ESI public fetch successful: /universe/types/81073/ in 0.03s
+2025-09-24 02:19:19,029 - INFO - _fetch_esi_with_retry completed in 0.032s
+2025-09-24 02:19:19,062 - INFO - ESI public fetch successful: /universe/types/81074/ in 0.03s
+2025-09-24 02:19:19,063 - INFO - _fetch_esi_with_retry completed in 0.034s
+2025-09-24 02:19:19,094 - INFO - ESI public fetch successful: /universe/types/81075/ in 0.03s
+2025-09-24 02:19:19,094 - INFO - _fetch_esi_with_retry completed in 0.031s
+2025-09-24 02:19:19,146 - INFO - ESI public fetch successful: /universe/types/81077/ in 0.05s
+2025-09-24 02:19:19,147 - INFO - _fetch_esi_with_retry completed in 0.053s
+2025-09-24 02:19:19,181 - INFO - ESI public fetch successful: /universe/types/41352/ in 0.03s
+2025-09-24 02:19:19,181 - INFO - _fetch_esi_with_retry completed in 0.034s
+2025-09-24 02:19:19,215 - INFO - ESI public fetch successful: /universe/types/70838/ in 0.03s
+2025-09-24 02:19:19,215 - INFO - _fetch_esi_with_retry completed in 0.034s
+2025-09-24 02:19:19,324 - INFO - ESI public fetch successful: /universe/types/41354/ in 0.11s
+2025-09-24 02:19:19,324 - INFO - _fetch_esi_with_retry completed in 0.109s
+2025-09-24 02:19:19,359 - INFO - ESI public fetch successful: /universe/types/87235/ in 0.03s
+2025-09-24 02:19:19,359 - INFO - _fetch_esi_with_retry completed in 0.035s
+2025-09-24 02:19:19,393 - INFO - ESI public fetch successful: /universe/types/23757/ in 0.03s
+2025-09-24 02:19:19,393 - INFO - _fetch_esi_with_retry completed in 0.034s
+2025-09-24 02:19:19,426 - INFO - ESI public fetch successful: /universe/types/62670/ in 0.03s
+2025-09-24 02:19:19,427 - INFO - _fetch_esi_with_retry completed in 0.033s
+2025-09-24 02:19:19,459 - INFO - ESI public fetch successful: /universe/types/52436/ in 0.03s
+2025-09-24 02:19:19,460 - INFO - _fetch_esi_with_retry completed in 0.033s
+2025-09-24 02:19:19,496 - INFO - ESI public fetch successful: /universe/types/1247/ in 0.04s
+2025-09-24 02:19:19,496 - INFO - _fetch_esi_with_retry completed in 0.037s
+2025-09-24 02:19:19,528 - INFO - ESI public fetch successful: /universe/types/23786/ in 0.03s
+2025-09-24 02:19:19,528 - INFO - _fetch_esi_with_retry completed in 0.032s
+2025-09-24 02:19:19,562 - INFO - ESI public fetch successful: /universe/types/85232/ in 0.03s
+2025-09-24 02:19:19,562 - INFO - _fetch_esi_with_retry completed in 0.034s
+2025-09-24 02:19:19,594 - INFO - ESI public fetch successful: /universe/types/17657/ in 0.03s
+2025-09-24 02:19:19,594 - INFO - _fetch_esi_with_retry completed in 0.032s
+2025-09-24 02:19:19,626 - INFO - ESI public fetch successful: /universe/types/31998/ in 0.03s
+2025-09-24 02:19:19,626 - INFO - _fetch_esi_with_retry completed in 0.032s
+2025-09-24 02:19:19,660 - INFO - ESI public fetch successful: /universe/types/83219/ in 0.03s
+2025-09-24 02:19:19,660 - INFO - _fetch_esi_with_retry completed in 0.034s
+2025-09-24 02:19:19,692 - INFO - ESI public fetch successful: /universe/types/56595/ in 0.03s
+2025-09-24 02:19:19,692 - INFO - _fetch_esi_with_retry completed in 0.032s
+2025-09-24 02:19:19,726 - INFO - ESI public fetch successful: /universe/types/25889/ in 0.03s
+2025-09-24 02:19:19,726 - INFO - _fetch_esi_with_retry completed in 0.034s
+2025-09-24 02:19:19,760 - INFO - ESI public fetch successful: /universe/types/21793/ in 0.03s
+2025-09-24 02:19:19,760 - INFO - _fetch_esi_with_retry completed in 0.034s
+2025-09-24 02:19:19,879 - INFO - ESI public fetch successful: /universe/types/25891/ in 0.12s
+2025-09-24 02:19:19,880 - INFO - _fetch_esi_with_retry completed in 0.119s
+2025-09-24 02:19:19,911 - INFO - ESI public fetch successful: /universe/types/25893/ in 0.03s
+2025-09-24 02:19:19,911 - INFO - _fetch_esi_with_retry completed in 0.031s
+2025-09-24 02:19:19,942 - INFO - ESI public fetch successful: /universe/types/25901/ in 0.03s
+2025-09-24 02:19:19,943 - INFO - _fetch_esi_with_retry completed in 0.032s
+2025-09-24 02:19:19,982 - INFO - ESI public fetch successful: /universe/types/32046/ in 0.04s
+2025-09-24 02:19:19,982 - INFO - _fetch_esi_with_retry completed in 0.039s
+2025-09-24 02:19:20,015 - INFO - ESI public fetch successful: /universe/types/25903/ in 0.03s
+2025-09-24 02:19:20,015 - INFO - _fetch_esi_with_retry completed in 0.033s
+2025-09-24 02:19:20,049 - INFO - ESI public fetch successful: /universe/types/11567/ in 0.03s
+2025-09-24 02:19:20,050 - INFO - _fetch_esi_with_retry completed in 0.035s
+2025-09-24 02:19:20,082 - INFO - ESI public fetch successful: /universe/types/87347/ in 0.03s
+2025-09-24 02:19:20,083 - INFO - _fetch_esi_with_retry completed in 0.033s
+2025-09-24 02:19:20,122 - INFO - ESI public fetch successful: /universe/types/25918/ in 0.04s
+2025-09-24 02:19:20,123 - INFO - _fetch_esi_with_retry completed in 0.040s
+2025-09-24 02:19:20,156 - INFO - ESI public fetch successful: /universe/types/17727/ in 0.03s
+2025-09-24 02:19:20,157 - INFO - _fetch_esi_with_retry completed in 0.034s
+2025-09-24 02:19:20,190 - INFO - ESI public fetch successful: /universe/types/17729/ in 0.03s
+2025-09-24 02:19:20,190 - INFO - _fetch_esi_with_retry completed in 0.033s
+2025-09-24 02:19:20,223 - INFO - ESI public fetch successful: /universe/types/23893/ in 0.03s
+2025-09-24 02:19:20,224 - INFO - _fetch_esi_with_retry completed in 0.033s
+2025-09-24 02:19:20,261 - INFO - ESI public fetch successful: /universe/types/25969/ in 0.04s
+2025-09-24 02:19:20,262 - INFO - _fetch_esi_with_retry completed in 0.038s
+2025-09-24 02:19:20,373 - INFO - ESI public fetch successful: /universe/types/25973/ in 0.11s
+2025-09-24 02:19:20,373 - INFO - _fetch_esi_with_retry completed in 0.111s
+2025-09-24 02:19:20,408 - INFO - ESI public fetch successful: /universe/types/25977/ in 0.03s
+2025-09-24 02:19:20,409 - INFO - _fetch_esi_with_retry completed in 0.035s
+2025-09-24 02:19:20,444 - INFO - ESI public fetch successful: /universe/types/25997/ in 0.03s
+2025-09-24 02:19:20,444 - INFO - _fetch_esi_with_retry completed in 0.035s
+2025-09-24 02:19:20,477 - INFO - ESI public fetch successful: /universe/types/26001/ in 0.03s
+2025-09-24 02:19:20,477 - INFO - _fetch_esi_with_retry completed in 0.033s
+2025-09-24 02:19:20,512 - INFO - ESI public fetch successful: /universe/types/83346/ in 0.04s
+2025-09-24 02:19:20,513 - INFO - _fetch_esi_with_retry completed in 0.036s
+2025-09-24 02:19:20,545 - INFO - ESI public fetch successful: /universe/types/23953/ in 0.03s
+2025-09-24 02:19:20,546 - INFO - _fetch_esi_with_retry completed in 0.033s
+2025-09-24 02:19:20,580 - INFO - ESI public fetch successful: /universe/types/26005/ in 0.03s
+2025-09-24 02:19:20,580 - INFO - _fetch_esi_with_retry completed in 0.034s
+2025-09-24 02:19:20,612 - INFO - ESI public fetch successful: /universe/types/46501/ in 0.03s
+2025-09-24 02:19:20,613 - INFO - _fetch_esi_with_retry completed in 0.033s
+2025-09-24 02:19:20,644 - INFO - ESI public fetch successful: /universe/types/89512/ in 0.03s
+2025-09-24 02:19:20,644 - INFO - _fetch_esi_with_retry completed in 0.032s
+2025-09-24 02:19:20,676 - INFO - ESI public fetch successful: /universe/types/87465/ in 0.03s
+2025-09-24 02:19:20,676 - INFO - _fetch_esi_with_retry completed in 0.032s
+2025-09-24 02:19:20,708 - INFO - ESI public fetch successful: /universe/types/58792/ in 0.03s
+2025-09-24 02:19:20,708 - INFO - _fetch_esi_with_retry completed in 0.032s
+2025-09-24 02:19:20,742 - INFO - ESI public fetch successful: /universe/types/26029/ in 0.03s
+2025-09-24 02:19:20,742 - INFO - _fetch_esi_with_retry completed in 0.034s
+2025-09-24 02:19:20,778 - INFO - ESI public fetch successful: /universe/types/26031/ in 0.04s
+2025-09-24 02:19:20,778 - INFO - _fetch_esi_with_retry completed in 0.036s
+2025-09-24 02:19:20,896 - INFO - ESI public fetch successful: /universe/types/46518/ in 0.12s
+2025-09-24 02:19:20,896 - INFO - _fetch_esi_with_retry completed in 0.118s
+2025-09-24 02:19:20,931 - INFO - ESI public fetch successful: /universe/types/58814/ in 0.03s
+2025-09-24 02:19:20,931 - INFO - _fetch_esi_with_retry completed in 0.035s
+2025-09-24 02:19:20,966 - INFO - ESI public fetch successful: /universe/types/9678/ in 0.04s
+2025-09-24 02:19:20,966 - INFO - _fetch_esi_with_retry completed in 0.035s
+2025-09-24 02:19:20,999 - INFO - ESI public fetch successful: /universe/types/87507/ in 0.03s
+2025-09-24 02:19:20,999 - INFO - _fetch_esi_with_retry completed in 0.033s
+2025-09-24 02:19:21,031 - INFO - ESI public fetch successful: /universe/types/87509/ in 0.03s
+2025-09-24 02:19:21,032 - INFO - _fetch_esi_with_retry completed in 0.032s
+2025-09-24 02:19:21,066 - INFO - ESI public fetch successful: /universe/types/87514/ in 0.03s
+2025-09-24 02:19:21,066 - INFO - _fetch_esi_with_retry completed in 0.035s
+2025-09-24 02:19:21,102 - INFO - ESI public fetch successful: /universe/types/87523/ in 0.04s
+2025-09-24 02:19:21,102 - INFO - _fetch_esi_with_retry completed in 0.035s
+2025-09-24 02:19:21,139 - INFO - ESI public fetch successful: /universe/types/26097/ in 0.04s
+2025-09-24 02:19:21,140 - INFO - _fetch_esi_with_retry completed in 0.037s
+2025-09-24 02:19:21,173 - INFO - ESI public fetch successful: /universe/types/34291/ in 0.03s
+2025-09-24 02:19:21,173 - INFO - _fetch_esi_with_retry completed in 0.033s
+2025-09-24 02:19:21,206 - INFO - ESI public fetch successful: /universe/types/26101/ in 0.03s
+2025-09-24 02:19:21,206 - INFO - _fetch_esi_with_retry completed in 0.033s
+2025-09-24 02:19:21,239 - INFO - ESI public fetch successful: /universe/types/26103/ in 0.03s
+2025-09-24 02:19:21,239 - INFO - _fetch_esi_with_retry completed in 0.033s
+2025-09-24 02:19:21,272 - INFO - ESI public fetch successful: /universe/types/26107/ in 0.03s
+2025-09-24 02:19:21,272 - INFO - _fetch_esi_with_retry completed in 0.033s
+2025-09-24 02:19:21,305 - INFO - ESI public fetch successful: /universe/types/26109/ in 0.03s
+2025-09-24 02:19:21,306 - INFO - _fetch_esi_with_retry completed in 0.033s
+2025-09-24 02:19:21,420 - INFO - ESI public fetch successful: /universe/types/26111/ in 0.11s
+2025-09-24 02:19:21,420 - INFO - _fetch_esi_with_retry completed in 0.114s
+2025-09-24 02:19:21,454 - INFO - ESI public fetch successful: /universe/types/17919/ in 0.03s
+2025-09-24 02:19:21,454 - INFO - _fetch_esi_with_retry completed in 0.034s
+2025-09-24 02:19:21,489 - INFO - ESI public fetch successful: /universe/types/26113/ in 0.03s
+2025-09-24 02:19:21,489 - INFO - _fetch_esi_with_retry completed in 0.035s
+2025-09-24 02:19:21,522 - INFO - ESI public fetch successful: /universe/types/17929/ in 0.03s
+2025-09-24 02:19:21,522 - INFO - _fetch_esi_with_retry completed in 0.033s
+2025-09-24 02:19:21,554 - INFO - ESI public fetch successful: /universe/types/17931/ in 0.03s
+2025-09-24 02:19:21,554 - INFO - _fetch_esi_with_retry completed in 0.032s
+2025-09-24 02:19:21,589 - INFO - ESI public fetch successful: /universe/types/34318/ in 0.04s
+2025-09-24 02:19:21,590 - INFO - _fetch_esi_with_retry completed in 0.036s
+2025-09-24 02:19:21,625 - INFO - ESI public fetch successful: /universe/types/54802/ in 0.03s
+2025-09-24 02:19:21,625 - INFO - _fetch_esi_with_retry completed in 0.035s
+2025-09-24 02:19:21,658 - INFO - ESI public fetch successful: /universe/types/87572/ in 0.03s
+2025-09-24 02:19:21,658 - INFO - _fetch_esi_with_retry completed in 0.033s
+2025-09-24 02:19:21,690 - INFO - ESI public fetch successful: /universe/types/3606/ in 0.03s
+2025-09-24 02:19:21,690 - INFO - _fetch_esi_with_retry completed in 0.032s
+2025-09-24 02:19:21,723 - INFO - ESI public fetch successful: /universe/types/54815/ in 0.03s
+2025-09-24 02:19:21,723 - INFO - _fetch_esi_with_retry completed in 0.033s
+2025-09-24 02:19:21,756 - INFO - ESI public fetch successful: /universe/types/42529/ in 0.03s
+2025-09-24 02:19:21,756 - INFO - _fetch_esi_with_retry completed in 0.032s
+2025-09-24 02:19:21,788 - INFO - ESI public fetch successful: /universe/types/28206/ in 0.03s
+2025-09-24 02:19:21,788 - INFO - _fetch_esi_with_retry completed in 0.032s
+2025-09-24 02:19:21,825 - INFO - ESI public fetch successful: /universe/types/32310/ in 0.04s
+2025-09-24 02:19:21,826 - INFO - _fetch_esi_with_retry completed in 0.038s
+2025-09-24 02:19:21,944 - INFO - ESI public fetch successful: /universe/types/46649/ in 0.11s
+2025-09-24 02:19:21,945 - INFO - _fetch_esi_with_retry completed in 0.118s
+2025-09-24 02:19:21,977 - INFO - ESI public fetch successful: /universe/types/46650/ in 0.03s
+2025-09-24 02:19:21,977 - INFO - _fetch_esi_with_retry completed in 0.033s
+2025-09-24 02:19:22,011 - INFO - ESI public fetch successful: /universe/types/46651/ in 0.03s
+2025-09-24 02:19:22,011 - INFO - _fetch_esi_with_retry completed in 0.033s
+2025-09-24 02:19:22,043 - INFO - ESI public fetch successful: /universe/types/89669/ in 0.03s
+2025-09-24 02:19:22,043 - INFO - _fetch_esi_with_retry completed in 0.032s
+2025-09-24 02:19:22,075 - INFO - ESI public fetch successful: /universe/types/28293/ in 0.03s
+2025-09-24 02:19:22,075 - INFO - _fetch_esi_with_retry completed in 0.032s
+2025-09-24 02:19:22,108 - INFO - ESI public fetch successful: /universe/types/40584/ in 0.03s
+2025-09-24 02:19:22,108 - INFO - _fetch_esi_with_retry completed in 0.032s
+2025-09-24 02:19:22,141 - INFO - ESI public fetch successful: /universe/types/22166/ in 0.03s
+2025-09-24 02:19:22,141 - INFO - _fetch_esi_with_retry completed in 0.033s
+2025-09-24 02:19:22,172 - INFO - ESI public fetch successful: /universe/types/36515/ in 0.03s
+2025-09-24 02:19:22,172 - INFO - _fetch_esi_with_retry completed in 0.032s
+2025-09-24 02:19:22,206 - INFO - ESI public fetch successful: /universe/types/57734/ in 0.03s
+2025-09-24 02:19:22,206 - INFO - _fetch_esi_with_retry completed in 0.034s
+2025-09-24 02:19:22,239 - INFO - ESI public fetch successful: /universe/types/57735/ in 0.03s
+2025-09-24 02:19:22,239 - INFO - _fetch_esi_with_retry completed in 0.033s
+2025-09-24 02:19:22,272 - INFO - ESI public fetch successful: /universe/types/11961/ in 0.03s
+2025-09-24 02:19:22,272 - INFO - _fetch_esi_with_retry completed in 0.033s
+2025-09-24 02:19:22,303 - INFO - ESI public fetch successful: /universe/types/57737/ in 0.03s
+2025-09-24 02:19:22,304 - INFO - _fetch_esi_with_retry completed in 0.032s
+2025-09-24 02:19:22,340 - INFO - ESI public fetch successful: /universe/types/26311/ in 0.04s
+2025-09-24 02:19:22,340 - INFO - _fetch_esi_with_retry completed in 0.036s
+2025-09-24 02:19:22,374 - INFO - ESI public fetch successful: /universe/types/26328/ in 0.03s
+2025-09-24 02:19:22,374 - INFO - _fetch_esi_with_retry completed in 0.034s
+2025-09-24 02:19:22,468 - INFO - ESI public fetch successful: /universe/types/87768/ in 0.09s
+2025-09-24 02:19:22,469 - INFO - _fetch_esi_with_retry completed in 0.095s
+2025-09-24 02:19:22,504 - INFO - ESI public fetch successful: /universe/types/22234/ in 0.03s
+2025-09-24 02:19:22,504 - INFO - _fetch_esi_with_retry completed in 0.035s
+2025-09-24 02:19:22,539 - INFO - ESI public fetch successful: /universe/types/87771/ in 0.03s
+2025-09-24 02:19:22,540 - INFO - _fetch_esi_with_retry completed in 0.036s
+2025-09-24 02:19:22,573 - INFO - ESI public fetch successful: /universe/types/3804/ in 0.03s
+2025-09-24 02:19:22,576 - INFO - _fetch_esi_with_retry completed in 0.036s
+2025-09-24 02:19:22,610 - INFO - ESI public fetch successful: /universe/types/57052/ in 0.03s
+2025-09-24 02:19:22,610 - INFO - _fetch_esi_with_retry completed in 0.034s
+2025-09-24 02:19:22,644 - INFO - ESI public fetch successful: /universe/types/12000/ in 0.03s
+2025-09-24 02:19:22,644 - INFO - _fetch_esi_with_retry completed in 0.035s
+2025-09-24 02:19:22,680 - INFO - ESI public fetch successful: /universe/types/57056/ in 0.04s
+2025-09-24 02:19:22,681 - INFO - _fetch_esi_with_retry completed in 0.036s
+2025-09-24 02:19:22,713 - INFO - ESI public fetch successful: /universe/types/87778/ in 0.03s
+2025-09-24 02:19:22,713 - INFO - _fetch_esi_with_retry completed in 0.032s
+2025-09-24 02:19:22,747 - INFO - ESI public fetch successful: /universe/types/57060/ in 0.03s
+2025-09-24 02:19:22,747 - INFO - _fetch_esi_with_retry completed in 0.034s
+2025-09-24 02:19:22,779 - INFO - ESI public fetch successful: /universe/types/40677/ in 0.03s
+2025-09-24 02:19:22,779 - INFO - _fetch_esi_with_retry completed in 0.032s
+2025-09-24 02:19:22,810 - INFO - ESI public fetch successful: /universe/types/87782/ in 0.03s
+2025-09-24 02:19:22,810 - INFO - _fetch_esi_with_retry completed in 0.031s
+2025-09-24 02:19:22,843 - INFO - ESI public fetch successful: /universe/types/87781/ in 0.03s
+2025-09-24 02:19:22,843 - INFO - _fetch_esi_with_retry completed in 0.033s
+2025-09-24 02:19:22,875 - INFO - ESI public fetch successful: /universe/types/87784/ in 0.03s
+2025-09-24 02:19:22,876 - INFO - _fetch_esi_with_retry completed in 0.032s
+2025-09-24 02:19:22,993 - INFO - ESI public fetch successful: /universe/types/87789/ in 0.12s
+2025-09-24 02:19:22,993 - INFO - _fetch_esi_with_retry completed in 0.118s
+2025-09-24 02:19:23,027 - INFO - ESI public fetch successful: /universe/types/87796/ in 0.03s
+2025-09-24 02:19:23,027 - INFO - _fetch_esi_with_retry completed in 0.033s
+2025-09-24 02:19:23,064 - INFO - ESI public fetch successful: /universe/types/3838/ in 0.04s
+2025-09-24 02:19:23,064 - INFO - _fetch_esi_with_retry completed in 0.037s
+2025-09-24 02:19:23,097 - INFO - ESI public fetch successful: /universe/types/82174/ in 0.03s
+2025-09-24 02:19:23,097 - INFO - _fetch_esi_with_retry completed in 0.033s
+2025-09-24 02:19:23,130 - INFO - ESI public fetch successful: /universe/types/3842/ in 0.03s
+2025-09-24 02:19:23,130 - INFO - _fetch_esi_with_retry completed in 0.033s
+2025-09-24 02:19:23,161 - INFO - ESI public fetch successful: /universe/types/34563/ in 0.03s
+2025-09-24 02:19:23,162 - INFO - _fetch_esi_with_retry completed in 0.032s
+2025-09-24 02:19:23,197 - INFO - ESI public fetch successful: /universe/types/38660/ in 0.04s
+2025-09-24 02:19:23,197 - INFO - _fetch_esi_with_retry completed in 0.035s
+2025-09-24 02:19:23,231 - INFO - ESI public fetch successful: /universe/types/82175/ in 0.03s
+2025-09-24 02:19:23,231 - INFO - _fetch_esi_with_retry completed in 0.034s
+2025-09-24 02:19:23,285 - INFO - ESI public fetch successful: /universe/types/53010/ in 0.05s
+2025-09-24 02:19:23,285 - INFO - _fetch_esi_with_retry completed in 0.054s
+2025-09-24 02:19:23,318 - INFO - ESI public fetch successful: /universe/types/22292/ in 0.03s
+2025-09-24 02:19:23,319 - INFO - _fetch_esi_with_retry completed in 0.033s
+2025-09-24 02:19:23,351 - INFO - ESI public fetch successful: /universe/types/53014/ in 0.03s
+2025-09-24 02:19:23,351 - INFO - _fetch_esi_with_retry completed in 0.033s
+2025-09-24 02:19:23,385 - INFO - ESI public fetch successful: /universe/types/82180/ in 0.03s
+2025-09-24 02:19:23,385 - INFO - _fetch_esi_with_retry completed in 0.034s
+2025-09-24 02:19:23,421 - INFO - ESI public fetch successful: /universe/types/24352/ in 0.03s
+2025-09-24 02:19:23,421 - INFO - _fetch_esi_with_retry completed in 0.035s
+2025-09-24 02:19:23,517 - INFO - ESI public fetch successful: /universe/types/22317/ in 0.10s
+2025-09-24 02:19:23,517 - INFO - _fetch_esi_with_retry completed in 0.096s
+2025-09-24 02:19:23,549 - INFO - ESI public fetch successful: /universe/types/59406/ in 0.03s
+2025-09-24 02:19:23,549 - INFO - _fetch_esi_with_retry completed in 0.032s
+2025-09-24 02:19:23,582 - INFO - ESI public fetch successful: /universe/types/14234/ in 0.03s
+2025-09-24 02:19:23,583 - INFO - _fetch_esi_with_retry completed in 0.033s
+2025-09-24 02:19:23,620 - INFO - ESI public fetch successful: /universe/types/22430/ in 0.04s
+2025-09-24 02:19:23,621 - INFO - _fetch_esi_with_retry completed in 0.038s
+2025-09-24 02:19:23,653 - INFO - ESI public fetch successful: /universe/types/22431/ in 0.03s
+2025-09-24 02:19:23,653 - INFO - _fetch_esi_with_retry completed in 0.032s
+2025-09-24 02:19:23,728 - INFO - ESI public fetch successful: /universe/types/77726/ in 0.07s
+2025-09-24 02:19:23,728 - INFO - _fetch_esi_with_retry completed in 0.074s
+2025-09-24 02:19:23,762 - INFO - ESI public fetch successful: /universe/types/34718/ in 0.03s
+2025-09-24 02:19:23,762 - INFO - _fetch_esi_with_retry completed in 0.034s
+2025-09-24 02:19:23,795 - INFO - ESI public fetch successful: /universe/types/53154/ in 0.03s
+2025-09-24 02:19:23,795 - INFO - _fetch_esi_with_retry completed in 0.033s
+2025-09-24 02:19:23,829 - INFO - ESI public fetch successful: /universe/types/4019/ in 0.03s
+2025-09-24 02:19:23,829 - INFO - _fetch_esi_with_retry completed in 0.034s
+2025-09-24 02:19:23,862 - INFO - ESI public fetch successful: /universe/types/85940/ in 0.03s
+2025-09-24 02:19:23,862 - INFO - _fetch_esi_with_retry completed in 0.033s
+2025-09-24 02:19:23,896 - INFO - ESI public fetch successful: /universe/types/24504/ in 0.03s
+2025-09-24 02:19:23,896 - INFO - _fetch_esi_with_retry completed in 0.034s
+2025-09-24 02:19:23,948 - INFO - ESI public fetch successful: /universe/types/85951/ in 0.05s
+2025-09-24 02:19:23,948 - INFO - _fetch_esi_with_retry completed in 0.052s
+2025-09-24 02:19:24,041 - INFO - ESI public fetch successful: /universe/types/36801/ in 0.09s
+2025-09-24 02:19:24,041 - INFO - _fetch_esi_with_retry completed in 0.093s
+2025-09-24 02:19:24,075 - INFO - ESI public fetch successful: /universe/types/24526/ in 0.03s
+2025-09-24 02:19:24,075 - INFO - _fetch_esi_with_retry completed in 0.034s
+2025-09-24 02:19:24,107 - INFO - ESI public fetch successful: /universe/types/88014/ in 0.03s
+2025-09-24 02:19:24,107 - INFO - _fetch_esi_with_retry completed in 0.032s
+2025-09-24 02:19:24,169 - INFO - ESI public fetch successful: /universe/types/12259/ in 0.06s
+2025-09-24 02:19:24,169 - INFO - _fetch_esi_with_retry completed in 0.063s
+2025-09-24 02:19:24,202 - INFO - ESI public fetch successful: /universe/types/88036/ in 0.03s
+2025-09-24 02:19:24,202 - INFO - _fetch_esi_with_retry completed in 0.033s
+2025-09-24 02:19:24,237 - INFO - ESI public fetch successful: /universe/types/24550/ in 0.03s
+2025-09-24 02:19:24,237 - INFO - _fetch_esi_with_retry completed in 0.034s
+2025-09-24 02:19:24,269 - INFO - ESI public fetch successful: /universe/types/12267/ in 0.03s
+2025-09-24 02:19:24,269 - INFO - _fetch_esi_with_retry completed in 0.032s
+2025-09-24 02:19:24,302 - INFO - ESI public fetch successful: /universe/types/85998/ in 0.03s
+2025-09-24 02:19:24,302 - INFO - _fetch_esi_with_retry completed in 0.033s
+2025-09-24 02:19:24,337 - INFO - ESI public fetch successful: /universe/types/55294/ in 0.04s
+2025-09-24 02:19:24,337 - INFO - _fetch_esi_with_retry completed in 0.035s
+2025-09-24 02:19:24,373 - INFO - ESI public fetch successful: /universe/types/55295/ in 0.04s
+2025-09-24 02:19:24,373 - INFO - _fetch_esi_with_retry completed in 0.036s
+2025-09-24 02:19:24,492 - INFO - Saved 4429 type entries to cache
+2025-09-24 02:19:24,492 - INFO - Type cache now has 4429 total entries
+2025-09-24 02:19:24,492 - INFO - Processing contracts in batches of 1000...
+2025-09-24 02:19:24,492 - INFO - Processing batch 1: contracts 0 to 999
+2025-09-24 02:19:24,496 - INFO - Completed batch 1, total expanded: 1000
+2025-09-24 02:19:24,496 - INFO - Processing batch 2: contracts 1000 to 1999
+2025-09-24 02:19:24,506 - INFO - Completed batch 2, total expanded: 2000
+2025-09-24 02:19:24,507 - INFO - Processing batch 3: contracts 2000 to 2999
+2025-09-24 02:19:24,511 - INFO - Completed batch 3, total expanded: 3000
+2025-09-24 02:19:24,511 - INFO - Processing batch 4: contracts 3000 to 3999
+2025-09-24 02:19:24,513 - INFO - Completed batch 4, total expanded: 4000
+2025-09-24 02:19:24,513 - INFO - Processing batch 5: contracts 4000 to 4999
+2025-09-24 02:19:24,517 - INFO - Completed batch 5, total expanded: 5000
+2025-09-24 02:19:24,517 - INFO - Processing batch 6: contracts 5000 to 5999
+2025-09-24 02:19:24,520 - INFO - Completed batch 6, total expanded: 6000
+2025-09-24 02:19:24,520 - INFO - Processing batch 7: contracts 6000 to 6999
+2025-09-24 02:19:24,524 - INFO - Completed batch 7, total expanded: 7000
+2025-09-24 02:19:24,524 - INFO - Processing batch 8: contracts 7000 to 7999
+2025-09-24 02:19:24,529 - INFO - Completed batch 8, total expanded: 8000
+2025-09-24 02:19:24,529 - INFO - Processing batch 9: contracts 8000 to 8999
+2025-09-24 02:19:24,532 - INFO - Completed batch 9, total expanded: 9000
+2025-09-24 02:19:24,532 - INFO - Processing batch 10: contracts 9000 to 9999
+2025-09-24 02:19:24,536 - INFO - Completed batch 10, total expanded: 10000
+2025-09-24 02:19:24,536 - INFO - Expanded 10000 contracts total
+2025-09-24 02:19:24,540 - INFO - ✓ Expanded to 10000 contracts with full details
+2025-09-24 02:19:24,540 - INFO - Sample expanded contract data:
+2025-09-24 02:19:24,540 - INFO -   Contract 1: ID=221874167, issuer='bakhtar', corp='Life Support Systems', items=1
+2025-09-24 02:19:24,540 - INFO -     Item 1: Capital Industrial Core I Blueprint (x1, type=BPC)
+2025-09-24 02:19:24,540 - INFO -   Contract 2: ID=221874190, issuer='Black Council', corp='Viziam', items=1
+2025-09-24 02:19:24,540 - INFO - 
+=== Step 3: Saving to cache file ===
+2025-09-24 02:19:24,842 - INFO - ✓ Saved cache file: cache/all_contracts_forge.json
+2025-09-24 02:19:24,842 - INFO - ✓ File size: 16,631,304 bytes (15.9 MB)
+2025-09-24 02:19:24,898 - INFO - ✓ Verification: 10000 contracts in saved cache
+2025-09-24 02:19:24,899 - INFO - ✓ Final stats: 10000 total contracts, 9945 item exchange contracts
+2025-09-24 02:19:24,899 - INFO - 
+=== Debug completed successfully! ===
+2025-09-24 02:21:28,214 - INFO - === Starting debug of all_contracts_forge.json cache creation ===
+2025-09-24 02:21:28,215 - INFO - Cache file location: cache/all_contracts_forge.json
+2025-09-24 02:21:28,215 - INFO - 
+=== Step 1: Fetching basic contracts from The Forge region ===
+2025-09-24 02:21:28,215 - INFO - Region ID: 10000002
+2025-09-24 02:21:28,215 - INFO - Fetching all contracts from region 10000002
+2025-09-24 02:21:28,215 - INFO - Fetching page 1...
+2025-09-24 02:21:28,464 - INFO - Found 1000 contracts on page 1
+2025-09-24 02:21:28,464 - INFO - Contract 0: type=item_exchange, status=None, price=9500000.0
+2025-09-24 02:21:28,464 - INFO - Contract 1: type=item_exchange, status=None, price=115000000.0
+2025-09-24 02:21:28,464 - INFO - Contract 2: type=item_exchange, status=None, price=150000000.0
+2025-09-24 02:21:28,464 - INFO - Contract 3: type=item_exchange, status=None, price=4000000.0
+2025-09-24 02:21:28,464 - INFO - Contract 4: type=item_exchange, status=None, price=0.0
+2025-09-24 02:21:28,466 - INFO - Fetching page 2...
+2025-09-24 02:21:28,509 - INFO - Found 1000 contracts on page 2
+2025-09-24 02:21:28,511 - INFO - Fetching page 3...
+2025-09-24 02:21:28,575 - INFO - Found 1000 contracts on page 3
+2025-09-24 02:21:28,576 - INFO - Fetching page 4...
+2025-09-24 02:21:28,623 - INFO - Found 1000 contracts on page 4
+2025-09-24 02:21:28,624 - INFO - Fetching page 5...
+2025-09-24 02:21:28,666 - INFO - Found 1000 contracts on page 5
+2025-09-24 02:21:28,667 - INFO - Fetching page 6...
+2025-09-24 02:21:28,707 - INFO - Found 1000 contracts on page 6
+2025-09-24 02:21:28,709 - INFO - Fetching page 7...
+2025-09-24 02:21:28,858 - INFO - Found 1000 contracts on page 7
+2025-09-24 02:21:28,859 - INFO - Fetching page 8...
+2025-09-24 02:21:28,931 - INFO - Found 1000 contracts on page 8
+2025-09-24 02:21:28,932 - INFO - Fetching page 9...
+2025-09-24 02:21:29,035 - INFO - Found 1000 contracts on page 9
+2025-09-24 02:21:29,037 - INFO - Fetching page 10...
+2025-09-24 02:21:29,088 - INFO - Found 1000 contracts on page 10
+2025-09-24 02:21:29,089 - WARNING - Reached page limit of 10, stopping
+2025-09-24 02:21:29,089 - INFO - Total contracts found: 10000
+2025-09-24 02:21:29,089 - INFO - ✓ Fetched 10000 basic contracts
+2025-09-24 02:21:29,089 - INFO - Sample basic contract data:
+2025-09-24 02:21:29,089 - INFO -   Contract 1: ID=221874167, type=item_exchange, price=9500000.0, issuer_id=1083569535
+2025-09-24 02:21:29,089 - INFO -   Contract 2: ID=221874190, type=item_exchange, price=115000000.0, issuer_id=94756291
+2025-09-24 02:21:29,089 - INFO -   Contract 3: ID=221874194, type=item_exchange, price=150000000.0, issuer_id=94756291
+2025-09-24 02:21:29,091 - INFO - Contract type breakdown: {'item_exchange': 9945, 'courier': 17, 'auction': 38}
+2025-09-24 02:21:29,091 - INFO - 
+=== Step 2: Expanding contracts with full details ===
+2025-09-24 02:21:29,091 - INFO - expand_all_contracts called with 10000 contracts
+2025-09-24 02:21:29,091 - INFO - Pre-fetching contract items for 10000 contracts...
+2025-09-24 02:21:29,145 - INFO - Found 0 contracts that need item fetching
+2025-09-24 02:21:29,145 - INFO - All contract items already cached
+2025-09-24 02:21:29,149 - INFO - Found 3876 unique issuer IDs
+2025-09-24 02:21:29,151 - INFO - Issuer cache: 7508 total entries
+2025-09-24 02:21:29,211 - INFO - Type cache: 4429 total entries
+2025-09-24 02:21:29,212 - INFO - Contract items cache: 9980 total entries
+2025-09-24 02:21:29,220 - INFO - Processing contracts in batches of 1000...
+2025-09-24 02:21:29,220 - INFO - Processing batch 1: contracts 0 to 999
+2025-09-24 02:21:29,223 - INFO - Completed batch 1, total expanded: 1000
+2025-09-24 02:21:29,223 - INFO - Processing batch 2: contracts 1000 to 1999
+2025-09-24 02:21:29,226 - INFO - Completed batch 2, total expanded: 2000
+2025-09-24 02:21:29,226 - INFO - Processing batch 3: contracts 2000 to 2999
+2025-09-24 02:21:29,230 - INFO - Completed batch 3, total expanded: 3000
+2025-09-24 02:21:29,230 - INFO - Processing batch 4: contracts 3000 to 3999
+2025-09-24 02:21:29,234 - INFO - Completed batch 4, total expanded: 4000
+2025-09-24 02:21:29,234 - INFO - Processing batch 5: contracts 4000 to 4999
+2025-09-24 02:21:29,245 - INFO - Completed batch 5, total expanded: 5000
+2025-09-24 02:21:29,246 - INFO - Processing batch 6: contracts 5000 to 5999
+2025-09-24 02:21:29,249 - INFO - Completed batch 6, total expanded: 6000
+2025-09-24 02:21:29,249 - INFO - Processing batch 7: contracts 6000 to 6999
+2025-09-24 02:21:29,254 - INFO - Completed batch 7, total expanded: 7000
+2025-09-24 02:21:29,254 - INFO - Processing batch 8: contracts 7000 to 7999
+2025-09-24 02:21:29,258 - INFO - Completed batch 8, total expanded: 8000
+2025-09-24 02:21:29,258 - INFO - Processing batch 9: contracts 8000 to 8999
+2025-09-24 02:21:29,261 - INFO - Completed batch 9, total expanded: 9000
+2025-09-24 02:21:29,261 - INFO - Processing batch 10: contracts 9000 to 9999
+2025-09-24 02:21:29,265 - INFO - Completed batch 10, total expanded: 10000
+2025-09-24 02:21:29,265 - INFO - Expanded 10000 contracts total
+2025-09-24 02:21:29,269 - INFO - ✓ Expanded to 10000 contracts with full details
+2025-09-24 02:21:29,269 - INFO - Sample expanded contract data:
+2025-09-24 02:21:29,269 - INFO -   Contract 1: ID=221874167, issuer='bakhtar', corp='Life Support Systems', items=1
+2025-09-24 02:21:29,269 - INFO -     Item 1: Capital Industrial Core I Blueprint (x1, type=BPC)
+2025-09-24 02:21:29,269 - INFO -   Contract 2: ID=221874190, issuer='Black Council', corp='Viziam', items=1
+2025-09-24 02:21:29,269 - INFO - 
+=== Step 3: Saving to cache file ===
+2025-09-24 02:21:29,566 - INFO - ✓ Saved cache file: cache/all_contracts_forge.json
+2025-09-24 02:21:29,566 - INFO - ✓ File size: 16,631,304 bytes (15.9 MB)
+2025-09-24 02:21:29,621 - INFO - ✓ Verification: 10000 contracts in saved cache
+2025-09-24 02:21:29,622 - INFO - ✓ Final stats: 10000 total contracts, 9945 item exchange contracts
+2025-09-24 02:21:29,622 - INFO - 
+=== Debug completed successfully! ===
+2025-09-24 02:25:50,078 - INFO - === Starting debug of all_contracts_forge.json cache creation ===
+2025-09-24 02:25:50,079 - INFO - Cache file location: cache/all_contracts_forge.json
+2025-09-24 02:25:50,079 - INFO - 
+=== Step 1: Fetching basic contracts from The Forge region ===
+2025-09-24 02:25:50,079 - INFO - Region ID: 10000002
+2025-09-24 02:25:50,079 - INFO - Fetching all contracts from region 10000002
+2025-09-24 02:25:50,079 - INFO - Fetching page 1...
+2025-09-24 02:25:50,329 - INFO - Found 1000 contracts on page 1
+2025-09-24 02:25:50,330 - INFO - Contract 0: type=item_exchange, status=None, price=9500000.0
+2025-09-24 02:25:50,330 - INFO - Contract 1: type=item_exchange, status=None, price=115000000.0
+2025-09-24 02:25:50,330 - INFO - Contract 2: type=item_exchange, status=None, price=150000000.0
+2025-09-24 02:25:50,330 - INFO - Contract 3: type=item_exchange, status=None, price=4000000.0
+2025-09-24 02:25:50,330 - INFO - Contract 4: type=item_exchange, status=None, price=0.0
+2025-09-24 02:25:50,331 - INFO - Fetching page 2...
+2025-09-24 02:25:50,402 - INFO - Found 1000 contracts on page 2
+2025-09-24 02:25:50,404 - INFO - Fetching page 3...
+2025-09-24 02:25:50,495 - INFO - Found 1000 contracts on page 3
+2025-09-24 02:25:50,496 - INFO - Fetching page 4...
+2025-09-24 02:25:50,567 - INFO - Found 1000 contracts on page 4
+2025-09-24 02:25:50,568 - INFO - Fetching page 5...
+2025-09-24 02:25:50,636 - INFO - Found 1000 contracts on page 5
+2025-09-24 02:25:50,637 - INFO - Fetching page 6...
+2025-09-24 02:25:50,716 - INFO - Found 1000 contracts on page 6
+2025-09-24 02:25:50,718 - INFO - Fetching page 7...
+2025-09-24 02:25:50,853 - INFO - Found 1000 contracts on page 7
+2025-09-24 02:25:50,855 - INFO - Fetching page 8...
+2025-09-24 02:25:50,929 - INFO - Found 1000 contracts on page 8
+2025-09-24 02:25:50,931 - INFO - Fetching page 9...
+2025-09-24 02:25:51,001 - INFO - Found 1000 contracts on page 9
+2025-09-24 02:25:51,002 - INFO - Fetching page 10...
+2025-09-24 02:25:51,071 - INFO - Found 1000 contracts on page 10
+2025-09-24 02:25:51,072 - WARNING - Reached page limit of 10, stopping
+2025-09-24 02:25:51,072 - INFO - Total contracts found: 10000
+2025-09-24 02:25:51,072 - INFO - ✓ Fetched 10000 basic contracts
+2025-09-24 02:25:51,072 - INFO - Sample basic contract data:
+2025-09-24 02:25:51,072 - INFO -   Contract 1: ID=221874167, type=item_exchange, price=9500000.0, issuer_id=1083569535
+2025-09-24 02:25:51,072 - INFO -   Contract 2: ID=221874190, type=item_exchange, price=115000000.0, issuer_id=94756291
+2025-09-24 02:25:51,072 - INFO -   Contract 3: ID=221874194, type=item_exchange, price=150000000.0, issuer_id=94756291
+2025-09-24 02:25:51,074 - INFO - Contract type breakdown: {'item_exchange': 9945, 'courier': 17, 'auction': 38}
+2025-09-24 02:25:51,074 - INFO - 
+=== Step 2: Expanding contracts with full details ===
+2025-09-24 02:25:51,074 - INFO - expand_all_contracts called with 10000 contracts
+2025-09-24 02:25:51,074 - INFO - Pre-fetching contract items for 10000 contracts...
+2025-09-24 02:25:51,131 - INFO - Found 0 contracts that need item fetching
+2025-09-24 02:25:51,131 - INFO - All contract items already cached
+2025-09-24 02:25:51,135 - INFO - Found 3876 unique issuer IDs
+2025-09-24 02:25:51,136 - INFO - Issuer cache: 7508 total entries
+2025-09-24 02:25:51,198 - INFO - Type cache: 4429 total entries
+2025-09-24 02:25:51,198 - INFO - Contract items cache: 9980 total entries
+2025-09-24 02:25:51,206 - INFO - Processing contracts in batches of 1000...
+2025-09-24 02:25:51,206 - INFO - Processing batch 1: contracts 0 to 999
+2025-09-24 02:25:51,210 - INFO - Completed batch 1, total expanded: 1000
+2025-09-24 02:25:51,210 - INFO - Processing batch 2: contracts 1000 to 1999
+2025-09-24 02:25:51,212 - INFO - Completed batch 2, total expanded: 2000
+2025-09-24 02:25:51,212 - INFO - Processing batch 3: contracts 2000 to 2999
+2025-09-24 02:25:51,216 - INFO - Completed batch 3, total expanded: 3000
+2025-09-24 02:25:51,216 - INFO - Processing batch 4: contracts 3000 to 3999
+2025-09-24 02:25:51,219 - INFO - Completed batch 4, total expanded: 4000
+2025-09-24 02:25:51,219 - INFO - Processing batch 5: contracts 4000 to 4999
+2025-09-24 02:25:51,233 - INFO - Completed batch 5, total expanded: 5000
+2025-09-24 02:25:51,233 - INFO - Processing batch 6: contracts 5000 to 5999
+2025-09-24 02:25:51,235 - INFO - Completed batch 6, total expanded: 6000
+2025-09-24 02:25:51,235 - INFO - Processing batch 7: contracts 6000 to 6999
+2025-09-24 02:25:51,241 - INFO - Completed batch 7, total expanded: 7000
+2025-09-24 02:25:51,241 - INFO - Processing batch 8: contracts 7000 to 7999
+2025-09-24 02:25:51,245 - INFO - Completed batch 8, total expanded: 8000
+2025-09-24 02:25:51,245 - INFO - Processing batch 9: contracts 8000 to 8999
+2025-09-24 02:25:51,248 - INFO - Completed batch 9, total expanded: 9000
+2025-09-24 02:25:51,248 - INFO - Processing batch 10: contracts 9000 to 9999
+2025-09-24 02:25:51,252 - INFO - Completed batch 10, total expanded: 10000
+2025-09-24 02:25:51,252 - INFO - Expanded 10000 contracts total
+2025-09-24 02:25:51,255 - INFO - ✓ Expanded to 10000 contracts with full details
+2025-09-24 02:25:51,255 - INFO - Sample expanded contract data:
+2025-09-24 02:25:51,255 - INFO -   Contract 1: ID=221874167, issuer='bakhtar', corp='Life Support Systems', items=1
+2025-09-24 02:25:51,255 - INFO -     Item 1: Capital Industrial Core I Blueprint (x1, type=BPC)
+2025-09-24 02:25:51,255 - INFO -   Contract 2: ID=221874190, issuer='Black Council', corp='Viziam', items=1
+2025-09-24 02:25:51,255 - INFO - 
+=== Step 3: Saving to cache file ===
+2025-09-24 02:25:51,575 - INFO - ✓ Saved cache file: cache/all_contracts_forge.json
+2025-09-24 02:25:51,575 - INFO - ✓ File size: 16,631,304 bytes (15.9 MB)
+2025-09-24 02:25:51,631 - INFO - ✓ Verification: 10000 contracts in saved cache
+2025-09-24 02:25:51,632 - INFO - ✓ Final stats: 10000 total contracts, 9945 item exchange contracts
+2025-09-24 02:25:51,632 - INFO - 
+=== Debug completed successfully! ===

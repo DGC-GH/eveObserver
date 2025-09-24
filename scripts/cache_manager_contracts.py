@@ -41,6 +41,9 @@ class ContractCacheManager:
     def get_contract_items_cache_path(self) -> str:
         return os.path.join(self.cache_dir, "contract_items_cache.json")
 
+    def get_corporation_cache_path(self) -> str:
+        return os.path.join(self.cache_dir, "issuer_corporation_names_cache.json")
+
     async def load_issuer_cache(self) -> Dict[str, str]:
         """Load cached issuer names."""
         cache_path = self.get_issuer_cache_path()
