@@ -888,7 +888,7 @@ class EVE_Observer {
         if ($hook === 'toplevel_page_eve-observer') {
             wp_enqueue_style('eve-observer-dashboard', plugin_dir_url(__FILE__) . 'css/dashboard.css', array(), '1.1.1');
             wp_enqueue_script('chart-js', 'https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.js', array(), '4.4.1', true);
-            wp_enqueue_script('eve-observer-dashboard', plugin_dir_url(__FILE__) . 'js/dashboard.js', array('chart-js'), '1.1.2', false);
+            wp_enqueue_script('eve-observer-dashboard', plugin_dir_url(__FILE__) . 'js/dashboard.js', array('chart-js'), '1.2.0', false);
 
             // Localize script with nonce and AJAX URL
             $localized_data = array(

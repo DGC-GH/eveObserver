@@ -90,6 +90,18 @@ class EVEDashboard {
             console.error('❌ [INIT ERROR] hideLoaders() failed:', error);
         }
 
+        try {
+            console.log('🔄 [INIT] Checking for existing sync on page load...');
+            const initialStatus = await this.checkSyncStatus();
+            if (initialStatus.running) {
+                console.log('🔄 [INIT] Found existing sync running, updating display...');
+                this.updateSyncStatusDisplay(initialStatus);
+            }
+            console.log('✅ [INIT] Initial sync status check completed');
+        } catch (error) {
+            console.error('❌ [INIT ERROR] Initial sync status check failed:', error);
+        }
+
         console.log('🎉 [INIT] Dashboard initialization completed (with error handling)');
     }
 
@@ -605,7 +617,23 @@ class EVEDashboard {
         } catch (error) {
             console.error(`❌ [ERROR] EVE Observer: Sync start error for ${section}:`, error);
             console.log('🔄 [STEP 27] Showing error notification...');
-            this.showNotification(`Failed to start sync ${section}: ${error.message}`, 'error');
+
+            // Handle the case where a sync is already running
+            if (error.message && error.message.includes('sync is already running')) {
+                console.log('🔄 [STEP 28] Sync already running - showing stop option...');
+
+                // Show the existing sync status
+                const statusResponse = await this.checkSyncStatus();
+                if (statusResponse.running) {
+                    this.updateSyncStatusDisplay(statusResponse);
+                    this.showNotification('A sync is already running. Use the stop button to cancel it first.', 'error');
+                } else {
+                    this.showNotification(`Failed to start sync ${section}: ${error.message}`, 'error');
+                }
+            } else {
+                this.showNotification(`Failed to start sync ${section}: ${error.message}`, 'error');
+            }
+
             progressContent.textContent += `❌ Error: ${error.message}\n`;
             progressFill.style.width = '100%';
             progressFill.style.backgroundColor = '#dc3545';
@@ -664,10 +692,10 @@ class EVEDashboard {
                     button.disabled = false;
                     button.innerHTML = originalText;
 
-                    // Hide progress after delay
-                    setTimeout(() => {
-                        document.getElementById('sync-progress').style.display = 'none';
-                    }, 5000);
+                    // Don't hide progress automatically - let user close it manually
+                    // setTimeout(() => {
+                    //     document.getElementById('sync-progress').style.display = 'none';
+                    // }, 5000);
                 }
             } catch (error) {
                 console.error('❌ [MONITOR] Error checking status:', error);
