@@ -39,6 +39,48 @@ logging.basicConfig(
 )
 logger = logging.getLogger(__name__)
 
+PID_FILE = os.path.join(os.path.dirname(__file__), "main.pid")
+
+
+def check_single_instance() -> bool:
+    """Check if another instance is running and prevent multiple executions."""
+    if os.path.exists(PID_FILE):
+        try:
+            with open(PID_FILE, "r") as f:
+                old_pid = int(f.read().strip())
+            
+            # Check if process is still running
+            if psutil.pid_exists(old_pid):
+                logger.warning(f"Another instance is already running (PID: {old_pid}). Exiting.")
+                return False
+            else:
+                logger.info(f"Removing stale PID file for dead process {old_pid}")
+                os.remove(PID_FILE)
+        except (ValueError, psutil.NoSuchProcess, psutil.AccessDenied):
+            logger.info("Removing invalid PID file")
+            os.remove(PID_FILE)
+    
+    # Create new PID file
+    try:
+        with open(PID_FILE, "w") as f:
+            f.write(str(os.getpid()))
+        logger.info(f"Created PID file: {PID_FILE}")
+    except Exception as e:
+        logger.error(f"Failed to create PID file: {e}")
+        return False
+    
+    return True
+
+
+def cleanup_pid_file():
+    """Remove the PID file on exit."""
+    try:
+        if os.path.exists(PID_FILE):
+            os.remove(PID_FILE)
+            logger.info("Removed PID file")
+    except Exception as e:
+        logger.warning(f"Failed to remove PID file: {e}")
+
 
 def get_memory_usage() -> float:
     """Get current memory usage in MB."""
@@ -160,6 +202,9 @@ async def process_all_data(
 
 async def main() -> None:
     """Main data fetching routine."""
+    if not check_single_instance():
+        return
+    
     start_time = time.time()
     args = parse_arguments()
     clear_log_file()
@@ -167,6 +212,7 @@ async def main() -> None:
     tokens = load_tokens()
     if not tokens:
         logger.error("No authorized characters found. Run 'python esi_oauth.py authorize' first.")
+        cleanup_pid_file()
         return
 
     try:
@@ -210,6 +256,7 @@ async def main() -> None:
 
         flush_pending_saves()
         log_cache_performance()
+        cleanup_pid_file()
 
 
 if __name__ == "__main__":
