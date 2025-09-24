@@ -1004,6 +1004,21 @@ class EVE_Observer {
                 <pre id="sync-progress-content" style="font-family: monospace; font-size: 12px; white-space: pre-wrap; margin: 0;"></pre>
             </div>
 
+            <!-- Sync Status Display -->
+            <div id="sync-status-display" style="display: none; margin-top: 20px; padding: 15px; background: #e8f5e8; border: 1px solid #28a745; border-radius: 4px;">
+                <h3><?php _e('Sync Status', 'eve-observer'); ?></h3>
+                <div id="sync-status-progress" style="margin-bottom: 10px;">
+                    <div class="eve-progress-bar">
+                        <div class="eve-progress-fill" style="width: 0%; background-color: #28a745;"></div>
+                    </div>
+                    <div class="eve-progress-text" id="sync-status-text">Checking status...</div>
+                </div>
+                <button id="stop-sync-button" class="button button-secondary" style="display: none;">
+                    <span class="dashicons dashicons-no"></span>
+                    <?php _e('Stop Sync', 'eve-observer'); ?>
+                </button>
+            </div>
+
             <!-- Overview Cards -->
             <div class="eve-overview-grid">
                 <div class="eve-card eve-card-clickable" data-section="characters">
