@@ -1025,67 +1025,63 @@ class EVE_Observer {
             </div>
 
             <!-- Sync Progress Area -->
-            <div id="sync-progress" style="display: none; margin-top: 20px; padding: 15px; background: #f9f9f9; border: 1px solid #ddd; border-radius: 4px; max-height: 600px; overflow-y: auto;">
+            <div id="sync-progress-container" style="display: none; margin-top: 20px;">
                 <h3><?php _e('Sync Progress', 'eve-observer'); ?></h3>
-                
-                <!-- Overall Progress -->
-                <div id="sync-progress-overall" style="margin-bottom: 20px;">
+
+                <!-- Individual Sync Progress Areas -->
+                <div id="sync-progress-characters" class="sync-progress-item" style="display: none; margin-bottom: 15px; padding: 15px; background: #f9f9f9; border: 1px solid #ddd; border-radius: 4px;">
+                    <h4>Characters Sync</h4>
                     <div class="eve-progress-bar">
-                        <div class="eve-progress-fill" id="sync-progress-fill" style="width: 0%;"></div>
+                        <div class="eve-progress-fill" id="sync-progress-characters-fill" style="width: 0%;"></div>
                     </div>
-                    <div class="eve-progress-text" id="sync-progress-text">Initializing...</div>
+                    <div class="eve-progress-text" id="sync-progress-characters-text">Initializing...</div>
+                    <pre id="sync-progress-characters-content" style="font-family: monospace; font-size: 12px; white-space: pre-wrap; margin: 10px 0 0 0; max-height: 200px; overflow-y: auto;"></pre>
                 </div>
-                
-                <!-- Stage Progress Bars -->
-                <div id="sync-stage-progress" style="display: none;">
-                    <h4><?php _e('Stage Progress', 'eve-observer'); ?></h4>
-                    
-                    <div class="sync-stage" data-stage="initialization">
-                        <div class="sync-stage-header">
-                            <span class="sync-stage-name">Initialization</span>
-                            <span class="sync-stage-status">Pending</span>
-                        </div>
-                        <div class="eve-progress-bar">
-                            <div class="eve-progress-fill sync-stage-fill" data-stage="initialization" style="width: 0%;"></div>
-                        </div>
-                        <div class="sync-stage-message" data-stage="initialization">Preparing...</div>
+
+                <div id="sync-progress-blueprints" class="sync-progress-item" style="display: none; margin-bottom: 15px; padding: 15px; background: #f9f9f9; border: 1px solid #ddd; border-radius: 4px;">
+                    <h4>Blueprints Sync</h4>
+                    <div class="eve-progress-bar">
+                        <div class="eve-progress-fill" id="sync-progress-blueprints-fill" style="width: 0%;"></div>
                     </div>
-                    
-                    <div class="sync-stage" data-stage="collection">
-                        <div class="sync-stage-header">
-                            <span class="sync-stage-name">Data Collection</span>
-                            <span class="sync-stage-status">Pending</span>
-                        </div>
-                        <div class="eve-progress-bar">
-                            <div class="eve-progress-fill sync-stage-fill" data-stage="collection" style="width: 0%;"></div>
-                        </div>
-                        <div class="sync-stage-message" data-stage="collection">Preparing...</div>
-                    </div>
-                    
-                    <div class="sync-stage" data-stage="processing">
-                        <div class="sync-stage-header">
-                            <span class="sync-stage-name">Data Processing</span>
-                            <span class="sync-stage-status">Pending</span>
-                        </div>
-                        <div class="eve-progress-bar">
-                            <div class="eve-progress-fill sync-stage-fill" data-stage="processing" style="width: 0%;"></div>
-                        </div>
-                        <div class="sync-stage-message" data-stage="processing">Preparing...</div>
-                    </div>
-                    
-                    <div class="sync-stage" data-stage="finalization">
-                        <div class="sync-stage-header">
-                            <span class="sync-stage-name">Finalization</span>
-                            <span class="sync-stage-status">Pending</span>
-                        </div>
-                        <div class="eve-progress-bar">
-                            <div class="eve-progress-fill sync-stage-fill" data-stage="finalization" style="width: 0%;"></div>
-                        </div>
-                        <div class="sync-stage-message" data-stage="finalization">Preparing...</div>
-                    </div>
+                    <div class="eve-progress-text" id="sync-progress-blueprints-text">Initializing...</div>
+                    <pre id="sync-progress-blueprints-content" style="font-family: monospace; font-size: 12px; white-space: pre-wrap; margin: 10px 0 0 0; max-height: 200px; overflow-y: auto;"></pre>
                 </div>
-                
-                <pre id="sync-progress-content" style="font-family: monospace; font-size: 12px; white-space: pre-wrap; margin: 0; margin-top: 20px;"></pre>
+
+                <div id="sync-progress-planets" class="sync-progress-item" style="display: none; margin-bottom: 15px; padding: 15px; background: #f9f9f9; border: 1px solid #ddd; border-radius: 4px;">
+                    <h4>Planets Sync</h4>
+                    <div class="eve-progress-bar">
+                        <div class="eve-progress-fill" id="sync-progress-planets-fill" style="width: 0%;"></div>
+                    </div>
+                    <div class="eve-progress-text" id="sync-progress-planets-text">Initializing...</div>
+                    <pre id="sync-progress-planets-content" style="font-family: monospace; font-size: 12px; white-space: pre-wrap; margin: 10px 0 0 0; max-height: 200px; overflow-y: auto;"></pre>
+                </div>
+
+                <div id="sync-progress-corporations" class="sync-progress-item" style="display: none; margin-bottom: 15px; padding: 15px; background: #f9f9f9; border: 1px solid #ddd; border-radius: 4px;">
+                    <h4>Corporations Sync</h4>
+                    <div class="eve-progress-bar">
+                        <div class="eve-progress-fill" id="sync-progress-corporations-fill" style="width: 0%;"></div>
+                    </div>
+                    <div class="eve-progress-text" id="sync-progress-corporations-text">Initializing...</div>
+                    <pre id="sync-progress-corporations-content" style="font-family: monospace; font-size: 12px; white-space: pre-wrap; margin: 10px 0 0 0; max-height: 200px; overflow-y: auto;"></pre>
+                </div>
+
+                <div id="sync-progress-contracts" class="sync-progress-item" style="display: none; margin-bottom: 15px; padding: 15px; background: #f9f9f9; border: 1px solid #ddd; border-radius: 4px;">
+                    <h4>Contracts Sync</h4>
+                    <div class="eve-progress-bar">
+                        <div class="eve-progress-fill" id="sync-progress-contracts-fill" style="width: 0%;"></div>
+                    </div>
+                    <div class="eve-progress-text" id="sync-progress-contracts-text">Initializing...</div>
+                    <pre id="sync-progress-contracts-content" style="font-family: monospace; font-size: 12px; white-space: pre-wrap; margin: 10px 0 0 0; max-height: 200px; overflow-y: auto;"></pre>
+                </div>
+
+                <div id="sync-progress-all" class="sync-progress-item" style="display: none; margin-bottom: 15px; padding: 15px; background: #f9f9f9; border: 1px solid #ddd; border-radius: 4px;">
+                    <h4>All Data Sync</h4>
+                    <div class="eve-progress-bar">
+                        <div class="eve-progress-fill" id="sync-progress-all-fill" style="width: 0%;"></div>
+                    </div>
+                    <div class="eve-progress-text" id="sync-progress-all-text">Initializing...</div>
+                    <pre id="sync-progress-all-content" style="font-family: monospace; font-size: 12px; white-space: pre-wrap; margin: 10px 0 0 0; max-height: 200px; overflow-y: auto;"></pre>
+                </div>
             </div>
 
             <!-- Sync Status Display -->

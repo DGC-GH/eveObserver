@@ -676,6 +676,11 @@ class EVEDashboard {
         });
     }
 
+    async checkSectionSyncStatus(section) {
+        // For now, just check if any sync is running - in the future this could be section-specific
+        return await this.checkSyncStatus();
+    }
+
     updateSyncStatusDisplay(status) {
         const statusDiv = document.getElementById('sync-status-display');
         const progressBar = document.getElementById('sync-status-progress');
@@ -828,34 +833,35 @@ class EVEDashboard {
         console.log(`🔄 [STEP 6] Button element:`, button);
         console.log(`🔄 [STEP 7] Button original text:`, button.innerHTML);
 
-        // Check if sync is already running
-        const status = await this.checkSyncStatus();
-        if (status.running) {
-            this.showNotification('A sync is already running. Please wait for it to complete or stop it first.', 'error');
+        // Check if sync is already running for this section
+        const sectionStatus = await this.checkSectionSyncStatus(section);
+        if (sectionStatus.running) {
+            this.showNotification(`${section} sync is already running. Please wait for it to complete.`, 'error');
             return;
         }
 
-        // Show progress area
-        const progressDiv = document.getElementById('sync-progress');
-        const progressContent = document.getElementById('sync-progress-content');
-        const progressBar = document.getElementById('sync-progress-bar');
-        const progressFill = document.querySelector('.eve-progress-fill');
-        const progressText = document.getElementById('sync-progress-text');
+        // Show progress area for this section
+        const progressContainer = document.getElementById('sync-progress-container');
+        const progressItem = document.getElementById(`sync-progress-${section}`);
+        const progressFill = document.getElementById(`sync-progress-${section}-fill`);
+        const progressText = document.getElementById(`sync-progress-${section}-text`);
+        const progressContent = document.getElementById(`sync-progress-${section}-content`);
 
-        progressDiv.style.display = 'block';
-        progressContent.textContent = `Starting sync for ${section}...\n`;
-        progressFill.style.width = '0%';
-        progressText.textContent = 'Initializing...';
+        if (progressContainer) progressContainer.style.display = 'block';
+        if (progressItem) progressItem.style.display = 'block';
+        if (progressContent) progressContent.textContent = `Starting sync for ${section}...\n`;
+        if (progressFill) progressFill.style.width = '0%';
+        if (progressText) progressText.textContent = 'Initializing...';
 
         console.log('🔄 [STEP 8] Checking eveObserverApi availability...');
         console.log('🔄 [STEP 9] eveObserverApi available at sync time:', typeof eveObserverApi !== 'undefined');
 
         if (typeof eveObserverApi === 'undefined') {
             console.error('❌ [ERROR] eveObserverApi is not defined!');
-            progressContent.textContent += '❌ API configuration error - please refresh the page\n';
-            progressFill.style.width = '100%';
-            progressFill.style.backgroundColor = '#dc3545';
-            progressText.textContent = 'Error: API not configured';
+            if (progressContent) progressContent.textContent += '❌ API configuration error - please refresh the page\n';
+            if (progressFill) progressFill.style.width = '100%';
+            if (progressFill) progressFill.style.backgroundColor = '#dc3545';
+            if (progressText) progressText.textContent = 'Error: API not configured';
             console.log('❌ [STEP 10] Showing error notification...');
             this.showNotification('API configuration error - please refresh the page', 'error');
             return;
@@ -902,12 +908,12 @@ class EVEDashboard {
                 this.showNotification(message, 'success');
 
                 // Show sync output in progress area
-                progressContent.textContent += `✅ Sync started successfully!\n\nThe sync is now running in the background. Progress will be updated automatically.\n`;
+                if (progressContent) progressContent.textContent += `✅ Sync started successfully!\n\nThe sync is now running in the background. Progress will be updated automatically.\n`;
 
                 // Update progress to show it's started
-                progressFill.style.width = '10%';
-                progressFill.style.backgroundColor = '#28a745';
-                progressText.textContent = 'Sync started - monitoring progress...';
+                if (progressFill) progressFill.style.width = '10%';
+                if (progressFill) progressFill.style.backgroundColor = '#28a745';
+                if (progressText) progressText.textContent = 'Sync started - monitoring progress...';
 
                 // Start monitoring progress immediately
                 console.log('🔄 [STEP 25] Starting progress monitoring...');
@@ -915,10 +921,10 @@ class EVEDashboard {
 
             } else {
                 console.log('❌ [STEP 26] Sync start failed');
-                progressContent.textContent += `❌ Sync start failed: ${response.data.message}\n`;
-                progressFill.style.width = '100%';
-                progressFill.style.backgroundColor = '#dc3545';
-                progressText.textContent = 'Failed to start';
+                if (progressContent) progressContent.textContent += `❌ Sync start failed: ${response.data.message}\n`;
+                if (progressFill) progressFill.style.width = '100%';
+                if (progressFill) progressFill.style.backgroundColor = '#dc3545';
+                if (progressText) progressText.textContent = 'Failed to start';
                 throw new Error(response.data.message || 'Failed to start sync');
             }
         } catch (error) {
@@ -951,14 +957,16 @@ class EVEDashboard {
                 this.showNotification(`Failed to start sync ${section}: ${error.message}`, 'error');
             }
 
-            progressContent.textContent += `❌ Error: ${error.message}\n`;
-            progressFill.style.width = '100%';
-            progressFill.style.backgroundColor = '#dc3545';
-            progressText.textContent = 'Error occurred';
+            if (progressContent) progressContent.textContent += `❌ Error: ${error.message}\n`;
+            if (progressFill) progressFill.style.width = '100%';
+            if (progressFill) progressFill.style.backgroundColor = '#dc3545';
+            if (progressText) progressText.textContent = 'Error occurred';
 
             // Restore button state on error
-            button.disabled = false;
-            button.innerHTML = originalText;
+            if (button) {
+                button.disabled = false;
+                button.innerHTML = originalText;
+            }
         }
     }
 
@@ -973,8 +981,8 @@ class EVEDashboard {
                 if (status.running) {
                     // Update progress display
                     const progressPercent = Math.max(10, Math.min(90, status.progress || 10));
-                    progressFill.style.width = `${progressPercent}%`;
-                    progressText.textContent = status.message || 'Processing...';
+                    if (progressFill) progressFill.style.width = `${progressPercent}%`;
+                    if (progressText) progressText.textContent = status.message || 'Processing...';
 
                     // Fetch and display recent log entries
                     try {
@@ -984,13 +992,13 @@ class EVEDashboard {
                                 const timestamp = new Date(log.timestamp).toLocaleString();
                                 return `${timestamp} - ${log.level} - ${log.message}`;
                             }).join('\n');
-                            progressContent.textContent = `Sync running: ${status.message || 'Processing...'}\nSection: ${status.section || section}\nProgress: ${progressPercent.toFixed(1)}%\n\nRecent Log Entries:\n${logText}`;
+                            if (progressContent) progressContent.textContent = `Sync running: ${status.message || 'Processing...'}\nSection: ${status.section || section}\nProgress: ${progressPercent.toFixed(1)}%\n\nRecent Log Entries:\n${logText}`;
                         } else {
-                            progressContent.textContent = `Sync running: ${status.message || 'Processing...'}\nSection: ${status.section || section}\nProgress: ${progressPercent.toFixed(1)}%\n\nNo recent log entries found.`;
+                            if (progressContent) progressContent.textContent = `Sync running: ${status.message || 'Processing...'}\nSection: ${status.section || section}\nProgress: ${progressPercent.toFixed(1)}%\n\nNo recent log entries found.`;
                         }
                     } catch (logError) {
                         console.error('❌ [MONITOR] Error fetching logs:', logError);
-                        progressContent.textContent = `Sync running: ${status.message || 'Processing...'}\nSection: ${status.section || section}\nProgress: ${progressPercent.toFixed(1)}%\n\nError loading logs: ${logError.message}`;
+                        if (progressContent) progressContent.textContent = `Sync running: ${status.message || 'Processing...'}\nSection: ${status.section || section}\nProgress: ${progressPercent.toFixed(1)}%\n\nError loading logs: ${logError.message}`;
                     }
                 } else {
                     // Sync completed or stopped
@@ -999,9 +1007,9 @@ class EVEDashboard {
 
                     if (status.progress >= 100) {
                         // Success
-                        progressFill.style.width = '100%';
-                        progressFill.style.backgroundColor = '#28a745';
-                        progressText.textContent = 'Completed!';
+                        if (progressFill) progressFill.style.width = '100%';
+                        if (progressFill) progressFill.style.backgroundColor = '#28a745';
+                        if (progressText) progressText.textContent = 'Completed!';
 
                         // Show final log entries
                         try {
@@ -1011,13 +1019,13 @@ class EVEDashboard {
                                     const timestamp = new Date(log.timestamp).toLocaleString();
                                     return `${timestamp} - ${log.level} - ${log.message}`;
                                 }).join('\n');
-                                progressContent.textContent = `✅ Sync completed successfully!\n\nFinal Log Entries:\n${logText}`;
+                                if (progressContent) progressContent.textContent = `✅ Sync completed successfully!\n\nFinal Log Entries:\n${logText}`;
                             } else {
-                                progressContent.textContent = `✅ Sync completed successfully!\n\nNo log entries found.`;
+                                if (progressContent) progressContent.textContent = `✅ Sync completed successfully!\n\nNo log entries found.`;
                             }
                         } catch (logError) {
                             console.error('❌ [MONITOR] Error fetching final logs:', logError);
-                            progressContent.textContent = `✅ Sync completed successfully!\n\nError loading final logs: ${logError.message}`;
+                            if (progressContent) progressContent.textContent = `✅ Sync completed successfully!\n\nError loading final logs: ${logError.message}`;
                         }
 
                         // Reload data after successful sync
@@ -1029,9 +1037,9 @@ class EVEDashboard {
                         this.showNotification(`Successfully synced ${section}`, 'success');
                     } else {
                         // Error or stopped
-                        progressFill.style.width = '100%';
-                        progressFill.style.backgroundColor = '#dc3545';
-                        progressText.textContent = 'Failed or stopped';
+                        if (progressFill) progressFill.style.width = '100%';
+                        if (progressFill) progressFill.style.backgroundColor = '#dc3545';
+                        if (progressText) progressText.textContent = 'Failed or stopped';
 
                         // Show error logs
                         try {
@@ -1041,21 +1049,23 @@ class EVEDashboard {
                                     const timestamp = new Date(log.timestamp).toLocaleString();
                                     return `${timestamp} - ${log.level} - ${log.message}`;
                                 }).join('\n');
-                                progressContent.textContent = `❌ Sync ended unexpectedly\n\nRecent Error/Warning Logs:\n${logText}`;
+                                if (progressContent) progressContent.textContent = `❌ Sync ended unexpectedly\n\nRecent Error/Warning Logs:\n${logText}`;
                             } else {
-                                progressContent.textContent = `❌ Sync ended unexpectedly\n\nNo error logs found.`;
+                                if (progressContent) progressContent.textContent = `❌ Sync ended unexpectedly\n\nNo error logs found.`;
                             }
                         } catch (logError) {
                             console.error('❌ [MONITOR] Error fetching error logs:', logError);
-                            progressContent.textContent = `❌ Sync ended unexpectedly\n\nError loading logs: ${logError.message}`;
+                            if (progressContent) progressContent.textContent = `❌ Sync ended unexpectedly\n\nError loading logs: ${logError.message}`;
                         }
 
                         this.showNotification(`Sync ${section} ended unexpectedly`, 'error');
                     }
 
                     // Restore button state
-                    button.disabled = false;
-                    button.innerHTML = originalText;
+                    if (button) {
+                        button.disabled = false;
+                        button.innerHTML = originalText;
+                    }
 
                     // Don't hide progress automatically - let user close it manually
                     // setTimeout(() => {
@@ -1066,9 +1076,9 @@ class EVEDashboard {
                 console.error('❌ [MONITOR] Error checking status:', error);
                 clearInterval(monitoringInterval);
 
-                progressFill.style.width = '100%';
-                progressFill.style.backgroundColor = '#dc3545';
-                progressText.textContent = 'Monitoring failed';
+                if (progressFill) progressFill.style.width = '100%';
+                if (progressFill) progressFill.style.backgroundColor = '#dc3545';
+                if (progressText) progressText.textContent = 'Monitoring failed';
 
                 // Show error logs on monitoring failure
                 try {
@@ -1078,17 +1088,19 @@ class EVEDashboard {
                             const timestamp = new Date(log.timestamp).toLocaleString();
                             return `${timestamp} - ${log.level} - ${log.message}`;
                         }).join('\n');
-                        progressContent.textContent = `❌ Error monitoring progress: ${error.message}\n\nRecent Error Logs:\n${logText}`;
+                        if (progressContent) progressContent.textContent = `❌ Error monitoring progress: ${error.message}\n\nRecent Error Logs:\n${logText}`;
                     } else {
-                        progressContent.textContent = `❌ Error monitoring progress: ${error.message}\n\nNo recent error logs found.`;
+                        if (progressContent) progressContent.textContent = `❌ Error monitoring progress: ${error.message}\n\nNo recent error logs found.`;
                     }
                 } catch (logError) {
                     console.error('❌ [MONITOR] Error fetching error logs on monitoring failure:', logError);
-                    progressContent.textContent = `❌ Error monitoring progress: ${error.message}\n\nError loading error logs: ${logError.message}`;
+                    if (progressContent) progressContent.textContent = `❌ Error monitoring progress: ${error.message}\n\nError loading error logs: ${logError.message}`;
                 }
 
-                button.disabled = false;
-                button.innerHTML = originalText;
+                if (button) {
+                    button.disabled = false;
+                    button.innerHTML = originalText;
+                }
             }
         }, 2000); // Check every 2 seconds
 
@@ -1097,9 +1109,9 @@ class EVEDashboard {
             clearInterval(monitoringInterval);
             console.log('🔄 [MONITOR] Monitoring timeout reached');
 
-            progressFill.style.width = '100%';
-            progressFill.style.backgroundColor = '#dc3545';
-            progressText.textContent = 'Timeout reached';
+            if (progressFill) progressFill.style.width = '100%';
+            if (progressFill) progressFill.style.backgroundColor = '#dc3545';
+            if (progressText) progressText.textContent = 'Timeout reached';
 
             // Show timeout logs
             try {
@@ -1109,17 +1121,19 @@ class EVEDashboard {
                         const timestamp = new Date(log.timestamp).toLocaleString();
                         return `${timestamp} - ${log.level} - ${log.message}`;
                     }).join('\n');
-                    progressContent.textContent = `⏰ Monitoring timeout reached (30 minutes)\n\nLast Log Entries:\n${logText}`;
+                    if (progressContent) progressContent.textContent = `⏰ Monitoring timeout reached (30 minutes)\n\nLast Log Entries:\n${logText}`;
                 } else {
-                    progressContent.textContent = `⏰ Monitoring timeout reached (30 minutes)\n\nNo recent log entries found.`;
+                    if (progressContent) progressContent.textContent = `⏰ Monitoring timeout reached (30 minutes)\n\nNo recent log entries found.`;
                 }
             } catch (logError) {
                 console.error('❌ [MONITOR] Error fetching timeout logs:', logError);
-                progressContent.textContent = `⏰ Monitoring timeout reached (30 minutes)\n\nError loading logs: ${logError.message}`;
+                if (progressContent) progressContent.textContent = `⏰ Monitoring timeout reached (30 minutes)\n\nError loading logs: ${logError.message}`;
             }
 
-            button.disabled = false;
-            button.innerHTML = originalText;
+            if (button) {
+                button.disabled = false;
+                button.innerHTML = originalText;
+            }
         }, 30 * 60 * 1000); // 30 minutes
     }
 
