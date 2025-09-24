@@ -661,7 +661,7 @@ async def generate_contract_title(
 
             for item in contract_items:
                 quantity = item.get("quantity", 1)
-                total_quantity += abs(quantity)  # Use abs in case of BPOs
+                total_quantity += abs(quantity) # Use abs in case of BPOs
 
                 # Check if it's a blueprint
                 type_id = item.get("type_id")
@@ -1019,6 +1019,7 @@ async def process_character_contracts(
         structure_cache: Structure name cache.
         failed_structures: Failed structure fetch cache.
     """
+    logger.info(f"Starting contract processing for {char_name}")
     char_contracts = await fetch_character_contracts(char_id, access_token)
     if char_contracts:
         logger.info(f"Character contracts for {char_name}: {len(char_contracts)} items")
@@ -1194,6 +1195,7 @@ async def expand_single_contract_with_caching(
 ) -> Dict[str, Any]:
     """Expand a single contract, fetching missing data as needed."""
     contract_id = contract["contract_id"]
+    logger.info(f"Expanding contract {contract_id}")
     issuer_id = contract.get("issuer_id")
     issuer_corp_id = contract.get("issuer_corporation_id")
 
@@ -1300,7 +1302,9 @@ async def expand_single_contract_with_caching(
         else:
             # No items data available - fetch from public API for public contracts
             try:
-                contract_items = fetch_public_contract_items(contract_id)
+                logger.info(f"Fetching items for contract {contract_id}")
+                contract_items = await asyncio.to_thread(fetch_public_contract_items, contract_id)
+                logger.info(f"Fetched {len(contract_items) if contract_items else 0} items for contract {contract_id}")
                 if contract_items:
                     # Process the fetched items
                     items_details = []
@@ -1399,9 +1403,9 @@ async def expand_all_contracts_async(contracts: List[Dict[str, Any]]) -> List[Di
     logger.info(f"Initial caches loaded - Issuer: {len(issuer_cache)}, Type: {len(type_cache)}, Corporation: {len(corporation_cache)}")
 
     # Process contracts in parallel batches with on-demand fetching
-    batch_size = 1000
+    batch_size = 500
     expanded_contracts = []
-    semaphore = asyncio.Semaphore(20)  # Limit concurrent processing
+    semaphore = asyncio.Semaphore(100)  # Limit concurrent processing
 
     async def expand_contract_batch(batch_contracts: List[Dict[str, Any]], batch_num: int) -> tuple[List[Dict[str, Any]], Dict[str, str], Dict[str, Dict[str, Any]], Dict[str, str]]:
         """Expand a batch of contracts, fetching missing data as needed."""
@@ -1453,6 +1457,8 @@ async def expand_all_contracts_async(contracts: List[Dict[str, Any]]) -> List[Di
         all_new_issuer_names.update(new_issuers)
         all_new_type_data.update(new_types)
         all_new_corporation_names.update(new_corps)
+
+    logger.info(f"Expansion completed: {len(expanded_contracts)} contracts processed")
 
     # Update caches with new data
     if all_new_issuer_names:
