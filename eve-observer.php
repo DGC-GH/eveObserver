@@ -32,10 +32,14 @@ class EVE_Observer {
         add_action('wp_ajax_eve_sync', array($this, 'handle_ajax_sync_request'));
         add_action('wp_ajax_eve_stop_sync', array($this, 'handle_ajax_stop_sync_request'));
         add_action('wp_ajax_eve_sync_status', array($this, 'handle_ajax_sync_status_request'));
+        add_action('wp_ajax_eve_get_logs', array($this, 'handle_ajax_get_logs_request'));
+        add_action('wp_ajax_eve_clear_logs', array($this, 'handle_ajax_clear_logs_request'));
 
         error_log("🔄 [PLUGIN INIT] AJAX action 'wp_ajax_eve_sync' registered");
         error_log("🔄 [PLUGIN INIT] AJAX action 'wp_ajax_eve_stop_sync' registered");
         error_log("🔄 [PLUGIN INIT] AJAX action 'wp_ajax_eve_sync_status' registered");
+        error_log("🔄 [PLUGIN INIT] AJAX action 'wp_ajax_eve_get_logs' registered");
+        error_log("🔄 [PLUGIN INIT] AJAX action 'wp_ajax_eve_clear_logs' registered");
 
         register_activation_hook(__FILE__, array($this, 'activate'));
         register_deactivation_hook(__FILE__, array($this, 'deactivate'));
@@ -790,6 +794,196 @@ class EVE_Observer {
         ));
     }
 
+    public function handle_ajax_get_logs_request() {
+        // Log the start of AJAX request processing
+        error_log("🔄 [AJAX LOGS START] ========================================");
+        error_log("🔄 [AJAX LOGS START] handle_ajax_get_logs_request called");
+        error_log("🔄 [AJAX LOGS START] Timestamp: " . current_time('mysql'));
+        error_log("🔄 [AJAX LOGS START] REQUEST_METHOD: " . ($_SERVER['REQUEST_METHOD'] ?? 'unknown'));
+        error_log("🔄 [AJAX LOGS START] POST data: " . print_r($_POST, true));
+        error_log("🔄 [AJAX LOGS START] GET data: " . print_r($_GET, true));
+        error_log("🔄 [AJAX LOGS START] Current user ID: " . get_current_user_id());
+        error_log("🔄 [AJAX LOGS START] Current user capabilities: " . print_r(wp_get_current_user()->allcaps, true));
+        error_log("🔄 [AJAX LOGS START] ========================================");
+
+        // Check permissions
+        if (!current_user_can('manage_options')) {
+            error_log("❌ [AJAX LOGS ERROR] User does not have manage_options capability");
+            wp_die(__('You do not have sufficient permissions to access this page.'));
+        }
+        error_log("✅ [AJAX LOGS STEP 1] User has manage_options capability");
+
+        // Verify nonce
+        if (!wp_verify_nonce($_POST['nonce'], 'eve_sync_nonce')) {
+            error_log("❌ [AJAX LOGS ERROR] Nonce verification failed");
+            error_log("🔄 [AJAX LOGS DEBUG] Received nonce: " . ($_POST['nonce'] ?? 'none'));
+            error_log("🔄 [AJAX LOGS DEBUG] Expected nonce action: eve_sync_nonce");
+            wp_send_json_error(array('message' => 'Security check failed'), 403);
+            return;
+        }
+        error_log("✅ [AJAX LOGS STEP 2] Nonce verification passed");
+
+        // Get parameters
+        $lines = isset($_POST['lines']) ? intval($_POST['lines']) : 100;
+        $search = isset($_POST['search']) ? sanitize_text_field($_POST['search']) : '';
+        $levels_str = isset($_POST['levels']) ? sanitize_text_field($_POST['levels']) : '';
+        $levels = !empty($levels_str) ? explode(',', $levels_str) : array('INFO', 'WARNING', 'ERROR', 'DEBUG');
+
+        error_log("🔄 [AJAX LOGS STEP 3] Parameters - lines: {$lines}, search: {$search}, levels: " . print_r($levels, true));
+
+        // Get the log file path
+        $log_file = plugin_dir_path(__FILE__) . 'eve_observer.log';
+        error_log("🔄 [AJAX LOGS STEP 4] Log file path: {$log_file}");
+
+        if (!file_exists($log_file)) {
+            error_log("❌ [AJAX LOGS ERROR] Log file does not exist: {$log_file}");
+            wp_send_json_error(array('message' => 'Log file not found'), 404);
+            return;
+        }
+
+        // Read the log file
+        $log_content = file_get_contents($log_file);
+        if ($log_content === false) {
+            error_log("❌ [AJAX LOGS ERROR] Failed to read log file");
+            wp_send_json_error(array('message' => 'Failed to read log file'), 500);
+            return;
+        }
+
+        // Split into lines and reverse (newest first)
+        $log_lines = array_reverse(explode("\n", trim($log_content)));
+        error_log("🔄 [AJAX LOGS STEP 5] Total log lines: " . count($log_lines));
+
+        // Filter and limit lines
+        $filtered_logs = array();
+        $line_count = 0;
+
+        foreach ($log_lines as $line) {
+            if ($line_count >= $lines) {
+                break;
+            }
+
+            // Apply search filter
+            if (!empty($search) && stripos($line, $search) === false) {
+                continue;
+            }
+
+            // Apply log level filters
+            $include_line = false;
+            if (!empty($levels)) {
+                foreach ($levels as $level) {
+                    if (stripos($line, " - {$level} - ") !== false) {
+                        $include_line = true;
+                        break;
+                    }
+                }
+            } else {
+                // If no levels selected, include all lines
+                $include_line = true;
+            }
+
+            if ($include_line) {
+                // Parse log line into structured format
+                $parsed_log = $this->parse_log_line($line);
+                if ($parsed_log) {
+                    $filtered_logs[] = $parsed_log;
+                    $line_count++;
+                }
+            }
+        }
+
+        error_log("✅ [AJAX LOGS STEP 6] Filtered to {$line_count} lines");
+
+        // Format the response
+        $response = array(
+            'success' => true,
+            'logs' => $filtered_logs,
+            'total_lines' => count($log_lines),
+            'filtered_lines' => $line_count,
+            'timestamp' => current_time('mysql')
+        );
+
+        error_log("✅ [AJAX LOGS SUCCESS] Returning {$line_count} log lines");
+        wp_send_json_success($response);
+    }
+
+    private function parse_log_line($line) {
+        // Expected format: "2024-01-15 10:30:45 - INFO - Message here"
+        $pattern = '/^(\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}) - ([A-Z]+) - (.+)$/';
+        
+        if (preg_match($pattern, $line, $matches)) {
+            return array(
+                'timestamp' => $matches[1],
+                'level' => $matches[2],
+                'message' => trim($matches[3])
+            );
+        }
+        
+        // Fallback: if line doesn't match expected format, treat whole line as message
+        return array(
+            'timestamp' => current_time('Y-m-d H:i:s'),
+            'level' => 'UNKNOWN',
+            'message' => $line
+        );
+    }
+
+    public function handle_ajax_clear_logs_request() {
+        // Log the start of AJAX request processing
+        error_log("🔄 [AJAX CLEAR LOGS START] ========================================");
+        error_log("🔄 [AJAX CLEAR LOGS START] handle_ajax_clear_logs_request called");
+        error_log("🔄 [AJAX CLEAR LOGS START] Timestamp: " . current_time('mysql'));
+        error_log("🔄 [AJAX CLEAR LOGS START] REQUEST_METHOD: " . ($_SERVER['REQUEST_METHOD'] ?? 'unknown'));
+        error_log("🔄 [AJAX CLEAR LOGS START] POST data: " . print_r($_POST, true));
+        error_log("🔄 [AJAX CLEAR LOGS START] GET data: " . print_r($_GET, true));
+        error_log("🔄 [AJAX CLEAR LOGS START] Current user ID: " . get_current_user_id());
+        error_log("🔄 [AJAX CLEAR LOGS START] Current user capabilities: " . print_r(wp_get_current_user()->allcaps, true));
+        error_log("🔄 [AJAX CLEAR LOGS START] ========================================");
+
+        // Check permissions
+        if (!current_user_can('manage_options')) {
+            error_log("❌ [AJAX CLEAR LOGS ERROR] User does not have manage_options capability");
+            wp_die(__('You do not have sufficient permissions to access this page.'));
+        }
+        error_log("✅ [AJAX CLEAR LOGS STEP 1] User has manage_options capability");
+
+        // Verify nonce
+        if (!wp_verify_nonce($_POST['nonce'], 'eve_sync_nonce')) {
+            error_log("❌ [AJAX CLEAR LOGS ERROR] Nonce verification failed");
+            error_log("🔄 [AJAX CLEAR LOGS DEBUG] Received nonce: " . ($_POST['nonce'] ?? 'none'));
+            error_log("🔄 [AJAX CLEAR LOGS DEBUG] Expected nonce action: eve_sync_nonce");
+            wp_send_json_error(array('message' => 'Security check failed'), 403);
+            return;
+        }
+        error_log("✅ [AJAX CLEAR LOGS STEP 2] Nonce verification passed");
+
+        // Get the log file path
+        $log_file = plugin_dir_path(__FILE__) . 'eve_observer.log';
+        error_log("🔄 [AJAX CLEAR LOGS STEP 3] Log file path: {$log_file}");
+
+        if (!file_exists($log_file)) {
+            error_log("❌ [AJAX CLEAR LOGS ERROR] Log file does not exist: {$log_file}");
+            wp_send_json_error(array('message' => 'Log file not found'), 404);
+            return;
+        }
+
+        // Clear the log file by writing an empty string
+        $result = file_put_contents($log_file, '');
+        if ($result === false) {
+            error_log("❌ [AJAX CLEAR LOGS ERROR] Failed to clear log file");
+            wp_send_json_error(array('message' => 'Failed to clear log file'), 500);
+            return;
+        }
+
+        error_log("✅ [AJAX CLEAR LOGS SUCCESS] Log file cleared successfully");
+
+        // Log the clear action
+        error_log("🔄 [ADMIN ACTION] Logs cleared by user ID: " . get_current_user_id());
+
+        wp_send_json_success(array(
+            'message' => 'Logs cleared successfully',
+            'timestamp' => current_time('mysql')
+        ));
+    }
+
     public function handle_sync_request($request) {
         $section = $request->get_param('section');
 
@@ -1328,6 +1522,49 @@ class EVE_Observer {
                             <!-- Contracts will be loaded here -->
                         </tbody>
                     </table>
+                </div>
+            </div>
+
+            <!-- Log Viewer Section -->
+            <div class="eve-data-section" id="logs-section">
+                <h2><?php _e('EVE Observer Logs', 'eve-observer'); ?></h2>
+                <div class="eve-section-actions">
+                    <button id="refresh-logs" class="button button-secondary">
+                        <span class="dashicons dashicons-update"></span>
+                        <?php _e('Refresh Logs', 'eve-observer'); ?>
+                    </button>
+                    <button id="clear-logs" class="button button-secondary" style="margin-left: 10px;">
+                        <span class="dashicons dashicons-trash"></span>
+                        <?php _e('Clear Logs', 'eve-observer'); ?>
+                    </button>
+                    <div style="float: right;">
+                        <label for="log-lines"><?php _e('Lines to show:', 'eve-observer'); ?></label>
+                        <select id="log-lines" style="margin-left: 5px;">
+                            <option value="50">50</option>
+                            <option value="100">100</option>
+                            <option value="200">200</option>
+                            <option value="500">500</option>
+                            <option value="1000">1000</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="eve-loading" id="logs-loading">
+                    <div class="eve-loading-spinner"></div>
+                    <span>Loading logs...</span>
+                </div>
+                <div id="logs-content" style="display: none;">
+                    <div class="eve-search-container">
+                        <input type="text" class="eve-search-input" id="logs-search" placeholder="Search logs...">
+                        <div style="margin-top: 10px;">
+                            <label><input type="checkbox" id="log-filter-info" checked> INFO</label>
+                            <label style="margin-left: 15px;"><input type="checkbox" id="log-filter-warning" checked> WARNING</label>
+                            <label style="margin-left: 15px;"><input type="checkbox" id="log-filter-error" checked> ERROR</label>
+                            <label style="margin-left: 15px;"><input type="checkbox" id="log-filter-debug" checked> DEBUG</label>
+                        </div>
+                    </div>
+                    <div id="logs-container" style="background: #f8f9fa; border: 1px solid #dee2e6; border-radius: 4px; padding: 15px; max-height: 600px; overflow-y: auto; font-family: 'Courier New', monospace; font-size: 12px; line-height: 1.4;">
+                        <pre id="logs-display" style="margin: 0; white-space: pre-wrap;"></pre>
+                    </div>
                 </div>
             </div>
         </div>

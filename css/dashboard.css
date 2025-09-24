@@ -326,6 +326,164 @@ body {
     100% { transform: rotate(360deg); }
 }
 
+/* Log Viewer Styles */
+.eve-log-section {
+    margin-bottom: 32px;
+}
+
+.eve-log-section h2 {
+    font-size: 1.75rem;
+    font-weight: 600;
+    margin: 0 0 20px 0;
+    color: var(--text-color);
+}
+
+.eve-log-controls {
+    display: flex;
+    gap: 16px;
+    margin-bottom: 20px;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+.eve-log-search {
+    flex: 1;
+    min-width: 200px;
+    max-width: 400px;
+}
+
+.eve-log-search input {
+    width: 100%;
+    padding: 10px 16px;
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    background: var(--card-background);
+    color: var(--text-color);
+    font-size: 1rem;
+    transition: var(--transition);
+}
+
+.eve-log-search input:focus {
+    outline: none;
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 3px rgba(0, 122, 255, 0.1);
+}
+
+.eve-log-filters {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+}
+
+.eve-log-filter-label {
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: var(--text-secondary);
+    margin-right: 8px;
+}
+
+.eve-log-level-checkbox {
+    margin: 0 4px 0 0;
+}
+
+.eve-log-actions {
+    display: flex;
+    gap: 8px;
+}
+
+.eve-log-container {
+    background: var(--card-background);
+    border-radius: var(--border-radius);
+    box-shadow: var(--shadow);
+    border: 1px solid var(--border-color);
+    overflow: hidden;
+}
+
+.eve-log-display {
+    max-height: 600px;
+    overflow-y: auto;
+    padding: 0;
+}
+
+.eve-log-entry {
+    display: flex;
+    padding: 12px 16px;
+    border-bottom: 1px solid var(--border-color);
+    transition: var(--transition);
+    font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+    font-size: 0.875rem;
+    line-height: 1.4;
+}
+
+.eve-log-entry:hover {
+    background: var(--background-color);
+}
+
+.eve-log-entry:last-child {
+    border-bottom: none;
+}
+
+.eve-log-timestamp {
+    color: var(--text-secondary);
+    font-weight: 500;
+    min-width: 160px;
+    margin-right: 16px;
+    flex-shrink: 0;
+}
+
+.eve-log-level {
+    font-weight: 600;
+    min-width: 80px;
+    margin-right: 16px;
+    flex-shrink: 0;
+    text-align: center;
+    border-radius: 4px;
+    padding: 2px 6px;
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.eve-log-level-info {
+    background: rgba(52, 199, 89, 0.1);
+    color: var(--success-color);
+}
+
+.eve-log-level-warning {
+    background: rgba(255, 149, 0, 0.1);
+    color: var(--warning-color);
+}
+
+.eve-log-level-error {
+    background: rgba(255, 59, 48, 0.1);
+    color: var(--danger-color);
+}
+
+.eve-log-level-debug {
+    background: rgba(142, 142, 147, 0.1);
+    color: var(--text-secondary);
+}
+
+.eve-log-message {
+    color: var(--text-color);
+    flex: 1;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+}
+
+.eve-no-logs {
+    padding: 40px;
+    text-align: center;
+    color: var(--text-secondary);
+    font-style: italic;
+}
+
+.eve-log-loading {
+    padding: 40px;
+    text-align: center;
+    color: var(--text-secondary);
+}
+
 /* Responsive Design */
 @media (max-width: 768px) {
     .eve-dashboard {
@@ -356,6 +514,39 @@ body {
     .eve-search-container {
         flex-direction: column;
         align-items: stretch;
+    }
+
+    .eve-log-controls {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .eve-log-search {
+        min-width: auto;
+        max-width: none;
+    }
+
+    .eve-log-filters {
+        justify-content: center;
+    }
+
+    .eve-log-entry {
+        flex-direction: column;
+        gap: 8px;
+    }
+
+    .eve-log-timestamp,
+    .eve-log-level {
+        min-width: auto;
+        margin-right: 0;
+    }
+
+    .eve-log-timestamp {
+        font-size: 0.75rem;
+    }
+
+    .eve-log-level {
+        align-self: flex-start;
     }
 }
 

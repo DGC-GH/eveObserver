@@ -18,6 +18,7 @@ class EVEDashboard {
         };
         this.filteredData = { ...this.data };
         this.searchTimeouts = {};
+        this.searchTimeouts.logs = null;
         this.postTypeMap = {
             characters: 'eve_character',
             blueprints: 'eve_blueprint',
@@ -270,6 +271,221 @@ class EVEDashboard {
         } else {
             console.log('⚠️ [SETUP] Copy button not found');
         }
+
+        // Setup log viewer buttons
+        this.setupLogViewerButtons();
+    }
+
+    setupLogViewerButtons() {
+        console.log('🔄 [SETUP] setupLogViewerButtons called');
+
+        // Refresh logs button
+        const refreshLogsBtn = document.getElementById('refresh-logs');
+        if (refreshLogsBtn) {
+            refreshLogsBtn.addEventListener('click', () => {
+                console.log('🔄 [LOGS] Refresh logs button clicked');
+                this.refreshLogs();
+            });
+            console.log('✅ [SETUP] Refresh logs button event listener added');
+        }
+
+        // Clear logs button
+        const clearLogsBtn = document.getElementById('clear-logs');
+        if (clearLogsBtn) {
+            clearLogsBtn.addEventListener('click', () => {
+                console.log('🔄 [LOGS] Clear logs button clicked');
+                this.clearLogs();
+            });
+            console.log('✅ [SETUP] Clear logs button event listener added');
+        }
+
+        // Search logs input
+        const searchLogsInput = document.getElementById('logs-search');
+        if (searchLogsInput) {
+            searchLogsInput.addEventListener('input', (e) => {
+                console.log('🔄 [LOGS] Search logs input changed:', e.target.value);
+                this.debouncedSearchLogs(e.target.value);
+            });
+            console.log('✅ [SETUP] Search logs input event listener added');
+        }
+
+        // Log level filter checkboxes
+        const logLevelCheckboxes = document.querySelectorAll('input[id^="log-filter-"]');
+        logLevelCheckboxes.forEach(checkbox => {
+            checkbox.addEventListener('change', () => {
+                console.log('🔄 [LOGS] Log level filter changed:', checkbox.id, checkbox.checked);
+                this.filterLogsByLevel();
+            });
+        });
+        console.log('✅ [SETUP] Log level filter checkboxes event listeners added');
+
+        // Load logs on page load
+        this.refreshLogs();
+    }
+
+    async refreshLogs() {
+        console.log('🔄 [LOGS] refreshLogs called');
+
+        const refreshBtn = document.getElementById('refresh-logs');
+        const originalText = refreshBtn ? refreshBtn.innerHTML : '';
+        if (refreshBtn) {
+            refreshBtn.disabled = true;
+            refreshBtn.innerHTML = '<span class="dashicons dashicons-update dashicons-spin"></span> Loading...';
+        }
+
+        try {
+            const logs = await this.getLogs();
+            this.displayLogs(logs);
+            this.showNotification('Logs refreshed successfully', 'success');
+        } catch (error) {
+            console.error('❌ [LOGS] Error refreshing logs:', error);
+            this.showNotification('Failed to refresh logs: ' + error.message, 'error');
+        } finally {
+            if (refreshBtn) {
+                refreshBtn.disabled = false;
+                refreshBtn.innerHTML = originalText;
+            }
+        }
+    }
+
+    async clearLogs() {
+        console.log('🔄 [LOGS] clearLogs called');
+
+        if (!confirm('Are you sure you want to clear all logs? This action cannot be undone.')) {
+            return;
+        }
+
+        const clearBtn = document.getElementById('clear-logs');
+        const originalText = clearBtn ? clearBtn.innerHTML : '';
+        if (clearBtn) {
+            clearBtn.disabled = true;
+            clearBtn.innerHTML = '<span class="dashicons dashicons-update dashicons-spin"></span> Clearing...';
+        }
+
+        try {
+            const response = await this.makeAjaxRequest({
+                action: 'eve_clear_logs',
+                nonce: eveObserverApi.nonce
+            });
+
+            if (response.success) {
+                this.displayLogs([]);
+                this.showNotification('Logs cleared successfully', 'success');
+            } else {
+                throw new Error(response.data?.message || 'Failed to clear logs');
+            }
+        } catch (error) {
+            console.error('❌ [LOGS] Error clearing logs:', error);
+            this.showNotification('Failed to clear logs: ' + error.message, 'error');
+        } finally {
+            if (clearBtn) {
+                clearBtn.disabled = false;
+                clearBtn.innerHTML = originalText;
+            }
+        }
+    }
+
+    async getLogs(search = '', levels = []) {
+        console.log('🔄 [LOGS] getLogs called with search:', search, 'levels:', levels);
+
+        return new Promise((resolve, reject) => {
+            jQuery.ajax({
+                url: eveObserverApi.ajaxUrl,
+                type: 'POST',
+                data: {
+                    action: 'eve_get_logs',
+                    nonce: eveObserverApi.nonce,
+                    search: search,
+                    levels: levels.join(',')
+                },
+                timeout: 30000,
+                success: (response) => {
+                    console.log('✅ [LOGS] Get logs successful:', response);
+                    if (response.success && response.data) {
+                        resolve(response.data.logs || []);
+                    } else {
+                        resolve([]);
+                    }
+                },
+                error: (xhr, status, error) => {
+                    console.error('❌ [LOGS] Get logs failed:', xhr.status, error);
+                    reject(new Error(xhr.responseJSON?.data?.message || error || 'Failed to get logs'));
+                }
+            });
+        });
+    }
+
+    displayLogs(logs) {
+        console.log('🔄 [LOGS] displayLogs called with', logs.length, 'logs');
+
+        const logsContainer = document.getElementById('logs-display');
+        if (!logsContainer) {
+            console.error('❌ [LOGS] Logs container not found');
+            return;
+        }
+
+        if (!logs || logs.length === 0) {
+            logsContainer.innerHTML = '<div class="eve-no-logs">No logs found</div>';
+            return;
+        }
+
+        const logsHtml = logs.map(log => {
+            const levelClass = `eve-log-${log.level.toLowerCase()}`;
+            const timestamp = new Date(log.timestamp).toLocaleString();
+            return `
+                <div class="eve-log-entry ${levelClass}">
+                    <span class="eve-log-timestamp">${timestamp}</span>
+                    <span class="eve-log-level">${log.level}</span>
+                    <span class="eve-log-message">${this.escapeHtml(log.message)}</span>
+                </div>
+            `;
+        }).join('');
+
+        logsContainer.innerHTML = logsHtml;
+
+        // Scroll to bottom to show latest logs
+        logsContainer.scrollTop = logsContainer.scrollHeight;
+    }
+
+    debouncedSearchLogs(query) {
+        clearTimeout(this.searchTimeouts.logs);
+        this.searchTimeouts.logs = setTimeout(() => {
+            this.searchLogs(query);
+        }, 300);
+    }
+
+    async searchLogs(query) {
+        console.log('🔄 [LOGS] searchLogs called with query:', query);
+
+        const levels = this.getSelectedLogLevels();
+        try {
+            const logs = await this.getLogs(query, levels);
+            this.displayLogs(logs);
+        } catch (error) {
+            console.error('❌ [LOGS] Error searching logs:', error);
+            this.showNotification('Failed to search logs: ' + error.message, 'error');
+        }
+    }
+
+    async filterLogsByLevel() {
+        console.log('🔄 [LOGS] filterLogsByLevel called');
+
+        const searchInput = document.getElementById('search-logs');
+        const query = searchInput ? searchInput.value : '';
+        const levels = this.getSelectedLogLevels();
+
+        try {
+            const logs = await this.getLogs(query, levels);
+            this.displayLogs(logs);
+        } catch (error) {
+            console.error('❌ [LOGS] Error filtering logs:', error);
+            this.showNotification('Failed to filter logs: ' + error.message, 'error');
+        }
+    }
+
+    getSelectedLogLevels() {
+        const checkboxes = document.querySelectorAll('input[id^="log-filter-"]:checked');
+        return Array.from(checkboxes).map(cb => cb.id.replace('log-filter-', '').toUpperCase());
     }
 
     setupCardClicks() {
