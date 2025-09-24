@@ -654,7 +654,7 @@ class EVEDashboard {
                     action: 'eve_sync_status',
                     nonce: eveObserverApi.nonce
                 },
-                timeout: 10000,
+                timeout: 30000, // Increased from 10 seconds to 30 seconds
                 success: (response) => {
                     console.log('✅ [SYNC STATUS] Status check successful:', response);
                     if (response.success && response.data) {
@@ -665,7 +665,12 @@ class EVEDashboard {
                 },
                 error: (xhr, status, error) => {
                     console.error('❌ [SYNC STATUS] Status check failed:', xhr.status, error);
-                    resolve({ running: false, progress: 0, message: 'Unable to check status' });
+                    // Don't reject on timeout - just resolve with error status
+                    if (status === 'timeout') {
+                        resolve({ running: false, progress: 0, message: 'Status check timed out - sync may still be running' });
+                    } else {
+                        resolve({ running: false, progress: 0, message: 'Unable to check status: ' + error });
+                    }
                 }
             });
         });
@@ -763,7 +768,7 @@ class EVEDashboard {
         this.syncStatusInterval = setInterval(async () => {
             const status = await this.checkSyncStatus();
             this.updateSyncStatusDisplay(status);
-        }, 10000); // Poll every 10 seconds (reduced from 5)
+        }, 30000); // Poll every 30 seconds (increased from 10)
     }
 
     stopSyncStatusPolling() {

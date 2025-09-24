@@ -258,13 +258,10 @@ class EVE_Observer {
     }
 
     public function handle_sync_status_request() {
-        error_log("🔄 [SYNC STATUS] Sync status request received");
-
         $scripts_dir = plugin_dir_path(__FILE__) . 'scripts/';
         $status_file = $scripts_dir . 'sync_status.json';
 
         if (!file_exists($status_file)) {
-            error_log("🔄 [SYNC STATUS] No status file found");
             return array(
                 'running' => false,
                 'message' => 'No sync in progress'
@@ -273,7 +270,6 @@ class EVE_Observer {
 
         $status_data = json_decode(file_get_contents($status_file), true);
         if (!$status_data) {
-            error_log("🔄 [SYNC STATUS] Invalid status file");
             return array(
                 'running' => false,
                 'message' => 'Invalid status data'
@@ -299,14 +295,11 @@ class EVE_Observer {
         if (!$running) {
             // Clean up stale status file
             @unlink($status_file);
-            error_log("🔄 [SYNC STATUS] Process not running, cleaned up status file");
             return array(
                 'running' => false,
                 'message' => 'No sync in progress'
             );
         }
-
-        error_log("🔄 [SYNC STATUS] Sync is running: " . print_r($status_data, true));
 
         return array(
             'running' => true,
@@ -316,7 +309,8 @@ class EVE_Observer {
             'section' => $status_data['section'] ?? '',
             'timestamp' => $status_data['timestamp'] ?? '',
             'start_time' => $status_data['start_time'] ?? '',
-            'pid' => $pid
+            'pid' => $pid,
+            'stages' => $status_data['stages'] ?? null
         );
     }
 
@@ -371,38 +365,18 @@ class EVE_Observer {
     }
 
     public function handle_ajax_sync_status_request() {
-        // Log the start of AJAX request processing
-        error_log("🔄 [AJAX SYNC STATUS START] ========================================");
-        error_log("🔄 [AJAX SYNC STATUS START] handle_ajax_sync_status_request called");
-        error_log("🔄 [AJAX SYNC STATUS START] Timestamp: " . current_time('mysql'));
-        error_log("🔄 [AJAX SYNC STATUS START] REQUEST_METHOD: " . ($_SERVER['REQUEST_METHOD'] ?? 'unknown'));
-        error_log("🔄 [AJAX SYNC STATUS START] POST data: " . print_r($_POST, true));
-        error_log("🔄 [AJAX SYNC STATUS START] GET data: " . print_r($_GET, true));
-        error_log("🔄 [AJAX SYNC STATUS START] Current user ID: " . get_current_user_id());
-        error_log("🔄 [AJAX SYNC STATUS START] Current user capabilities: " . print_r(wp_get_current_user()->allcaps, true));
-        error_log("🔄 [AJAX SYNC STATUS START] ========================================");
-
         // Check permissions
         if (!current_user_can('manage_options')) {
-            error_log("❌ [AJAX SYNC STATUS ERROR] User does not have manage_options capability");
             wp_die(__('You do not have sufficient permissions to access this page.'));
         }
-        error_log("✅ [AJAX SYNC STATUS STEP 1] User has manage_options capability");
 
-        // Verify nonce
         if (!wp_verify_nonce($_POST['nonce'], 'eve_sync_nonce')) {
-            error_log("❌ [AJAX SYNC STATUS ERROR] Nonce verification failed");
-            error_log("🔄 [AJAX SYNC STATUS DEBUG] Received nonce: " . ($_POST['nonce'] ?? 'none'));
-            error_log("🔄 [AJAX SYNC STATUS DEBUG] Expected nonce action: eve_sync_nonce");
             wp_send_json_error(array('message' => 'Security check failed'), 403);
             return;
         }
-        error_log("✅ [AJAX SYNC STATUS STEP 2] Nonce verification passed");
 
         // Call the main sync status handler
         $status = $this->handle_sync_status_request();
-
-        error_log("✅ [AJAX SYNC STATUS SUCCESS] Status retrieved: " . print_r($status, true));
         wp_send_json_success($status);
     }
 
@@ -448,50 +422,28 @@ class EVE_Observer {
     }
 
     public function handle_ajax_sync_request() {
-        error_log("🔄 [PHP AJAX START] handle_ajax_sync_request called");
-        error_log("🔄 [PHP AJAX START] Timestamp: " . current_time('mysql'));
-        error_log("🔄 [PHP AJAX START] REQUEST_METHOD: " . ($_SERVER['REQUEST_METHOD'] ?? 'unknown'));
-        error_log("🔄 [PHP AJAX START] POST data: " . print_r($_POST, true));
-        error_log("🔄 [PHP AJAX START] GET data: " . print_r($_GET, true));
-        error_log("🔄 [PHP AJAX START] Current user ID: " . get_current_user_id());
-        error_log("🔄 [PHP AJAX START] Current user capabilities: " . print_r(wp_get_current_user()->allcaps, true));
-        error_log("🔄 [PHP AJAX START] ========================================");
-
-        // Check permissions
+        // Quick permission and nonce check
         if (!current_user_can('manage_options')) {
-            error_log("❌ [PHP AJAX ERROR] User does not have manage_options capability");
             wp_die(__('You do not have sufficient permissions to access this page.'));
         }
-        error_log("✅ [PHP AJAX STEP 1] User has manage_options capability");
 
-        // Verify nonce
         if (!wp_verify_nonce($_POST['nonce'], 'eve_sync_nonce')) {
-            error_log("❌ [PHP AJAX ERROR] Nonce verification failed");
-            error_log("🔄 [PHP AJAX DEBUG] Received nonce: " . ($_POST['nonce'] ?? 'none'));
-            error_log("🔄 [PHP AJAX DEBUG] Expected nonce action: eve_sync_nonce");
             wp_send_json_error(array('message' => 'Security check failed'), 403);
             return;
         }
-        error_log("✅ [PHP AJAX STEP 2] Nonce verification passed");
 
-        // Get the section parameter
         $section = isset($_POST['section']) ? sanitize_text_field($_POST['section']) : 'all';
-        error_log("🔄 [PHP AJAX STEP 3] Section parameter: {$section}");
 
         // Check if a sync is already running
         $sync_status = $this->handle_sync_status_request();
         if ($sync_status['running']) {
-            error_log("🔄 [PHP AJAX INFO] Sync already running, offering to stop it");
             wp_send_json_error(array(
                 'message' => 'A sync is already running. Would you like to stop it first?',
                 'sync_running' => true,
                 'current_status' => $sync_status
-            ), 409); // 409 Conflict
+            ), 409);
             return;
         }
-
-        // Log the sync request
-        error_log("🔄 [AJAX PHP STEP 1] EVE Observer: AJAX sync request started for section: {$section}");
 
         // Map sections to Python scripts
         $script_map = array(
@@ -504,294 +456,93 @@ class EVE_Observer {
         );
 
         if (!isset($script_map[$section])) {
-            error_log("❌ [AJAX PHP ERROR] Invalid section specified: {$section}");
             wp_send_json_error(array('message' => 'Invalid section specified'), 400);
             return;
         }
 
-        // Get the plugin directory path
+        // Get plugin directory and create initial status file
         $plugin_dir = plugin_dir_path(__FILE__);
         $scripts_dir = $plugin_dir . 'scripts/';
-        $script_path = $scripts_dir . $script_map[$section];
+        $status_file = $scripts_dir . 'sync_status.json';
 
-        // Parse script and arguments from script_map entry
-        $script_parts = explode(' ', $script_map[$section], 2);
-        $script_name = $script_parts[0]; // e.g., 'main.py'
-        $script_args = isset($script_parts[1]) ? $script_parts[1] : ''; // e.g., '--all'
-
-        // TEMPORARY DEBUG: Comprehensive Python detection
-        error_log("🔍 [PYTHON DEBUG] Starting comprehensive Python detection...");
-        
-        // Check environment and PATH
-        $env_path = getenv('PATH');
-        error_log("🔍 [PYTHON DEBUG] Current PATH: " . ($env_path ?: 'not set'));
-        
-        // Check which commands are available
-        $which_python3 = shell_exec('which python3 2>/dev/null');
-        $which_python = shell_exec('which python 2>/dev/null');
-        error_log("🔍 [PYTHON DEBUG] which python3: " . ($which_python3 ?: 'not found'));
-        error_log("🔍 [PYTHON DEBUG] which python: " . ($which_python ?: 'not found'));
-        
-        // Check common Python paths
-        $python_paths_to_check = array(
-            '/usr/bin/python3',
-            '/usr/local/bin/python3',
-            '/usr/bin/python',
-            '/usr/local/bin/python',
-            '/opt/python3/bin/python3',
-            '/opt/python/bin/python',
-            // Additional Hostinger-specific paths
-            '/usr/local/cpanel/3rdparty/bin/python3',
-            '/usr/local/cpanel/3rdparty/bin/python',
-            '/opt/cpanel/libexec/python3',
-            '/opt/cpanel/libexec/python',
-            // Check if python3 exists anywhere in PATH directories
-            '/usr/local/bin/python3.6',
-            '/usr/local/bin/python3.7',
-            '/usr/local/bin/python3.8',
-            '/usr/local/bin/python3.9',
-            '/usr/local/bin/python3.10',
-            '/usr/local/bin/python3.11',
-            '/usr/local/bin/python3.12',
-            '/usr/bin/python3.6',
-            '/usr/bin/python3.7',
-            '/usr/bin/python3.8',
-            '/usr/bin/python3.9',
-            '/usr/bin/python3.10',
-            '/usr/bin/python3.11',
-            '/usr/bin/python3.12',
-            // Hostinger alt Python installations (found via debug)
-            '/opt/alt/python311/bin/python3.11',
-            '/opt/alt/python37/bin/python3.7',
-            '/opt/alt/python27/bin/python2.7'
+        // Create initial status file immediately
+        $initial_status = array(
+            'running' => true,
+            'section' => $section,
+            'progress' => 0,
+            'message' => 'Starting sync...',
+            'stages' => array(
+                'initialization' => array('status' => 'running', 'progress' => 0, 'message' => 'Initializing...'),
+                'collection' => array('status' => 'pending', 'progress' => 0, 'message' => 'Preparing...'),
+                'processing' => array('status' => 'pending', 'progress' => 0, 'message' => 'Preparing...'),
+                'finalization' => array('status' => 'pending', 'progress' => 0, 'message' => 'Preparing...')
+            ),
+            'start_time' => time(),
+            'pid' => 0
         );
-        
-        // Also check for any python executables in common directories
-        error_log("🔍 [PYTHON DEBUG] Checking for any python executables in /usr/bin/...");
-        $usr_bin_ls = shell_exec('ls -la /usr/bin/python* 2>/dev/null | head -20');
-        error_log("🔍 [PYTHON DEBUG] /usr/bin/ python files: " . ($usr_bin_ls ?: 'none found'));
-        
-        error_log("🔍 [PYTHON DEBUG] Checking for any python executables in /usr/local/bin/...");
-        $usr_local_bin_ls = shell_exec('ls -la /usr/local/bin/python* 2>/dev/null | head -20');
-        error_log("🔍 [PYTHON DEBUG] /usr/local/bin/ python files: " . ($usr_local_bin_ls ?: 'none found'));
-        
-        error_log("🔍 [PYTHON DEBUG] Checking for any python executables in /opt/...");
-        $opt_ls = shell_exec('find /opt -name "python*" -type f -executable 2>/dev/null | head -10');
-        error_log("🔍 [PYTHON DEBUG] /opt/ python executables: " . ($opt_ls ?: 'none found'));
-        
-        $available_pythons = array();
-        foreach ($python_paths_to_check as $path) {
-            $exists = file_exists($path);
-            $executable = is_executable($path);
-            $version = '';
-            
-            if ($exists && $executable) {
-                // Try to get version
-                $version_cmd = escapeshellarg($path) . ' --version 2>&1';
-                $version_output = shell_exec($version_cmd);
-                $version = trim($version_output);
-                
-                // Try a simple test
-                $test_cmd = escapeshellarg($path) . ' -c "print(\'Python test successful\')" 2>&1';
-                $test_output = shell_exec($test_cmd);
-                $test_success = strpos($test_output, 'Python test successful') !== false;
-                
-                $available_pythons[] = array(
-                    'path' => $path,
-                    'exists' => $exists,
-                    'executable' => $executable,
-                    'version' => $version,
-                    'test_success' => $test_success,
-                    'test_output' => trim($test_output)
-                );
-                
-                error_log("🔍 [PYTHON DEBUG] {$path}: EXISTS=" . ($exists ? 'YES' : 'NO') . ", EXECUTABLE=" . ($executable ? 'YES' : 'NO') . ", VERSION={$version}, TEST=" . ($test_success ? 'SUCCESS' : 'FAILED'));
-            } else {
-                error_log("🔍 [PYTHON DEBUG] {$path}: EXISTS=" . ($exists ? 'YES' : 'NO') . ", EXECUTABLE=" . ($executable ? 'YES' : 'NO'));
-            }
-        }
-        
-        // Try multiple methods to find Python executable
+
+        file_put_contents($status_file, json_encode($initial_status));
+
+        // Simplified Python detection - try common paths quickly
         $python_cmd = '';
-        $python_paths = array(
-            '/usr/bin/python3',  // Hostinger cron job path (highest priority)
-            '/usr/local/bin/python3', 
-            '/usr/bin/python',
-            '/usr/local/bin/python',
-            'python3',
-            'python'
-        );
-        
-        error_log("🔄 [AJAX PHP STEP 2] Checking for Python in common locations...");
+        $python_paths = array('/usr/bin/python3', '/usr/local/bin/python3', 'python3', 'python');
+
         foreach ($python_paths as $path) {
-            // Test if the Python executable exists and is executable
-            $test_cmd = 'command -v ' . escapeshellarg($path) . ' 2>/dev/null && ' . escapeshellarg($path) . ' --version 2>/dev/null';
-            $test_output = shell_exec($test_cmd);
-            if (!empty($test_output) && strpos($test_output, 'Python') !== false) {
+            if (file_exists($path) && is_executable($path)) {
                 $python_cmd = $path;
-                error_log("✅ [AJAX PHP STEP 3] Found working Python at: {$path}");
                 break;
             }
         }
-        
-        // If no Python found through PATH, try direct path access (Hostinger specific)
+
         if (empty($python_cmd)) {
-            error_log("🔄 [AJAX PHP STEP 3.1] PATH-based detection failed, trying direct path access...");
-            $direct_paths = array(
-                '/usr/bin/python3', 
-                '/usr/local/bin/python3',
-                // Hostinger alt Python paths (prioritize Python 3.11)
-                '/opt/alt/python311/bin/python3.11',
-                '/opt/alt/python37/bin/python3.7'
-            );
-            foreach ($direct_paths as $path) {
-                if (file_exists($path) && is_executable($path)) {
-                    $python_cmd = $path;
-                    error_log("✅ [AJAX PHP STEP 3.2] Found executable Python directly at: {$path}");
-                    break;
-                }
-            }
-        }
-        
-        // Last resort: try to find any python executable on the system
-        if (empty($python_cmd)) {
-            error_log("🔄 [AJAX PHP STEP 3.3] Direct path access failed, trying system-wide search...");
-            
-            // Try find command to locate any python executables, focusing on /opt/alt/
-            $find_python = shell_exec('find /opt/alt -name "python3*" -type f -executable 2>/dev/null | head -5');
-            if (!empty($find_python)) {
-                $found_paths = array_filter(explode("\n", trim($find_python)));
-                foreach ($found_paths as $path) {
-                    $path = trim($path);
-                    if (!empty($path) && file_exists($path) && is_executable($path)) {
-                        $python_cmd = $path;
-                        error_log("✅ [AJAX PHP STEP 3.4] Found Python via find command at: {$path}");
-                        break;
-                    }
-                }
-            }
-            
-            // Also try the broader /usr search
+            // Fallback: try to find any python3 in /usr/bin or /usr/local/bin
+            $python_cmd = trim(shell_exec('find /usr/bin /usr/local/bin -name "python3" -executable 2>/dev/null | head -1') ?: '');
             if (empty($python_cmd)) {
-                $find_python_usr = shell_exec('find /usr -name "python3" -type f -executable 2>/dev/null | head -5');
-                if (!empty($find_python_usr)) {
-                    $found_paths = array_filter(explode("\n", trim($find_python_usr)));
-                    foreach ($found_paths as $path) {
-                        $path = trim($path);
-                        if (!empty($path) && file_exists($path) && is_executable($path)) {
-                            $python_cmd = $path;
-                            error_log("✅ [AJAX PHP STEP 3.4] Found Python via find command at: {$path}");
-                            break;
-                        }
-                    }
-                }
+                $python_cmd = 'python3'; // Last resort
             }
-            
-            // Try locate command if available
-            if (empty($python_cmd)) {
-                $locate_python = shell_exec('locate python3 2>/dev/null | grep -E "/python3$" | head -5');
-                if (!empty($locate_python)) {
-                    $found_paths = array_filter(explode("\n", trim($locate_python)));
-                    foreach ($found_paths as $path) {
-                        $path = trim($path);
-                        if (!empty($path) && file_exists($path) && is_executable($path)) {
-                            $python_cmd = $path;
-                            error_log("✅ [AJAX PHP STEP 3.5] Found Python via locate command at: {$path}");
-                            break;
-                        }
-                    }
-                }
-            }
-        }
-        
-        if (empty($python_cmd)) {
-            error_log("❌ [AJAX PHP ERROR] No working Python executable found");
-            error_log("🔄 [AJAX PHP DEBUG] Available commands check:");
-            
-            // Check what commands are available
-            $which_output = shell_exec('which python3 python 2>/dev/null');
-            error_log("🔄 [AJAX PHP DEBUG] which output: " . ($which_output ?: 'none'));
-            
-            $ls_output = shell_exec('ls -la /usr/bin/python* /usr/local/bin/python* 2>/dev/null | head -10');
-            error_log("🔄 [AJAX PHP DEBUG] Python files in common dirs: " . ($ls_output ?: 'none'));
-            
-            wp_send_json_error(array(
-                'message' => 'Python executable not found. Your hosting provider (Hostinger) may not support Python, or it may be installed in a non-standard location. Please contact Hostinger support to enable Python or check if they offer Python hosting plans.',
-                'exit_code' => 127
-            ), 500);
-            return;
         }
 
-        error_log("🔄 [AJAX PHP STEP 4] Plugin dir: {$plugin_dir}");
-        error_log("🔄 [AJAX PHP STEP 5] Scripts dir: {$scripts_dir}");
-        error_log("🔄 [AJAX PHP STEP 6] Script path: {$script_path}");
-        error_log("🔄 [AJAX PHP STEP 7] Python command: {$python_cmd}");
+        // Build and execute command
+        $script_parts = explode(' ', $script_map[$section], 2);
+        $script_name = $script_parts[0];
+        $script_args = isset($script_parts[1]) ? $script_parts[1] : '';
 
-        // Build command with script name and arguments as separate arguments
         $command_parts = array(
             'cd', escapeshellarg($scripts_dir), '&&',
             escapeshellarg($python_cmd),
             escapeshellarg($script_name)
         );
-        
+
         if (!empty($script_args)) {
-            // Split arguments and add them individually
             $args_array = explode(' ', $script_args);
             foreach ($args_array as $arg) {
                 $command_parts[] = escapeshellarg($arg);
             }
         }
-        
-        $command = implode(' ', $command_parts) . ' 2>&1';
-        error_log("🔄 [AJAX PHP STEP 8] Full command: {$command}");
 
-        // Set execution time limit for long-running syncs
-        set_time_limit(300); // 5 minutes
-        error_log("🔄 [AJAX PHP STEP 9] Time limit set");
+        $command = implode(' ', $command_parts) . ' > /dev/null 2>&1 & echo $!';
 
-        // Execute the command asynchronously (don't wait for completion)
-        error_log("🔄 [AJAX PHP STEP 10] Starting command execution in background...");
-        
-        // Use exec() to run in background and get PID
-        $command_bg = $command . ' > /dev/null 2>&1 & echo $!';
-        $pid = exec($command_bg);
-        
-        if (!$pid) {
-            error_log("❌ [AJAX PHP ERROR] Failed to start background process");
+        // Execute in background and get PID
+        $pid = exec($command);
+
+        if ($pid) {
+            // Update status file with PID
+            $initial_status['pid'] = $pid;
+            file_put_contents($status_file, json_encode($initial_status));
+
+            wp_send_json_success(array(
+                'message' => 'Sync started successfully in background',
+                'pid' => $pid,
+                'status' => 'running'
+            ));
+        } else {
+            // Clean up status file on failure
+            if (file_exists($status_file)) {
+                unlink($status_file);
+            }
+
             wp_send_json_error(array('message' => 'Failed to start sync process'), 500);
-            return;
         }
-        
-        error_log("✅ [AJAX PHP STEP 11] Background process started with PID: {$pid}");
-        
-        // Wait a moment for the status file to be created
-        sleep(2);
-        
-        // Check if the process is running and status file exists
-        $status_file = plugin_dir_path(__FILE__) . 'scripts/sync_status.json';
-        $max_wait = 10; // Wait up to 10 seconds for status file
-        $wait_count = 0;
-        
-        while (!file_exists($status_file) && $wait_count < $max_wait) {
-            sleep(1);
-            $wait_count++;
-            error_log("🔄 [AJAX PHP STEP 12] Waiting for status file... ({$wait_count}/{$max_wait})");
-        }
-        
-        if (!file_exists($status_file)) {
-            error_log("❌ [AJAX PHP ERROR] Status file was not created within {$max_wait} seconds");
-            wp_send_json_error(array('message' => 'Sync process failed to start properly'), 500);
-            return;
-        }
-        
-        error_log("✅ [AJAX PHP STEP 13] Status file created, sync process is running");
-        
-        // Send success response immediately
-        wp_send_json_success(array(
-            'message' => 'Sync started successfully in background',
-            'pid' => $pid,
-            'status' => 'running'
-        ));
     }
 
     public function handle_ajax_get_logs_request() {
