@@ -490,9 +490,42 @@ class EVEDashboard {
     }
 
     showNotification(message, type = 'info') {
+        const notification = document.createElement('div');
+        notification.className = `eve-notification eve-notification-${type}`;
+        notification.innerHTML = `
+            <span class="dashicons ${type === 'success' ? 'dashicons-yes' : 'dashicons-no'}"></span>
+            ${message}
+        `;
+
+        // Style the notification
+        Object.assign(notification.style, {
+            position: 'fixed',
+            top: '20px',
+            right: '20px',
+            background: type === 'success' ? '#28a745' : '#dc3545',
+            color: 'white',
+            padding: '12px 16px',
+            borderRadius: '4px',
+            boxShadow: '0 2px 10px rgba(0,0,0,0.2)',
+            zIndex: '9999',
+            maxWidth: '400px',
+            fontWeight: 'bold',
+            display: 'flex',
+            alignItems: 'center',
+            gap: '8px'
+        });
+
+        document.body.appendChild(notification);
+
+        // Auto-remove after 5 seconds
+        setTimeout(() => {
+            if (notification.parentNode) {
+                notification.parentNode.removeChild(notification);
+            }
+        }, 5000);
+    }
 
     copyOutbidContracts() {
-        console.log('copyOutbidContracts called, contracts count:', this.data.contracts.length);
         const outbidContracts = this.data.contracts.filter(contract =>
             contract.meta && contract.meta._eve_contract_outbid === '1'
         );
