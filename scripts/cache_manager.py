@@ -193,6 +193,9 @@ def load_cache(cache_file: str) -> Dict[str, Any]:
     ensure_cache_dir()
     if os.path.exists(cache_file):
         try:
+            start_time = time.time()
+            logger.info(f"Loading cache from {cache_file}...")
+            
             # Try loading as uncompressed JSON first (for backward compatibility)
             try:
                 with open(cache_file, "r") as f:
@@ -210,6 +213,8 @@ def load_cache(cache_file: str) -> Dict[str, Any]:
                 # Save cleaned cache
                 _save_cache_immediate(cache_file, cleaned_data)
 
+            load_time = time.time() - start_time
+            logger.info(f"✓ Cache loaded from {cache_file}: {len(cleaned_data)} entries in {load_time:.2f}s")
             _cache_stats["loads"] += 1
             return cleaned_data
         except Exception as e:
@@ -230,6 +235,9 @@ def _save_cache_immediate(cache_file: str, data: Dict[str, Any]) -> None:
     """Save cache immediately with compression."""
     ensure_cache_dir()
     try:
+        start_time = time.time()
+        logger.debug(f"Saving cache to {cache_file} ({len(data)} entries)...")
+        
         # Add timestamps to new entries
         data_with_timestamps = _add_timestamps_to_cache(data)
 
@@ -241,6 +249,8 @@ def _save_cache_immediate(cache_file: str, data: Dict[str, Any]) -> None:
             with open(cache_file, "w") as f:
                 json.dump(data_with_timestamps, f)
 
+        save_time = time.time() - start_time
+        logger.debug(f"✓ Cache saved to {cache_file}: {len(data)} entries in {save_time:.3f}s")
         _cache_stats["saves"] += 1
     except Exception as e:
         logger.error(f"Failed to save cache {cache_file}: {e}")

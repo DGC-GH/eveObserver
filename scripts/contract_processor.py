@@ -3,6 +3,7 @@ import asyncio
 import json
 from datetime import datetime, timezone
 from typing import Any, Dict, List, Optional, Tuple
+import time
 
 import aiohttp
 
@@ -1045,6 +1046,10 @@ async def process_character_contracts(
         logger.info("Fetching all expanded contracts from The Forge region for competition analysis...")
         all_expanded_contracts = await fetch_and_expand_all_forge_contracts()
 
+        # Collect contracts that need competition checking
+        contracts_to_check = []
+        contract_items_to_check = []
+        
         # Process contracts themselves
         for contract in char_contracts:
             contract_status = contract.get("status", "")
@@ -1053,15 +1058,65 @@ async def process_character_contracts(
                 continue
             elif contract_status == "expired":
                 logger.info(f"EXPIRED CHARACTER CONTRACT TO DELETE MANUALLY: {contract['contract_id']}")
-            await update_contract_in_wp(
-                contract["contract_id"],
-                contract,
-                for_corp=False,
-                entity_id=char_id,
-                access_token=access_token,
-                blueprint_cache=blueprint_cache,
-                all_expanded_contracts=all_expanded_contracts,
+            
+            # Check if this contract needs competition checking
+            if (contract.get("status") == "outstanding" and 
+                contract.get("type") == "item_exchange"):
+                
+                # Fetch contract items for competition checking
+                contract_items = None
+                if all_expanded_contracts:
+                    for expanded_contract in all_expanded_contracts:
+                        if expanded_contract.get("contract_id") == contract["contract_id"]:
+                            contract_items = expanded_contract.get("items", [])
+                            break
+                
+                if contract_items:
+                    contracts_to_check.append(contract)
+                    contract_items_to_check.append(contract_items)
+                else:
+                    # No items available, still update the contract but without competition check
+                    await update_contract_in_wp(
+                        contract["contract_id"],
+                        contract,
+                        for_corp=False,
+                        entity_id=char_id,
+                        access_token=access_token,
+                        blueprint_cache=blueprint_cache,
+                        all_expanded_contracts=all_expanded_contracts,
+                    )
+            else:
+                # Not an outstanding sell contract, just update normally
+                await update_contract_in_wp(
+                    contract["contract_id"],
+                    contract,
+                    for_corp=False,
+                    entity_id=char_id,
+                    access_token=access_token,
+                    blueprint_cache=blueprint_cache,
+                    all_expanded_contracts=all_expanded_contracts,
+                )
+
+        # Run competition checks concurrently for contracts that need them
+        if contracts_to_check:
+            logger.info(f"Running concurrent competition checks for {len(contracts_to_check)} contracts...")
+            competition_results = await check_contracts_competition_concurrent(
+                contracts_to_check, contract_items_to_check, all_expanded_contracts
             )
+            
+            # Update contracts with competition results
+            for contract, (is_outbid, competing_price) in zip(contracts_to_check, competition_results):
+                await update_contract_in_wp_with_competition_result(
+                    contract["contract_id"],
+                    contract,
+                    is_outbid,
+                    competing_price,
+                    for_corp=False,
+                    entity_id=char_id,
+                    access_token=access_token,
+                    blueprint_cache=blueprint_cache,
+                    all_expanded_contracts=all_expanded_contracts,
+                )
 
 
 async def fetch_and_expand_all_forge_contracts() -> List[Dict[str, Any]]:
@@ -1091,8 +1146,10 @@ async def fetch_and_expand_all_forge_contracts() -> List[Dict[str, Any]]:
 
     # Phase 1: Fetch all basic contract data and save raw contracts first
     logger.info("Phase 1: Fetching all basic contract data from The Forge region...")
+    start_time = time.time()
     basic_contracts = await fetch_all_contracts_in_region(FORGE_REGION_ID)
-    logger.info(f"✓ Fetched {len(basic_contracts)} basic contracts")
+    phase1_time = time.time() - start_time
+    logger.info(f"✓ Fetched {len(basic_contracts)} basic contracts in {phase1_time:.1f}s")
 
     # Save raw contracts to cache file first
     with open(cache_file, 'w') as f:
@@ -1101,11 +1158,14 @@ async def fetch_and_expand_all_forge_contracts() -> List[Dict[str, Any]]:
 
     # Phase 2: Expand contracts asynchronously and collect all expanded data
     logger.info("Phase 2: Starting asynchronous expansion with data collection...")
+    start_time = time.time()
     expanded_contracts, collected_items_cache = await expand_all_contracts_async(basic_contracts)
-    logger.info(f"✓ Expanded {len(expanded_contracts)} contracts with full details")
+    phase2_time = time.time() - start_time
+    logger.info(f"✓ Expanded {len(expanded_contracts)} contracts with full details in {phase2_time:.1f}s")
 
     # Phase 3: Save collected expanded data to caches
     logger.info("Phase 3: Saving expanded data to caches...")
+    start_time = time.time()
     cache_manager = ContractCacheManager(CACHE_DIR)
 
     # Save contract items cache
@@ -1115,16 +1175,23 @@ async def fetch_and_expand_all_forge_contracts() -> List[Dict[str, Any]]:
         await cache_manager.save_contract_items_cache(existing_items_cache)
         logger.info(f"✓ Saved {len(collected_items_cache)} contract items to cache")
 
+    phase3_time = time.time() - start_time
+    logger.info(f"✓ Cache saving completed in {phase3_time:.1f}s")
+
     # Phase 4: Apply expanded data from caches to all_contracts_forge.json
     logger.info("Phase 4: Applying expanded data from caches to contracts file...")
+    start_time = time.time()
     final_expanded_contracts = await apply_cached_data_to_contracts(basic_contracts)
-    logger.info(f"✓ Applied cached data to {len(final_expanded_contracts)} contracts")
+    phase4_time = time.time() - start_time
+    logger.info(f"✓ Applied cached data to {len(final_expanded_contracts)} contracts in {phase4_time:.1f}s")
 
     # Save final expanded contracts
     with open(cache_file, 'w') as f:
         json.dump(final_expanded_contracts, f, indent=2, default=str)
     logger.info(f"✓ Saved {len(final_expanded_contracts)} final expanded contracts to {cache_file}")
 
+    total_time = phase1_time + phase2_time + phase3_time + phase4_time
+    logger.info(f"✓ All phases completed successfully in {total_time:.1f}s")
     return final_expanded_contracts
 
 
@@ -1467,23 +1534,41 @@ async def expand_all_contracts_async(contracts: List[Dict[str, Any]]) -> tuple[L
 
     # Create tasks for parallel batch processing
     batch_tasks = []
+    total_batches = (len(contracts) + batch_size - 1) // batch_size  # Ceiling division
+    logger.info(f"Starting parallel processing of {total_batches} batches ({len(contracts)} contracts total)")
+    
     for batch_start in range(0, len(contracts), batch_size):
         batch_end = min(batch_start + batch_size, len(contracts))
         batch_contracts = contracts[batch_start:batch_end]
         batch_num = batch_start // batch_size + 1
-        logger.info(f"Processing batch {batch_num}: contracts {batch_start} to {batch_end-1}")
+        logger.info(f"Queueing batch {batch_num}/{total_batches}: contracts {batch_start} to {batch_end-1} ({len(batch_contracts)} contracts)")
         batch_tasks.append(expand_contract_batch(batch_contracts, batch_num))
 
-    # Wait for all batches to complete
-    batch_results = await asyncio.gather(*batch_tasks)
-
-    # Combine results from all batches and collect new cache data
+    # Wait for all batches to complete with progress updates
+    logger.info("Processing batches concurrently...")
+    start_time = time.time()
+    completed_batches = 0
+    
+    # Initialize accumulation variables
     all_new_issuer_names = {}
     all_new_type_data = {}
     all_new_corporation_names = {}
     all_new_contract_items = {}
-
-    for batch_expanded, new_issuers, new_types, new_corps, new_items in batch_results:
+    
+    for coro in asyncio.as_completed(batch_tasks):
+        batch_result = await coro
+        completed_batches += 1
+        batch_num = completed_batches
+        batch_expanded, new_issuers, new_types, new_corps, new_items = batch_result
+        
+        # Log progress
+        elapsed = time.time() - start_time
+        progress_pct = (completed_batches / total_batches) * 100
+        logger.info(f"✓ Completed batch {batch_num}/{total_batches} ({progress_pct:.1f}%): {len(batch_expanded)} contracts expanded, "
+                   f"{len(new_issuers)} new issuers, {len(new_types)} new types, {len(new_corps)} new corps, "
+                   f"{len(new_items)} new items. Elapsed: {elapsed:.1f}s")
+        
+        # Accumulate results
         expanded_contracts.extend(batch_expanded)
         all_new_issuer_names.update(new_issuers)
         all_new_type_data.update(new_types)
@@ -1532,8 +1617,18 @@ async def apply_cached_data_to_contracts(contracts: List[Dict[str, Any]]) -> Lis
     logger.info(f"Caches loaded - Issuer: {len(issuer_cache)}, Corporation: {len(corporation_cache)}, Type: {len(type_cache)}, Items: {len(contract_items_cache)}")
 
     expanded_contracts = []
-
-    for contract in contracts:
+    start_time = time.time()
+    total_contracts = len(contracts)
+    
+    for i, contract in enumerate(contracts, 1):
+        if i % 1000 == 0 or i == total_contracts:  # Log progress every 1000 contracts or at the end
+            elapsed = time.time() - start_time
+            progress_pct = (i / total_contracts) * 100
+            rate = i / elapsed if elapsed > 0 else 0
+            eta = (total_contracts - i) / rate if rate > 0 else 0
+            logger.info(f"Cache application progress: {i}/{total_contracts} contracts ({progress_pct:.1f}%) - "
+                       f"Rate: {rate:.1f} contracts/sec, ETA: {eta:.1f}s")
+        
         contract_id = contract["contract_id"]
         contract_id_str = str(contract_id)
 
@@ -1798,7 +1893,6 @@ async def get_user_single_bpo_contracts() -> List[Dict[str, Any]]:
                 # Get item name
                 type_data = await fetch_public_esi(f"/universe/types/{type_id}/")
                 item_name = type_data.get("name", f"Type {type_id}") if type_data else f"Type {type_id}"
-
                 user_contract = {
                     'contract_id': contract_id,
                     'type_id': type_id,
@@ -1852,6 +1946,7 @@ def compare_contracts(user_contracts: List[Dict[str, Any]], market_contracts: Li
             logger.warning(f"  Price difference: {price_diff:,.2f} ISK")
             logger.warning(f"  Market issuer: {cheapest_market.get('issuer_id', 'Unknown')}")
             logger.warning(f"  Market title: {cheapest_market.get('title', 'N/A')}")
+            logger.warning(f"  Contract data: {cheapest_market}")
             logger.warning("")
         else:
             logger.info(f"Your contract {user_contract_id} for {item_name} is the cheapest at {user_price:,.2f} ISK")
@@ -1909,3 +2004,251 @@ async def cleanup_contract_posts(allowed_corp_ids: set, allowed_issuer_ids: set)
                     logger.info(f"Deleted contract: {contract_id}")
                 else:
                     logger.error(f"Failed to delete contract: {contract_id}")
+                    
+@validate_input_params(list, (list, type(None)))
+async def check_contracts_competition_concurrent(
+    contract_data_list: List[Dict[str, Any]], 
+    contract_items_list: List[List[Dict[str, Any]]], 
+    all_expanded_contracts: Optional[List[Dict[str, Any]]] = None
+) -> List[Tuple[bool, Optional[float]]]:
+    """Check competition for multiple contracts concurrently.
+    
+    Args:
+        contract_data_list: List of contract information dictionaries
+        contract_items_list: List of contract items lists (corresponding to contract_data_list)
+        all_expanded_contracts: Optional list of pre-expanded contracts for competition analysis
+        
+    Returns:
+        List of tuples (is_outbid, competing_price) for each contract
+    """
+    if len(contract_data_list) != len(contract_items_list):
+        raise ValueError("contract_data_list and contract_items_list must have the same length")
+    
+    # Create tasks for concurrent execution
+    tasks = [
+        check_contract_competition(contract_data, contract_items, all_expanded_contracts=all_expanded_contracts)
+        for contract_data, contract_items in zip(contract_data_list, contract_items_list)
+    ]
+    
+    # Execute all competition checks concurrently
+    results = await asyncio.gather(*tasks, return_exceptions=True)
+    
+    # Handle any exceptions that occurred
+    processed_results = []
+    for i, result in enumerate(results):
+        if isinstance(result, Exception):
+            logger.error(f"Error checking competition for contract {contract_data_list[i].get('contract_id')}: {result}")
+            processed_results.append((False, None))  # Default to not outbid on error
+        else:
+            processed_results.append(result)
+    
+    return processed_results
+
+
+@validate_input_params(int, dict, bool, (float, type(None)), bool, (int, type(None)), (str, type(None)), (dict, type(None)), (list, type(None)))
+async def update_contract_in_wp_with_competition_result(
+    contract_id: int,
+    contract_data: Dict[str, Any],
+    is_outbid: bool,
+    competing_price: Optional[float],
+    for_corp: bool = False,
+    entity_id: Optional[int] = None,
+    access_token: Optional[str] = None,
+    blueprint_cache: Optional[Dict[str, Any]] = None,
+    all_expanded_contracts: Optional[List[Dict[str, Any]]] = None,
+) -> None:
+    """Update or create a contract post in WordPress with pre-calculated competition result.
+
+    Similar to update_contract_in_wp but takes competition result as parameters
+    instead of calculating it internally.
+
+    Args:
+        contract_id: The EVE contract ID
+        contract_data: Contract information dictionary from ESI
+        is_outbid: Whether this contract has been outbid
+        competing_price: The competing price if outbid, None otherwise
+        for_corp: Whether this is a corporation contract
+        entity_id: Character or corporation ID that has access to the contract
+        access_token: Valid ESI access token for fetching contract items
+        blueprint_cache: Cached blueprint names (loaded automatically if not provided)
+        all_expanded_contracts: Optional list of pre-expanded contracts for competition analysis
+
+    Returns:
+        None
+    """
+    if blueprint_cache is None:
+        blueprint_cache = load_blueprint_cache()
+
+    blueprint_type_cache = load_blueprint_type_cache()
+
+    slug = f"contract-{contract_id}"
+    # Check if post exists by slug
+    existing_posts = await wp_request("GET", f"/wp/v2/eve_contract?slug={slug}")
+    existing_post = existing_posts[0] if existing_posts else None
+
+    # Fetch contract items if we have access token
+    contract_items = None
+    if access_token:
+        # First try to get items from the expanded contracts cache
+        if all_expanded_contracts:
+            for expanded_contract in all_expanded_contracts:
+                if expanded_contract.get("contract_id") == contract_id:
+                    contract_items = expanded_contract.get("items", [])
+                    logger.debug(f"Using cached items for contract {contract_id}: {len(contract_items)} items")
+                    break
+        
+        # If not found in cache, fetch individually (fallback)
+        if contract_items is None:
+            if for_corp and entity_id:
+                contract_items = await fetch_corporation_contract_items(entity_id, contract_id, access_token)
+            elif not for_corp and entity_id:
+                contract_items = await fetch_character_contract_items(entity_id, contract_id, access_token)
+
+    # Get region ID from start location
+    region_id = None
+    start_location_id = contract_data.get("start_location_id")
+    if start_location_id:
+        region_id = await get_region_from_location(start_location_id)
+
+    # Check if contract contains blueprints - only track contracts with blueprints
+    has_blueprint = False
+    if contract_items:
+        for item in contract_items:
+            type_id = item.get("type_id")
+            if type_id and str(type_id) in blueprint_type_cache and blueprint_type_cache[str(type_id)]:
+                has_blueprint = True
+                break
+
+    if not has_blueprint:
+        logger.info(f"Contract {contract_id} contains no blueprints, skipping")
+        return
+
+    title = await generate_contract_title(
+        contract_data,
+        for_corp=for_corp,
+        entity_id=entity_id,
+        contract_items=contract_items,
+        blueprint_cache=blueprint_cache,
+    )
+
+    post_data = {
+        "title": title,
+        "slug": slug,
+        "status": "publish",
+        "meta": {
+            "_eve_contract_id": str(contract_id),
+            "_eve_contract_type": contract_data.get("type"),
+            "_eve_contract_status": contract_data.get("status"),
+            "_eve_contract_issuer_id": str(contract_data.get("issuer_id"))
+            if contract_data.get("issuer_id") is not None
+            else None,
+            "_eve_contract_issuer_corp_id": str(contract_data.get("issuer_corporation_id"))
+            if contract_data.get("issuer_corporation_id") is not None
+            else None,
+            "_eve_contract_assignee_id": str(contract_data.get("assignee_id"))
+            if contract_data.get("assignee_id")
+            else None,
+            "_eve_contract_acceptor_id": str(contract_data.get("acceptor_id"))
+            if contract_data.get("acceptor_id")
+            else None,
+            "_eve_contract_start_location_id": str(contract_data.get("start_location_id"))
+            if contract_data.get("start_location_id")
+            else None,
+            "_eve_contract_end_location_id": str(contract_data.get("end_location_id"))
+            if contract_data.get("end_location_id")
+            else None,
+            "_eve_contract_region_id": str(region_id) if region_id else None,
+            "_eve_contract_date_issued": contract_data.get("date_issued"),
+            "_eve_contract_date_expired": contract_data.get("date_expired"),
+            "_eve_contract_date_accepted": contract_data.get("date_accepted"),
+            "_eve_contract_date_completed": contract_data.get("date_completed"),
+            "_eve_contract_price": str(contract_data.get("price")) if contract_data.get("price") is not None else None,
+            "_eve_contract_reward": str(contract_data.get("reward"))
+            if contract_data.get("reward") is not None
+            else None,
+            "_eve_contract_collateral": str(contract_data.get("collateral"))
+            if contract_data.get("collateral") is not None
+            else None,
+            "_eve_contract_buyout": str(contract_data.get("buyout"))
+            if contract_data.get("buyout") is not None
+            else None,
+            "_eve_contract_volume": str(contract_data.get("volume"))
+            if contract_data.get("volume") is not None
+            else None,
+            "_eve_contract_days_to_complete": str(contract_data.get("days_to_complete"))
+            if contract_data.get("days_to_complete") is not None
+            else None,
+            "_eve_contract_title": contract_data.get("title"),
+            "_eve_contract_for_corp": str(for_corp).lower(),
+            "_eve_contract_entity_id": str(entity_id),
+            "_eve_last_updated": datetime.now(timezone.utc).isoformat(),
+        },
+    }
+
+    # Remove null values from meta to avoid WordPress validation errors
+    post_data["meta"] = {k: v for k, v in post_data["meta"].items() if v is not None}
+
+    # Add items data if available
+    if contract_items:
+        post_data["meta"]["_eve_contract_items"] = json.dumps(contract_items)
+
+        # Store item types for easier querying
+        item_types = [str(item.get("type_id")) for item in contract_items if item.get("type_id")]
+        post_data["meta"]["_eve_contract_item_types"] = ",".join(item_types)
+
+        # Use pre-calculated competition result
+        if is_outbid:
+            post_data["meta"]["_eve_contract_outbid"] = "1"
+            post_data["meta"]["_eve_contract_competing_price"] = str(competing_price)
+            logger.warning(f"Contract {contract_id} is outbid by contract price: {competing_price}")
+        else:
+            post_data["meta"]["_eve_contract_outbid"] = "0"
+            if "_eve_contract_competing_price" in post_data["meta"]:
+                del post_data["meta"]["_eve_contract_competing_price"]
+    else:
+        # No contract items - ensure outbid is set to false
+        post_data["meta"]["_eve_contract_outbid"] = "0"
+        if "_eve_contract_competing_price" in post_data["meta"]:
+            del post_data["meta"]["_eve_contract_competing_price"]
+
+    if existing_post:
+        existing_meta = existing_post.get("meta", {})
+        # Send alert if this is newly outbid
+        was_outbid = existing_meta.get("_eve_contract_outbid") == "1"
+        if not was_outbid and post_data["meta"].get("_eve_contract_outbid") == "1":
+            price = post_data['meta'].get('_eve_contract_competing_price', 'unknown')
+            logger.warning(f"Contract {contract_id} is newly outbid by contract price: {price}")
+        # Check if title changed before updating
+        existing_title = existing_post.get("title", {}).get("rendered", "")
+
+        # Compare key fields to see if update is needed
+        needs_update = (
+            existing_title != title
+            or str(existing_meta.get("_eve_contract_status", "")) != str(contract_data.get("status", ""))
+            or str(existing_meta.get("_eve_contract_items", ""))
+            != str(json.dumps(contract_items) if contract_items else "")
+            or str(existing_meta.get("_eve_contract_outbid", "0"))
+            != str(post_data["meta"].get("_eve_contract_outbid", "0"))
+        )
+
+        if not needs_update:
+            logger.info(f"Contract {contract_id} unchanged, skipping update")
+            return
+
+        # Update existing
+        post_id = existing_post["id"]
+        result = await wp_request("PUT", f"/wp/v2/eve_contract/{post_id}", post_data)
+    else:
+        # Create new (without region_id to avoid ACF protection issues)
+        # Add thumbnail from first contract item
+        if contract_items and len(contract_items) > 0:
+            first_item_type_id = contract_items[0].get("type_id")
+            if first_item_type_id:
+                image_url = await fetch_type_icon(first_item_type_id, size=512)
+                post_data["meta"]["_thumbnail_external_url"] = image_url
+        result = await wp_request("POST", "/wp/v2/eve_contract", post_data)
+
+    if result:
+        logger.info(f"Updated contract: {contract_id} - {title}")
+    else:
+        logger.error(f"Failed to update contract {contract_id}")

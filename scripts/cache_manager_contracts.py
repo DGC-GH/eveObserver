@@ -140,6 +140,7 @@ class ContractCacheManager:
         # Batch fetch missing issuer names
         batch_size = 1000
         new_names = {}
+        total_processed = 0
 
         for i in range(0, len(missing_ids), batch_size):
             batch_ids = missing_ids[i:i + batch_size]
@@ -164,6 +165,10 @@ class ContractCacheManager:
             except Exception as e:
                 logger.warning(f"Failed to fetch batch of issuer names: {e}")
 
+            total_processed += len(batch_ids)
+            progress_pct = (total_processed / len(missing_ids)) * 100
+            logger.info(f"Issuer names progress: {total_processed}/{len(missing_ids)} ({progress_pct:.1f}%) - {len(new_names)} names fetched")
+
         return new_names
 
     async def get_missing_type_data(self, type_ids: List[int], existing_cache: Dict[str, Dict[str, Any]]) -> Dict[str, Dict[str, Any]]:
@@ -176,6 +181,8 @@ class ContractCacheManager:
         logger.info(f"Fetching {len(missing_ids)} missing type data entries...")
 
         new_types = {}
+        total_processed = 0
+        
         for type_id in missing_ids:
             try:
                 type_data = await fetch_public_esi(f"/universe/types/{type_id}/")
@@ -183,6 +190,11 @@ class ContractCacheManager:
                     new_types[type_id] = type_data
             except Exception as e:
                 logger.warning(f"Failed to fetch type data for {type_id}: {e}")
+
+            total_processed += 1
+            if total_processed % 100 == 0 or total_processed == len(missing_ids):  # Log progress every 100 items or at the end
+                progress_pct = (total_processed / len(missing_ids)) * 100
+                logger.info(f"Type data progress: {total_processed}/{len(missing_ids)} ({progress_pct:.1f}%) - {len(new_types)} types fetched")
 
         return new_types
 

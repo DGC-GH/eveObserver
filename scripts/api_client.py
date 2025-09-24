@@ -368,8 +368,8 @@ class DynamicRateLimiter:
         # Look at last 2 minutes of data
         recent_cutoff = now - timedelta(minutes=2)
 
-        recent_responses = [rt for rt, ts in self.response_times if isinstance((rt, ts), tuple) and ts > recent_cutoff]
-        recent_errors = [err for err, ts in self.errors if isinstance((err, ts), tuple) and ts > recent_cutoff]
+        recent_responses = [rt for rt, ts in self.response_times if ts > recent_cutoff]
+        recent_errors = [err for err, ts in self.errors if ts > recent_cutoff]
 
         if not recent_responses:
             return  # Not enough data yet
