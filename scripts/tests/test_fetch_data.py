@@ -249,7 +249,7 @@ class TestCollectCorporationMembers:
 
         result = await collect_corporation_members(mock_tokens)
 
-        expected = {1001: [("123", "token1", "Test Char 1"), ("456", "token2", "Test Char 2")]}
+        expected = {1001: [(123, "token1", "Test Char 1"), (456, "token2", "Test Char 2")]}
 
         assert result == expected
         assert mock_fetch_char.call_count == 2

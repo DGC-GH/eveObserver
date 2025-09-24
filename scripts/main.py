@@ -12,11 +12,18 @@ import time
 from datetime import datetime, timezone
 from typing import Any, Dict, List, Tuple
 
+import psutil
 from dotenv import load_dotenv
 
 from api_client import get_session, refresh_token, cleanup_session
 from cache_manager import load_wp_post_id_cache
-from config import LOG_FILE, LOG_LEVEL, TOKENS_FILE
+from config import (
+    CHARACTER_PROCESSING_CONCURRENCY,
+    LOG_FILE,
+    LOG_LEVEL,
+    TOKENS_FILE,
+    WORDPRESS_BATCH_SIZE,
+)
 from corporation_processor import process_corporation_data
 from fetch_data import (
     clear_log_file,
@@ -36,6 +43,51 @@ logging.basicConfig(
     handlers=[logging.FileHandler(LOG_FILE), logging.StreamHandler()],
 )
 logger = logging.getLogger(__name__)
+
+
+def get_memory_usage() -> float:
+    """Get current memory usage in MB."""
+    try:
+        process = psutil.Process(os.getpid())
+        return process.memory_info().rss / 1024 / 1024  # Convert to MB
+    except ImportError:
+        return 0.0  # psutil not available
+
+
+async def log_performance_metrics(
+    total_time: float,
+    api_calls: int,
+    contracts_processed: int,
+    characters_processed: int,
+    cache_stats: Dict[str, Any]
+) -> None:
+    """Log detailed performance metrics for monitoring."""
+    memory_mb = get_memory_usage()
+
+    metrics = {
+        "timestamp": datetime.now(timezone.utc).isoformat(),
+        "execution_time_seconds": round(total_time, 2),
+        "api_calls": api_calls,
+        "memory_usage_mb": round(memory_mb, 2),
+        "contracts_processed": contracts_processed,
+        "characters_processed": characters_processed,
+        "cache_hit_rate": cache_stats.get("hit_rate", 0),
+        "cache_hits": cache_stats.get("hits", 0),
+        "cache_misses": cache_stats.get("misses", 0),
+        "character_concurrency": CHARACTER_PROCESSING_CONCURRENCY,
+        "wordpress_batch_size": WORDPRESS_BATCH_SIZE,
+    }
+
+    # Log to console and save to file
+    logger.info(f"PERFORMANCE METRICS: {json.dumps(metrics, indent=2)}")
+
+    # Save to performance log file
+    perf_log_file = os.path.join(os.path.dirname(LOG_FILE), "performance_metrics.jsonl")
+    try:
+        with open(perf_log_file, "a") as f:
+            f.write(json.dumps(metrics) + "\n")
+    except Exception as e:
+        logger.warning(f"Failed to save performance metrics: {e}")
 
 
 def load_tokens() -> Dict[str, Any]:
@@ -121,7 +173,7 @@ async def process_all_data(
             character_tasks.append(task)
 
         # Execute character processing in parallel with concurrency control
-        semaphore = asyncio.Semaphore(3)  # Limit to 3 concurrent character processes
+        semaphore = asyncio.Semaphore(CHARACTER_PROCESSING_CONCURRENCY)  # Configurable concurrency limit
         async def process_with_semaphore(task):
             async with semaphore:
                 return await task
@@ -165,6 +217,16 @@ async def main() -> None:
 
         total_time = time.time() - start_time
         logger.info(f"Total execution completed in {total_time:.2f}s")
+        
+        # Log performance metrics
+        cache_stats = {}  # Will be populated by log_cache_performance
+        await log_performance_metrics(
+            total_time=total_time,
+            api_calls=0,  # TODO: Track API calls
+            contracts_processed=0,  # TODO: Track contracts processed
+            characters_processed=len(tokens),
+            cache_stats=cache_stats
+        )
         
         # Cleanup session
         await cleanup_session()

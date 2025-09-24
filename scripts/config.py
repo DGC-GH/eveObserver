@@ -49,5 +49,11 @@ ALLOWED_CORPORATIONS = ["no mercy incorporated"]  # Case insensitive
 # Processing Options
 SKIP_CORPORATION_ASSETS = os.getenv("SKIP_CORPORATION_ASSETS", "false").lower() == "true"
 
+# Concurrency Configuration
+CHARACTER_PROCESSING_CONCURRENCY = int(os.getenv("CHARACTER_CONCURRENCY", "3"))
+WORDPRESS_BATCH_SIZE = int(os.getenv("WP_BATCH_SIZE", "10"))
+ESI_CONCURRENCY_LIMIT = int(os.getenv("ESI_CONCURRENCY", "20"))
+CONTRACT_EXPANSION_BATCH_SIZE = int(os.getenv("CONTRACT_BATCH_SIZE", "100"))
+
 # Rate Limiting
 RATE_LIMIT_BUFFER = 1  # seconds to add as buffer for rate limits

@@ -30,7 +30,15 @@ from cache_manager import (
     save_blueprint_cache,
 )
 from cache_manager_contracts import ContractCacheManager
-from config import ESI_BASE_URL, WP_PER_PAGE, CACHE_DIR, TOKENS_FILE
+from config import (
+    CACHE_DIR,
+    CONTRACT_EXPANSION_BATCH_SIZE,
+    ESI_BASE_URL,
+    ESI_CONCURRENCY_LIMIT,
+    TOKENS_FILE,
+    WORDPRESS_BATCH_SIZE,
+    WP_PER_PAGE,
+)
 
 """
 EVE Observer Contract Processor
@@ -2513,7 +2521,7 @@ async def batch_update_contracts_in_wp(
     logger.info(f"Batch updating {len(contract_updates)} contracts in WordPress...")
 
     # Process contracts in batches to avoid overwhelming WordPress
-    batch_size = 10  # Update 10 contracts at a time
+    batch_size = WORDPRESS_BATCH_SIZE  # Configurable batch size for WordPress updates
     total_processed = 0
 
     for i in range(0, len(contract_updates), batch_size):
