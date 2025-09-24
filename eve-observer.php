@@ -308,8 +308,41 @@ class EVE_Observer {
             '/usr/bin/python',
             '/usr/local/bin/python',
             '/opt/python3/bin/python3',
-            '/opt/python/bin/python'
+            '/opt/python/bin/python',
+            // Additional Hostinger-specific paths
+            '/usr/local/cpanel/3rdparty/bin/python3',
+            '/usr/local/cpanel/3rdparty/bin/python',
+            '/opt/cpanel/libexec/python3',
+            '/opt/cpanel/libexec/python',
+            // Check if python3 exists anywhere in PATH directories
+            '/usr/local/bin/python3.6',
+            '/usr/local/bin/python3.7',
+            '/usr/local/bin/python3.8',
+            '/usr/local/bin/python3.9',
+            '/usr/local/bin/python3.10',
+            '/usr/local/bin/python3.11',
+            '/usr/local/bin/python3.12',
+            '/usr/bin/python3.6',
+            '/usr/bin/python3.7',
+            '/usr/bin/python3.8',
+            '/usr/bin/python3.9',
+            '/usr/bin/python3.10',
+            '/usr/bin/python3.11',
+            '/usr/bin/python3.12'
         );
+        
+        // Also check for any python executables in common directories
+        error_log("🔍 [PYTHON DEBUG] Checking for any python executables in /usr/bin/...");
+        $usr_bin_ls = shell_exec('ls -la /usr/bin/python* 2>/dev/null | head -20');
+        error_log("🔍 [PYTHON DEBUG] /usr/bin/ python files: " . ($usr_bin_ls ?: 'none found'));
+        
+        error_log("🔍 [PYTHON DEBUG] Checking for any python executables in /usr/local/bin/...");
+        $usr_local_bin_ls = shell_exec('ls -la /usr/local/bin/python* 2>/dev/null | head -20');
+        error_log("🔍 [PYTHON DEBUG] /usr/local/bin/ python files: " . ($usr_local_bin_ls ?: 'none found'));
+        
+        error_log("🔍 [PYTHON DEBUG] Checking for any python executables in /opt/...");
+        $opt_ls = shell_exec('find /opt -name "python*" -type f -executable 2>/dev/null | head -10');
+        error_log("🔍 [PYTHON DEBUG] /opt/ python executables: " . ($opt_ls ?: 'none found'));
         
         $available_pythons = array();
         foreach ($python_paths_to_check as $path) {
@@ -375,6 +408,41 @@ class EVE_Observer {
                     $python_cmd = $path;
                     error_log("✅ [AJAX PHP STEP 3.2] Found executable Python directly at: {$path}");
                     break;
+                }
+            }
+        }
+        
+        // Last resort: try to find any python executable on the system
+        if (empty($python_cmd)) {
+            error_log("🔄 [AJAX PHP STEP 3.3] Direct path access failed, trying system-wide search...");
+            
+            // Try find command to locate any python executables
+            $find_python = shell_exec('find /usr -name "python3" -type f -executable 2>/dev/null | head -5');
+            if (!empty($find_python)) {
+                $found_paths = array_filter(explode("\n", trim($find_python)));
+                foreach ($found_paths as $path) {
+                    $path = trim($path);
+                    if (!empty($path) && file_exists($path) && is_executable($path)) {
+                        $python_cmd = $path;
+                        error_log("✅ [AJAX PHP STEP 3.4] Found Python via find command at: {$path}");
+                        break;
+                    }
+                }
+            }
+            
+            // Try locate command if available
+            if (empty($python_cmd)) {
+                $locate_python = shell_exec('locate python3 2>/dev/null | grep -E "/python3$" | head -5');
+                if (!empty($locate_python)) {
+                    $found_paths = array_filter(explode("\n", trim($locate_python)));
+                    foreach ($found_paths as $path) {
+                        $path = trim($path);
+                        if (!empty($path) && file_exists($path) && is_executable($path)) {
+                            $python_cmd = $path;
+                            error_log("✅ [AJAX PHP STEP 3.5] Found Python via locate command at: {$path}");
+                            break;
+                        }
+                    }
                 }
             }
         }
