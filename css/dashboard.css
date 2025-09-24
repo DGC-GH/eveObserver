@@ -372,11 +372,18 @@ th:hover .sort-indicator {
     opacity: 1;
 }
 
-/* Focus styles */
-.eve-pagination button:focus,
-.eve-search-input:focus {
-    outline: 2px solid var(--primary-color);
-    outline-offset: 2px;
+/* Sync Progress Area */
+#sync-progress-content {
+    color: var(--text-color) !important;
+    background-color: transparent !important;
+    font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+    font-size: 12px;
+    line-height: 1.4;
+    white-space: pre-wrap;
+    word-wrap: break-word;
+    margin: 0;
+    padding: 0;
+    border: none;
 }
 
 .eve-dashboard-actions {

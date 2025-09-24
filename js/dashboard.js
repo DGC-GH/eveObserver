@@ -298,8 +298,6 @@ class EVEDashboard {
                 console.log('🔄 [STEP 1] Sync All button clicked - event detected!');
                 console.log('🔄 [STEP 2] Event object:', e);
                 console.log('🔄 [STEP 3] Button element:', syncAllButton);
-                alert('Sync All button clicked! Check console for details.');
-                console.log('🔄 [STEP 4] Alert dismissed, proceeding with sync...');
                 this.syncSection('all', syncAllButton);
             });
             console.log('✅ [INIT STEP 13] Sync all button event listener set up');
