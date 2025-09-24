@@ -410,6 +410,12 @@ class EVE_Observer {
             <!-- Sync Progress Area -->
             <div id="sync-progress" style="display: none; margin-top: 20px; padding: 15px; background: #f9f9f9; border: 1px solid #ddd; border-radius: 4px; max-height: 400px; overflow-y: auto;">
                 <h3><?php _e('Sync Progress', 'eve-observer'); ?></h3>
+                <div id="sync-progress-bar" style="display: none; margin-bottom: 10px;">
+                    <div class="eve-progress-bar">
+                        <div class="eve-progress-fill" id="sync-progress-fill" style="width: 0%;"></div>
+                    </div>
+                    <div class="eve-progress-text" id="sync-progress-text">Initializing...</div>
+                </div>
                 <pre id="sync-progress-content" style="font-family: monospace; font-size: 12px; white-space: pre-wrap; margin: 0;"></pre>
             </div>
 

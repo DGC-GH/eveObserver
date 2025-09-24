@@ -316,8 +316,14 @@ class EVEDashboard {
         // Show progress area
         const progressDiv = document.getElementById('sync-progress');
         const progressContent = document.getElementById('sync-progress-content');
+        const progressBar = document.getElementById('sync-progress-bar');
+        const progressFill = document.querySelector('.eve-progress-fill');
+        const progressText = document.getElementById('sync-progress-text');
+
         progressDiv.style.display = 'block';
         progressContent.textContent = `Starting sync for ${section}...\n`;
+        progressFill.style.width = '0%';
+        progressText.textContent = 'Initializing...';
 
         console.log('🔄 [STEP 8] Checking eveObserverApi availability...');
         console.log('🔄 [STEP 9] eveObserverApi available at sync time:', typeof eveObserverApi !== 'undefined');
@@ -325,6 +331,9 @@ class EVEDashboard {
         if (typeof eveObserverApi === 'undefined') {
             console.error('❌ [ERROR] eveObserverApi is not defined!');
             progressContent.textContent += '❌ API configuration error - please refresh the page\n';
+            progressFill.style.width = '100%';
+            progressFill.style.backgroundColor = '#dc3545';
+            progressText.textContent = 'Error: API not configured';
             console.log('❌ [STEP 10] Showing error notification...');
             this.showNotification('API configuration error - please refresh the page', 'error');
             return;
@@ -342,6 +351,9 @@ class EVEDashboard {
         button.disabled = true;
         button.innerHTML = '<span class="dashicons dashicons-update dashicons-spin"></span> Syncing...';
         console.log('✅ [STEP 14] Button disabled and loading state set');
+
+        // Start progress animation
+        this.animateProgress(progressFill, progressText, 'Preparing request...');
 
         try {
             console.log(`🔄 [STEP 15] Preparing API request to sync ${section}`);
@@ -363,6 +375,9 @@ class EVEDashboard {
             console.log('🔄 [STEP 21] Response status:', response.status);
             console.log('🔄 [STEP 22] Response ok:', response.ok);
 
+            // Update progress for request completion
+            this.animateProgress(progressFill, progressText, 'Processing response...');
+
             if (!response.ok) {
                 console.log('❌ [STEP 23] Response not ok, processing error...');
                 const errorData = await response.json().catch(() => ({ message: 'Unknown error' }));
@@ -372,11 +387,17 @@ class EVEDashboard {
                 if (errorData.code === 'function_disabled') {
                     console.log('❌ [STEP 25] Detected shell_exec disabled error');
                     progressContent.textContent += `❌ Server configuration error: ${errorData.message}. Please contact your hosting provider to enable shell_exec function.\n`;
+                    progressFill.style.width = '100%';
+                    progressFill.style.backgroundColor = '#dc3545';
+                    progressText.textContent = 'Error: Server configuration';
                     throw new Error(`Server configuration error: ${errorData.message}. Please contact your hosting provider to enable shell_exec function.`);
                 }
 
                 console.log('❌ [STEP 26] Generic HTTP error');
                 progressContent.textContent += `❌ HTTP ${response.status}: ${errorData.message || response.statusText}\n`;
+                progressFill.style.width = '100%';
+                progressFill.style.backgroundColor = '#dc3545';
+                progressText.textContent = 'Error: HTTP failure';
                 throw new Error(`HTTP ${response.status}: ${errorData.message || response.statusText}`);
             }
 
@@ -384,6 +405,9 @@ class EVEDashboard {
             const result = await response.json();
             console.log(`✅ [STEP 28] JSON parsed successfully`);
             console.log(`🔄 [STEP 29] EVE Observer: Sync response for ${section}:`, result);
+
+            // Update progress for successful parsing
+            this.animateProgress(progressFill, progressText, 'Sync completed successfully!');
 
             if (result.success) {
                 console.log('✅ [STEP 30] Sync was successful');
@@ -401,6 +425,11 @@ class EVEDashboard {
                     progressContent.textContent += '✅ Sync completed successfully!\n';
                 }
 
+                // Complete progress bar
+                progressFill.style.width = '100%';
+                progressFill.style.backgroundColor = '#28a745';
+                progressText.textContent = 'Complete!';
+
                 // Reload data after successful sync
                 console.log(`🔄 [STEP 33] Reloading data after successful sync of ${section}`);
                 console.log('🔄 [STEP 34] Calling loadAllData()...');
@@ -415,6 +444,9 @@ class EVEDashboard {
             } else {
                 console.log('❌ [STEP 40] Sync reported failure in response');
                 progressContent.textContent += `❌ Sync failed: ${result.message}\n`;
+                progressFill.style.width = '100%';
+                progressFill.style.backgroundColor = '#dc3545';
+                progressText.textContent = 'Failed';
                 throw new Error(result.message || 'Sync failed');
             }
         } catch (error) {
@@ -422,6 +454,9 @@ class EVEDashboard {
             console.log('🔄 [STEP 41] Showing error notification...');
             this.showNotification(`Failed to sync ${section}: ${error.message}`, 'error');
             progressContent.textContent += `❌ Error: ${error.message}\n`;
+            progressFill.style.width = '100%';
+            progressFill.style.backgroundColor = '#dc3545';
+            progressText.textContent = 'Error occurred';
         } finally {
             // Restore button state
             console.log('🔄 [STEP 42] Restoring button state...');
@@ -437,41 +472,24 @@ class EVEDashboard {
         }
     }
 
-    showNotification(message, type = 'info') {
-        const notification = document.createElement('div');
-        notification.className = `eve-notification eve-notification-${type}`;
-        notification.innerHTML = `
-            <span class="dashicons ${type === 'success' ? 'dashicons-yes' : 'dashicons-no'}"></span>
-            ${message}
-        `;
+    animateProgress(progressFill, progressText, message) {
+        // Simulate progress animation
+        const steps = [10, 25, 50, 75, 90];
+        let currentStep = 0;
 
-        // Style the notification
-        Object.assign(notification.style, {
-            position: 'fixed',
-            top: '20px',
-            right: '20px',
-            background: type === 'success' ? '#28a745' : '#dc3545',
-            color: 'white',
-            padding: '12px 16px',
-            borderRadius: '4px',
-            boxShadow: '0 2px 10px rgba(0,0,0,0.2)',
-            zIndex: '9999',
-            maxWidth: '400px',
-            fontWeight: 'bold',
-            display: 'flex',
-            alignItems: 'center',
-            gap: '8px'
-        });
-
-        document.body.appendChild(notification);
-
-        // Auto-remove after 5 seconds
-        setTimeout(() => {
-            if (notification.parentNode) {
-                notification.parentNode.removeChild(notification);
+        const animate = () => {
+            if (currentStep < steps.length) {
+                progressFill.style.width = `${steps[currentStep]}%`;
+                progressText.textContent = message;
+                currentStep++;
+                setTimeout(animate, 200);
             }
-        }, 5000);
+        };
+
+        animate();
     }
+
+    showNotification(message, type = 'info') {
 
     copyOutbidContracts() {
         console.log('copyOutbidContracts called, contracts count:', this.data.contracts.length);
