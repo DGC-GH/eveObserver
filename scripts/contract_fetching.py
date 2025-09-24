@@ -264,7 +264,7 @@ async def fetch_all_contracts_in_region(region_id: int) -> List[Dict[str, Any]]:
         logger.info(f"Fetching page {page}...")
         contracts = await fetch_public_contracts_async(region_id, page=page)
 
-        if not contracts or not isinstance(contracts, list):
+        if not contracts:
             logger.info(f"No more contracts or invalid response on page {page}, stopping")
             break
 

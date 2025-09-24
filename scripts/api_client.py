@@ -658,12 +658,37 @@ async def _fetch_esi_with_retry(
                     elif response.status == 404:
                         elapsed = time.time() - start_time
                         endpoint_type = "public" if is_public else ""
-                        logger.warning(f"Resource not found for {endpoint_type} endpoint {endpoint} in {elapsed:.2f}s")
+                        logger.info(f"Resource not found (end of pagination) for {endpoint_type} endpoint {endpoint} in {elapsed:.2f}s")
                         if API_METRICS_ENABLED:
                             ESI_REQUESTS_TOTAL.labels(
                                 endpoint_type=endpoint_type or "unknown", status="not_found"
                             ).inc()
-                        raise ESIRequestError(f"Resource not found: {endpoint}")
+                        # For pagination endpoints, 404 means we've reached the end - return empty list instead of error
+                        if "/contracts/public/" in endpoint and "?page=" in endpoint:
+                            return []
+                        else:
+                            raise ESIRequestError(f"Resource not found: {endpoint}")
+                    elif response.status in [502, 503, 504, 520, 521, 522, 523, 524, 525, 526, 527, 530]:
+                        # Gateway/server errors that may indicate end of pagination for contracts
+                        elapsed = time.time() - start_time
+                        endpoint_type = "public" if is_public else ""
+                        logger.warning(f"Gateway/server error {response.status} for {endpoint_type} endpoint {endpoint} in {elapsed:.2f}s")
+                        if API_METRICS_ENABLED:
+                            ESI_REQUESTS_TOTAL.labels(endpoint_type=endpoint_type or "unknown", status="gateway_error").inc()
+                        # For pagination endpoints, gateway errors likely mean end of data
+                        if "/contracts/public/" in endpoint and "?page=" in endpoint:
+                            logger.info(f"Treating gateway error as end of pagination for contracts endpoint")
+                            return []
+                        else:
+                            # Retry gateway errors for non-pagination endpoints
+                            if attempt < max_retries - 1:
+                                wait_time = 2**attempt  # Exponential backoff
+                                logger.warning(f"GATEWAY ERROR {response.status}: Retrying in {wait_time} seconds...")
+                                await asyncio.sleep(wait_time)
+                                continue
+                            else:
+                                logger.error(f"GATEWAY ERROR {response.status}: Max retries exceeded")
+                                raise ESIRequestError(f"Gateway error after {max_retries} retries: {endpoint}")
                     elif response.status == 429:  # Rate limited
                         # Check for X-ESI-Error-Limit-Remain header
                         error_limit_reset = response.headers.get("X-ESI-Error-Limit-Reset")
@@ -697,15 +722,26 @@ async def _fetch_esi_with_retry(
                             await asyncio.sleep(60)
                             continue
                     elif response.status >= 500:
-                        # Server error, retry
-                        if attempt < max_retries - 1:
-                            wait_time = 2**attempt  # Exponential backoff
-                            logger.warning(f"SERVER ERROR {response.status}: Retrying in {wait_time} seconds...")
-                            await asyncio.sleep(wait_time)
-                            continue
+                        # Server error, but for pagination endpoints, treat as end of data
+                        elapsed = time.time() - start_time
+                        endpoint_type = "public" if is_public else ""
+                        logger.warning(f"Server error {response.status} for {endpoint_type} endpoint {endpoint} in {elapsed:.2f}s")
+                        if API_METRICS_ENABLED:
+                            ESI_REQUESTS_TOTAL.labels(endpoint_type=endpoint_type or "unknown", status="server_error").inc()
+                        # For pagination endpoints, server errors likely mean end of data
+                        if "/contracts/public/" in endpoint and "?page=" in endpoint:
+                            logger.info(f"Treating server error as end of pagination for contracts endpoint")
+                            return []
                         else:
-                            logger.error(f"SERVER ERROR {response.status}: Max retries exceeded")
-                            raise ESIRequestError(f"Server error after {max_retries} retries: {endpoint}")
+                            # Retry server errors for non-pagination endpoints
+                            if attempt < max_retries - 1:
+                                wait_time = 2**attempt  # Exponential backoff
+                                logger.warning(f"SERVER ERROR {response.status}: Retrying in {wait_time} seconds...")
+                                await asyncio.sleep(wait_time)
+                                continue
+                            else:
+                                logger.error(f"SERVER ERROR {response.status}: Max retries exceeded")
+                                raise ESIRequestError(f"Server error after {max_retries} retries: {endpoint}")
                     else:
                         elapsed = time.time() - start_time
                         logger.error(
@@ -990,6 +1026,24 @@ async def fetch_public_contracts_async(
                     contracts = valid_contracts
 
                 return contracts
+        except aiohttp.ClientResponseError as e:
+            # Handle HTTP error status codes
+            if e.status in [404, 502, 503, 504, 520, 521, 522, 523, 524, 525, 526, 527, 530]:
+                logger.info(f"HTTP {e.status} error for contracts pagination (end of data): {endpoint}")
+                return []  # End of pagination
+            elif attempt < max_retries - 1:
+                wait_time = 2**attempt  # Exponential backoff
+                logger.warning(
+                    f"ESI HTTP error {e.status} (attempt {attempt + 1}/{max_retries}): {e}. Retrying in {wait_time}s"
+                )
+                await asyncio.sleep(wait_time)
+            else:
+                logger.error(f"ESI HTTP error {e.status} after {max_retries} attempts: {e}")
+                # For contract pagination, treat persistent HTTP errors as end of data
+                if "/contracts/public/" in endpoint and "?page=" in endpoint:
+                    logger.info(f"Treating persistent HTTP error as end of pagination for contracts")
+                    return []
+                return None
         except (aiohttp.ClientError, asyncio.TimeoutError) as e:
             if attempt < max_retries - 1:
                 wait_time = 2**attempt  # Exponential backoff
@@ -999,6 +1053,10 @@ async def fetch_public_contracts_async(
                 await asyncio.sleep(wait_time)
             else:
                 logger.error(f"ESI request failed after {max_retries} attempts: {e}")
+                # For contract pagination, treat persistent errors as end of data
+                if "/contracts/public/" in endpoint and "?page=" in endpoint:
+                    logger.info(f"Treating persistent error as end of pagination for contracts")
+                    return []
                 return None
 
 
