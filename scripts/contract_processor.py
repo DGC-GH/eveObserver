@@ -1146,79 +1146,84 @@ async def process_character_contracts(
 
 
 async def fetch_and_expand_all_forge_contracts() -> List[Dict[str, Any]]:
-    """Fetch all outstanding contracts from The Forge region and expand with full details asynchronously.
+    """Fetch all outstanding contracts from The Forge region and maintain cache incrementally.
 
-    This function implements a streamlined approach:
-    1. Check if cache file exists and load it if available
-    2. Otherwise fetch all basic contract data and save raw contracts first
-    3. Expand contracts asynchronously, collecting all expanded data
-    4. Save expanded data to respective caches
-    5. Apply expanded data from caches to all_contracts_forge.json
+    Only processes new contracts that don't exist in cache, removes contracts no longer in API.
+    Uses dynamic concurrency adjustment based on performance and rate limits.
     """
-    logger.info("Starting streamlined fetch and expand of all Forge contracts...")
+    logger.info("Starting incremental Forge contracts cache update...")
 
     cache_file = os.path.join(CACHE_DIR, "all_contracts_forge.json")
 
-    # Check if cache file exists and load it if available
-    if os.path.exists(cache_file):
-        logger.info(f"Loading contracts from existing cache file: {cache_file}")
-        try:
-            with open(cache_file, 'r') as f:
-                expanded_contracts = json.load(f)
-            logger.info(f"✓ Loaded {len(expanded_contracts)} contracts from cache")
-            return expanded_contracts
-        except (json.JSONDecodeError, IOError) as e:
-            logger.warning(f"Failed to load cache file {cache_file}: {e}. Will fetch fresh data.")
-
-    # Phase 1: Fetch all basic contract data and save raw contracts first
-    logger.info("Phase 1: Fetching all basic contract data from The Forge region...")
+    # Phase 1: Fetch current contracts from API
+    logger.info("Phase 1: Fetching current contracts from The Forge region...")
     start_time = time.time()
-    basic_contracts = await fetch_all_contracts_in_region(FORGE_REGION_ID)
+    current_contracts = await fetch_all_contracts_in_region(FORGE_REGION_ID)
     phase1_time = time.time() - start_time
-    logger.info(f"✓ Fetched {len(basic_contracts)} basic contracts in {phase1_time:.1f}s")
+    logger.info(f"✓ Fetched {len(current_contracts)} current contracts in {phase1_time:.1f}s")
 
-    # Save raw contracts to cache file first
+    # Load existing cache
+    existing_cache = []
+    existing_contract_ids = set()
+    try:
+        with open(cache_file, 'r') as f:
+            existing_cache = json.load(f)
+            existing_contract_ids = {contract['contract_id'] for contract in existing_cache}
+        logger.info(f"✓ Loaded {len(existing_cache)} existing contracts from cache")
+    except (FileNotFoundError, json.JSONDecodeError):
+        logger.info("✓ No existing cache found, starting fresh")
+
+    # Phase 2: Identify changes
+    current_contract_ids = {contract['contract_id'] for contract in current_contracts}
+    new_contract_ids = current_contract_ids - existing_contract_ids
+    removed_contract_ids = existing_contract_ids - current_contract_ids
+
+    logger.info(f"✓ Cache analysis: {len(new_contract_ids)} new contracts, {len(removed_contract_ids)} removed contracts")
+
+    # Filter new contracts that need expansion
+    new_contracts = [c for c in current_contracts if c['contract_id'] in new_contract_ids]
+    
+    # Phase 3: Expand only new contracts with dynamic concurrency
+    if new_contracts:
+        logger.info(f"Phase 3: Expanding {len(new_contracts)} new contracts...")
+        start_time = time.time()
+        expanded_new_contracts, collected_items_cache = await expand_new_contracts_dynamic(new_contracts)
+        phase3_time = time.time() - start_time
+        logger.info(f"✓ Expanded {len(expanded_new_contracts)} new contracts in {phase3_time:.1f}s")
+    else:
+        expanded_new_contracts = []
+        collected_items_cache = {}
+        phase3_time = 0
+        logger.info("✓ No new contracts to expand")
+
+    # Phase 4: Update cache
+    logger.info("Phase 4: Updating cache...")
+    start_time = time.time()
+    
+    # Remove old contracts
+    updated_cache = [c for c in existing_cache if c['contract_id'] not in removed_contract_ids]
+    
+    # Add new expanded contracts
+    updated_cache.extend(expanded_new_contracts)
+    
+    # Save updated cache
     with open(cache_file, 'w') as f:
-        json.dump(basic_contracts, f, indent=2, default=str)
-    logger.info(f"✓ Saved {len(basic_contracts)} raw contracts to {cache_file}")
-
-    # Phase 2: Expand contracts asynchronously and collect all expanded data
-    logger.info("Phase 2: Starting asynchronous expansion with data collection...")
-    start_time = time.time()
-    expanded_contracts, collected_items_cache = await expand_all_contracts_async(basic_contracts)
-    phase2_time = time.time() - start_time
-    logger.info(f"✓ Expanded {len(expanded_contracts)} contracts with full details in {phase2_time:.1f}s")
-
-    # Phase 3: Save collected expanded data to caches
-    logger.info("Phase 3: Saving expanded data to caches...")
-    start_time = time.time()
-    cache_manager = ContractCacheManager(CACHE_DIR)
-
-    # Save contract items cache
+        json.dump(updated_cache, f, indent=2, default=str)
+    
+    # Update contract items cache
     if collected_items_cache:
+        cache_manager = ContractCacheManager(CACHE_DIR)
         existing_items_cache = await cache_manager.load_contract_items_cache()
         existing_items_cache.update(collected_items_cache)
         await cache_manager.save_contract_items_cache(existing_items_cache)
-        logger.info(f"✓ Saved {len(collected_items_cache)} contract items to cache")
-
-    phase3_time = time.time() - start_time
-    logger.info(f"✓ Cache saving completed in {phase3_time:.1f}s")
-
-    # Phase 4: Apply expanded data from caches to all_contracts_forge.json
-    logger.info("Phase 4: Applying expanded data from caches to contracts file...")
-    start_time = time.time()
-    final_expanded_contracts = await apply_cached_data_to_contracts(basic_contracts)
+        logger.info(f"✓ Updated contract items cache with {len(collected_items_cache)} new entries")
+    
     phase4_time = time.time() - start_time
-    logger.info(f"✓ Applied cached data to {len(final_expanded_contracts)} contracts in {phase4_time:.1f}s")
+    logger.info(f"✓ Cache updated in {phase4_time:.1f}s: {len(updated_cache)} total contracts")
 
-    # Save final expanded contracts
-    with open(cache_file, 'w') as f:
-        json.dump(final_expanded_contracts, f, indent=2, default=str)
-    logger.info(f"✓ Saved {len(final_expanded_contracts)} final expanded contracts to {cache_file}")
-
-    total_time = phase1_time + phase2_time + phase3_time + phase4_time
-    logger.info(f"✓ All phases completed successfully in {total_time:.1f}s")
-    return final_expanded_contracts
+    total_time = phase1_time + phase3_time + phase4_time
+    logger.info(f"✓ Incremental update completed in {total_time:.1f}s")
+    return updated_cache
 
 
 async def get_user_contracts(char_id: int, access_token: str) -> List[Dict[str, Any]]:
@@ -1314,7 +1319,7 @@ async def expand_single_contract_with_caching(
     """Expand a single contract, fetching missing data as needed."""
     contract_id = contract["contract_id"]
     contract_id_str = str(contract_id)
-    logger.info(f"Expanding contract {contract_id}")
+    logger.debug(f"Expanding contract {contract_id}")
     issuer_id = contract.get("issuer_id")
     issuer_corp_id = contract.get("issuer_corporation_id")
 
@@ -1421,9 +1426,9 @@ async def expand_single_contract_with_caching(
         else:
             # No items data available - fetch from public API for public contracts
             try:
-                logger.info(f"Fetching items for contract {contract_id}")
+                logger.debug(f"Fetching items for contract {contract_id}")
                 contract_items = await asyncio.to_thread(fetch_public_contract_items, contract_id)
-                logger.info(f"Fetched {len(contract_items) if contract_items else 0} items for contract {contract_id}")
+                logger.debug(f"Fetched {len(contract_items) if contract_items else 0} items for contract {contract_id}")
                 if contract_items:
                     # Store raw items in cache
                     contract_items_cache[contract_id_str] = contract_items
@@ -1499,7 +1504,149 @@ async def expand_single_contract_with_caching(
     return expanded
 
 
-async def expand_all_contracts_async(contracts: List[Dict[str, Any]]) -> tuple[List[Dict[str, Any]], Dict[str, List[Dict[str, Any]]]]:
+async def expand_new_contracts_dynamic(contracts: List[Dict[str, Any]]) -> tuple[List[Dict[str, Any]], Dict[str, List[Dict[str, Any]]]]:
+    """Expand new contracts with dynamic concurrency adjustment based on performance and rate limits.
+
+    Args:
+        contracts: List of new contracts to expand
+
+    Returns:
+        Tuple of (expanded_contracts, collected_items_cache)
+    """
+    if not contracts:
+        return [], {}
+
+    logger.info(f"Expanding {len(contracts)} new contracts with dynamic concurrency...")
+
+    # Initialize cache manager
+    cache_manager = ContractCacheManager(CACHE_DIR)
+
+    # Load existing caches
+    issuer_cache_task = asyncio.create_task(cache_manager.load_issuer_cache())
+    type_cache_task = asyncio.create_task(cache_manager.load_type_cache())
+    corporation_cache_task = asyncio.create_task(cache_manager.load_corporation_cache())
+
+    issuer_cache, type_cache, corporation_cache = await asyncio.gather(
+        issuer_cache_task, type_cache_task, corporation_cache_task
+    )
+
+    logger.info(f"Caches loaded - Issuer: {len(issuer_cache)}, Type: {len(type_cache)}, Corporation: {len(corporation_cache)}")
+
+    # Dynamic parameters
+    batch_size = 50  # Start smaller for new contracts
+    semaphore_limit = 15  # Start with lower concurrency
+    min_batch_size = 25
+    max_batch_size = 200
+    min_semaphore = 5
+    max_semaphore = 50
+    
+    rate_limit_hits = 0
+    max_rate_limit_hits = 3  # Reduce concurrency after this many rate limit errors
+    
+    expanded_contracts = []
+    semaphore = asyncio.Semaphore(semaphore_limit)
+
+    async def expand_contract_batch_dynamic(batch_contracts: List[Dict[str, Any]], batch_num: int) -> tuple[List[Dict[str, Any]], Dict[str, str], Dict[str, Dict[str, Any]], Dict[str, str], Dict[str, List[Dict[str, Any]]], float, int]:
+        """Expand a batch of contracts with error handling for rate limits."""
+        batch_start_time = time.time()
+        batch_expanded = []
+        new_issuer_names = {}
+        new_type_data = {}
+        new_corporation_names = {}
+        new_contract_items = {}
+        batch_rate_limit_hits = 0
+
+        async def expand_single_contract_safe(contract: Dict[str, Any]) -> Dict[str, Any]:
+            async with semaphore:
+                try:
+                    return await expand_single_contract_with_caching(
+                        contract, issuer_cache, type_cache, corporation_cache,
+                        new_issuer_names, new_type_data, new_corporation_names, new_contract_items
+                    )
+                except Exception as e:
+                    error_msg = str(e).lower()
+                    if 'rate limit' in error_msg or '429' in error_msg:
+                        nonlocal batch_rate_limit_hits
+                        batch_rate_limit_hits += 1
+                        logger.warning(f"Rate limit hit for contract {contract['contract_id']}, will retry later")
+                        # Return None to indicate failure, will be retried
+                        return None
+                    else:
+                        logger.error(f"Error expanding contract {contract['contract_id']}: {e}")
+                        return None
+
+        # Process contracts in this batch concurrently
+        tasks = [expand_single_contract_safe(contract) for contract in batch_contracts]
+        batch_results = await asyncio.gather(*tasks, return_exceptions=True)
+
+        for result in batch_results:
+            if result and not isinstance(result, Exception):
+                batch_expanded.append(result)
+
+        batch_time = time.time() - batch_start_time
+        return batch_expanded, new_issuer_names, new_type_data, new_corporation_names, new_contract_items, batch_time, batch_rate_limit_hits
+
+    # Process in batches with dynamic adjustment
+    remaining_contracts = contracts[:]
+    batch_num = 1
+    
+    while remaining_contracts:
+        current_batch = remaining_contracts[:batch_size]
+        remaining_contracts = remaining_contracts[batch_size:]
+        
+        logger.debug(f"Processing batch {batch_num} with {len(current_batch)} contracts (batch_size={batch_size}, concurrency={semaphore_limit})")
+        
+        batch_expanded, new_issuers, new_types, new_corps, new_items, batch_time, batch_rate_limits = await expand_contract_batch_dynamic(current_batch, batch_num)
+        
+        # Handle rate limit hits
+        if batch_rate_limits > 0:
+            rate_limit_hits += batch_rate_limits
+            logger.warning(f"Batch {batch_num} hit {batch_rate_limits} rate limits, total: {rate_limit_hits}")
+            
+            if rate_limit_hits >= max_rate_limit_hits:
+                # Reduce concurrency significantly
+                old_sem = semaphore_limit
+                semaphore_limit = max(min_semaphore, semaphore_limit // 2)
+                semaphore = asyncio.Semaphore(semaphore_limit)
+                logger.warning(f"Too many rate limits, reducing concurrency: {old_sem} -> {semaphore_limit}")
+                rate_limit_hits = 0  # Reset counter
+        
+        # Dynamic adjustment based on performance
+        if batch_time > 20.0:  # Too slow
+            old_batch = batch_size
+            old_sem = semaphore_limit
+            batch_size = max(min_batch_size, int(batch_size * 0.7))
+            semaphore_limit = max(min_semaphore, int(semaphore_limit * 0.8))
+            semaphore = asyncio.Semaphore(semaphore_limit)
+            logger.debug(f"Batch {batch_num} slow ({batch_time:.1f}s), adjusting: batch_size {old_batch}->{batch_size}, concurrency {old_sem}->{semaphore_limit}")
+        elif batch_time < 3.0 and rate_limit_hits == 0:  # Fast and no rate limits
+            old_batch = batch_size
+            old_sem = semaphore_limit
+            batch_size = min(max_batch_size, int(batch_size * 1.3))
+            semaphore_limit = min(max_semaphore, int(semaphore_limit * 1.2))
+            semaphore = asyncio.Semaphore(semaphore_limit)
+            logger.debug(f"Batch {batch_num} fast ({batch_time:.1f}s), adjusting: batch_size {old_batch}->{batch_size}, concurrency {old_sem}->{semaphore_limit}")
+        
+        # Accumulate results
+        expanded_contracts.extend(batch_expanded)
+        
+        # Update caches incrementally
+        issuer_cache.update(new_issuers)
+        type_cache.update(new_types)
+        corporation_cache.update(new_corps)
+        
+        batch_num += 1
+        
+        # Small delay between batches to be respectful
+        await asyncio.sleep(0.1)
+
+    # Save updated caches
+    await cache_manager.save_issuer_cache(issuer_cache)
+    await cache_manager.save_type_cache(type_cache)
+    await cache_manager.save_corporation_cache(corporation_cache)
+
+    logger.info(f"Successfully expanded {len(expanded_contracts)} new contracts")
+    return expanded_contracts, {}  # collected_items_cache is empty since we update incrementally
     """Expand all contracts asynchronously using on-demand data fetching and caching.
 
     This function implements an on-demand approach that:
@@ -1524,13 +1671,20 @@ async def expand_all_contracts_async(contracts: List[Dict[str, Any]]) -> tuple[L
 
     logger.info(f"Initial caches loaded - Issuer: {len(issuer_cache)}, Type: {len(type_cache)}, Corporation: {len(corporation_cache)}")
 
-    # Process contracts in parallel batches with on-demand fetching
-    batch_size = 500
+    # Process contracts in parallel batches with on-demand fetching and dynamic adjustment
+    batch_size = 100  # Start with smaller batch size
+    semaphore_limit = 20  # Start with lower concurrency
+    min_batch_size = 50
+    max_batch_size = 1000
+    min_semaphore = 10
+    max_semaphore = 200
+    
     expanded_contracts = []
-    semaphore = asyncio.Semaphore(100)  # Limit concurrent processing
+    semaphore = asyncio.Semaphore(semaphore_limit)  # Limit concurrent processing
 
-    async def expand_contract_batch(batch_contracts: List[Dict[str, Any]], batch_num: int) -> tuple[List[Dict[str, Any]], Dict[str, str], Dict[str, Dict[str, Any]], Dict[str, str], Dict[str, List[Dict[str, Any]]]]:
+    async def expand_contract_batch(batch_contracts: List[Dict[str, Any]], batch_num: int) -> tuple[List[Dict[str, Any]], Dict[str, str], Dict[str, Dict[str, Any]], Dict[str, str], Dict[str, List[Dict[str, Any]]], float]:
         """Expand a batch of contracts, fetching missing data as needed."""
+        batch_start_time = time.time()
         batch_expanded = []
         new_issuer_names = {}
         new_type_data = {}
@@ -1555,19 +1709,23 @@ async def expand_all_contracts_async(contracts: List[Dict[str, Any]]) -> tuple[L
             if result:
                 batch_expanded.append(result)
 
-        logger.info(f"Completed batch {batch_num}: {len(batch_expanded)} contracts expanded")
-        return batch_expanded, new_issuer_names, new_type_data, new_corporation_names, new_contract_items
+        batch_time = time.time() - batch_start_time
+        logger.info(f"Completed batch {batch_num}: {len(batch_expanded)} contracts expanded in {batch_time:.1f}s")
+        return batch_expanded, new_issuer_names, new_type_data, new_corporation_names, new_contract_items, batch_time
 
     # Create tasks for parallel batch processing
     batch_tasks = []
     total_batches = (len(contracts) + batch_size - 1) // batch_size  # Ceiling division
-    logger.info(f"Starting parallel processing of {total_batches} batches ({len(contracts)} contracts total)")
+    logger.info(f"Starting parallel processing of {total_batches} batches ({len(contracts)} contracts total) with initial batch_size={batch_size}, concurrency={semaphore_limit}")
     
-    for batch_start in range(0, len(contracts), batch_size):
-        batch_end = min(batch_start + batch_size, len(contracts))
+    current_batch_size = batch_size
+    current_semaphore_limit = semaphore_limit
+    
+    for batch_start in range(0, len(contracts), current_batch_size):
+        batch_end = min(batch_start + current_batch_size, len(contracts))
         batch_contracts = contracts[batch_start:batch_end]
-        batch_num = batch_start // batch_size + 1
-        logger.info(f"Queueing batch {batch_num}/{total_batches}: contracts {batch_start} to {batch_end-1} ({len(batch_contracts)} contracts)")
+        batch_num = (batch_start // current_batch_size) + 1
+        logger.info(f"Queueing batch {batch_num}: contracts {batch_start} to {batch_end-1} ({len(batch_contracts)} contracts)")
         batch_tasks.append(expand_contract_batch(batch_contracts, batch_num))
 
     # Wait for all batches to complete with progress updates
@@ -1584,13 +1742,30 @@ async def expand_all_contracts_async(contracts: List[Dict[str, Any]]) -> tuple[L
     for coro in asyncio.as_completed(batch_tasks):
         batch_result = await coro
         completed_batches += 1
-        batch_num = completed_batches
-        batch_expanded, new_issuers, new_types, new_corps, new_items = batch_result
+        batch_expanded, new_issuers, new_types, new_corps, new_items, batch_time = batch_result
+        
+        # Dynamic adjustment based on performance
+        if batch_time > 15.0:  # Too slow, reduce concurrency
+            old_batch = current_batch_size
+            old_sem = current_semaphore_limit
+            current_batch_size = max(min_batch_size, int(current_batch_size * 0.8))
+            current_semaphore_limit = max(min_semaphore, int(current_semaphore_limit * 0.9))
+            if current_batch_size != old_batch or current_semaphore_limit != old_sem:
+                logger.info(f"Batch {completed_batches} slow ({batch_time:.1f}s), adjusting: batch_size {old_batch}->{current_batch_size}, concurrency {old_sem}->{current_semaphore_limit}")
+                semaphore = asyncio.Semaphore(current_semaphore_limit)  # Update semaphore
+        elif batch_time < 5.0:  # Fast, can increase
+            old_batch = current_batch_size
+            old_sem = current_semaphore_limit
+            current_batch_size = min(max_batch_size, int(current_batch_size * 1.2))
+            current_semaphore_limit = min(max_semaphore, int(current_semaphore_limit * 1.1))
+            if current_batch_size != old_batch or current_semaphore_limit != old_sem:
+                logger.info(f"Batch {completed_batches} fast ({batch_time:.1f}s), adjusting: batch_size {old_batch}->{current_batch_size}, concurrency {old_sem}->{current_semaphore_limit}")
+                semaphore = asyncio.Semaphore(current_semaphore_limit)  # Update semaphore
         
         # Log progress
         elapsed = time.time() - start_time
         progress_pct = (completed_batches / total_batches) * 100
-        logger.info(f"✓ Completed batch {batch_num}/{total_batches} ({progress_pct:.1f}%): {len(batch_expanded)} contracts expanded, "
+        logger.info(f"✓ Completed batch {completed_batches}/{total_batches} ({progress_pct:.1f}%): {len(batch_expanded)} contracts expanded in {batch_time:.1f}s, "
                    f"{len(new_issuers)} new issuers, {len(new_types)} new types, {len(new_corps)} new corps, "
                    f"{len(new_items)} new items. Elapsed: {elapsed:.1f}s")
         
