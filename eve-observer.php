@@ -240,7 +240,11 @@ class EVE_Observer {
         error_log("🔄 [PHP AJAX START] ========================================");
         error_log("🔄 [PHP AJAX START] handle_ajax_sync_request called");
         error_log("🔄 [PHP AJAX START] Timestamp: " . current_time('mysql'));
+        error_log("🔄 [PHP AJAX START] REQUEST_METHOD: " . ($_SERVER['REQUEST_METHOD'] ?? 'unknown'));
         error_log("🔄 [PHP AJAX START] POST data: " . print_r($_POST, true));
+        error_log("🔄 [PHP AJAX START] GET data: " . print_r($_GET, true));
+        error_log("🔄 [PHP AJAX START] Current user ID: " . get_current_user_id());
+        error_log("🔄 [PHP AJAX START] Current user capabilities: " . print_r(wp_get_current_user()->allcaps, true));
         error_log("🔄 [PHP AJAX START] ========================================");
 
         // Check permissions

@@ -561,7 +561,7 @@ class EVEDashboard {
                 url: eveObserverApi.ajaxUrl,
                 type: 'POST',
                 data: data,
-                timeout: 60000, // 60 second timeout
+                timeout: 300000, // 5 minute timeout (increased from 60 seconds)
                 beforeSend: function(xhr) {
                     console.log('🔄 [AJAX STEP 5] AJAX request about to be sent...');
                     console.log('🔄 [AJAX STEP 6] Request URL:', eveObserverApi.ajaxUrl);
