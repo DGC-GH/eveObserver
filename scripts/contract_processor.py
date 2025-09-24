@@ -1145,85 +1145,90 @@ async def process_character_contracts(
             logger.info(f"Completed concurrent updates for {len(update_tasks)} contracts")
 
 
-async def fetch_and_expand_all_forge_contracts() -> List[Dict[str, Any]]:
-    """Fetch all outstanding contracts from The Forge region and maintain cache incrementally.
+async def update_contract_cache_only() -> None:
+    """Standalone function to update the contract cache to reflect current EVE Online data.
 
-    Only processes new contracts that don't exist in cache, removes contracts no longer in API.
-    Uses dynamic concurrency adjustment based on performance and rate limits.
+    This function can be called independently to ensure the contract cache is always
+    synchronized with real-world EVE Online contract changes, without performing
+    any other contract processing tasks.
+
+    Use this when you want to update the cache proactively or ensure it's current
+    before running other operations.
     """
-    logger.info("Starting incremental Forge contracts cache update...")
-
-    cache_file = os.path.join(CACHE_DIR, "all_contracts_forge.json")
-
-    # Phase 1: Fetch current contracts from API
-    logger.info("Phase 1: Fetching current contracts from The Forge region...")
-    start_time = time.time()
-    current_contracts = await fetch_all_contracts_in_region(FORGE_REGION_ID)
-    phase1_time = time.time() - start_time
-    logger.info(f"✓ Fetched {len(current_contracts)} current contracts in {phase1_time:.1f}s")
-
-    # Load existing cache
-    existing_cache = []
-    existing_contract_ids = set()
+    logger.info("Updating contract cache to reflect current EVE Online data...")
     try:
-        with open(cache_file, 'r') as f:
-            existing_cache = json.load(f)
-            existing_contract_ids = {contract['contract_id'] for contract in existing_cache}
-        logger.info(f"✓ Loaded {len(existing_cache)} existing contracts from cache")
-    except (FileNotFoundError, json.JSONDecodeError):
-        logger.info("✓ No existing cache found, starting fresh")
+        await fetch_and_expand_all_forge_contracts()
+        logger.info("✓ Contract cache successfully updated to match EVE Online")
+    except Exception as e:
+        logger.error(f"✗ Failed to update contract cache: {e}")
+        raise
 
-    # Phase 2: Identify changes
-    current_contract_ids = {contract['contract_id'] for contract in current_contracts}
+
+async def fetch_and_expand_all_forge_contracts() -> List[Dict[str, Any]]:
+    """Fetch and expand all contracts from The Forge region with incremental caching.
+
+    Only processes new contracts, removes expired ones, and ensures cache reflects real-world EVE Online state.
+    """
+    logger.info("Starting incremental contract processing for The Forge region...")
+
+    # Load existing expanded contracts cache
+    cache_file = os.path.join(CACHE_DIR, "all_contracts_forge.json")
+    existing_expanded = []
+    existing_contract_ids = set()
+    if os.path.exists(cache_file):
+        try:
+            with open(cache_file, 'r') as f:
+                existing_expanded = json.load(f)
+                existing_contract_ids = {str(c["contract_id"]) for c in existing_expanded}
+            logger.info(f"Loaded {len(existing_expanded)} existing expanded contracts from cache")
+        except Exception as e:
+            logger.warning(f"Failed to load existing cache: {e}")
+            existing_expanded = []
+            existing_contract_ids = set()
+
+    # Fetch current contracts from API
+    logger.info("Fetching current contracts from EVE Online API...")
+    current_contracts = await fetch_all_contracts_in_region(10000002)  # The Forge region
+    current_contract_ids = {str(c["contract_id"]) for c in current_contracts}
+    logger.info(f"Fetched {len(current_contracts)} current contracts from API")
+
+    # Identify new contracts (in API but not in cache)
     new_contract_ids = current_contract_ids - existing_contract_ids
+    new_contracts = [c for c in current_contracts if str(c["contract_id"]) in new_contract_ids]
+
+    # Identify removed contracts (in cache but not in API - expired/fulfilled/deleted)
     removed_contract_ids = existing_contract_ids - current_contract_ids
 
-    logger.info(f"✓ Cache analysis: {len(new_contract_ids)} new contracts, {len(removed_contract_ids)} removed contracts")
+    logger.info(f"Cache synchronization: {len(new_contract_ids)} new contracts, {len(removed_contract_ids)} removed contracts")
 
-    # Filter new contracts that need expansion
-    new_contracts = [c for c in current_contracts if c['contract_id'] in new_contract_ids]
-    
-    # Phase 3: Expand only new contracts with dynamic concurrency
+    # Remove expired contracts from cache
+    if removed_contract_ids:
+        existing_expanded = [c for c in existing_expanded if str(c["contract_id"]) not in removed_contract_ids]
+        logger.info(f"Removed {len(removed_contract_ids)} expired contracts from cache")
+
+    # Expand new contracts
     if new_contracts:
-        logger.info(f"Phase 3: Expanding {len(new_contracts)} new contracts...")
-        start_time = time.time()
-        expanded_new_contracts, collected_items_cache = await expand_new_contracts_dynamic(new_contracts)
-        phase3_time = time.time() - start_time
-        logger.info(f"✓ Expanded {len(expanded_new_contracts)} new contracts in {phase3_time:.1f}s")
+        logger.info(f"Expanding {len(new_contracts)} new contracts...")
+        expanded_new, _ = await expand_new_contracts_dynamic(new_contracts)
+
+        # Add to cache
+        existing_expanded.extend(expanded_new)
+        logger.info(f"Added {len(expanded_new)} expanded contracts to cache")
     else:
-        expanded_new_contracts = []
-        collected_items_cache = {}
-        phase3_time = 0
-        logger.info("✓ No new contracts to expand")
+        logger.info("No new contracts to expand")
 
-    # Phase 4: Update cache
-    logger.info("Phase 4: Updating cache...")
-    start_time = time.time()
-    
-    # Remove old contracts
-    updated_cache = [c for c in existing_cache if c['contract_id'] not in removed_contract_ids]
-    
-    # Add new expanded contracts
-    updated_cache.extend(expanded_new_contracts)
-    
     # Save updated cache
-    with open(cache_file, 'w') as f:
-        json.dump(updated_cache, f, indent=2, default=str)
-    
-    # Update contract items cache
-    if collected_items_cache:
-        cache_manager = ContractCacheManager(CACHE_DIR)
-        existing_items_cache = await cache_manager.load_contract_items_cache()
-        existing_items_cache.update(collected_items_cache)
-        await cache_manager.save_contract_items_cache(existing_items_cache)
-        logger.info(f"✓ Updated contract items cache with {len(collected_items_cache)} new entries")
-    
-    phase4_time = time.time() - start_time
-    logger.info(f"✓ Cache updated in {phase4_time:.1f}s: {len(updated_cache)} total contracts")
+    try:
+        with open(cache_file, 'w') as f:
+            json.dump(existing_expanded, f, indent=2, default=str)
+        logger.info(f"Saved updated cache with {len(existing_expanded)} contracts")
+    except Exception as e:
+        logger.error(f"Failed to save cache: {e}")
+        raise
 
-    total_time = phase1_time + phase3_time + phase4_time
-    logger.info(f"✓ Incremental update completed in {total_time:.1f}s")
-    return updated_cache
+    # Return all expanded contracts
+    logger.info(f"Returning {len(existing_expanded)} expanded contracts")
+    return existing_expanded
 
 
 async def get_user_contracts(char_id: int, access_token: str) -> List[Dict[str, Any]]:
