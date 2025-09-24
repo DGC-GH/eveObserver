@@ -288,6 +288,11 @@ class EVE_Observer {
         $scripts_dir = $plugin_dir . 'scripts/';
         $script_path = $scripts_dir . $script_map[$section];
 
+        // Parse script and arguments from script_map entry
+        $script_parts = explode(' ', $script_map[$section], 2);
+        $script_name = $script_parts[0]; // e.g., 'main.py'
+        $script_args = isset($script_parts[1]) ? $script_parts[1] : ''; // e.g., '--all'
+
         // TEMPORARY DEBUG: Comprehensive Python detection
         error_log("🔍 [PYTHON DEBUG] Starting comprehensive Python detection...");
         
@@ -496,8 +501,22 @@ class EVE_Observer {
         error_log("🔄 [AJAX PHP STEP 6] Script path: {$script_path}");
         error_log("🔄 [AJAX PHP STEP 7] Python command: {$python_cmd}");
 
-        // Change to scripts directory and run the command
-        $command = 'cd ' . escapeshellarg($scripts_dir) . ' && ' . escapeshellarg($python_cmd) . ' ' . escapeshellarg($script_map[$section]) . ' 2>&1';
+        // Build command with script name and arguments as separate arguments
+        $command_parts = array(
+            'cd', escapeshellarg($scripts_dir), '&&',
+            escapeshellarg($python_cmd),
+            escapeshellarg($script_name)
+        );
+        
+        if (!empty($script_args)) {
+            // Split arguments and add them individually
+            $args_array = explode(' ', $script_args);
+            foreach ($args_array as $arg) {
+                $command_parts[] = escapeshellarg($arg);
+            }
+        }
+        
+        $command = implode(' ', $command_parts) . ' 2>&1';
         error_log("🔄 [AJAX PHP STEP 8] Full command: {$command}");
 
         // Set execution time limit for long-running syncs
@@ -587,7 +606,10 @@ class EVE_Observer {
         }
         error_log("✅ [PHP STEP 11] Section mapped to script: {$script_map[$section]}");
 
-        // Change to scripts directory and run the command synchronously
+        // Parse script and arguments from script_map entry
+        $script_parts = explode(' ', $script_map[$section], 2);
+        $script_name = $script_parts[0]; // e.g., 'main.py'
+        $script_args = isset($script_parts[1]) ? $script_parts[1] : ''; // e.g., '--all'
         error_log("🔄 [PHP STEP 12] Preparing shell command...");
         
         // Try multiple methods to find Python executable
@@ -628,7 +650,23 @@ class EVE_Observer {
         }
         
         error_log("✅ [PHP STEP 12.6] Using Python command: {$python_cmd}");
-        $command = 'cd ' . escapeshellarg($scripts_dir) . ' && ' . escapeshellarg($python_cmd) . ' ' . escapeshellarg($script_map[$section]) . ' 2>&1';
+        
+        // Build command with script name and arguments as separate arguments
+        $command_parts = array(
+            'cd', escapeshellarg($scripts_dir), '&&',
+            escapeshellarg($python_cmd),
+            escapeshellarg($script_name)
+        );
+        
+        if (!empty($script_args)) {
+            // Split arguments and add them individually
+            $args_array = explode(' ', $script_args);
+            foreach ($args_array as $arg) {
+                $command_parts[] = escapeshellarg($arg);
+            }
+        }
+        
+        $command = implode(' ', $command_parts) . ' 2>&1';
         error_log("🔄 [PHP STEP 13] Full command: {$command}");
 
         // Set execution time limit for long-running syncs
