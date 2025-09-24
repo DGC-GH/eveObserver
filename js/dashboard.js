@@ -276,12 +276,19 @@ class EVEDashboard {
         console.log('🔄 [INIT STEP 7] eveObserverApi available:', typeof eveObserverApi !== 'undefined');
         if (typeof eveObserverApi !== 'undefined') {
             console.log('🔄 [INIT STEP 8] eveObserverApi.nonce:', eveObserverApi.nonce ? 'present' : 'missing');
-            console.log('🔄 [INIT STEP 9] eveObserverApi.restUrl:', eveObserverApi.restUrl);
+            console.log('🔄 [INIT STEP 9] eveObserverApi.ajaxUrl:', eveObserverApi.ajaxUrl);
+            console.log('🔄 [INIT STEP 10] Full eveObserverApi object:', eveObserverApi);
         } else {
             console.error('❌ [INIT ERROR] eveObserverApi is not defined! This will prevent sync from working.');
         }
 
-        console.log('🔄 [INIT STEP 10] Setting up individual sync button event listeners...');
+        console.log('🔄 [INIT STEP 11] Checking jQuery availability...');
+        console.log('🔄 [INIT STEP 12] jQuery available:', typeof jQuery !== 'undefined');
+        if (typeof jQuery !== 'undefined') {
+            console.log('🔄 [INIT STEP 13] jQuery version:', jQuery.fn.jquery);
+        }
+
+        console.log('🔄 [INIT STEP 14] Setting up individual sync button event listeners...');
         syncButtons.forEach(button => {
             button.addEventListener('click', (e) => {
                 e.stopPropagation();
@@ -290,23 +297,76 @@ class EVEDashboard {
                 this.syncSection(section, button);
             });
         });
-        console.log('✅ [INIT STEP 11] Individual sync button listeners set up');
+        console.log('✅ [INIT STEP 15] Individual sync button listeners set up');
 
-        console.log('🔄 [INIT STEP 12] Setting up sync all button event listener...');
+        console.log('🔄 [INIT STEP 16] Setting up sync all button event listener...');
         if (syncAllButton) {
             syncAllButton.addEventListener('click', (e) => {
                 console.log('🔄 [STEP 1] Sync All button clicked - event detected!');
                 console.log('🔄 [STEP 2] Event object:', e);
                 console.log('🔄 [STEP 3] Button element:', syncAllButton);
+                console.log('🔄 [STEP 4] Button data-section:', syncAllButton.getAttribute('data-section'));
                 this.syncSection('all', syncAllButton);
             });
-            console.log('✅ [INIT STEP 13] Sync all button event listener set up');
+            console.log('✅ [INIT STEP 17] Sync all button event listener set up');
         } else {
             console.error('❌ [INIT ERROR] Sync all button not found!');
+        }
+
+        console.log('🔄 [INIT STEP 18] Setting up test logging button event listener...');
+        const testLoggingButton = document.getElementById('eve-test-logging');
+        if (testLoggingButton) {
+            testLoggingButton.addEventListener('click', (e) => {
+                console.log('🔄 [TEST LOGGING] Test logging button clicked!');
+                console.log('🔄 [TEST LOGGING] Current timestamp:', new Date().toISOString());
+                console.log('🔄 [TEST LOGGING] eveObserverApi available:', typeof eveObserverApi !== 'undefined');
+                if (typeof eveObserverApi !== 'undefined') {
+                    console.log('🔄 [TEST LOGGING] eveObserverApi object:', eveObserverApi);
+                }
+                console.log('🔄 [TEST LOGGING] jQuery available:', typeof jQuery !== 'undefined');
+                if (typeof jQuery !== 'undefined') {
+                    console.log('🔄 [TEST LOGGING] jQuery version:', jQuery.fn.jquery);
+                }
+                console.log('🔄 [TEST LOGGING] Dashboard instance:', this);
+                console.log('🔄 [TEST LOGGING] Test completed successfully!');
+                this.showNotification('Test logging completed - check console for details', 'success');
+            });
+            console.log('✅ [INIT STEP 19] Test logging button event listener set up');
+        } else {
+            console.error('❌ [INIT ERROR] Test logging button not found!');
+        }
+
+        console.log('🔄 [INIT STEP 20] Setting up test API button event listener...');
+        const testApiButton = document.getElementById('eve-test-api');
+        if (testApiButton) {
+            testApiButton.addEventListener('click', async (e) => {
+                console.log('🔄 [TEST API] Test API button clicked!');
+                try {
+                    console.log('🔄 [TEST API] Making test API call...');
+                    const response = await fetch('/wp-json/eve-observer/v1/test');
+                    console.log('🔄 [TEST API] Response status:', response.status);
+                    const data = await response.json();
+                    console.log('🔄 [TEST API] Response data:', data);
+                    this.showNotification('Test API call successful - check console', 'success');
+                } catch (error) {
+                    console.error('❌ [TEST API] Error:', error);
+                    this.showNotification('Test API call failed - check console', 'error');
+                }
+            });
+            console.log('✅ [INIT STEP 21] Test API button event listener set up');
+        } else {
+            console.log('⚠️ [INIT WARNING] Test API button not found (this is optional)');
         }
     }
 
     async syncSection(section, button) {
+        console.log(`🔄 [SYNC START] ========================================`);
+        console.log(`🔄 [SYNC START] syncSection called with section: ${section}`);
+        console.log(`🔄 [SYNC START] Button element:`, button);
+        console.log(`🔄 [SYNC START] Button exists:`, !!button);
+        console.log(`🔄 [SYNC START] Current timestamp:`, new Date().toISOString());
+        console.log(`🔄 [SYNC START] ========================================`);
+
         console.log(`🔄 [STEP 5] EVE Observer: Starting sync for section: ${section}`);
         console.log(`🔄 [STEP 6] Button element:`, button);
         console.log(`🔄 [STEP 7] Button original text:`, button.innerHTML);
@@ -455,22 +515,57 @@ class EVEDashboard {
 
     makeAjaxRequest(data) {
         return new Promise((resolve, reject) => {
+            console.log('🔄 [AJAX STEP 1] makeAjaxRequest called with data:', data);
+            console.log('🔄 [AJAX STEP 2] Checking jQuery availability:', typeof jQuery !== 'undefined');
+
+            if (typeof jQuery === 'undefined') {
+                console.error('❌ [AJAX ERROR] jQuery is not available!');
+                reject(new Error('jQuery is not available'));
+                return;
+            }
+
+            console.log('🔄 [AJAX STEP 3] eveObserverApi.ajaxUrl:', eveObserverApi.ajaxUrl);
+            console.log('🔄 [AJAX STEP 4] Preparing jQuery.ajax call...');
+
             jQuery.ajax({
                 url: eveObserverApi.ajaxUrl,
                 type: 'POST',
                 data: data,
-                success: (response) => {
-                    console.log('✅ [AJAX] Request successful:', response);
+                timeout: 60000, // 60 second timeout
+                beforeSend: function(xhr) {
+                    console.log('🔄 [AJAX STEP 5] AJAX request about to be sent...');
+                    console.log('🔄 [AJAX STEP 6] Request URL:', eveObserverApi.ajaxUrl);
+                    console.log('🔄 [AJAX STEP 7] Request data:', data);
+                },
+                success: (response, textStatus, xhr) => {
+                    console.log('✅ [AJAX STEP 8] AJAX request successful');
+                    console.log('🔄 [AJAX STEP 9] Response status:', xhr.status);
+                    console.log('🔄 [AJAX STEP 10] Response headers:', xhr.getAllResponseHeaders());
+                    console.log('🔄 [AJAX STEP 11] Full response:', response);
+                    console.log('🔄 [AJAX STEP 12] Response success property:', response.success);
                     resolve(response);
                 },
                 error: (xhr, status, error) => {
-                    console.error('❌ [AJAX] Request failed:', xhr, status, error);
+                    console.error('❌ [AJAX STEP 13] AJAX request failed');
+                    console.error('🔄 [AJAX STEP 14] XHR object:', xhr);
+                    console.error('🔄 [AJAX STEP 15] Status:', status);
+                    console.error('🔄 [AJAX STEP 16] Error:', error);
+                    console.error('🔄 [AJAX STEP 17] Response text:', xhr.responseText);
+                    console.error('🔄 [AJAX STEP 18] Response status:', xhr.status);
+                    console.error('🔄 [AJAX STEP 19] Response headers:', xhr.getAllResponseHeaders());
+
                     let errorMessage = 'Unknown AJAX error';
                     if (xhr.responseJSON && xhr.responseJSON.data && xhr.responseJSON.data.message) {
                         errorMessage = xhr.responseJSON.data.message;
+                        console.error('🔄 [AJAX STEP 20] Error from responseJSON.data.message:', errorMessage);
                     } else if (xhr.responseText) {
                         errorMessage = xhr.responseText;
+                        console.error('🔄 [AJAX STEP 21] Error from responseText:', errorMessage);
+                    } else if (error) {
+                        errorMessage = error;
+                        console.error('🔄 [AJAX STEP 22] Error from error parameter:', errorMessage);
                     }
+
                     reject(new Error(errorMessage));
                 }
             });

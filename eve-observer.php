@@ -22,16 +22,26 @@ if (!defined('ABSPATH')) {
 class EVE_Observer {
 
     public function __construct() {
+        // Log plugin initialization
+        error_log("🔄 [PLUGIN INIT] EVE Observer plugin constructor called");
+
         // Hook into WordPress
         add_action('init', array($this, 'init'));
         add_action('admin_menu', array($this, 'add_admin_menu'));
         add_action('admin_enqueue_scripts', array($this, 'enqueue_admin_scripts'));
         add_action('wp_ajax_eve_sync', array($this, 'handle_ajax_sync_request'));
+
+        error_log("🔄 [PLUGIN INIT] AJAX action 'wp_ajax_eve_sync' registered");
+
         register_activation_hook(__FILE__, array($this, 'activate'));
         register_deactivation_hook(__FILE__, array($this, 'deactivate'));
+
+        error_log("🔄 [PLUGIN INIT] EVE Observer plugin constructor completed");
     }
 
     public function init() {
+        error_log("🔄 [PLUGIN INIT] EVE Observer init() method called");
+
         // Register meta for REST API
         register_meta('post', '_eve_planet_pins_data', array(
             'show_in_rest' => true,
@@ -39,6 +49,8 @@ class EVE_Observer {
             'type' => 'string',
             'auth_callback' => '__return_true'
         ));
+
+        error_log("🔄 [PLUGIN INIT] Meta field _eve_planet_pins_data registered");
 
         // Character meta fields
         $char_meta_fields = array(
@@ -182,26 +194,75 @@ class EVE_Observer {
                 )
             )
         ));
+
+        // Add test endpoint
+        register_rest_route('eve-observer/v1', '/test', array(
+            'methods' => 'GET',
+            'callback' => array($this, 'handle_test_request'),
+            'permission_callback' => array($this, 'check_sync_permissions')
+        ));
+
+        error_log("🔄 [PLUGIN INIT] REST API routes registered");
     }
 
     public function check_sync_permissions() {
         return current_user_can('manage_options');
     }
 
+    public function handle_test_request() {
+        error_log("🔄 [TEST ENDPOINT] Test endpoint called");
+
+        $response = array(
+            'success' => true,
+            'message' => 'EVE Observer test endpoint working',
+            'timestamp' => current_time('mysql'),
+            'php_version' => phpversion(),
+            'shell_exec_available' => function_exists('shell_exec'),
+            'plugin_dir' => plugin_dir_path(__FILE__),
+            'scripts_dir_exists' => is_dir(plugin_dir_path(__FILE__) . 'scripts/')
+        );
+
+        // Test basic shell command
+        if (function_exists('shell_exec')) {
+            $test_command = 'echo "Shell exec test successful"';
+            $shell_output = shell_exec($test_command);
+            $response['shell_exec_test'] = trim($shell_output);
+            error_log("🔄 [TEST ENDPOINT] Shell exec test result: " . $response['shell_exec_test']);
+        }
+
+        error_log("🔄 [TEST ENDPOINT] Test response: " . print_r($response, true));
+
+        return $response;
+    }
+
     public function handle_ajax_sync_request() {
+        // Log the start of AJAX request processing
+        error_log("🔄 [PHP AJAX START] ========================================");
+        error_log("🔄 [PHP AJAX START] handle_ajax_sync_request called");
+        error_log("🔄 [PHP AJAX START] Timestamp: " . current_time('mysql'));
+        error_log("🔄 [PHP AJAX START] POST data: " . print_r($_POST, true));
+        error_log("🔄 [PHP AJAX START] ========================================");
+
         // Check permissions
         if (!current_user_can('manage_options')) {
+            error_log("❌ [PHP AJAX ERROR] User does not have manage_options capability");
             wp_die(__('You do not have sufficient permissions to access this page.'));
         }
+        error_log("✅ [PHP AJAX STEP 1] User has manage_options capability");
 
         // Verify nonce
         if (!wp_verify_nonce($_POST['nonce'], 'eve_sync_nonce')) {
+            error_log("❌ [PHP AJAX ERROR] Nonce verification failed");
+            error_log("🔄 [PHP AJAX DEBUG] Received nonce: " . ($_POST['nonce'] ?? 'none'));
+            error_log("🔄 [PHP AJAX DEBUG] Expected nonce action: eve_sync_nonce");
             wp_send_json_error(array('message' => 'Security check failed'), 403);
             return;
         }
+        error_log("✅ [PHP AJAX STEP 2] Nonce verification passed");
 
         // Get the section parameter
         $section = isset($_POST['section']) ? sanitize_text_field($_POST['section']) : 'all';
+        error_log("🔄 [PHP AJAX STEP 3] Section parameter: {$section}");
 
         // Log the sync request
         error_log("🔄 [AJAX PHP STEP 1] EVE Observer: AJAX sync request started for section: {$section}");
@@ -438,13 +499,16 @@ class EVE_Observer {
         if ($hook === 'toplevel_page_eve-observer') {
             wp_enqueue_style('eve-observer-dashboard', plugin_dir_url(__FILE__) . 'css/dashboard.css', array(), '1.1.1');
             wp_enqueue_script('chart-js', 'https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.js', array(), '4.4.1', true);
-            wp_enqueue_script('eve-observer-dashboard', plugin_dir_url(__FILE__) . 'js/dashboard.js', array('chart-js'), '1.1.1', false);
+            wp_enqueue_script('eve-observer-dashboard', plugin_dir_url(__FILE__) . 'js/dashboard.js', array('chart-js'), '1.1.2', false);
 
             // Localize script with nonce and AJAX URL
-            wp_localize_script('eve-observer-dashboard', 'eveObserverApi', array(
+            $localized_data = array(
                 'nonce' => wp_create_nonce('eve_sync_nonce'),
                 'ajaxUrl' => admin_url('admin-ajax.php')
-            ));
+            );
+            wp_localize_script('eve-observer-dashboard', 'eveObserverApi', $localized_data);
+
+            error_log("🔄 [ENQUEUE] Localized eveObserverApi with data: " . print_r($localized_data, true));
 
             // Add clipboard functionality for dashboard
             wp_add_inline_script('eve-observer-dashboard', '
@@ -535,6 +599,14 @@ class EVE_Observer {
                     <button id="eve-sync-all" class="button button-primary">
                         <span class="dashicons dashicons-update"></span>
                         <?php _e('Sync All Data', 'eve-observer'); ?>
+                    </button>
+                    <button id="eve-test-logging" class="button button-secondary" style="margin-left: 10px;">
+                        <span class="dashicons dashicons-search"></span>
+                        <?php _e('Test Logging', 'eve-observer'); ?>
+                    </button>
+                    <button id="eve-test-api" class="button button-secondary" style="margin-left: 10px;">
+                        <span class="dashicons dashicons-rest-api"></span>
+                        <?php _e('Test API', 'eve-observer'); ?>
                     </button>
                 </div>
             </div>
