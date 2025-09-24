@@ -29,7 +29,7 @@ from cache_manager import (
     save_blueprint_cache,
 )
 from cache_manager_contracts import ContractCacheManager
-from config import ESI_BASE_URL, WP_PER_PAGE
+from config import ESI_BASE_URL, WP_PER_PAGE, CACHE_DIR
 
 """
 EVE Observer Contract Processor
@@ -1055,7 +1055,7 @@ async def fetch_and_expand_all_forge_contracts() -> List[Dict[str, Any]]:
     """Fetch all outstanding contracts from The Forge region and expand with full details."""
     logger.info("Fetching and expanding all outstanding contracts from The Forge region...")
 
-    cache_file = os.path.join(os.path.dirname(__file__), "cache", "all_contracts_forge.json")
+    cache_file = os.path.join(CACHE_DIR, "all_contracts_forge.json")
 
     # Try to load from cache first
     if os.path.exists(cache_file):
