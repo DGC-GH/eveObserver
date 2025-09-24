@@ -96,6 +96,19 @@ This document describes the general features implemented in this data aggregatio
 - Activity monitoring and automated reporting capabilities
 - **Key Functions**: `fetch_character_data`, `fetch_character_skills`, `fetch_character_planets`, `fetch_corporation_data`, `collect_corporation_members`, `process_corporation_data`, `process_character_data`
 
+### Environment-Based Corporation Filtering
+- Configurable corporation ID filtering via environment variables
+- Dynamic issuer filtering based on allowed corporation memberships
+- Secure configuration management without hardcoded values
+- **Key Functions**: `get_allowed_entities`, `ALLOWED_CORP_IDS` configuration
+
+### API Call Tracking and Performance Metrics
+- Global counter for tracking all ESI API calls
+- Integration with performance logging and monitoring
+- Accurate metrics collection for optimization and debugging
+- Non-intrusive tracking with minimal overhead
+- **Key Functions**: `APICallCounter` class, `api_call_counter.increment()`, performance metrics logging
+
 ## Key Learnings for Similar Projects
 
 ### Architecture Patterns

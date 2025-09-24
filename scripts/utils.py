@@ -4,6 +4,7 @@ EVE Observer Utilities
 Shared utility functions for the EVE Observer application.
 """
 
+import argparse
 import json
 import logging
 import os
@@ -25,6 +26,43 @@ from config import (
 )
 
 logger = logging.getLogger(__name__)
+
+
+def parse_arguments() -> argparse.Namespace:
+    """
+    Parse command line arguments for the data fetching script.
+
+    Supports selective data fetching by type or fetching all data types.
+    Defaults to fetching all data if no specific flags are provided.
+
+    Returns:
+        argparse.Namespace: Parsed command line arguments.
+
+    Options:
+        --contracts: Fetch contract data
+        --planets: Fetch planetary colony data
+        --blueprints: Fetch blueprint data
+        --skills: Fetch character skills data
+        --corporations: Fetch corporation data
+        --characters: Fetch character data
+        --all: Fetch all data types (default)
+    """
+    parser = argparse.ArgumentParser(description="Fetch EVE Online data from ESI API")
+    parser.add_argument("--contracts", action="store_true", help="Fetch contracts data")
+    parser.add_argument("--planets", action="store_true", help="Fetch planets data")
+    parser.add_argument("--blueprints", action="store_true", help="Fetch blueprints data")
+    parser.add_argument("--skills", action="store_true", help="Fetch skills data")
+    parser.add_argument("--corporations", action="store_true", help="Fetch corporation data")
+    parser.add_argument("--characters", action="store_true", help="Fetch character data")
+    parser.add_argument("--all", action="store_true", help="Fetch all data (default)")
+
+    args = parser.parse_args()
+
+    # If no specific flags set, default to --all
+    if not any([args.contracts, args.planets, args.blueprints, args.skills, args.corporations, args.characters]):
+        args.all = True
+
+    return args
 
 
 def send_email(subject: str, body: str) -> None:

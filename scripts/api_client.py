@@ -39,6 +39,25 @@ from config import (
 )
 
 
+# API Call Counter
+class APICallCounter:
+    """Global counter for API calls."""
+    def __init__(self):
+        self.count = 0
+
+    def increment(self):
+        self.count += 1
+
+    def get(self):
+        return self.count
+
+    def reset(self):
+        self.count = 0
+
+
+api_call_counter = APICallCounter()
+
+
 # Performance benchmarking decorator
 def benchmark(func):
     """Decorator to measure and log function execution time."""
@@ -608,6 +627,9 @@ async def _fetch_esi_with_retry(
         if max_retries is None:
             max_retries = api_config.esi_max_retries
 
+        # Increment API call counter
+        api_call_counter.increment()
+
         sess = await get_session()
         url = f"{api_config.esi_base_url}{endpoint}"
 
@@ -1004,15 +1026,6 @@ async def wp_request(method: str, endpoint: str, data: Optional[Dict] = None) ->
         >>> post = await wp_request('POST', '/wp-json/wp/v2/posts', {'title': 'New Post', 'status': 'publish'})
         >>> print(post['id'])  # 123
     """
-
-    async def _do_wp_request():
-        start_time = time.time()
-        # Apply rate limiting
-        await wp_rate_limiter.wait_if_needed()
-
-        sess = await get_session()
-        url = f"{WP_BASE_URL}{endpoint}"
-        auth = aiohttp.BasicAuth(WP_USERNAME, WP_APP_PASSWORD)
 
     async def _do_wp_request():
         start_time = time.time()

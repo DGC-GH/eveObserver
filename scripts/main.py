@@ -15,7 +15,7 @@ from typing import Any, Dict, List, Tuple
 import psutil
 from dotenv import load_dotenv
 
-from api_client import get_session, refresh_token, cleanup_session
+from api_client import get_session, refresh_token, cleanup_session, api_call_counter
 from cache_manager import load_wp_post_id_cache
 from config import (
     CHARACTER_PROCESSING_CONCURRENCY,
@@ -33,6 +33,7 @@ from fetch_data import (
     process_character_data,
     cleanup_old_posts,
 )
+from utils import parse_arguments
 
 load_dotenv()
 
@@ -102,26 +103,6 @@ def save_tokens(tokens: Dict[str, Any]) -> None:
     """Save tokens to file."""
     with open(TOKENS_FILE, "w") as f:
         json.dump(tokens, f)
-
-
-def parse_arguments() -> argparse.Namespace:
-    """Parse command line arguments."""
-    parser = argparse.ArgumentParser(description="Fetch EVE Online data from ESI API")
-    parser.add_argument("--contracts", action="store_true", help="Fetch contracts data")
-    parser.add_argument("--planets", action="store_true", help="Fetch planets data")
-    parser.add_argument("--blueprints", action="store_true", help="Fetch blueprints data")
-    parser.add_argument("--skills", action="store_true", help="Fetch skills data")
-    parser.add_argument("--corporations", action="store_true", help="Fetch corporation data")
-    parser.add_argument("--characters", action="store_true", help="Fetch character data")
-    parser.add_argument("--all", action="store_true", help="Fetch all data (default)")
-
-    args = parser.parse_args()
-
-    # If no specific flags set, default to --all
-    if not any([args.contracts, args.planets, args.blueprints, args.skills, args.corporations, args.characters]):
-        args.all = True
-
-    return args
 
 
 async def process_all_data(
@@ -222,7 +203,7 @@ async def main() -> None:
         cache_stats = {}  # Will be populated by log_cache_performance
         await log_performance_metrics(
             total_time=total_time,
-            api_calls=0,  # TODO: Track API calls
+            api_calls=api_call_counter.get(),  # Track API calls
             contracts_processed=0,  # TODO: Track contracts processed
             characters_processed=len(tokens),
             cache_stats=cache_stats

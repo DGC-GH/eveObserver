@@ -45,6 +45,7 @@ LOG_FILE = os.getenv("LOG_FILE", "eve_observer.log")
 
 # Corporation Filter
 ALLOWED_CORPORATIONS = ["no mercy incorporated"]  # Case insensitive
+ALLOWED_CORP_IDS = set(map(int, os.getenv("ALLOWED_CORP_IDS", "98092220").split(",")))
 
 # Processing Options
 SKIP_CORPORATION_ASSETS = os.getenv("SKIP_CORPORATION_ASSETS", "false").lower() == "true"

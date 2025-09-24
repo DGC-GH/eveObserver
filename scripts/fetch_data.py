@@ -32,13 +32,14 @@ from cache_manager import (
     load_wp_post_id_cache,
 )
 from character_processor import fetch_character_skills, process_character_planets, update_character_skills_in_wp
-from config import CACHE_DIR, LOG_FILE, LOG_LEVEL
+from config import CACHE_DIR, LOG_FILE, LOG_LEVEL, ALLOWED_CORP_IDS
 from contract_processor import (
     cleanup_contract_posts,
     process_character_contracts,
 )
 from data_processors import fetch_character_data, update_character_in_wp
 from esi_oauth import load_tokens, save_tokens
+from utils import parse_arguments
 
 
 async def collect_corporation_members(tokens):
@@ -141,6 +142,116 @@ async def process_character_data(
         )
 
 
+async def process_direct_blueprints(
+    char_id: int,
+    access_token: str,
+    wp_post_id_cache: Dict[str, Any],
+    blueprint_cache: Dict[str, Any],
+    location_cache: Dict[str, Any],
+    structure_cache: Dict[str, Any],
+    failed_structures: Dict[str, Any],
+) -> None:
+    """
+    Process blueprints from direct ESI endpoint.
+
+    Args:
+        char_id: EVE character ID.
+        access_token: Valid OAuth2 access token.
+        wp_post_id_cache: WordPress post ID cache.
+        blueprint_cache: Blueprint name cache.
+        location_cache: Location name cache.
+        structure_cache: Structure name cache.
+        failed_structures: Failed structure cache.
+    """
+    blueprints = await fetch_esi(f"/characters/{char_id}/blueprints", char_id, access_token)
+    if blueprints:
+        for bp in blueprints:
+            await update_blueprint_in_wp(
+                bp,
+                wp_post_id_cache,
+                char_id,
+                access_token,
+                blueprint_cache,
+                location_cache,
+                structure_cache,
+                failed_structures,
+            )
+
+
+async def process_asset_blueprints(
+    char_id: int,
+    access_token: str,
+    wp_post_id_cache: Dict[str, Any],
+    blueprint_cache: Dict[str, Any],
+    location_cache: Dict[str, Any],
+    structure_cache: Dict[str, Any],
+    failed_structures: Dict[str, Any],
+) -> None:
+    """
+    Process blueprints from character assets.
+
+    Args:
+        char_id: EVE character ID.
+        access_token: Valid OAuth2 access token.
+        wp_post_id_cache: WordPress post ID cache.
+        blueprint_cache: Blueprint name cache.
+        location_cache: Location name cache.
+        structure_cache: Structure name cache.
+        failed_structures: Failed structure cache.
+    """
+    assets = await fetch_esi(f"/characters/{char_id}/assets", char_id, access_token)
+    if assets:
+        asset_blueprints = await extract_blueprints_from_assets(assets, "char", char_id, access_token)
+        for bp in asset_blueprints:
+            await update_blueprint_from_asset_in_wp(
+                bp,
+                wp_post_id_cache,
+                char_id,
+                access_token,
+                blueprint_cache,
+                location_cache,
+                structure_cache,
+                failed_structures,
+            )
+
+
+async def process_job_blueprints(
+    char_id: int,
+    access_token: str,
+    wp_post_id_cache: Dict[str, Any],
+    blueprint_cache: Dict[str, Any],
+    location_cache: Dict[str, Any],
+    structure_cache: Dict[str, Any],
+    failed_structures: Dict[str, Any],
+) -> None:
+    """
+    Process blueprints from industry jobs.
+
+    Args:
+        char_id: EVE character ID.
+        access_token: Valid OAuth2 access token.
+        wp_post_id_cache: WordPress post ID cache.
+        blueprint_cache: Blueprint name cache.
+        location_cache: Location name cache.
+        structure_cache: Structure name cache.
+        failed_structures: Failed structure cache.
+    """
+    jobs = await fetch_esi(f"/characters/{char_id}/industry/jobs", char_id, access_token)
+    if jobs:
+        job_blueprints = extract_blueprints_from_industry_jobs(jobs, "char", char_id)
+        for bp in job_blueprints:
+            await update_blueprint_from_asset_in_wp(
+                bp,
+                wp_post_id_cache,
+                char_id,
+                access_token,
+                blueprint_cache,
+                location_cache,
+                structure_cache,
+                failed_structures,
+            )
+
+
 async def process_character_blueprints(
     char_id: int,
     access_token: str,
@@ -165,52 +276,15 @@ async def process_character_blueprints(
         structure_cache: Structure name cache.
         failed_structures: Failed structure cache.
     """
-    # Get blueprints from direct endpoint
-    blueprints = await fetch_esi(f"/characters/{char_id}/blueprints", char_id, access_token)
-    if blueprints:
-        for bp in blueprints:
-            await update_blueprint_in_wp(
-                bp,
-                wp_post_id_cache,
-                char_id,
-                access_token,
-                blueprint_cache,
-                location_cache,
-                structure_cache,
-                failed_structures,
-            )
-
-    # Get blueprints from assets
-    assets = await fetch_esi(f"/characters/{char_id}/assets", char_id, access_token)
-    if assets:
-        asset_blueprints = await extract_blueprints_from_assets(assets, "char", char_id, access_token)
-        for bp in asset_blueprints:
-            await update_blueprint_from_asset_in_wp(
-                bp,
-                wp_post_id_cache,
-                char_id,
-                access_token,
-                blueprint_cache,
-                location_cache,
-                structure_cache,
-                failed_structures,
-            )
-
-    # Get blueprints from industry jobs
-    jobs = await fetch_esi(f"/characters/{char_id}/industry/jobs", char_id, access_token)
-    if jobs:
-        job_blueprints = extract_blueprints_from_industry_jobs(jobs, "char", char_id)
-        for bp in job_blueprints:
-            await update_blueprint_from_asset_in_wp(
-                bp,
-                wp_post_id_cache,
-                char_id,
-                access_token,
-                blueprint_cache,
-                location_cache,
-                structure_cache,
-                failed_structures,
-            )
+    await process_direct_blueprints(
+        char_id, access_token, wp_post_id_cache, blueprint_cache, location_cache, structure_cache, failed_structures
+    )
+    await process_asset_blueprints(
+        char_id, access_token, wp_post_id_cache, blueprint_cache, location_cache, structure_cache, failed_structures
+    )
+    await process_job_blueprints(
+        char_id, access_token, wp_post_id_cache, blueprint_cache, location_cache, structure_cache, failed_structures
+    )
 
 
 # Configure logging
@@ -222,43 +296,6 @@ logging.basicConfig(
 logger = logging.getLogger(__name__)
 # WordPress post ID cache
 WP_POST_ID_CACHE_FILE = os.path.join(CACHE_DIR, "wp_post_ids.json")
-
-
-def parse_arguments() -> argparse.Namespace:
-    """
-    Parse command line arguments for the data fetching script.
-
-    Supports selective data fetching by type or fetching all data types.
-    Defaults to fetching all data if no specific flags are provided.
-
-    Returns:
-        argparse.Namespace: Parsed command line arguments.
-
-    Options:
-        --contracts: Fetch contract data
-        --planets: Fetch planetary colony data
-        --blueprints: Fetch blueprint data
-        --skills: Fetch character skills data
-        --corporations: Fetch corporation data
-        --characters: Fetch character data
-        --all: Fetch all data types (default)
-    """
-    parser = argparse.ArgumentParser(description="Fetch EVE Online data from ESI API")
-    parser.add_argument("--contracts", action="store_true", help="Fetch contracts data")
-    parser.add_argument("--planets", action="store_true", help="Fetch planets data")
-    parser.add_argument("--blueprints", action="store_true", help="Fetch blueprints data")
-    parser.add_argument("--skills", action="store_true", help="Fetch skills data")
-    parser.add_argument("--corporations", action="store_true", help="Fetch corporation data")
-    parser.add_argument("--characters", action="store_true", help="Fetch character data")
-    parser.add_argument("--all", action="store_true", help="Fetch all data (default)")
-
-    args = parser.parse_args()
-
-    # If no specific flags set, default to --all
-    if not any([args.contracts, args.planets, args.blueprints, args.skills, args.corporations, args.characters]):
-        args.all = True
-
-    return args
 
 
 def clear_log_file() -> None:
@@ -306,14 +343,13 @@ def get_allowed_entities(corp_members: Dict[int, List[Tuple[int, str, str]]]) ->
         Tuple[set, set]: (allowed_corp_ids, allowed_issuer_ids)
 
     Note:
-        Currently hardcoded to allow No Mercy Incorporated (corp_id: 98092220)
-        and its members for contract processing.
+        Uses ALLOWED_CORP_IDS from config for corporation filtering.
     """
-    allowed_corp_ids = {98092220}  # No Mercy Incorporated
+    allowed_corp_ids = ALLOWED_CORP_IDS
     allowed_issuer_ids = {
         char_id
         for corp_id, members in corp_members.items()
-        if corp_id == 98092220  # No Mercy Incorporated
+        if corp_id in allowed_corp_ids
         for char_id, access_token, char_name in members
     }
     return allowed_corp_ids, allowed_issuer_ids
