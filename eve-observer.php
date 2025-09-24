@@ -288,34 +288,72 @@ class EVE_Observer {
         $scripts_dir = $plugin_dir . 'scripts/';
         $script_path = $scripts_dir . $script_map[$section];
 
-        // Use the specific path provided by Hostinger
-        $python_cmd = 'python3 ' . escapeshellarg($script_path);
+        // Try multiple methods to find Python executable
+        $python_cmd = '';
+        $python_paths = array(
+            '/usr/bin/python3',
+            '/usr/local/bin/python3', 
+            '/usr/bin/python',
+            '/usr/local/bin/python',
+            'python3',
+            'python'
+        );
+        
+        error_log("🔄 [AJAX PHP STEP 2] Checking for Python in common locations...");
+        foreach ($python_paths as $path) {
+            // Test if the Python executable exists and is executable
+            $test_cmd = 'command -v ' . escapeshellarg($path) . ' 2>/dev/null && ' . escapeshellarg($path) . ' --version 2>/dev/null';
+            $test_output = shell_exec($test_cmd);
+            if (!empty($test_output) && strpos($test_output, 'Python') !== false) {
+                $python_cmd = $path;
+                error_log("✅ [AJAX PHP STEP 3] Found working Python at: {$path}");
+                break;
+            }
+        }
+        
+        if (empty($python_cmd)) {
+            error_log("❌ [AJAX PHP ERROR] No working Python executable found");
+            error_log("🔄 [AJAX PHP DEBUG] Available commands check:");
+            
+            // Check what commands are available
+            $which_output = shell_exec('which python3 python 2>/dev/null');
+            error_log("🔄 [AJAX PHP DEBUG] which output: " . ($which_output ?: 'none'));
+            
+            $ls_output = shell_exec('ls -la /usr/bin/python* /usr/local/bin/python* 2>/dev/null | head -10');
+            error_log("🔄 [AJAX PHP DEBUG] Python files in common dirs: " . ($ls_output ?: 'none'));
+            
+            wp_send_json_error(array(
+                'message' => 'Python executable not found. Your hosting provider (Hostinger) may not support Python, or it may be installed in a non-standard location. Please contact Hostinger support to enable Python or check if they offer Python hosting plans.',
+                'exit_code' => 127
+            ), 500);
+            return;
+        }
 
-        error_log("🔄 [AJAX PHP STEP 2] Plugin dir: {$plugin_dir}");
-        error_log("🔄 [AJAX PHP STEP 3] Scripts dir: {$scripts_dir}");
-        error_log("🔄 [AJAX PHP STEP 4] Script path: {$script_path}");
-        error_log("🔄 [AJAX PHP STEP 5] Python command: {$python_cmd}");
+        error_log("🔄 [AJAX PHP STEP 4] Plugin dir: {$plugin_dir}");
+        error_log("🔄 [AJAX PHP STEP 5] Scripts dir: {$scripts_dir}");
+        error_log("🔄 [AJAX PHP STEP 6] Script path: {$script_path}");
+        error_log("🔄 [AJAX PHP STEP 7] Python command: {$python_cmd}");
 
         // Change to scripts directory and run the command
-        $command = 'cd ' . escapeshellarg($scripts_dir) . ' && ' . $python_cmd . ' 2>&1';
-        error_log("🔄 [AJAX PHP STEP 6] Full command: {$command}");
+        $command = 'cd ' . escapeshellarg($scripts_dir) . ' && ' . escapeshellarg($python_cmd) . ' ' . escapeshellarg($script_map[$section]) . ' 2>&1';
+        error_log("🔄 [AJAX PHP STEP 8] Full command: {$command}");
 
         // Set execution time limit for long-running syncs
         set_time_limit(300); // 5 minutes
-        error_log("🔄 [AJAX PHP STEP 7] Time limit set");
+        error_log("🔄 [AJAX PHP STEP 9] Time limit set");
 
         // Execute the command and capture output
-        error_log("🔄 [AJAX PHP STEP 8] Starting command execution...");
+        error_log("🔄 [AJAX PHP STEP 10] Starting command execution...");
         $start_time = microtime(true);
         $output = shell_exec($command);
         $execution_time = microtime(true) - $start_time;
-        error_log("✅ [AJAX PHP STEP 9] Command execution completed in " . round($execution_time, 2) . " seconds");
+        error_log("✅ [AJAX PHP STEP 11] Command execution completed in " . round($execution_time, 2) . " seconds");
 
         // Check if command was successful
         $exit_code = 0;
         if (function_exists('exec')) {
             exec($command, $output_lines, $exit_code);
-            error_log("🔄 [AJAX PHP STEP 10] Exit code from exec(): {$exit_code}");
+            error_log("🔄 [AJAX PHP STEP 12] Exit code from exec(): {$exit_code}");
         }
 
         if ($exit_code !== 0) {
@@ -329,7 +367,7 @@ class EVE_Observer {
         }
 
         // Log successful completion
-        error_log("✅ [AJAX PHP STEP 11] Sync completed successfully for section {$section} in " . round($execution_time, 2) . " seconds");
+        error_log("✅ [AJAX PHP STEP 13] Sync completed successfully for section {$section} in " . round($execution_time, 2) . " seconds");
 
         // Send success response
         wp_send_json_success(array(
