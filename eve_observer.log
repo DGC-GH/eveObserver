@@ -1,546 +1,878 @@
-2025-09-24 05:27:57,627 - INFO - Loading cache from /Users/dg/Documents/GitHub/eveObserver/cache/blueprint_names.json...
-2025-09-24 05:27:57,628 - INFO - ✓ Cache loaded from /Users/dg/Documents/GitHub/eveObserver/cache/blueprint_names.json: 110 entries in 0.00s
-2025-09-24 05:27:57,628 - INFO - Loading cache from /Users/dg/Documents/GitHub/eveObserver/cache/location_names.json...
-2025-09-24 05:27:57,628 - INFO - ✓ Cache loaded from /Users/dg/Documents/GitHub/eveObserver/cache/location_names.json: 1 entries in 0.00s
-2025-09-24 05:27:57,628 - INFO - Loading cache from /Users/dg/Documents/GitHub/eveObserver/cache/structure_names.json...
-2025-09-24 05:27:57,628 - INFO - ✓ Cache loaded from /Users/dg/Documents/GitHub/eveObserver/cache/structure_names.json: 1 entries in 0.00s
-2025-09-24 05:27:57,628 - INFO - Loading cache from /Users/dg/Documents/GitHub/eveObserver/cache/failed_structures.json...
-2025-09-24 05:27:57,628 - INFO - ✓ Cache loaded from /Users/dg/Documents/GitHub/eveObserver/cache/failed_structures.json: 2 entries in 0.00s
-2025-09-24 05:27:57,628 - INFO - Loading cache from /Users/dg/Documents/GitHub/eveObserver/cache/wp_post_ids.json...
-2025-09-24 05:27:57,629 - INFO - ✓ Cache loaded from /Users/dg/Documents/GitHub/eveObserver/cache/wp_post_ids.json: 1 entries in 0.00s
-2025-09-24 05:27:57,745 - INFO - EVENT: TOKEN_REFRESH_SUCCESS | USER: system | DETAILS: {'client_id': '8b221bf2...'}
-2025-09-24 05:27:57,879 - INFO - ESI authenticated fetch successful: /characters/90020513/ in 0.13s
-2025-09-24 05:27:57,879 - INFO - _fetch_esi_with_retry completed in 0.133s
-2025-09-24 05:27:58,024 - INFO - WordPress GET successful: /wp/v2/eve_character?slug=character-90020513 in 0.14s
-2025-09-24 05:27:58,024 - INFO - wp_request completed in 0.144s
-2025-09-24 05:27:58,137 - INFO - ESI public fetch successful: /characters/90020513/portrait/ in 0.11s
-2025-09-24 05:27:58,137 - INFO - _fetch_esi_with_retry completed in 0.112s
-2025-09-24 05:27:58,137 - INFO - Portrait unchanged for character: Mr FiLiN
-2025-09-24 05:27:58,940 - INFO - WordPress PUT successful: /wp/v2/eve_character/56 in 0.80s
-2025-09-24 05:27:58,941 - INFO - wp_request completed in 0.803s
-2025-09-24 05:27:58,941 - INFO - Updated character: Mr FiLiN
-2025-09-24 05:27:58,941 - INFO - EVENT: CHARACTER_UPDATE | USER: 90020513 | DETAILS: {'name': 'Mr FiLiN', 'post_id': 56}
-2025-09-24 05:27:59,059 - INFO - EVENT: TOKEN_REFRESH_SUCCESS | USER: system | DETAILS: {'client_id': '8b221bf2...'}
-2025-09-24 05:27:59,094 - INFO - ESI authenticated fetch successful: /characters/90045731/ in 0.03s
-2025-09-24 05:27:59,095 - INFO - _fetch_esi_with_retry completed in 0.034s
-2025-09-24 05:27:59,318 - INFO - WordPress GET successful: /wp/v2/eve_character?slug=character-90045731 in 0.22s
-2025-09-24 05:27:59,318 - INFO - wp_request completed in 0.224s
-2025-09-24 05:27:59,353 - INFO - ESI public fetch successful: /characters/90045731/portrait/ in 0.03s
-2025-09-24 05:27:59,353 - INFO - _fetch_esi_with_retry completed in 0.035s
-2025-09-24 05:27:59,354 - INFO - Portrait unchanged for character: Dr FiLiN
-2025-09-24 05:27:59,354 - INFO - Rate limiter adjusted: base=60.0, current=51.57, factor=0.9
-2025-09-24 05:28:00,348 - INFO - WordPress PUT successful: /wp/v2/eve_character/85 in 0.99s
-2025-09-24 05:28:00,349 - INFO - wp_request completed in 0.996s
-2025-09-24 05:28:00,350 - INFO - Updated character: Dr FiLiN
-2025-09-24 05:28:00,350 - INFO - EVENT: CHARACTER_UPDATE | USER: 90045731 | DETAILS: {'name': 'Dr FiLiN', 'post_id': 85}
-2025-09-24 05:28:00,445 - INFO - EVENT: TOKEN_REFRESH_SUCCESS | USER: system | DETAILS: {'client_id': '8b221bf2...'}
-2025-09-24 05:28:00,481 - INFO - ESI authenticated fetch successful: /characters/90522765/ in 0.03s
-2025-09-24 05:28:00,481 - INFO - _fetch_esi_with_retry completed in 0.034s
-2025-09-24 05:28:00,481 - INFO - Rate limiter adjusted: base=60.0, current=47.35, factor=0.8
-2025-09-24 05:28:00,759 - INFO - WordPress GET successful: /wp/v2/eve_character?slug=character-90522765 in 0.28s
-2025-09-24 05:28:00,760 - INFO - wp_request completed in 0.279s
-2025-09-24 05:28:00,794 - INFO - ESI public fetch successful: /characters/90522765/portrait/ in 0.03s
-2025-09-24 05:28:00,795 - INFO - _fetch_esi_with_retry completed in 0.035s
-2025-09-24 05:28:00,795 - INFO - Portrait unchanged for character: Orev Khazar
-2025-09-24 05:28:00,795 - INFO - Rate limiter adjusted: base=60.0, current=43.46, factor=0.7
-2025-09-24 05:28:01,969 - INFO - WordPress PUT successful: /wp/v2/eve_character/86 in 1.17s
-2025-09-24 05:28:01,969 - INFO - wp_request completed in 1.174s
-2025-09-24 05:28:01,969 - INFO - Updated character: Orev Khazar
-2025-09-24 05:28:01,969 - INFO - EVENT: CHARACTER_UPDATE | USER: 90522765 | DETAILS: {'name': 'Orev Khazar', 'post_id': 86}
-2025-09-24 05:28:02,055 - INFO - EVENT: TOKEN_REFRESH_SUCCESS | USER: system | DETAILS: {'client_id': '8b221bf2...'}
-2025-09-24 05:28:02,091 - INFO - ESI authenticated fetch successful: /characters/90162477/ in 0.04s
-2025-09-24 05:28:02,091 - INFO - _fetch_esi_with_retry completed in 0.035s
-2025-09-24 05:28:02,091 - INFO - Rate limiter adjusted: base=60.0, current=39.90, factor=0.7
-2025-09-24 05:28:02,405 - INFO - WordPress GET successful: /wp/v2/eve_character?slug=character-90162477 in 0.31s
-2025-09-24 05:28:02,405 - INFO - wp_request completed in 0.314s
-2025-09-24 05:28:02,438 - INFO - ESI public fetch successful: /characters/90162477/portrait/ in 0.03s
-2025-09-24 05:28:02,438 - INFO - _fetch_esi_with_retry completed in 0.033s
-2025-09-24 05:28:02,438 - INFO - Portrait unchanged for character: Sir FiLiN
-2025-09-24 05:28:02,438 - INFO - Rate limiter adjusted: base=60.0, current=36.63, factor=0.6
-2025-09-24 05:28:03,907 - INFO - WordPress PUT successful: /wp/v2/eve_character/87 in 1.47s
-2025-09-24 05:28:03,908 - INFO - wp_request completed in 1.470s
-2025-09-24 05:28:03,908 - INFO - Updated character: Sir FiLiN
-2025-09-24 05:28:03,908 - INFO - EVENT: CHARACTER_UPDATE | USER: 90162477 | DETAILS: {'name': 'Sir FiLiN', 'post_id': 87}
-2025-09-24 05:28:04,069 - INFO - EVENT: TOKEN_REFRESH_SUCCESS | USER: system | DETAILS: {'client_id': '8b221bf2...'}
-2025-09-24 05:28:04,106 - INFO - ESI authenticated fetch successful: /characters/95937458/ in 0.04s
-2025-09-24 05:28:04,106 - INFO - _fetch_esi_with_retry completed in 0.036s
-2025-09-24 05:28:04,106 - INFO - Rate limiter adjusted: base=60.0, current=33.62, factor=0.6
-2025-09-24 05:28:04,330 - INFO - WordPress GET successful: /wp/v2/eve_character?slug=character-95937458 in 0.22s
-2025-09-24 05:28:04,330 - INFO - wp_request completed in 0.224s
-2025-09-24 05:28:04,430 - INFO - ESI public fetch successful: /characters/95937458/portrait/ in 0.10s
-2025-09-24 05:28:04,430 - INFO - _fetch_esi_with_retry completed in 0.100s
-2025-09-24 05:28:04,431 - INFO - Portrait unchanged for character: Filin Khan
-2025-09-24 05:28:04,431 - INFO - Rate limiter adjusted: base=60.0, current=30.87, factor=0.5
-2025-09-24 05:28:06,136 - INFO - WordPress PUT successful: /wp/v2/eve_character/88 in 1.70s
-2025-09-24 05:28:06,136 - INFO - wp_request completed in 1.705s
-2025-09-24 05:28:06,136 - INFO - Updated character: Filin Khan
-2025-09-24 05:28:06,136 - INFO - EVENT: CHARACTER_UPDATE | USER: 95937458 | DETAILS: {'name': 'Filin Khan', 'post_id': 88}
-2025-09-24 05:28:06,227 - INFO - EVENT: TOKEN_REFRESH_SUCCESS | USER: system | DETAILS: {'client_id': '8b221bf2...'}
-2025-09-24 05:28:06,264 - INFO - ESI authenticated fetch successful: /characters/95985116/ in 0.04s
-2025-09-24 05:28:06,264 - INFO - _fetch_esi_with_retry completed in 0.035s
-2025-09-24 05:28:06,264 - INFO - Rate limiter adjusted: base=60.0, current=30.60, factor=0.5
-2025-09-24 05:28:06,526 - INFO - WordPress GET successful: /wp/v2/eve_character?slug=character-95985116 in 0.26s
-2025-09-24 05:28:06,527 - INFO - wp_request completed in 0.263s
-2025-09-24 05:28:06,561 - INFO - ESI public fetch successful: /characters/95985116/portrait/ in 0.03s
-2025-09-24 05:28:06,562 - INFO - _fetch_esi_with_retry completed in 0.035s
-2025-09-24 05:28:06,562 - INFO - Portrait unchanged for character: Corvin Khan
-2025-09-24 05:28:06,562 - INFO - Rate limiter adjusted: base=60.0, current=30.60, factor=0.5
-2025-09-24 05:28:08,309 - INFO - WordPress PUT successful: /wp/v2/eve_character/89 in 1.75s
-2025-09-24 05:28:08,310 - INFO - wp_request completed in 1.748s
-2025-09-24 05:28:08,310 - INFO - Updated character: Corvin Khan
-2025-09-24 05:28:08,310 - INFO - EVENT: CHARACTER_UPDATE | USER: 95985116 | DETAILS: {'name': 'Corvin Khan', 'post_id': 89}
-2025-09-24 05:28:08,453 - INFO - EVENT: TOKEN_REFRESH_SUCCESS | USER: system | DETAILS: {'client_id': '8b221bf2...'}
-2025-09-24 05:28:08,492 - INFO - ESI authenticated fetch successful: /characters/1316070855/ in 0.04s
-2025-09-24 05:28:08,492 - INFO - _fetch_esi_with_retry completed in 0.036s
-2025-09-24 05:28:08,492 - INFO - Rate limiter adjusted: base=60.0, current=30.60, factor=0.5
-2025-09-24 05:28:08,623 - INFO - WordPress GET successful: /wp/v2/eve_character?slug=character-1316070855 in 0.13s
-2025-09-24 05:28:08,623 - INFO - wp_request completed in 0.131s
-2025-09-24 05:28:08,658 - INFO - ESI public fetch successful: /characters/1316070855/portrait/ in 0.04s
-2025-09-24 05:28:08,659 - INFO - _fetch_esi_with_retry completed in 0.036s
-2025-09-24 05:28:08,659 - INFO - Portrait unchanged for character: FiLiN Core
-2025-09-24 05:28:08,659 - INFO - Rate limiter adjusted: base=60.0, current=30.60, factor=0.5
-2025-09-24 05:28:10,554 - INFO - WordPress PUT successful: /wp/v2/eve_character/91 in 1.90s
-2025-09-24 05:28:10,554 - INFO - wp_request completed in 1.896s
-2025-09-24 05:28:10,555 - INFO - Updated character: FiLiN Core
-2025-09-24 05:28:10,555 - INFO - EVENT: CHARACTER_UPDATE | USER: 1316070855 | DETAILS: {'name': 'FiLiN Core', 'post_id': 91}
-2025-09-24 05:28:10,722 - INFO - EVENT: TOKEN_REFRESH_SUCCESS | USER: system | DETAILS: {'client_id': '8b221bf2...'}
-2025-09-24 05:28:10,783 - INFO - ESI authenticated fetch successful: /characters/91594850/ in 0.06s
-2025-09-24 05:28:10,784 - INFO - _fetch_esi_with_retry completed in 0.059s
-2025-09-24 05:28:10,784 - INFO - Rate limiter adjusted: base=60.0, current=30.60, factor=0.5
-2025-09-24 05:28:10,854 - INFO - WordPress GET successful: /wp/v2/eve_character?slug=character-91594850 in 0.07s
-2025-09-24 05:28:10,854 - INFO - wp_request completed in 0.071s
-2025-09-24 05:28:10,888 - INFO - ESI public fetch successful: /characters/91594850/portrait/ in 0.03s
-2025-09-24 05:28:10,888 - INFO - _fetch_esi_with_retry completed in 0.034s
-2025-09-24 05:28:10,888 - INFO - Portrait unchanged for character: Raven Madyar
-2025-09-24 05:28:10,889 - INFO - Rate limiter adjusted: base=60.0, current=30.60, factor=0.5
-2025-09-24 05:28:12,906 - INFO - WordPress PUT successful: /wp/v2/eve_character/92 in 2.02s
-2025-09-24 05:28:12,907 - INFO - wp_request completed in 2.019s
-2025-09-24 05:28:12,907 - INFO - Updated character: Raven Madyar
-2025-09-24 05:28:12,908 - INFO - EVENT: CHARACTER_UPDATE | USER: 91594850 | DETAILS: {'name': 'Raven Madyar', 'post_id': 92}
-2025-09-24 05:28:13,000 - INFO - EVENT: TOKEN_REFRESH_SUCCESS | USER: system | DETAILS: {'client_id': '8b221bf2...'}
-2025-09-24 05:28:13,037 - INFO - ESI authenticated fetch successful: /characters/90483242/ in 0.03s
-2025-09-24 05:28:13,037 - INFO - _fetch_esi_with_retry completed in 0.035s
-2025-09-24 05:28:13,037 - INFO - Rate limiter adjusted: base=60.0, current=30.60, factor=0.5
-2025-09-24 05:28:13,104 - INFO - WordPress GET successful: /wp/v2/eve_character?slug=character-90483242 in 0.07s
-2025-09-24 05:28:13,104 - INFO - wp_request completed in 0.067s
-2025-09-24 05:28:13,137 - INFO - ESI public fetch successful: /characters/90483242/portrait/ in 0.03s
-2025-09-24 05:28:13,138 - INFO - _fetch_esi_with_retry completed in 0.033s
-2025-09-24 05:28:13,138 - INFO - Portrait unchanged for character: Vran Ruthen
-2025-09-24 05:28:13,138 - INFO - Rate limiter adjusted: base=60.0, current=30.60, factor=0.5
-2025-09-24 05:28:15,078 - INFO - WordPress PUT successful: /wp/v2/eve_character/93 in 1.94s
-2025-09-24 05:28:15,080 - INFO - wp_request completed in 1.942s
-2025-09-24 05:28:15,080 - INFO - Updated character: Vran Ruthen
-2025-09-24 05:28:15,081 - INFO - EVENT: CHARACTER_UPDATE | USER: 90483242 | DETAILS: {'name': 'Vran Ruthen', 'post_id': 93}
-2025-09-24 05:28:15,081 - INFO - Corporation collection completed in 17.45s
-2025-09-24 05:28:15,081 - INFO - Starting cleanup of old posts...
-2025-09-24 05:28:15,081 - INFO - Cleaning up contract posts...
-2025-09-24 05:28:15,082 - INFO - Rate limiter adjusted: base=60.0, current=30.60, factor=0.5
-2025-09-24 05:28:15,217 - INFO - WordPress GET successful: /wp/v2/eve_contract in 0.13s
-2025-09-24 05:28:15,217 - INFO - wp_request completed in 0.136s
-2025-09-24 05:28:15,218 - INFO - Cleaning up blueprint posts...
-2025-09-24 05:28:15,354 - INFO - Cleanup completed.
-2025-09-24 05:28:15,355 - INFO - Post cleanup completed in 0.27s
-2025-09-24 05:28:15,355 - INFO - Processing character: Mr FiLiN (ID: 90020513)
-2025-09-24 05:28:15,355 - INFO - Starting contract processing for Mr FiLiN
-2025-09-24 05:28:15,846 - INFO - ESI authenticated fetch successful: /characters/90020513/contracts/ in 0.49s
-2025-09-24 05:28:15,846 - INFO - _fetch_esi_with_retry completed in 0.491s
-2025-09-24 05:28:15,847 - INFO - Processing character: Dr FiLiN (ID: 90045731)
-2025-09-24 05:28:15,847 - INFO - Starting contract processing for Dr FiLiN
-2025-09-24 05:28:15,991 - INFO - ESI authenticated fetch successful: /characters/90045731/contracts/ in 0.14s
-2025-09-24 05:28:15,992 - INFO - _fetch_esi_with_retry completed in 0.145s
-2025-09-24 05:28:15,992 - INFO - Character contracts for Dr FiLiN: 61 items
-2025-09-24 05:28:15,992 - INFO - Loading cache from /Users/dg/Documents/GitHub/eveObserver/cache/blueprint_types.json...
-2025-09-24 05:28:15,993 - INFO - ✓ Cache loaded from /Users/dg/Documents/GitHub/eveObserver/cache/blueprint_types.json: 1019 entries in 0.00s
-2025-09-24 05:28:15,993 - INFO - Fetching all expanded contracts from The Forge region for competition analysis...
-2025-09-24 05:28:15,993 - INFO - Starting incremental contract processing for The Forge region...
-2025-09-24 05:28:16,055 - INFO - Loaded 30031 existing expanded contracts from cache
-2025-09-24 05:28:16,056 - INFO - Fetching current contracts from EVE Online API...
-2025-09-24 05:28:16,056 - INFO - Fetching all contracts from region 10000002
-2025-09-24 05:28:16,056 - INFO - Fetching page 1...
-2025-09-24 05:28:16,127 - INFO - Found 1000 contracts on page 1
-2025-09-24 05:28:16,127 - INFO - Contract 0: type=item_exchange, status=None, price=350000000.0
-2025-09-24 05:28:16,128 - INFO - Contract 1: type=item_exchange, status=None, price=15000000.0
-2025-09-24 05:28:16,128 - INFO - Contract 2: type=item_exchange, status=None, price=10000000.0
-2025-09-24 05:28:16,128 - INFO - Contract 3: type=item_exchange, status=None, price=70000000.0
-2025-09-24 05:28:16,128 - INFO - Contract 4: type=item_exchange, status=None, price=149000000.0
-2025-09-24 05:28:16,129 - INFO - Fetching page 2...
-2025-09-24 05:28:16,196 - INFO - Found 1000 contracts on page 2
-2025-09-24 05:28:16,198 - INFO - Fetching page 3...
-2025-09-24 05:28:16,270 - INFO - Found 1000 contracts on page 3
-2025-09-24 05:28:16,271 - INFO - Fetching page 4...
-2025-09-24 05:28:16,336 - INFO - Found 1000 contracts on page 4
-2025-09-24 05:28:16,338 - INFO - Fetching page 5...
-2025-09-24 05:28:16,499 - INFO - Found 1000 contracts on page 5
-2025-09-24 05:28:16,500 - INFO - Fetching page 6...
-2025-09-24 05:28:16,577 - INFO - Found 1000 contracts on page 6
-2025-09-24 05:28:16,579 - INFO - Fetching page 7...
-2025-09-24 05:28:16,654 - INFO - Found 1000 contracts on page 7
-2025-09-24 05:28:16,656 - INFO - Fetching page 8...
-2025-09-24 05:28:16,725 - INFO - Found 1000 contracts on page 8
-2025-09-24 05:28:16,727 - INFO - Fetching page 9...
-2025-09-24 05:28:16,801 - INFO - Found 1000 contracts on page 9
-2025-09-24 05:28:16,802 - INFO - Fetching page 10...
-2025-09-24 05:28:16,874 - INFO - Found 1000 contracts on page 10
-2025-09-24 05:28:16,875 - INFO - Fetching page 11...
-2025-09-24 05:28:17,020 - INFO - Found 1000 contracts on page 11
-2025-09-24 05:28:17,022 - INFO - Fetching page 12...
-2025-09-24 05:28:17,065 - INFO - Found 1000 contracts on page 12
-2025-09-24 05:28:17,066 - INFO - Fetching page 13...
-2025-09-24 05:28:17,136 - INFO - Found 1000 contracts on page 13
-2025-09-24 05:28:17,137 - INFO - Fetching page 14...
-2025-09-24 05:28:17,182 - INFO - Found 1000 contracts on page 14
-2025-09-24 05:28:17,183 - INFO - Fetching page 15...
-2025-09-24 05:28:17,225 - INFO - Found 1000 contracts on page 15
-2025-09-24 05:28:17,226 - INFO - Fetching page 16...
-2025-09-24 05:28:17,267 - INFO - Found 1000 contracts on page 16
-2025-09-24 05:28:17,267 - INFO - Fetching page 17...
-2025-09-24 05:28:17,312 - INFO - Found 1000 contracts on page 17
-2025-09-24 05:28:17,313 - INFO - Fetching page 18...
-2025-09-24 05:28:17,354 - INFO - Found 1000 contracts on page 18
-2025-09-24 05:28:17,354 - INFO - Fetching page 19...
-2025-09-24 05:28:17,397 - INFO - Found 1000 contracts on page 19
-2025-09-24 05:28:17,397 - INFO - Fetching page 20...
-2025-09-24 05:28:17,439 - INFO - Found 1000 contracts on page 20
-2025-09-24 05:28:17,439 - INFO - Fetching page 21...
-2025-09-24 05:28:17,542 - INFO - Found 1000 contracts on page 21
-2025-09-24 05:28:17,543 - INFO - Fetching page 22...
-2025-09-24 05:28:17,585 - INFO - Found 1000 contracts on page 22
-2025-09-24 05:28:17,586 - INFO - Fetching page 23...
-2025-09-24 05:28:17,735 - INFO - Found 1000 contracts on page 23
-2025-09-24 05:28:17,736 - INFO - Fetching page 24...
-2025-09-24 05:28:17,777 - INFO - Found 1000 contracts on page 24
-2025-09-24 05:28:17,778 - INFO - Fetching page 25...
-2025-09-24 05:28:17,820 - INFO - Found 1000 contracts on page 25
-2025-09-24 05:28:17,820 - INFO - Fetching page 26...
-2025-09-24 05:28:17,873 - INFO - Found 1000 contracts on page 26
-2025-09-24 05:28:17,873 - INFO - Fetching page 27...
-2025-09-24 05:28:17,915 - INFO - Found 1000 contracts on page 27
-2025-09-24 05:28:17,916 - INFO - Fetching page 28...
-2025-09-24 05:28:17,962 - INFO - Found 1000 contracts on page 28
-2025-09-24 05:28:17,962 - INFO - Fetching page 29...
-2025-09-24 05:28:18,068 - INFO - Found 1000 contracts on page 29
-2025-09-24 05:28:18,069 - INFO - Fetching page 30...
-2025-09-24 05:28:18,114 - INFO - Found 1000 contracts on page 30
-2025-09-24 05:28:18,115 - INFO - Fetching page 31...
-2025-09-24 05:28:18,150 - INFO - Found 31 contracts on page 31
-2025-09-24 05:28:18,150 - INFO - Fetching page 32...
-2025-09-24 05:28:18,247 - WARNING - ESI request failed (attempt 1/3): 404, message='Not Found', url='https://esi.evetech.net/latest/contracts/public/10000002/?page=32'. Retrying in 1s
-2025-09-24 05:28:19,397 - WARNING - ESI request failed (attempt 2/3): 404, message='Not Found', url='https://esi.evetech.net/latest/contracts/public/10000002/?page=32'. Retrying in 2s
-2025-09-24 05:28:21,538 - ERROR - ESI request failed after 3 attempts: 404, message='Not Found', url='https://esi.evetech.net/latest/contracts/public/10000002/?page=32'
-2025-09-24 05:28:21,538 - INFO - No more contracts on page 32, stopping
-2025-09-24 05:28:21,539 - INFO - Total contracts found: 30031
-2025-09-24 05:28:21,553 - INFO - Fetched 30031 current contracts from API
-2025-09-24 05:28:21,562 - INFO - Cache synchronization: 0 new contracts, 0 removed contracts
-2025-09-24 05:28:21,562 - INFO - No new contracts to expand
-2025-09-24 05:28:21,743 - INFO - Saved updated cache with 30031 contracts
-2025-09-24 05:28:21,743 - INFO - Returning 30031 expanded contracts
-2025-09-24 05:28:21,790 - INFO - Running concurrent WordPress updates for 46 contracts...
-2025-09-24 05:28:21,790 - INFO - Loading cache from /Users/dg/Documents/GitHub/eveObserver/cache/blueprint_types.json...
-2025-09-24 05:28:21,790 - INFO - ✓ Cache loaded from /Users/dg/Documents/GitHub/eveObserver/cache/blueprint_types.json: 1019 entries in 0.00s
-2025-09-24 05:28:21,790 - INFO - Loading cache from /Users/dg/Documents/GitHub/eveObserver/cache/blueprint_types.json...
-2025-09-24 05:28:21,791 - INFO - ✓ Cache loaded from /Users/dg/Documents/GitHub/eveObserver/cache/blueprint_types.json: 1019 entries in 0.00s
-2025-09-24 05:28:21,791 - INFO - Loading cache from /Users/dg/Documents/GitHub/eveObserver/cache/blueprint_types.json...
-2025-09-24 05:28:21,791 - INFO - ✓ Cache loaded from /Users/dg/Documents/GitHub/eveObserver/cache/blueprint_types.json: 1019 entries in 0.00s
-2025-09-24 05:28:21,791 - INFO - Loading cache from /Users/dg/Documents/GitHub/eveObserver/cache/blueprint_types.json...
-2025-09-24 05:28:21,791 - INFO - ✓ Cache loaded from /Users/dg/Documents/GitHub/eveObserver/cache/blueprint_types.json: 1019 entries in 0.00s
-2025-09-24 05:28:21,791 - INFO - Loading cache from /Users/dg/Documents/GitHub/eveObserver/cache/blueprint_types.json...
-2025-09-24 05:28:21,792 - INFO - ✓ Cache loaded from /Users/dg/Documents/GitHub/eveObserver/cache/blueprint_types.json: 1019 entries in 0.00s
-2025-09-24 05:28:21,792 - INFO - Loading cache from /Users/dg/Documents/GitHub/eveObserver/cache/blueprint_types.json...
-2025-09-24 05:28:21,792 - INFO - ✓ Cache loaded from /Users/dg/Documents/GitHub/eveObserver/cache/blueprint_types.json: 1019 entries in 0.00s
-2025-09-24 05:28:21,792 - INFO - Loading cache from /Users/dg/Documents/GitHub/eveObserver/cache/blueprint_types.json...
-2025-09-24 05:28:21,792 - INFO - ✓ Cache loaded from /Users/dg/Documents/GitHub/eveObserver/cache/blueprint_types.json: 1019 entries in 0.00s
-2025-09-24 05:28:21,792 - INFO - Loading cache from /Users/dg/Documents/GitHub/eveObserver/cache/blueprint_types.json...
-2025-09-24 05:28:21,793 - INFO - ✓ Cache loaded from /Users/dg/Documents/GitHub/eveObserver/cache/blueprint_types.json: 1019 entries in 0.00s
-2025-09-24 05:28:21,793 - INFO - Loading cache from /Users/dg/Documents/GitHub/eveObserver/cache/blueprint_types.json...
-2025-09-24 05:28:21,793 - INFO - ✓ Cache loaded from /Users/dg/Documents/GitHub/eveObserver/cache/blueprint_types.json: 1019 entries in 0.00s
-2025-09-24 05:28:21,793 - INFO - Loading cache from /Users/dg/Documents/GitHub/eveObserver/cache/blueprint_types.json...
-2025-09-24 05:28:21,793 - INFO - ✓ Cache loaded from /Users/dg/Documents/GitHub/eveObserver/cache/blueprint_types.json: 1019 entries in 0.00s
-2025-09-24 05:28:21,793 - INFO - Loading cache from /Users/dg/Documents/GitHub/eveObserver/cache/blueprint_types.json...
-2025-09-24 05:28:21,794 - INFO - ✓ Cache loaded from /Users/dg/Documents/GitHub/eveObserver/cache/blueprint_types.json: 1019 entries in 0.00s
-2025-09-24 05:28:21,794 - INFO - Loading cache from /Users/dg/Documents/GitHub/eveObserver/cache/blueprint_types.json...
-2025-09-24 05:28:21,794 - INFO - ✓ Cache loaded from /Users/dg/Documents/GitHub/eveObserver/cache/blueprint_types.json: 1019 entries in 0.00s
-2025-09-24 05:28:21,794 - INFO - Loading cache from /Users/dg/Documents/GitHub/eveObserver/cache/blueprint_types.json...
-2025-09-24 05:28:21,794 - INFO - ✓ Cache loaded from /Users/dg/Documents/GitHub/eveObserver/cache/blueprint_types.json: 1019 entries in 0.00s
-2025-09-24 05:28:21,794 - INFO - Loading cache from /Users/dg/Documents/GitHub/eveObserver/cache/blueprint_types.json...
-2025-09-24 05:28:21,795 - INFO - ✓ Cache loaded from /Users/dg/Documents/GitHub/eveObserver/cache/blueprint_types.json: 1019 entries in 0.00s
-2025-09-24 05:28:21,795 - INFO - Loading cache from /Users/dg/Documents/GitHub/eveObserver/cache/blueprint_types.json...
-2025-09-24 05:28:21,795 - INFO - ✓ Cache loaded from /Users/dg/Documents/GitHub/eveObserver/cache/blueprint_types.json: 1019 entries in 0.00s
-2025-09-24 05:28:21,795 - INFO - Loading cache from /Users/dg/Documents/GitHub/eveObserver/cache/blueprint_types.json...
-2025-09-24 05:28:21,795 - INFO - ✓ Cache loaded from /Users/dg/Documents/GitHub/eveObserver/cache/blueprint_types.json: 1019 entries in 0.00s
-2025-09-24 05:28:21,795 - INFO - Loading cache from /Users/dg/Documents/GitHub/eveObserver/cache/blueprint_types.json...
-2025-09-24 05:28:21,796 - INFO - ✓ Cache loaded from /Users/dg/Documents/GitHub/eveObserver/cache/blueprint_types.json: 1019 entries in 0.00s
-2025-09-24 05:28:21,796 - INFO - Loading cache from /Users/dg/Documents/GitHub/eveObserver/cache/blueprint_types.json...
-2025-09-24 05:28:21,796 - INFO - ✓ Cache loaded from /Users/dg/Documents/GitHub/eveObserver/cache/blueprint_types.json: 1019 entries in 0.00s
-2025-09-24 05:28:21,796 - INFO - Loading cache from /Users/dg/Documents/GitHub/eveObserver/cache/blueprint_types.json...
-2025-09-24 05:28:21,796 - INFO - ✓ Cache loaded from /Users/dg/Documents/GitHub/eveObserver/cache/blueprint_types.json: 1019 entries in 0.00s
-2025-09-24 05:28:21,796 - INFO - Loading cache from /Users/dg/Documents/GitHub/eveObserver/cache/blueprint_types.json...
-2025-09-24 05:28:21,797 - INFO - ✓ Cache loaded from /Users/dg/Documents/GitHub/eveObserver/cache/blueprint_types.json: 1019 entries in 0.00s
-2025-09-24 05:28:21,797 - INFO - Loading cache from /Users/dg/Documents/GitHub/eveObserver/cache/blueprint_types.json...
-2025-09-24 05:28:21,797 - INFO - ✓ Cache loaded from /Users/dg/Documents/GitHub/eveObserver/cache/blueprint_types.json: 1019 entries in 0.00s
-2025-09-24 05:28:21,797 - INFO - Loading cache from /Users/dg/Documents/GitHub/eveObserver/cache/blueprint_types.json...
-2025-09-24 05:28:21,797 - INFO - ✓ Cache loaded from /Users/dg/Documents/GitHub/eveObserver/cache/blueprint_types.json: 1019 entries in 0.00s
-2025-09-24 05:28:21,797 - INFO - Loading cache from /Users/dg/Documents/GitHub/eveObserver/cache/blueprint_types.json...
-2025-09-24 05:28:21,797 - INFO - ✓ Cache loaded from /Users/dg/Documents/GitHub/eveObserver/cache/blueprint_types.json: 1019 entries in 0.00s
-2025-09-24 05:28:21,797 - INFO - Loading cache from /Users/dg/Documents/GitHub/eveObserver/cache/blueprint_types.json...
-2025-09-24 05:28:21,798 - INFO - ✓ Cache loaded from /Users/dg/Documents/GitHub/eveObserver/cache/blueprint_types.json: 1019 entries in 0.00s
-2025-09-24 05:28:21,798 - INFO - Loading cache from /Users/dg/Documents/GitHub/eveObserver/cache/blueprint_types.json...
-2025-09-24 05:28:21,798 - INFO - ✓ Cache loaded from /Users/dg/Documents/GitHub/eveObserver/cache/blueprint_types.json: 1019 entries in 0.00s
-2025-09-24 05:28:21,798 - INFO - Loading cache from /Users/dg/Documents/GitHub/eveObserver/cache/blueprint_types.json...
-2025-09-24 05:28:21,798 - INFO - ✓ Cache loaded from /Users/dg/Documents/GitHub/eveObserver/cache/blueprint_types.json: 1019 entries in 0.00s
-2025-09-24 05:28:21,798 - INFO - Loading cache from /Users/dg/Documents/GitHub/eveObserver/cache/blueprint_types.json...
-2025-09-24 05:28:21,798 - INFO - ✓ Cache loaded from /Users/dg/Documents/GitHub/eveObserver/cache/blueprint_types.json: 1019 entries in 0.00s
-2025-09-24 05:28:21,799 - INFO - Loading cache from /Users/dg/Documents/GitHub/eveObserver/cache/blueprint_types.json...
-2025-09-24 05:28:21,799 - INFO - ✓ Cache loaded from /Users/dg/Documents/GitHub/eveObserver/cache/blueprint_types.json: 1019 entries in 0.00s
-2025-09-24 05:28:21,799 - INFO - Loading cache from /Users/dg/Documents/GitHub/eveObserver/cache/blueprint_types.json...
-2025-09-24 05:28:21,799 - INFO - ✓ Cache loaded from /Users/dg/Documents/GitHub/eveObserver/cache/blueprint_types.json: 1019 entries in 0.00s
-2025-09-24 05:28:21,799 - INFO - Loading cache from /Users/dg/Documents/GitHub/eveObserver/cache/blueprint_types.json...
-2025-09-24 05:28:21,799 - INFO - ✓ Cache loaded from /Users/dg/Documents/GitHub/eveObserver/cache/blueprint_types.json: 1019 entries in 0.00s
-2025-09-24 05:28:21,799 - INFO - Loading cache from /Users/dg/Documents/GitHub/eveObserver/cache/blueprint_types.json...
-2025-09-24 05:28:21,800 - INFO - ✓ Cache loaded from /Users/dg/Documents/GitHub/eveObserver/cache/blueprint_types.json: 1019 entries in 0.00s
-2025-09-24 05:28:21,800 - INFO - Loading cache from /Users/dg/Documents/GitHub/eveObserver/cache/blueprint_types.json...
-2025-09-24 05:28:21,800 - INFO - ✓ Cache loaded from /Users/dg/Documents/GitHub/eveObserver/cache/blueprint_types.json: 1019 entries in 0.00s
-2025-09-24 05:28:21,800 - INFO - Loading cache from /Users/dg/Documents/GitHub/eveObserver/cache/blueprint_types.json...
-2025-09-24 05:28:21,800 - INFO - ✓ Cache loaded from /Users/dg/Documents/GitHub/eveObserver/cache/blueprint_types.json: 1019 entries in 0.00s
-2025-09-24 05:28:21,800 - INFO - Loading cache from /Users/dg/Documents/GitHub/eveObserver/cache/blueprint_types.json...
-2025-09-24 05:28:21,801 - INFO - ✓ Cache loaded from /Users/dg/Documents/GitHub/eveObserver/cache/blueprint_types.json: 1019 entries in 0.00s
-2025-09-24 05:28:21,801 - INFO - Loading cache from /Users/dg/Documents/GitHub/eveObserver/cache/blueprint_types.json...
-2025-09-24 05:28:21,801 - INFO - ✓ Cache loaded from /Users/dg/Documents/GitHub/eveObserver/cache/blueprint_types.json: 1019 entries in 0.00s
-2025-09-24 05:28:21,801 - INFO - Loading cache from /Users/dg/Documents/GitHub/eveObserver/cache/blueprint_types.json...
-2025-09-24 05:28:21,802 - INFO - ✓ Cache loaded from /Users/dg/Documents/GitHub/eveObserver/cache/blueprint_types.json: 1019 entries in 0.00s
-2025-09-24 05:28:21,802 - INFO - Loading cache from /Users/dg/Documents/GitHub/eveObserver/cache/blueprint_types.json...
-2025-09-24 05:28:21,802 - INFO - ✓ Cache loaded from /Users/dg/Documents/GitHub/eveObserver/cache/blueprint_types.json: 1019 entries in 0.00s
-2025-09-24 05:28:21,802 - INFO - Loading cache from /Users/dg/Documents/GitHub/eveObserver/cache/blueprint_types.json...
-2025-09-24 05:28:21,802 - INFO - ✓ Cache loaded from /Users/dg/Documents/GitHub/eveObserver/cache/blueprint_types.json: 1019 entries in 0.00s
-2025-09-24 05:28:21,802 - INFO - Loading cache from /Users/dg/Documents/GitHub/eveObserver/cache/blueprint_types.json...
-2025-09-24 05:28:21,803 - INFO - ✓ Cache loaded from /Users/dg/Documents/GitHub/eveObserver/cache/blueprint_types.json: 1019 entries in 0.00s
-2025-09-24 05:28:21,803 - INFO - Loading cache from /Users/dg/Documents/GitHub/eveObserver/cache/blueprint_types.json...
-2025-09-24 05:28:21,803 - INFO - ✓ Cache loaded from /Users/dg/Documents/GitHub/eveObserver/cache/blueprint_types.json: 1019 entries in 0.00s
-2025-09-24 05:28:21,803 - INFO - Loading cache from /Users/dg/Documents/GitHub/eveObserver/cache/blueprint_types.json...
-2025-09-24 05:28:21,803 - INFO - ✓ Cache loaded from /Users/dg/Documents/GitHub/eveObserver/cache/blueprint_types.json: 1019 entries in 0.00s
-2025-09-24 05:28:21,804 - INFO - Loading cache from /Users/dg/Documents/GitHub/eveObserver/cache/blueprint_types.json...
-2025-09-24 05:28:21,804 - INFO - ✓ Cache loaded from /Users/dg/Documents/GitHub/eveObserver/cache/blueprint_types.json: 1019 entries in 0.00s
-2025-09-24 05:28:21,804 - INFO - Loading cache from /Users/dg/Documents/GitHub/eveObserver/cache/blueprint_types.json...
-2025-09-24 05:28:21,804 - INFO - ✓ Cache loaded from /Users/dg/Documents/GitHub/eveObserver/cache/blueprint_types.json: 1019 entries in 0.00s
-2025-09-24 05:28:21,804 - INFO - Loading cache from /Users/dg/Documents/GitHub/eveObserver/cache/blueprint_types.json...
-2025-09-24 05:28:21,804 - INFO - ✓ Cache loaded from /Users/dg/Documents/GitHub/eveObserver/cache/blueprint_types.json: 1019 entries in 0.00s
-2025-09-24 05:28:21,804 - INFO - Loading cache from /Users/dg/Documents/GitHub/eveObserver/cache/blueprint_types.json...
-2025-09-24 05:28:21,804 - INFO - ✓ Cache loaded from /Users/dg/Documents/GitHub/eveObserver/cache/blueprint_types.json: 1019 entries in 0.00s
-2025-09-24 05:28:21,804 - INFO - Loading cache from /Users/dg/Documents/GitHub/eveObserver/cache/blueprint_types.json...
-2025-09-24 05:28:21,805 - INFO - ✓ Cache loaded from /Users/dg/Documents/GitHub/eveObserver/cache/blueprint_types.json: 1019 entries in 0.00s
-2025-09-24 05:28:21,805 - INFO - Rate limiter adjusted: base=60.0, current=30.60, factor=0.5
-2025-09-24 05:28:21,805 - INFO - Rate limiter adjusted: base=60.0, current=30.60, factor=0.5
-2025-09-24 05:28:21,805 - INFO - Rate limiter adjusted: base=60.0, current=30.60, factor=0.5
-2025-09-24 05:28:21,805 - INFO - Rate limiter adjusted: base=60.0, current=30.60, factor=0.5
-2025-09-24 05:28:21,805 - INFO - Rate limiter adjusted: base=60.0, current=30.60, factor=0.5
-2025-09-24 05:28:21,805 - INFO - Rate limiter adjusted: base=60.0, current=30.60, factor=0.5
-2025-09-24 05:28:21,805 - INFO - Rate limiter adjusted: base=60.0, current=30.60, factor=0.5
-2025-09-24 05:28:21,805 - INFO - Rate limiter adjusted: base=60.0, current=30.60, factor=0.5
-2025-09-24 05:28:21,805 - INFO - Rate limiter adjusted: base=60.0, current=30.60, factor=0.5
-2025-09-24 05:28:21,805 - INFO - Rate limiter adjusted: base=60.0, current=30.60, factor=0.5
-2025-09-24 05:28:21,805 - INFO - Rate limiter adjusted: base=60.0, current=30.60, factor=0.5
-2025-09-24 05:28:21,805 - INFO - Rate limiter adjusted: base=60.0, current=30.60, factor=0.5
-2025-09-24 05:28:21,805 - INFO - Rate limiter adjusted: base=60.0, current=30.60, factor=0.5
-2025-09-24 05:28:21,805 - INFO - Rate limiter adjusted: base=60.0, current=30.60, factor=0.5
-2025-09-24 05:28:21,805 - INFO - Rate limiter adjusted: base=60.0, current=30.60, factor=0.5
-2025-09-24 05:28:21,806 - INFO - Rate limiter adjusted: base=60.0, current=30.60, factor=0.5
-2025-09-24 05:28:21,806 - INFO - Rate limiter adjusted: base=60.0, current=30.60, factor=0.5
-2025-09-24 05:28:21,806 - INFO - Rate limiter adjusted: base=60.0, current=30.60, factor=0.5
-2025-09-24 05:28:21,806 - INFO - Rate limiter adjusted: base=60.0, current=30.60, factor=0.5
-2025-09-24 05:28:21,806 - INFO - Rate limiter adjusted: base=60.0, current=30.60, factor=0.5
-2025-09-24 05:28:21,806 - INFO - Rate limiter adjusted: base=60.0, current=30.60, factor=0.5
-2025-09-24 05:28:21,806 - INFO - Rate limiter adjusted: base=60.0, current=30.60, factor=0.5
-2025-09-24 05:28:21,806 - INFO - Rate limiter adjusted: base=60.0, current=30.60, factor=0.5
-2025-09-24 05:28:21,806 - INFO - Rate limiter adjusted: base=60.0, current=30.60, factor=0.5
-2025-09-24 05:28:21,806 - INFO - Rate limiter adjusted: base=60.0, current=30.60, factor=0.5
-2025-09-24 05:28:21,806 - INFO - Rate limiter adjusted: base=60.0, current=30.60, factor=0.5
-2025-09-24 05:28:21,806 - INFO - Rate limiter adjusted: base=60.0, current=30.60, factor=0.5
-2025-09-24 05:28:21,806 - INFO - Rate limiter adjusted: base=60.0, current=30.60, factor=0.5
-2025-09-24 05:28:21,806 - INFO - Rate limiter adjusted: base=60.0, current=30.60, factor=0.5
-2025-09-24 05:28:21,806 - INFO - Rate limiter adjusted: base=60.0, current=30.60, factor=0.5
-2025-09-24 05:28:21,806 - INFO - Rate limiter adjusted: base=60.0, current=30.60, factor=0.5
-2025-09-24 05:28:21,806 - INFO - Rate limiter adjusted: base=60.0, current=30.60, factor=0.5
-2025-09-24 05:28:21,806 - INFO - Rate limiter adjusted: base=60.0, current=30.60, factor=0.5
-2025-09-24 05:28:21,806 - INFO - Rate limiter adjusted: base=60.0, current=30.60, factor=0.5
-2025-09-24 05:28:21,806 - INFO - Rate limiter adjusted: base=60.0, current=30.60, factor=0.5
-2025-09-24 05:28:21,806 - INFO - Rate limiter adjusted: base=60.0, current=30.60, factor=0.5
-2025-09-24 05:28:21,806 - INFO - Rate limiter adjusted: base=60.0, current=30.60, factor=0.5
-2025-09-24 05:28:21,806 - INFO - Rate limiter adjusted: base=60.0, current=30.60, factor=0.5
-2025-09-24 05:28:21,806 - INFO - Rate limiter adjusted: base=60.0, current=30.60, factor=0.5
-2025-09-24 05:28:21,806 - INFO - Rate limiter adjusted: base=60.0, current=30.60, factor=0.5
-2025-09-24 05:28:21,806 - INFO - Rate limiter adjusted: base=60.0, current=30.60, factor=0.5
-2025-09-24 05:28:21,806 - INFO - Rate limiter adjusted: base=60.0, current=30.60, factor=0.5
-2025-09-24 05:28:21,806 - INFO - Rate limiter adjusted: base=60.0, current=30.60, factor=0.5
-2025-09-24 05:28:21,806 - INFO - Rate limiter adjusted: base=60.0, current=30.60, factor=0.5
-2025-09-24 05:28:21,807 - INFO - Rate limiter adjusted: base=60.0, current=30.60, factor=0.5
-2025-09-24 05:28:21,807 - INFO - Rate limiter adjusted: base=60.0, current=30.60, factor=0.5
-2025-09-24 05:28:21,900 - INFO - WordPress GET successful: /wp/v2/eve_contract?slug=contract-222641777 in 0.10s
-2025-09-24 05:28:21,900 - INFO - wp_request completed in 0.110s
-2025-09-24 05:28:21,903 - INFO - Contract 222641777 contains no blueprints, skipping
-2025-09-24 05:28:23,918 - INFO - WordPress GET successful: /wp/v2/eve_contract?slug=contract-222697519 in 2.11s
-2025-09-24 05:28:23,918 - INFO - wp_request completed in 2.115s
-2025-09-24 05:28:23,925 - INFO - Contract 222697519 contains no blueprints, skipping
-2025-09-24 05:28:24,048 - INFO - WordPress GET successful: /wp/v2/eve_contract?slug=contract-222697477 in 2.24s
-2025-09-24 05:28:24,048 - INFO - wp_request completed in 2.245s
-2025-09-24 05:28:24,051 - INFO - Contract 222697477 contains no blueprints, skipping
-2025-09-24 05:28:24,107 - INFO - WordPress GET successful: /wp/v2/eve_contract?slug=contract-222641993 in 2.30s
-2025-09-24 05:28:24,107 - INFO - wp_request completed in 2.311s
-2025-09-24 05:28:24,110 - INFO - Contract 222641993 contains no blueprints, skipping
-2025-09-24 05:28:24,146 - INFO - WordPress GET successful: /wp/v2/eve_contract?slug=contract-222697571 in 2.34s
-2025-09-24 05:28:24,146 - INFO - wp_request completed in 2.342s
-2025-09-24 05:28:24,150 - INFO - Contract 222697571 contains no blueprints, skipping
-2025-09-24 05:28:24,155 - INFO - WordPress GET successful: /wp/v2/eve_contract?slug=contract-222697508 in 2.35s
-2025-09-24 05:28:24,155 - INFO - WordPress GET successful: /wp/v2/eve_contract?slug=contract-222642413 in 2.35s
-2025-09-24 05:28:24,155 - INFO - wp_request completed in 2.352s
-2025-09-24 05:28:24,158 - INFO - Contract 222697508 contains no blueprints, skipping
-2025-09-24 05:28:24,159 - INFO - wp_request completed in 2.357s
-2025-09-24 05:28:24,160 - INFO - Contract 222642413 contains no blueprints, skipping
-2025-09-24 05:28:24,239 - INFO - WordPress GET successful: /wp/v2/eve_contract?slug=contract-222697538 in 2.43s
-2025-09-24 05:28:24,239 - INFO - wp_request completed in 2.435s
-2025-09-24 05:28:24,241 - INFO - Contract 222697538 contains no blueprints, skipping
-2025-09-24 05:28:24,242 - INFO - WordPress GET successful: /wp/v2/eve_contract?slug=contract-222642037 in 2.44s
-2025-09-24 05:28:24,242 - INFO - WordPress GET successful: /wp/v2/eve_contract?slug=contract-222642077 in 2.44s
-2025-09-24 05:28:24,242 - INFO - wp_request completed in 2.445s
-2025-09-24 05:28:24,244 - INFO - Contract 222642037 contains no blueprints, skipping
-2025-09-24 05:28:24,244 - INFO - wp_request completed in 2.446s
-2025-09-24 05:28:24,245 - INFO - Contract 222642077 contains no blueprints, skipping
-2025-09-24 05:28:24,246 - INFO - WordPress GET successful: /wp/v2/eve_contract?slug=contract-222642285 in 2.44s
-2025-09-24 05:28:24,247 - INFO - wp_request completed in 2.446s
-2025-09-24 05:28:24,248 - INFO - Contract 222642285 contains no blueprints, skipping
-2025-09-24 05:28:24,249 - INFO - WordPress GET successful: /wp/v2/eve_contract?slug=contract-222642381 in 2.44s
-2025-09-24 05:28:24,249 - INFO - wp_request completed in 2.448s
-2025-09-24 05:28:24,250 - INFO - Contract 222642381 contains no blueprints, skipping
-2025-09-24 05:28:24,257 - INFO - WordPress GET successful: /wp/v2/eve_contract?slug=contract-222641961 in 2.45s
-2025-09-24 05:28:24,258 - INFO - WordPress GET successful: /wp/v2/eve_contract?slug=contract-222641948 in 2.45s
-2025-09-24 05:28:24,258 - INFO - wp_request completed in 2.463s
-2025-09-24 05:28:24,260 - INFO - Contract 222641961 contains no blueprints, skipping
-2025-09-24 05:28:24,260 - INFO - wp_request completed in 2.465s
-2025-09-24 05:28:24,261 - INFO - Contract 222641948 contains no blueprints, skipping
-2025-09-24 05:28:24,263 - INFO - WordPress GET successful: /wp/v2/eve_contract?slug=contract-222642107 in 2.46s
-2025-09-24 05:28:24,263 - INFO - wp_request completed in 2.464s
-2025-09-24 05:28:24,265 - INFO - Contract 222642107 contains no blueprints, skipping
-2025-09-24 05:28:24,353 - INFO - WordPress GET successful: /wp/v2/eve_contract?slug=contract-222697423 in 2.55s
-2025-09-24 05:28:24,354 - INFO - WordPress GET successful: /wp/v2/eve_contract?slug=contract-222641837 in 2.55s
-2025-09-24 05:28:24,354 - INFO - wp_request completed in 2.552s
-2025-09-24 05:28:24,356 - INFO - Contract 222697423 contains no blueprints, skipping
-2025-09-24 05:28:24,357 - INFO - wp_request completed in 2.564s
-2025-09-24 05:28:24,358 - INFO - Contract 222641837 contains no blueprints, skipping
-2025-09-24 05:28:24,359 - INFO - WordPress GET successful: /wp/v2/eve_contract?slug=contract-222642153 in 2.55s
-2025-09-24 05:28:24,359 - INFO - WordPress GET successful: /wp/v2/eve_contract?slug=contract-222642390 in 2.55s
-2025-09-24 05:28:24,359 - INFO - WordPress GET successful: /wp/v2/eve_contract?slug=contract-222697456 in 2.55s
-2025-09-24 05:28:24,360 - INFO - wp_request completed in 2.560s
-2025-09-24 05:28:24,361 - INFO - Contract 222642153 contains no blueprints, skipping
-2025-09-24 05:28:24,361 - INFO - wp_request completed in 2.560s
-2025-09-24 05:28:24,362 - INFO - Contract 222642390 contains no blueprints, skipping
-2025-09-24 05:28:24,363 - INFO - wp_request completed in 2.560s
-2025-09-24 05:28:24,365 - INFO - Contract 222697456 contains no blueprints, skipping
-2025-09-24 05:28:24,366 - INFO - WordPress GET successful: /wp/v2/eve_contract?slug=contract-222641822 in 2.56s
-2025-09-24 05:28:24,366 - INFO - WordPress GET successful: /wp/v2/eve_contract?slug=contract-222642089 in 2.56s
-2025-09-24 05:28:24,366 - INFO - wp_request completed in 2.575s
-2025-09-24 05:28:24,368 - INFO - Contract 222641822 contains no blueprints, skipping
-2025-09-24 05:28:24,368 - INFO - wp_request completed in 2.570s
-2025-09-24 05:28:24,369 - INFO - Contract 222642089 contains no blueprints, skipping
-2025-09-24 05:28:24,370 - INFO - WordPress GET successful: /wp/v2/eve_contract?slug=contract-222642246 in 2.56s
-2025-09-24 05:28:24,370 - INFO - WordPress GET successful: /wp/v2/eve_contract?slug=contract-222641864 in 2.56s
-2025-09-24 05:28:24,370 - INFO - wp_request completed in 2.570s
-2025-09-24 05:28:24,372 - INFO - Contract 222642246 contains no blueprints, skipping
-2025-09-24 05:28:24,372 - INFO - wp_request completed in 2.580s
-2025-09-24 05:28:24,374 - INFO - Contract 222641864 contains no blueprints, skipping
-2025-09-24 05:28:24,440 - INFO - WordPress GET successful: /wp/v2/eve_contract?slug=contract-222697552 in 2.63s
-2025-09-24 05:28:24,440 - INFO - wp_request completed in 2.636s
-2025-09-24 05:28:24,443 - INFO - Contract 222697552 contains no blueprints, skipping
-2025-09-24 05:28:24,444 - INFO - WordPress GET successful: /wp/v2/eve_contract?slug=contract-222642299 in 2.64s
-2025-09-24 05:28:24,445 - INFO - wp_request completed in 2.644s
-2025-09-24 05:28:24,446 - INFO - Contract 222642299 contains no blueprints, skipping
-2025-09-24 05:28:24,452 - INFO - WordPress GET successful: /wp/v2/eve_contract?slug=contract-222641828 in 2.65s
-2025-09-24 05:28:24,452 - INFO - wp_request completed in 2.660s
-2025-09-24 05:28:24,454 - INFO - Contract 222641828 contains no blueprints, skipping
-2025-09-24 05:28:24,456 - INFO - WordPress GET successful: /wp/v2/eve_contract?slug=contract-222641973 in 2.65s
-2025-09-24 05:28:24,456 - INFO - wp_request completed in 2.661s
-2025-09-24 05:28:24,458 - INFO - Contract 222641973 contains no blueprints, skipping
-2025-09-24 05:28:24,548 - INFO - WordPress GET successful: /wp/v2/eve_contract?slug=contract-222642169 in 2.74s
-2025-09-24 05:28:24,549 - INFO - WordPress GET successful: /wp/v2/eve_contract?slug=contract-222641983 in 2.74s
-2025-09-24 05:28:24,549 - INFO - WordPress GET successful: /wp/v2/eve_contract?slug=contract-222642061 in 2.74s
-2025-09-24 05:28:24,549 - INFO - wp_request completed in 2.749s
-2025-09-24 05:28:24,551 - INFO - Contract 222642169 contains no blueprints, skipping
-2025-09-24 05:28:24,551 - INFO - wp_request completed in 2.755s
-2025-09-24 05:28:24,553 - INFO - Contract 222641983 contains no blueprints, skipping
-2025-09-24 05:28:24,553 - INFO - wp_request completed in 2.755s
-2025-09-24 05:28:24,555 - INFO - Contract 222642061 contains no blueprints, skipping
-2025-09-24 05:28:24,558 - INFO - WordPress GET successful: /wp/v2/eve_contract?slug=contract-222641925 in 2.75s
-2025-09-24 05:28:24,558 - INFO - wp_request completed in 2.764s
-2025-09-24 05:28:24,560 - INFO - Contract 222641925 contains no blueprints, skipping
-2025-09-24 05:28:24,561 - INFO - WordPress GET successful: /wp/v2/eve_contract?slug=contract-222642026 in 2.76s
-2025-09-24 05:28:24,561 - INFO - wp_request completed in 2.764s
-2025-09-24 05:28:24,563 - INFO - Contract 222642026 contains no blueprints, skipping
-2025-09-24 05:28:24,563 - INFO - WordPress GET successful: /wp/v2/eve_contract?slug=contract-222642004 in 2.76s
-2025-09-24 05:28:24,564 - INFO - WordPress GET successful: /wp/v2/eve_contract?slug=contract-222642133 in 2.76s
-2025-09-24 05:28:24,564 - INFO - wp_request completed in 2.767s
-2025-09-24 05:28:24,565 - INFO - Contract 222642004 contains no blueprints, skipping
-2025-09-24 05:28:24,565 - INFO - wp_request completed in 2.766s
-2025-09-24 05:28:24,567 - INFO - Contract 222642133 contains no blueprints, skipping
-2025-09-24 05:28:24,571 - INFO - WordPress GET successful: /wp/v2/eve_contract?slug=contract-222641882 in 2.77s
-2025-09-24 05:28:24,571 - INFO - WordPress GET successful: /wp/v2/eve_contract?slug=contract-222642072 in 2.77s
-2025-09-24 05:28:24,572 - INFO - wp_request completed in 2.779s
-2025-09-24 05:28:24,574 - INFO - Contract 222641882 contains no blueprints, skipping
-2025-09-24 05:28:24,574 - INFO - wp_request completed in 2.776s
-2025-09-24 05:28:24,575 - INFO - Contract 222642072 contains no blueprints, skipping
-2025-09-24 05:28:24,575 - INFO - WordPress GET successful: /wp/v2/eve_contract?slug=contract-222697575 in 2.77s
-2025-09-24 05:28:24,576 - INFO - wp_request completed in 2.771s
-2025-09-24 05:28:24,577 - INFO - Contract 222697575 contains no blueprints, skipping
-2025-09-24 05:28:24,634 - INFO - WordPress GET successful: /wp/v2/eve_contract?slug=contract-222642013 in 2.83s
-2025-09-24 05:28:24,634 - INFO - wp_request completed in 2.838s
-2025-09-24 05:28:24,636 - INFO - Contract 222642013 contains no blueprints, skipping
-2025-09-24 05:28:24,646 - INFO - WordPress GET successful: /wp/v2/eve_contract?slug=contract-222641914 in 2.84s
-2025-09-24 05:28:24,646 - INFO - WordPress GET successful: /wp/v2/eve_contract?slug=contract-222642020 in 2.84s
-2025-09-24 05:28:24,646 - INFO - wp_request completed in 2.853s
-2025-09-24 05:28:24,648 - INFO - Contract 222641914 contains no blueprints, skipping
-2025-09-24 05:28:24,648 - INFO - wp_request completed in 2.852s
-2025-09-24 05:28:24,650 - INFO - Contract 222642020 contains no blueprints, skipping
-2025-09-24 05:28:24,651 - INFO - WordPress GET successful: /wp/v2/eve_contract?slug=contract-222641849 in 2.85s
-2025-09-24 05:28:24,651 - INFO - WordPress GET successful: /wp/v2/eve_contract?slug=contract-222641814 in 2.85s
-2025-09-24 05:28:24,651 - INFO - wp_request completed in 2.859s
-2025-09-24 05:28:24,653 - INFO - Contract 222641849 contains no blueprints, skipping
-2025-09-24 05:28:24,653 - INFO - wp_request completed in 2.862s
-2025-09-24 05:28:24,654 - INFO - Contract 222641814 contains no blueprints, skipping
-2025-09-24 05:28:24,656 - INFO - WordPress GET successful: /wp/v2/eve_contract?slug=contract-222641803 in 2.85s
-2025-09-24 05:28:24,656 - INFO - WordPress GET successful: /wp/v2/eve_contract?slug=contract-222641937 in 2.85s
-2025-09-24 05:28:24,657 - INFO - wp_request completed in 2.866s
-2025-09-24 05:28:24,658 - INFO - Contract 222641803 contains no blueprints, skipping
-2025-09-24 05:28:24,658 - INFO - wp_request completed in 2.864s
-2025-09-24 05:28:24,660 - INFO - Contract 222641937 contains no blueprints, skipping
-2025-09-24 05:28:24,669 - INFO - WordPress GET successful: /wp/v2/eve_contract?slug=contract-222641897 in 2.86s
-2025-09-24 05:28:24,669 - INFO - wp_request completed in 2.876s
-2025-09-24 05:28:24,671 - INFO - Contract 222641897 contains no blueprints, skipping
-2025-09-24 05:28:24,671 - INFO - Completed concurrent updates for 46 contracts
-2025-09-24 05:28:24,675 - INFO - Processing character: Orev Khazar (ID: 90522765)
-2025-09-24 05:28:24,675 - INFO - Starting contract processing for Orev Khazar
-2025-09-24 05:28:24,777 - INFO - ESI authenticated fetch successful: /characters/90522765/contracts/ in 0.10s
-2025-09-24 05:28:24,777 - INFO - _fetch_esi_with_retry completed in 0.102s
-2025-09-24 05:28:24,777 - INFO - Processing character: Sir FiLiN (ID: 90162477)
-2025-09-24 05:28:24,777 - INFO - Starting contract processing for Sir FiLiN
-2025-09-24 05:28:24,903 - INFO - ESI authenticated fetch successful: /characters/90162477/contracts/ in 0.13s
-2025-09-24 05:28:24,903 - INFO - _fetch_esi_with_retry completed in 0.126s
-2025-09-24 05:28:24,903 - INFO - Processing character: Filin Khan (ID: 95937458)
-2025-09-24 05:28:24,903 - INFO - Starting contract processing for Filin Khan
-2025-09-24 05:28:25,029 - INFO - ESI authenticated fetch successful: /characters/95937458/contracts/ in 0.13s
-2025-09-24 05:28:25,030 - INFO - _fetch_esi_with_retry completed in 0.126s
-2025-09-24 05:28:25,030 - INFO - Processing character: Corvin Khan (ID: 95985116)
-2025-09-24 05:28:25,030 - INFO - Starting contract processing for Corvin Khan
-2025-09-24 05:28:25,133 - INFO - ESI authenticated fetch successful: /characters/95985116/contracts/ in 0.10s
-2025-09-24 05:28:25,134 - INFO - _fetch_esi_with_retry completed in 0.104s
-2025-09-24 05:28:25,134 - INFO - Processing character: FiLiN Core (ID: 1316070855)
-2025-09-24 05:28:25,134 - INFO - Starting contract processing for FiLiN Core
-2025-09-24 05:28:25,425 - INFO - ESI authenticated fetch successful: /characters/1316070855/contracts/ in 0.29s
-2025-09-24 05:28:25,426 - INFO - _fetch_esi_with_retry completed in 0.291s
-2025-09-24 05:28:25,426 - INFO - Processing character: Raven Madyar (ID: 91594850)
-2025-09-24 05:28:25,427 - INFO - Starting contract processing for Raven Madyar
-2025-09-24 05:28:25,558 - INFO - ESI authenticated fetch successful: /characters/91594850/contracts/ in 0.13s
-2025-09-24 05:28:25,559 - INFO - _fetch_esi_with_retry completed in 0.132s
-2025-09-24 05:28:25,559 - INFO - Processing character: Vran Ruthen (ID: 90483242)
-2025-09-24 05:28:25,559 - INFO - Starting contract processing for Vran Ruthen
-2025-09-24 05:28:25,748 - INFO - ESI authenticated fetch successful: /characters/90483242/contracts/ in 0.19s
-2025-09-24 05:28:25,748 - INFO - _fetch_esi_with_retry completed in 0.189s
-2025-09-24 05:28:25,749 - INFO - Data processing completed in 10.39s
-2025-09-24 05:28:25,749 - INFO - Total execution completed in 28.12s
-2025-09-24 05:28:25,755 - INFO - Flushed all pending cache saves
-2025-09-24 05:28:25,755 - INFO - Cache Performance - Hits: 0, Misses: 0, Hit Rate: 0.0%, Loads: 52, Saves: 0, Compressed Saves: 0, Batch Saves: 0, Expired Cleanups: 0
+2025-09-24 05:33:30,826 - INFO - Loading cache from /Users/dg/Documents/GitHub/eveObserver/cache/blueprint_names.json...
+2025-09-24 05:33:30,826 - INFO - ✓ Cache loaded from /Users/dg/Documents/GitHub/eveObserver/cache/blueprint_names.json: 110 entries in 0.00s
+2025-09-24 05:33:30,826 - INFO - Loading cache from /Users/dg/Documents/GitHub/eveObserver/cache/location_names.json...
+2025-09-24 05:33:30,826 - INFO - ✓ Cache loaded from /Users/dg/Documents/GitHub/eveObserver/cache/location_names.json: 1 entries in 0.00s
+2025-09-24 05:33:30,826 - INFO - Loading cache from /Users/dg/Documents/GitHub/eveObserver/cache/structure_names.json...
+2025-09-24 05:33:30,827 - INFO - ✓ Cache loaded from /Users/dg/Documents/GitHub/eveObserver/cache/structure_names.json: 1 entries in 0.00s
+2025-09-24 05:33:30,827 - INFO - Loading cache from /Users/dg/Documents/GitHub/eveObserver/cache/failed_structures.json...
+2025-09-24 05:33:30,827 - INFO - ✓ Cache loaded from /Users/dg/Documents/GitHub/eveObserver/cache/failed_structures.json: 2 entries in 0.00s
+2025-09-24 05:33:30,827 - INFO - Loading cache from /Users/dg/Documents/GitHub/eveObserver/cache/wp_post_ids.json...
+2025-09-24 05:33:30,827 - INFO - ✓ Cache loaded from /Users/dg/Documents/GitHub/eveObserver/cache/wp_post_ids.json: 1 entries in 0.00s
+2025-09-24 05:33:30,918 - INFO - EVENT: TOKEN_REFRESH_SUCCESS | USER: system | DETAILS: {'client_id': '8b221bf2...'}
+2025-09-24 05:33:31,131 - INFO - ESI authenticated fetch successful: /characters/90020513/ in 0.21s
+2025-09-24 05:33:31,132 - INFO - _fetch_esi_with_retry completed in 0.213s
+2025-09-24 05:33:31,302 - INFO - WordPress GET successful: /wp/v2/eve_character?slug=character-90020513 in 0.17s
+2025-09-24 05:33:31,303 - INFO - wp_request completed in 0.169s
+2025-09-24 05:33:31,337 - INFO - ESI public fetch successful: /characters/90020513/portrait/ in 0.03s
+2025-09-24 05:33:31,338 - INFO - _fetch_esi_with_retry completed in 0.035s
+2025-09-24 05:33:31,338 - INFO - Portrait unchanged for character: Mr FiLiN
+2025-09-24 05:33:32,194 - INFO - WordPress PUT successful: /wp/v2/eve_character/56 in 0.86s
+2025-09-24 05:33:32,195 - INFO - wp_request completed in 0.857s
+2025-09-24 05:33:32,195 - INFO - Updated character: Mr FiLiN
+2025-09-24 05:33:32,195 - INFO - EVENT: CHARACTER_UPDATE | USER: 90020513 | DETAILS: {'name': 'Mr FiLiN', 'post_id': 56}
+2025-09-24 05:33:32,286 - INFO - EVENT: TOKEN_REFRESH_SUCCESS | USER: system | DETAILS: {'client_id': '8b221bf2...'}
+2025-09-24 05:33:32,335 - INFO - ESI authenticated fetch successful: /characters/90045731/ in 0.05s
+2025-09-24 05:33:32,335 - INFO - _fetch_esi_with_retry completed in 0.048s
+2025-09-24 05:33:32,492 - INFO - WordPress GET successful: /wp/v2/eve_character?slug=character-90045731 in 0.16s
+2025-09-24 05:33:32,492 - INFO - wp_request completed in 0.157s
+2025-09-24 05:33:32,525 - INFO - ESI public fetch successful: /characters/90045731/portrait/ in 0.03s
+2025-09-24 05:33:32,525 - INFO - _fetch_esi_with_retry completed in 0.033s
+2025-09-24 05:33:32,525 - INFO - Portrait unchanged for character: Dr FiLiN
+2025-09-24 05:33:32,525 - INFO - Rate limiter adjusted: base=60.0, current=51.57, factor=0.9
+2025-09-24 05:33:33,598 - INFO - WordPress PUT successful: /wp/v2/eve_character/85 in 1.07s
+2025-09-24 05:33:33,598 - INFO - wp_request completed in 1.073s
+2025-09-24 05:33:33,598 - INFO - Updated character: Dr FiLiN
+2025-09-24 05:33:33,598 - INFO - EVENT: CHARACTER_UPDATE | USER: 90045731 | DETAILS: {'name': 'Dr FiLiN', 'post_id': 85}
+2025-09-24 05:33:33,770 - INFO - EVENT: TOKEN_REFRESH_SUCCESS | USER: system | DETAILS: {'client_id': '8b221bf2...'}
+2025-09-24 05:33:33,811 - INFO - ESI authenticated fetch successful: /characters/90522765/ in 0.04s
+2025-09-24 05:33:33,811 - INFO - _fetch_esi_with_retry completed in 0.039s
+2025-09-24 05:33:33,811 - INFO - Rate limiter adjusted: base=60.0, current=47.35, factor=0.8
+2025-09-24 05:33:33,909 - INFO - WordPress GET successful: /wp/v2/eve_character?slug=character-90522765 in 0.10s
+2025-09-24 05:33:33,910 - INFO - wp_request completed in 0.099s
+2025-09-24 05:33:33,944 - INFO - ESI public fetch successful: /characters/90522765/portrait/ in 0.03s
+2025-09-24 05:33:33,944 - INFO - _fetch_esi_with_retry completed in 0.034s
+2025-09-24 05:33:33,944 - INFO - Portrait unchanged for character: Orev Khazar
+2025-09-24 05:33:33,944 - INFO - Rate limiter adjusted: base=60.0, current=43.46, factor=0.7
+2025-09-24 05:33:35,348 - INFO - WordPress PUT successful: /wp/v2/eve_character/86 in 1.40s
+2025-09-24 05:33:35,349 - INFO - wp_request completed in 1.405s
+2025-09-24 05:33:35,349 - INFO - Updated character: Orev Khazar
+2025-09-24 05:33:35,349 - INFO - EVENT: CHARACTER_UPDATE | USER: 90522765 | DETAILS: {'name': 'Orev Khazar', 'post_id': 86}
+2025-09-24 05:33:35,418 - INFO - EVENT: TOKEN_REFRESH_SUCCESS | USER: system | DETAILS: {'client_id': '8b221bf2...'}
+2025-09-24 05:33:35,453 - INFO - ESI authenticated fetch successful: /characters/90162477/ in 0.03s
+2025-09-24 05:33:35,454 - INFO - _fetch_esi_with_retry completed in 0.035s
+2025-09-24 05:33:35,454 - INFO - Rate limiter adjusted: base=60.0, current=39.90, factor=0.7
+2025-09-24 05:33:35,530 - INFO - WordPress GET successful: /wp/v2/eve_character?slug=character-90162477 in 0.08s
+2025-09-24 05:33:35,530 - INFO - wp_request completed in 0.076s
+2025-09-24 05:33:35,569 - INFO - ESI public fetch successful: /characters/90162477/portrait/ in 0.04s
+2025-09-24 05:33:35,569 - INFO - _fetch_esi_with_retry completed in 0.040s
+2025-09-24 05:33:35,570 - INFO - Portrait unchanged for character: Sir FiLiN
+2025-09-24 05:33:35,570 - INFO - Rate limiter adjusted: base=60.0, current=36.63, factor=0.6
+2025-09-24 05:33:37,185 - INFO - WordPress PUT successful: /wp/v2/eve_character/87 in 1.62s
+2025-09-24 05:33:37,186 - INFO - wp_request completed in 1.616s
+2025-09-24 05:33:37,186 - INFO - Updated character: Sir FiLiN
+2025-09-24 05:33:37,187 - INFO - EVENT: CHARACTER_UPDATE | USER: 90162477 | DETAILS: {'name': 'Sir FiLiN', 'post_id': 87}
+2025-09-24 05:33:37,360 - INFO - EVENT: TOKEN_REFRESH_SUCCESS | USER: system | DETAILS: {'client_id': '8b221bf2...'}
+2025-09-24 05:33:37,399 - INFO - ESI authenticated fetch successful: /characters/95937458/ in 0.03s
+2025-09-24 05:33:37,399 - INFO - _fetch_esi_with_retry completed in 0.035s
+2025-09-24 05:33:37,400 - INFO - Rate limiter adjusted: base=60.0, current=33.62, factor=0.6
+2025-09-24 05:33:37,505 - INFO - WordPress GET successful: /wp/v2/eve_character?slug=character-95937458 in 0.11s
+2025-09-24 05:33:37,505 - INFO - wp_request completed in 0.105s
+2025-09-24 05:33:37,537 - INFO - ESI public fetch successful: /characters/95937458/portrait/ in 0.03s
+2025-09-24 05:33:37,537 - INFO - _fetch_esi_with_retry completed in 0.032s
+2025-09-24 05:33:37,538 - INFO - Portrait unchanged for character: Filin Khan
+2025-09-24 05:33:37,538 - INFO - Rate limiter adjusted: base=60.0, current=30.87, factor=0.5
+2025-09-24 05:33:39,465 - INFO - WordPress PUT successful: /wp/v2/eve_character/88 in 1.93s
+2025-09-24 05:33:39,465 - INFO - wp_request completed in 1.928s
+2025-09-24 05:33:39,465 - INFO - Updated character: Filin Khan
+2025-09-24 05:33:39,465 - INFO - EVENT: CHARACTER_UPDATE | USER: 95937458 | DETAILS: {'name': 'Filin Khan', 'post_id': 88}
+2025-09-24 05:33:39,557 - INFO - EVENT: TOKEN_REFRESH_SUCCESS | USER: system | DETAILS: {'client_id': '8b221bf2...'}
+2025-09-24 05:33:39,591 - INFO - ESI authenticated fetch successful: /characters/95985116/ in 0.03s
+2025-09-24 05:33:39,591 - INFO - _fetch_esi_with_retry completed in 0.033s
+2025-09-24 05:33:39,591 - INFO - Rate limiter adjusted: base=60.0, current=30.60, factor=0.5
+2025-09-24 05:33:39,705 - INFO - WordPress GET successful: /wp/v2/eve_character?slug=character-95985116 in 0.11s
+2025-09-24 05:33:39,705 - INFO - wp_request completed in 0.113s
+2025-09-24 05:33:39,737 - INFO - ESI public fetch successful: /characters/95985116/portrait/ in 0.03s
+2025-09-24 05:33:39,737 - INFO - _fetch_esi_with_retry completed in 0.032s
+2025-09-24 05:33:39,737 - INFO - Portrait unchanged for character: Corvin Khan
+2025-09-24 05:33:39,737 - INFO - Rate limiter adjusted: base=60.0, current=30.60, factor=0.5
+2025-09-24 05:33:41,636 - INFO - WordPress PUT successful: /wp/v2/eve_character/89 in 1.90s
+2025-09-24 05:33:41,637 - INFO - wp_request completed in 1.899s
+2025-09-24 05:33:41,637 - INFO - Updated character: Corvin Khan
+2025-09-24 05:33:41,637 - INFO - EVENT: CHARACTER_UPDATE | USER: 95985116 | DETAILS: {'name': 'Corvin Khan', 'post_id': 89}
+2025-09-24 05:33:41,730 - INFO - EVENT: TOKEN_REFRESH_SUCCESS | USER: system | DETAILS: {'client_id': '8b221bf2...'}
+2025-09-24 05:33:41,765 - INFO - ESI authenticated fetch successful: /characters/1316070855/ in 0.03s
+2025-09-24 05:33:41,765 - INFO - _fetch_esi_with_retry completed in 0.035s
+2025-09-24 05:33:41,765 - INFO - Rate limiter adjusted: base=60.0, current=30.60, factor=0.5
+2025-09-24 05:33:41,843 - INFO - WordPress GET successful: /wp/v2/eve_character?slug=character-1316070855 in 0.08s
+2025-09-24 05:33:41,843 - INFO - wp_request completed in 0.078s
+2025-09-24 05:33:41,893 - INFO - ESI public fetch successful: /characters/1316070855/portrait/ in 0.05s
+2025-09-24 05:33:41,894 - INFO - _fetch_esi_with_retry completed in 0.050s
+2025-09-24 05:33:41,894 - INFO - Portrait unchanged for character: FiLiN Core
+2025-09-24 05:33:41,894 - INFO - Rate limiter adjusted: base=60.0, current=30.60, factor=0.5
+2025-09-24 05:33:43,812 - INFO - WordPress PUT successful: /wp/v2/eve_character/91 in 1.92s
+2025-09-24 05:33:43,812 - INFO - wp_request completed in 1.918s
+2025-09-24 05:33:43,812 - INFO - Updated character: FiLiN Core
+2025-09-24 05:33:43,812 - INFO - EVENT: CHARACTER_UPDATE | USER: 1316070855 | DETAILS: {'name': 'FiLiN Core', 'post_id': 91}
+2025-09-24 05:33:43,894 - INFO - EVENT: TOKEN_REFRESH_SUCCESS | USER: system | DETAILS: {'client_id': '8b221bf2...'}
+2025-09-24 05:33:43,927 - INFO - ESI authenticated fetch successful: /characters/91594850/ in 0.03s
+2025-09-24 05:33:43,928 - INFO - _fetch_esi_with_retry completed in 0.032s
+2025-09-24 05:33:43,928 - INFO - Rate limiter adjusted: base=60.0, current=30.60, factor=0.5
+2025-09-24 05:33:43,993 - INFO - WordPress GET successful: /wp/v2/eve_character?slug=character-91594850 in 0.07s
+2025-09-24 05:33:43,994 - INFO - wp_request completed in 0.066s
+2025-09-24 05:33:44,026 - INFO - ESI public fetch successful: /characters/91594850/portrait/ in 0.03s
+2025-09-24 05:33:44,026 - INFO - _fetch_esi_with_retry completed in 0.032s
+2025-09-24 05:33:44,026 - INFO - Portrait unchanged for character: Raven Madyar
+2025-09-24 05:33:44,026 - INFO - Rate limiter adjusted: base=60.0, current=30.60, factor=0.5
+2025-09-24 05:33:45,989 - INFO - WordPress PUT successful: /wp/v2/eve_character/92 in 1.96s
+2025-09-24 05:33:45,989 - INFO - wp_request completed in 1.963s
+2025-09-24 05:33:45,989 - INFO - Updated character: Raven Madyar
+2025-09-24 05:33:45,989 - INFO - EVENT: CHARACTER_UPDATE | USER: 91594850 | DETAILS: {'name': 'Raven Madyar', 'post_id': 92}
+2025-09-24 05:33:46,066 - INFO - EVENT: TOKEN_REFRESH_SUCCESS | USER: system | DETAILS: {'client_id': '8b221bf2...'}
+2025-09-24 05:33:46,101 - INFO - ESI authenticated fetch successful: /characters/90483242/ in 0.03s
+2025-09-24 05:33:46,101 - INFO - _fetch_esi_with_retry completed in 0.035s
+2025-09-24 05:33:46,102 - INFO - Rate limiter adjusted: base=60.0, current=30.60, factor=0.5
+2025-09-24 05:33:46,172 - INFO - WordPress GET successful: /wp/v2/eve_character?slug=character-90483242 in 0.07s
+2025-09-24 05:33:46,172 - INFO - wp_request completed in 0.071s
+2025-09-24 05:33:46,273 - INFO - ESI public fetch successful: /characters/90483242/portrait/ in 0.10s
+2025-09-24 05:33:46,273 - INFO - _fetch_esi_with_retry completed in 0.100s
+2025-09-24 05:33:46,273 - INFO - Portrait unchanged for character: Vran Ruthen
+2025-09-24 05:33:46,273 - INFO - Rate limiter adjusted: base=60.0, current=30.60, factor=0.5
+2025-09-24 05:33:48,155 - INFO - WordPress PUT successful: /wp/v2/eve_character/93 in 1.88s
+2025-09-24 05:33:48,155 - INFO - wp_request completed in 1.883s
+2025-09-24 05:33:48,155 - INFO - Updated character: Vran Ruthen
+2025-09-24 05:33:48,156 - INFO - EVENT: CHARACTER_UPDATE | USER: 90483242 | DETAILS: {'name': 'Vran Ruthen', 'post_id': 93}
+2025-09-24 05:33:48,156 - INFO - Corporation collection completed in 17.33s
+2025-09-24 05:33:48,156 - INFO - Starting cleanup of old posts...
+2025-09-24 05:33:48,156 - INFO - Cleaning up contract posts...
+2025-09-24 05:33:48,156 - INFO - Rate limiter adjusted: base=60.0, current=30.60, factor=0.5
+2025-09-24 05:33:48,375 - INFO - WordPress GET successful: /wp/v2/eve_contract in 0.22s
+2025-09-24 05:33:48,375 - INFO - wp_request completed in 0.219s
+2025-09-24 05:33:48,375 - INFO - Cleaning up blueprint posts...
+2025-09-24 05:33:48,550 - INFO - Cleanup completed.
+2025-09-24 05:33:48,551 - INFO - Post cleanup completed in 0.40s
+2025-09-24 05:33:48,551 - INFO - Processing character data in parallel...
+2025-09-24 05:33:48,551 - INFO - Processing character: Mr FiLiN (ID: 90020513)
+2025-09-24 05:33:48,551 - INFO - Starting contract processing for Mr FiLiN
+2025-09-24 05:33:48,552 - INFO - Processing character: Dr FiLiN (ID: 90045731)
+2025-09-24 05:33:48,552 - INFO - Starting contract processing for Dr FiLiN
+2025-09-24 05:33:48,552 - INFO - Processing character: Orev Khazar (ID: 90522765)
+2025-09-24 05:33:48,552 - INFO - Starting contract processing for Orev Khazar
+2025-09-24 05:33:48,710 - INFO - ESI authenticated fetch successful: /characters/90020513/contracts/ in 0.16s
+2025-09-24 05:33:48,711 - INFO - _fetch_esi_with_retry completed in 0.159s
+2025-09-24 05:33:48,711 - INFO - Processing character: Sir FiLiN (ID: 90162477)
+2025-09-24 05:33:48,711 - INFO - Starting contract processing for Sir FiLiN
+2025-09-24 05:33:48,784 - INFO - ESI authenticated fetch successful: /characters/90045731/contracts/ in 0.23s
+2025-09-24 05:33:48,785 - INFO - _fetch_esi_with_retry completed in 0.233s
+2025-09-24 05:33:48,785 - INFO - Character contracts for Dr FiLiN: 61 items
+2025-09-24 05:33:48,785 - INFO - Loading cache from /Users/dg/Documents/GitHub/eveObserver/cache/blueprint_types.json...
+2025-09-24 05:33:48,786 - INFO - ✓ Cache loaded from /Users/dg/Documents/GitHub/eveObserver/cache/blueprint_types.json: 1019 entries in 0.00s
+2025-09-24 05:33:48,786 - INFO - Fetching all expanded contracts from The Forge region for competition analysis...
+2025-09-24 05:33:48,786 - INFO - Starting incremental contract processing for The Forge region...
+2025-09-24 05:33:48,842 - INFO - Loaded 30031 existing expanded contracts from cache
+2025-09-24 05:33:48,842 - INFO - Fetching current contracts from EVE Online API...
+2025-09-24 05:33:48,842 - INFO - Fetching all contracts from region 10000002
+2025-09-24 05:33:48,842 - INFO - Fetching page 1...
+2025-09-24 05:33:48,895 - INFO - ESI authenticated fetch successful: /characters/90162477/contracts/ in 0.18s
+2025-09-24 05:33:48,896 - INFO - _fetch_esi_with_retry completed in 0.185s
+2025-09-24 05:33:48,896 - INFO - Processing character: Filin Khan (ID: 95937458)
+2025-09-24 05:33:48,896 - INFO - Starting contract processing for Filin Khan
+2025-09-24 05:33:48,922 - INFO - ESI authenticated fetch successful: /characters/90522765/contracts/ in 0.37s
+2025-09-24 05:33:48,922 - INFO - _fetch_esi_with_retry completed in 0.370s
+2025-09-24 05:33:48,922 - INFO - Processing character: Corvin Khan (ID: 95985116)
+2025-09-24 05:33:48,922 - INFO - Starting contract processing for Corvin Khan
+2025-09-24 05:33:48,958 - INFO - Found 1000 contracts on page 1
+2025-09-24 05:33:48,958 - INFO - Contract 0: type=item_exchange, status=None, price=350000000.0
+2025-09-24 05:33:48,958 - INFO - Contract 1: type=item_exchange, status=None, price=15000000.0
+2025-09-24 05:33:48,958 - INFO - Contract 2: type=item_exchange, status=None, price=10000000.0
+2025-09-24 05:33:48,958 - INFO - Contract 3: type=item_exchange, status=None, price=70000000.0
+2025-09-24 05:33:48,958 - INFO - Contract 4: type=item_exchange, status=None, price=149000000.0
+2025-09-24 05:33:48,960 - INFO - Fetching page 2...
+2025-09-24 05:33:49,004 - INFO - ESI authenticated fetch successful: /characters/95937458/contracts/ in 0.11s
+2025-09-24 05:33:49,004 - INFO - _fetch_esi_with_retry completed in 0.108s
+2025-09-24 05:33:49,004 - INFO - Processing character: FiLiN Core (ID: 1316070855)
+2025-09-24 05:33:49,004 - INFO - Starting contract processing for FiLiN Core
+2025-09-24 05:33:49,028 - INFO - Found 1000 contracts on page 2
+2025-09-24 05:33:49,029 - INFO - Fetching page 3...
+2025-09-24 05:33:49,042 - INFO - ESI authenticated fetch successful: /characters/95985116/contracts/ in 0.12s
+2025-09-24 05:33:49,042 - INFO - _fetch_esi_with_retry completed in 0.120s
+2025-09-24 05:33:49,043 - INFO - Processing character: Raven Madyar (ID: 91594850)
+2025-09-24 05:33:49,043 - INFO - Starting contract processing for Raven Madyar
+2025-09-24 05:33:49,096 - INFO - Found 1000 contracts on page 3
+2025-09-24 05:33:49,096 - INFO - Fetching page 4...
+2025-09-24 05:33:49,128 - INFO - ESI authenticated fetch successful: /characters/1316070855/contracts/ in 0.12s
+2025-09-24 05:33:49,128 - INFO - _fetch_esi_with_retry completed in 0.124s
+2025-09-24 05:33:49,128 - INFO - Processing character: Vran Ruthen (ID: 90483242)
+2025-09-24 05:33:49,128 - INFO - Starting contract processing for Vran Ruthen
+2025-09-24 05:33:49,164 - INFO - Found 1000 contracts on page 4
+2025-09-24 05:33:49,166 - INFO - Fetching page 5...
+2025-09-24 05:33:49,236 - INFO - Found 1000 contracts on page 5
+2025-09-24 05:33:49,238 - INFO - Fetching page 6...
+2025-09-24 05:33:49,252 - INFO - ESI authenticated fetch successful: /characters/91594850/contracts/ in 0.21s
+2025-09-24 05:33:49,253 - INFO - _fetch_esi_with_retry completed in 0.210s
+2025-09-24 05:33:49,308 - INFO - Found 1000 contracts on page 6
+2025-09-24 05:33:49,309 - INFO - Fetching page 7...
+2025-09-24 05:33:49,421 - INFO - ESI authenticated fetch successful: /characters/90483242/contracts/ in 0.29s
+2025-09-24 05:33:49,421 - INFO - _fetch_esi_with_retry completed in 0.293s
+2025-09-24 05:33:49,454 - INFO - Found 1000 contracts on page 7
+2025-09-24 05:33:49,454 - INFO - Fetching page 8...
+2025-09-24 05:33:49,523 - INFO - Found 1000 contracts on page 8
+2025-09-24 05:33:49,524 - INFO - Fetching page 9...
+2025-09-24 05:33:49,596 - INFO - Found 1000 contracts on page 9
+2025-09-24 05:33:49,598 - INFO - Fetching page 10...
+2025-09-24 05:33:49,673 - INFO - Found 1000 contracts on page 10
+2025-09-24 05:33:49,675 - INFO - Fetching page 11...
+2025-09-24 05:33:49,750 - INFO - Found 1000 contracts on page 11
+2025-09-24 05:33:49,751 - INFO - Fetching page 12...
+2025-09-24 05:33:49,823 - INFO - Found 1000 contracts on page 12
+2025-09-24 05:33:49,825 - INFO - Fetching page 13...
+2025-09-24 05:33:50,006 - INFO - Found 1000 contracts on page 13
+2025-09-24 05:33:50,007 - INFO - Fetching page 14...
+2025-09-24 05:33:50,075 - INFO - Found 1000 contracts on page 14
+2025-09-24 05:33:50,076 - INFO - Fetching page 15...
+2025-09-24 05:33:50,147 - INFO - Found 1000 contracts on page 15
+2025-09-24 05:33:50,148 - INFO - Fetching page 16...
+2025-09-24 05:33:50,229 - INFO - Found 1000 contracts on page 16
+2025-09-24 05:33:50,231 - INFO - Fetching page 17...
+2025-09-24 05:33:50,300 - INFO - Found 1000 contracts on page 17
+2025-09-24 05:33:50,301 - INFO - Fetching page 18...
+2025-09-24 05:33:50,373 - INFO - Found 1000 contracts on page 18
+2025-09-24 05:33:50,375 - INFO - Fetching page 19...
+2025-09-24 05:33:50,505 - INFO - Found 1000 contracts on page 19
+2025-09-24 05:33:50,506 - INFO - Fetching page 20...
+2025-09-24 05:33:50,550 - INFO - Found 1000 contracts on page 20
+2025-09-24 05:33:50,551 - INFO - Fetching page 21...
+2025-09-24 05:33:50,636 - INFO - Found 1000 contracts on page 21
+2025-09-24 05:33:50,638 - INFO - Fetching page 22...
+2025-09-24 05:33:50,708 - INFO - Found 1000 contracts on page 22
+2025-09-24 05:33:50,709 - INFO - Fetching page 23...
+2025-09-24 05:33:50,774 - INFO - Found 1000 contracts on page 23
+2025-09-24 05:33:50,775 - INFO - Fetching page 24...
+2025-09-24 05:33:50,857 - INFO - Found 1000 contracts on page 24
+2025-09-24 05:33:50,858 - INFO - Fetching page 25...
+2025-09-24 05:33:50,998 - INFO - Found 1000 contracts on page 25
+2025-09-24 05:33:51,000 - INFO - Fetching page 26...
+2025-09-24 05:33:51,129 - INFO - Found 1000 contracts on page 26
+2025-09-24 05:33:51,131 - INFO - Fetching page 27...
+2025-09-24 05:33:51,201 - INFO - Found 1000 contracts on page 27
+2025-09-24 05:33:51,203 - INFO - Fetching page 28...
+2025-09-24 05:33:51,245 - INFO - Found 1000 contracts on page 28
+2025-09-24 05:33:51,246 - INFO - Fetching page 29...
+2025-09-24 05:33:51,290 - INFO - Found 1000 contracts on page 29
+2025-09-24 05:33:51,292 - INFO - Fetching page 30...
+2025-09-24 05:33:51,363 - INFO - Found 1000 contracts on page 30
+2025-09-24 05:33:51,364 - INFO - Fetching page 31...
+2025-09-24 05:33:51,399 - INFO - Found 31 contracts on page 31
+2025-09-24 05:33:51,399 - INFO - Fetching page 32...
+2025-09-24 05:33:51,516 - WARNING - ESI request failed (attempt 1/3): 404, message='Not Found', url='https://esi.evetech.net/latest/contracts/public/10000002/?page=32'. Retrying in 1s
+2025-09-24 05:33:52,700 - WARNING - ESI request failed (attempt 2/3): 404, message='Not Found', url='https://esi.evetech.net/latest/contracts/public/10000002/?page=32'. Retrying in 2s
+2025-09-24 05:33:54,777 - ERROR - ESI request failed after 3 attempts: 404, message='Not Found', url='https://esi.evetech.net/latest/contracts/public/10000002/?page=32'
+2025-09-24 05:33:54,778 - INFO - No more contracts on page 32, stopping
+2025-09-24 05:33:54,778 - INFO - Total contracts found: 30031
+2025-09-24 05:33:54,791 - INFO - Fetched 30031 current contracts from API
+2025-09-24 05:33:54,798 - INFO - Cache synchronization: 0 new contracts, 0 removed contracts
+2025-09-24 05:33:54,799 - INFO - No new contracts to expand
+2025-09-24 05:33:54,981 - INFO - Saved updated cache with 30031 contracts
+2025-09-24 05:33:54,981 - INFO - Building blueprint-only contracts cache from 30031 total contracts...
+2025-09-24 05:33:54,984 - INFO - Blueprint contracts cache built: 37 contracts with 37 blueprint items (0.1% of total contracts)
+2025-09-24 05:33:54,984 - INFO - Returning 37 blueprint contracts for competition analysis
+2025-09-24 05:33:54,991 - INFO - Running batched WordPress updates for 46 contracts...
+2025-09-24 05:33:54,992 - INFO - Loading cache from /Users/dg/Documents/GitHub/eveObserver/cache/blueprint_types.json...
+2025-09-24 05:33:54,992 - INFO - ✓ Cache loaded from /Users/dg/Documents/GitHub/eveObserver/cache/blueprint_types.json: 1019 entries in 0.00s
+2025-09-24 05:33:54,992 - INFO - Batch updating 46 contracts in WordPress...
+2025-09-24 05:33:54,992 - INFO - Processing batch 1/5 (10 contracts)
+2025-09-24 05:33:54,992 - INFO - Loading cache from /Users/dg/Documents/GitHub/eveObserver/cache/blueprint_types.json...
+2025-09-24 05:33:54,992 - INFO - ✓ Cache loaded from /Users/dg/Documents/GitHub/eveObserver/cache/blueprint_types.json: 1019 entries in 0.00s
+2025-09-24 05:33:54,992 - INFO - Loading cache from /Users/dg/Documents/GitHub/eveObserver/cache/blueprint_types.json...
+2025-09-24 05:33:54,993 - INFO - ✓ Cache loaded from /Users/dg/Documents/GitHub/eveObserver/cache/blueprint_types.json: 1019 entries in 0.00s
+2025-09-24 05:33:54,993 - INFO - Loading cache from /Users/dg/Documents/GitHub/eveObserver/cache/blueprint_types.json...
+2025-09-24 05:33:54,993 - INFO - ✓ Cache loaded from /Users/dg/Documents/GitHub/eveObserver/cache/blueprint_types.json: 1019 entries in 0.00s
+2025-09-24 05:33:54,993 - INFO - Loading cache from /Users/dg/Documents/GitHub/eveObserver/cache/blueprint_types.json...
+2025-09-24 05:33:54,993 - INFO - ✓ Cache loaded from /Users/dg/Documents/GitHub/eveObserver/cache/blueprint_types.json: 1019 entries in 0.00s
+2025-09-24 05:33:54,993 - INFO - Loading cache from /Users/dg/Documents/GitHub/eveObserver/cache/blueprint_types.json...
+2025-09-24 05:33:54,994 - INFO - ✓ Cache loaded from /Users/dg/Documents/GitHub/eveObserver/cache/blueprint_types.json: 1019 entries in 0.00s
+2025-09-24 05:33:54,994 - INFO - Loading cache from /Users/dg/Documents/GitHub/eveObserver/cache/blueprint_types.json...
+2025-09-24 05:33:54,994 - INFO - ✓ Cache loaded from /Users/dg/Documents/GitHub/eveObserver/cache/blueprint_types.json: 1019 entries in 0.00s
+2025-09-24 05:33:54,994 - INFO - Loading cache from /Users/dg/Documents/GitHub/eveObserver/cache/blueprint_types.json...
+2025-09-24 05:33:54,994 - INFO - ✓ Cache loaded from /Users/dg/Documents/GitHub/eveObserver/cache/blueprint_types.json: 1019 entries in 0.00s
+2025-09-24 05:33:54,994 - INFO - Loading cache from /Users/dg/Documents/GitHub/eveObserver/cache/blueprint_types.json...
+2025-09-24 05:33:54,995 - INFO - ✓ Cache loaded from /Users/dg/Documents/GitHub/eveObserver/cache/blueprint_types.json: 1019 entries in 0.00s
+2025-09-24 05:33:54,995 - INFO - Loading cache from /Users/dg/Documents/GitHub/eveObserver/cache/blueprint_types.json...
+2025-09-24 05:33:54,995 - INFO - ✓ Cache loaded from /Users/dg/Documents/GitHub/eveObserver/cache/blueprint_types.json: 1019 entries in 0.00s
+2025-09-24 05:33:54,995 - INFO - Loading cache from /Users/dg/Documents/GitHub/eveObserver/cache/blueprint_types.json...
+2025-09-24 05:33:54,995 - INFO - ✓ Cache loaded from /Users/dg/Documents/GitHub/eveObserver/cache/blueprint_types.json: 1019 entries in 0.00s
+2025-09-24 05:33:54,995 - INFO - Rate limiter adjusted: base=60.0, current=30.60, factor=0.5
+2025-09-24 05:33:54,996 - INFO - Rate limiter adjusted: base=60.0, current=30.60, factor=0.5
+2025-09-24 05:33:54,996 - INFO - Rate limiter adjusted: base=60.0, current=30.60, factor=0.5
+2025-09-24 05:33:54,996 - INFO - Rate limiter adjusted: base=60.0, current=30.60, factor=0.5
+2025-09-24 05:33:54,996 - INFO - Rate limiter adjusted: base=60.0, current=30.60, factor=0.5
+2025-09-24 05:33:54,996 - INFO - Rate limiter adjusted: base=60.0, current=30.60, factor=0.5
+2025-09-24 05:33:54,996 - INFO - Rate limiter adjusted: base=60.0, current=30.60, factor=0.5
+2025-09-24 05:33:54,996 - INFO - Rate limiter adjusted: base=60.0, current=30.60, factor=0.5
+2025-09-24 05:33:54,996 - INFO - Rate limiter adjusted: base=60.0, current=30.60, factor=0.5
+2025-09-24 05:33:54,996 - INFO - Rate limiter adjusted: base=60.0, current=30.60, factor=0.5
+2025-09-24 05:33:55,207 - INFO - WordPress GET successful: /wp/v2/eve_contract?slug=contract-222641777 in 0.21s
+2025-09-24 05:33:55,207 - INFO - wp_request completed in 0.215s
+2025-09-24 05:33:55,336 - INFO - ESI authenticated fetch successful: /characters/90045731/contracts/222641777/items/ in 0.13s
+2025-09-24 05:33:55,337 - INFO - _fetch_esi_with_retry completed in 0.129s
+2025-09-24 05:33:55,339 - INFO - Loading cache from /Users/dg/Documents/GitHub/eveObserver/cache/blueprint_types.json...
+2025-09-24 05:33:55,341 - INFO - ✓ Cache loaded from /Users/dg/Documents/GitHub/eveObserver/cache/blueprint_types.json: 1019 entries in 0.00s
+2025-09-24 05:33:55,341 - INFO - Loading cache from /Users/dg/Documents/GitHub/eveObserver/cache/blueprint_names.json...
+2025-09-24 05:33:55,342 - INFO - ✓ Cache loaded from /Users/dg/Documents/GitHub/eveObserver/cache/blueprint_names.json: 110 entries in 0.00s
+2025-09-24 05:33:55,343 - INFO - Rate limiter adjusted: base=60.0, current=30.60, factor=0.5
+2025-09-24 05:33:57,050 - INFO - WordPress GET successful: /wp/v2/eve_contract?slug=contract-222641822 in 2.05s
+2025-09-24 05:33:57,051 - INFO - wp_request completed in 2.057s
+2025-09-24 05:33:57,124 - INFO - WordPress GET successful: /wp/v2/eve_contract?slug=contract-222641882 in 2.13s
+2025-09-24 05:33:57,125 - INFO - wp_request completed in 2.130s
+2025-09-24 05:33:57,125 - INFO - WordPress GET successful: /wp/v2/eve_contract?slug=contract-222641849 in 2.13s
+2025-09-24 05:33:57,126 - INFO - wp_request completed in 2.131s
+2025-09-24 05:33:57,128 - INFO - WordPress GET successful: /wp/v2/eve_contract?slug=contract-222641803 in 2.13s
+2025-09-24 05:33:57,128 - INFO - wp_request completed in 2.135s
+2025-09-24 05:33:57,137 - INFO - WordPress GET successful: /wp/v2/eve_contract?slug=contract-222641837 in 2.14s
+2025-09-24 05:33:57,137 - INFO - wp_request completed in 2.143s
+2025-09-24 05:33:57,149 - INFO - WordPress GET successful: /wp/v2/eve_contract?slug=contract-222641814 in 2.15s
+2025-09-24 05:33:57,149 - INFO - wp_request completed in 2.156s
+2025-09-24 05:33:57,151 - INFO - WordPress GET successful: /wp/v2/eve_contract?slug=contract-222641897 in 2.15s
+2025-09-24 05:33:57,151 - INFO - wp_request completed in 2.156s
+2025-09-24 05:33:57,153 - INFO - WordPress GET successful: /wp/v2/eve_contract?slug=contract-222641864 in 2.16s
+2025-09-24 05:33:57,153 - INFO - wp_request completed in 2.158s
+2025-09-24 05:33:57,156 - INFO - WordPress PUT successful: /wp/v2/eve_contract/3431 in 1.81s
+2025-09-24 05:33:57,156 - INFO - wp_request completed in 1.814s
+2025-09-24 05:33:57,157 - INFO - Updated contract: 222641777 - Capital Antimatter Reactor Unit - Contract 222641777
+2025-09-24 05:33:57,158 - INFO - WordPress GET successful: /wp/v2/eve_contract?slug=contract-222641828 in 2.16s
+2025-09-24 05:33:57,158 - INFO - wp_request completed in 2.164s
+2025-09-24 05:33:57,162 - INFO - ESI authenticated fetch successful: /characters/90045731/contracts/222641822/items/ in 0.11s
+2025-09-24 05:33:57,162 - INFO - _fetch_esi_with_retry completed in 0.111s
+2025-09-24 05:33:57,162 - INFO - Loading cache from /Users/dg/Documents/GitHub/eveObserver/cache/blueprint_types.json...
+2025-09-24 05:33:57,163 - INFO - ✓ Cache loaded from /Users/dg/Documents/GitHub/eveObserver/cache/blueprint_types.json: 1019 entries in 0.00s
+2025-09-24 05:33:57,163 - INFO - Rate limiter adjusted: base=60.0, current=30.60, factor=0.5
+2025-09-24 05:33:57,290 - INFO - ESI authenticated fetch successful: /characters/90045731/contracts/222641849/items/ in 0.16s
+2025-09-24 05:33:57,291 - INFO - _fetch_esi_with_retry completed in 0.165s
+2025-09-24 05:33:57,291 - INFO - Loading cache from /Users/dg/Documents/GitHub/eveObserver/cache/blueprint_types.json...
+2025-09-24 05:33:57,292 - INFO - ✓ Cache loaded from /Users/dg/Documents/GitHub/eveObserver/cache/blueprint_types.json: 1019 entries in 0.00s
+2025-09-24 05:33:57,292 - INFO - Rate limiter adjusted: base=60.0, current=30.60, factor=0.5
+2025-09-24 05:33:57,397 - INFO - WordPress PUT successful: /wp/v2/eve_contract/3437 in 0.11s
+2025-09-24 05:33:57,398 - INFO - wp_request completed in 0.106s
+2025-09-24 05:33:57,398 - INFO - Updated contract: 222641849 - Capital Gravimetric Sensor Cluster - Contract 222641849
+2025-09-24 05:33:57,407 - INFO - ESI authenticated fetch successful: /characters/90045731/contracts/222641803/items/ in 0.28s
+2025-09-24 05:33:57,407 - INFO - _fetch_esi_with_retry completed in 0.279s
+2025-09-24 05:33:57,408 - INFO - Loading cache from /Users/dg/Documents/GitHub/eveObserver/cache/blueprint_types.json...
+2025-09-24 05:33:57,408 - INFO - ✓ Cache loaded from /Users/dg/Documents/GitHub/eveObserver/cache/blueprint_types.json: 1019 entries in 0.00s
+2025-09-24 05:33:57,408 - INFO - Rate limiter adjusted: base=60.0, current=30.60, factor=0.5
+2025-09-24 05:33:57,419 - INFO - ESI authenticated fetch successful: /characters/90045731/contracts/222641897/items/ in 0.27s
+2025-09-24 05:33:57,419 - INFO - _fetch_esi_with_retry completed in 0.268s
+2025-09-24 05:33:57,419 - INFO - Loading cache from /Users/dg/Documents/GitHub/eveObserver/cache/blueprint_types.json...
+2025-09-24 05:33:57,419 - INFO - ✓ Cache loaded from /Users/dg/Documents/GitHub/eveObserver/cache/blueprint_types.json: 1019 entries in 0.00s
+2025-09-24 05:33:57,420 - INFO - Rate limiter adjusted: base=60.0, current=30.60, factor=0.5
+2025-09-24 05:33:57,422 - INFO - WordPress PUT successful: /wp/v2/eve_contract/3434 in 0.26s
+2025-09-24 05:33:57,423 - INFO - wp_request completed in 0.260s
+2025-09-24 05:33:57,423 - INFO - Updated contract: 222641822 - Capital EM Pulse Generator - Contract 222641822
+2025-09-24 05:33:57,430 - INFO - ESI authenticated fetch successful: /characters/90045731/contracts/222641837/items/ in 0.29s
+2025-09-24 05:33:57,430 - INFO - _fetch_esi_with_retry completed in 0.292s
+2025-09-24 05:33:57,430 - INFO - Loading cache from /Users/dg/Documents/GitHub/eveObserver/cache/blueprint_types.json...
+2025-09-24 05:33:57,431 - INFO - ✓ Cache loaded from /Users/dg/Documents/GitHub/eveObserver/cache/blueprint_types.json: 1019 entries in 0.00s
+2025-09-24 05:33:57,431 - INFO - Rate limiter adjusted: base=60.0, current=30.60, factor=0.5
+2025-09-24 05:33:57,432 - INFO - ESI authenticated fetch successful: /characters/90045731/contracts/222641814/items/ in 0.28s
+2025-09-24 05:33:57,432 - INFO - _fetch_esi_with_retry completed in 0.283s
+2025-09-24 05:33:57,432 - INFO - Loading cache from /Users/dg/Documents/GitHub/eveObserver/cache/blueprint_types.json...
+2025-09-24 05:33:57,432 - INFO - ✓ Cache loaded from /Users/dg/Documents/GitHub/eveObserver/cache/blueprint_types.json: 1019 entries in 0.00s
+2025-09-24 05:33:57,433 - INFO - Rate limiter adjusted: base=60.0, current=30.60, factor=0.5
+2025-09-24 05:33:57,439 - INFO - ESI authenticated fetch successful: /characters/90045731/contracts/222641864/items/ in 0.29s
+2025-09-24 05:33:57,440 - INFO - _fetch_esi_with_retry completed in 0.287s
+2025-09-24 05:33:57,440 - INFO - Contract 222641864 contains no blueprints, skipping
+2025-09-24 05:33:57,446 - INFO - ESI authenticated fetch successful: /characters/90045731/contracts/222641828/items/ in 0.29s
+2025-09-24 05:33:57,446 - INFO - _fetch_esi_with_retry completed in 0.288s
+2025-09-24 05:33:57,447 - INFO - Loading cache from /Users/dg/Documents/GitHub/eveObserver/cache/blueprint_types.json...
+2025-09-24 05:33:57,447 - INFO - ✓ Cache loaded from /Users/dg/Documents/GitHub/eveObserver/cache/blueprint_types.json: 1019 entries in 0.00s
+2025-09-24 05:33:57,447 - INFO - Rate limiter adjusted: base=60.0, current=30.60, factor=0.5
+2025-09-24 05:33:57,449 - INFO - ESI authenticated fetch successful: /characters/90045731/contracts/222641882/items/ in 0.32s
+2025-09-24 05:33:57,449 - INFO - _fetch_esi_with_retry completed in 0.325s
+2025-09-24 05:33:57,450 - INFO - Loading cache from /Users/dg/Documents/GitHub/eveObserver/cache/blueprint_types.json...
+2025-09-24 05:33:57,450 - INFO - ✓ Cache loaded from /Users/dg/Documents/GitHub/eveObserver/cache/blueprint_types.json: 1019 entries in 0.00s
+2025-09-24 05:33:57,450 - INFO - Rate limiter adjusted: base=60.0, current=30.60, factor=0.5
+2025-09-24 05:33:59,382 - INFO - WordPress PUT successful: /wp/v2/eve_contract/3432 in 1.97s
+2025-09-24 05:33:59,384 - INFO - WordPress PUT successful: /wp/v2/eve_contract/3436 in 1.95s
+2025-09-24 05:33:59,384 - INFO - WordPress PUT successful: /wp/v2/eve_contract/3440 in 1.96s
+2025-09-24 05:33:59,385 - INFO - WordPress PUT successful: /wp/v2/eve_contract/3439 in 1.93s
+2025-09-24 05:33:59,385 - INFO - WordPress PUT successful: /wp/v2/eve_contract/3435 in 1.94s
+2025-09-24 05:33:59,386 - INFO - WordPress PUT successful: /wp/v2/eve_contract/3433 in 1.95s
+2025-09-24 05:33:59,386 - INFO - wp_request completed in 1.978s
+2025-09-24 05:33:59,386 - INFO - Updated contract: 222641803 - Capital Deflection Shield Emitter - Contract 222641803
+2025-09-24 05:33:59,386 - INFO - wp_request completed in 1.955s
+2025-09-24 05:33:59,386 - INFO - Updated contract: 222641837 - Capital Fusion Thruster - Contract 222641837
+2025-09-24 05:33:59,386 - INFO - wp_request completed in 1.967s
+2025-09-24 05:33:59,386 - INFO - Updated contract: 222641897 - Capital Ion Thruster - Contract 222641897
+2025-09-24 05:33:59,386 - INFO - wp_request completed in 1.936s
+2025-09-24 05:33:59,386 - INFO - Updated contract: 222641882 - Capital Graviton Reactor Unit - Contract 222641882
+2025-09-24 05:33:59,386 - INFO - wp_request completed in 1.939s
+2025-09-24 05:33:59,386 - INFO - Updated contract: 222641828 - Capital Fernite Carbide Composite Armor Plate - Contract 222641828
+2025-09-24 05:33:59,387 - INFO - wp_request completed in 1.954s
+2025-09-24 05:33:59,387 - INFO - Updated contract: 222641814 - Capital Electrolytic Capacitor Unit - Contract 222641814
+2025-09-24 05:33:59,888 - INFO - Processing batch 2/5 (10 contracts)
+2025-09-24 05:33:59,889 - INFO - Loading cache from /Users/dg/Documents/GitHub/eveObserver/cache/blueprint_types.json...
+2025-09-24 05:33:59,890 - INFO - ✓ Cache loaded from /Users/dg/Documents/GitHub/eveObserver/cache/blueprint_types.json: 1019 entries in 0.00s
+2025-09-24 05:33:59,890 - INFO - Loading cache from /Users/dg/Documents/GitHub/eveObserver/cache/blueprint_types.json...
+2025-09-24 05:33:59,891 - INFO - ✓ Cache loaded from /Users/dg/Documents/GitHub/eveObserver/cache/blueprint_types.json: 1019 entries in 0.00s
+2025-09-24 05:33:59,891 - INFO - Loading cache from /Users/dg/Documents/GitHub/eveObserver/cache/blueprint_types.json...
+2025-09-24 05:33:59,892 - INFO - ✓ Cache loaded from /Users/dg/Documents/GitHub/eveObserver/cache/blueprint_types.json: 1019 entries in 0.00s
+2025-09-24 05:33:59,892 - INFO - Loading cache from /Users/dg/Documents/GitHub/eveObserver/cache/blueprint_types.json...
+2025-09-24 05:33:59,893 - INFO - ✓ Cache loaded from /Users/dg/Documents/GitHub/eveObserver/cache/blueprint_types.json: 1019 entries in 0.00s
+2025-09-24 05:33:59,893 - INFO - Loading cache from /Users/dg/Documents/GitHub/eveObserver/cache/blueprint_types.json...
+2025-09-24 05:33:59,894 - INFO - ✓ Cache loaded from /Users/dg/Documents/GitHub/eveObserver/cache/blueprint_types.json: 1019 entries in 0.00s
+2025-09-24 05:33:59,894 - INFO - Loading cache from /Users/dg/Documents/GitHub/eveObserver/cache/blueprint_types.json...
+2025-09-24 05:33:59,894 - INFO - ✓ Cache loaded from /Users/dg/Documents/GitHub/eveObserver/cache/blueprint_types.json: 1019 entries in 0.00s
+2025-09-24 05:33:59,894 - INFO - Loading cache from /Users/dg/Documents/GitHub/eveObserver/cache/blueprint_types.json...
+2025-09-24 05:33:59,895 - INFO - ✓ Cache loaded from /Users/dg/Documents/GitHub/eveObserver/cache/blueprint_types.json: 1019 entries in 0.00s
+2025-09-24 05:33:59,895 - INFO - Loading cache from /Users/dg/Documents/GitHub/eveObserver/cache/blueprint_types.json...
+2025-09-24 05:33:59,895 - INFO - ✓ Cache loaded from /Users/dg/Documents/GitHub/eveObserver/cache/blueprint_types.json: 1019 entries in 0.00s
+2025-09-24 05:33:59,895 - INFO - Loading cache from /Users/dg/Documents/GitHub/eveObserver/cache/blueprint_types.json...
+2025-09-24 05:33:59,896 - INFO - ✓ Cache loaded from /Users/dg/Documents/GitHub/eveObserver/cache/blueprint_types.json: 1019 entries in 0.00s
+2025-09-24 05:33:59,896 - INFO - Loading cache from /Users/dg/Documents/GitHub/eveObserver/cache/blueprint_types.json...
+2025-09-24 05:33:59,896 - INFO - ✓ Cache loaded from /Users/dg/Documents/GitHub/eveObserver/cache/blueprint_types.json: 1019 entries in 0.00s
+2025-09-24 05:33:59,897 - INFO - Rate limiter adjusted: base=60.0, current=30.60, factor=0.5
+2025-09-24 05:33:59,897 - INFO - Rate limiter adjusted: base=60.0, current=30.60, factor=0.5
+2025-09-24 05:33:59,898 - INFO - Rate limiter adjusted: base=60.0, current=30.60, factor=0.5
+2025-09-24 05:33:59,898 - INFO - Rate limiter adjusted: base=60.0, current=30.60, factor=0.5
+2025-09-24 05:33:59,898 - INFO - Rate limiter adjusted: base=60.0, current=30.60, factor=0.5
+2025-09-24 05:33:59,898 - INFO - Rate limiter adjusted: base=60.0, current=30.60, factor=0.5
+2025-09-24 05:33:59,898 - INFO - Rate limiter adjusted: base=60.0, current=30.60, factor=0.5
+2025-09-24 05:33:59,898 - INFO - Rate limiter adjusted: base=60.0, current=30.60, factor=0.5
+2025-09-24 05:33:59,898 - INFO - Rate limiter adjusted: base=60.0, current=30.60, factor=0.5
+2025-09-24 05:33:59,898 - INFO - Rate limiter adjusted: base=60.0, current=30.60, factor=0.5
+2025-09-24 05:34:00,008 - INFO - WordPress GET successful: /wp/v2/eve_contract?slug=contract-222641914 in 0.11s
+2025-09-24 05:34:00,009 - INFO - wp_request completed in 0.119s
+2025-09-24 05:34:00,103 - INFO - ESI authenticated fetch successful: /characters/90045731/contracts/222641914/items/ in 0.09s
+2025-09-24 05:34:00,104 - INFO - _fetch_esi_with_retry completed in 0.095s
+2025-09-24 05:34:00,104 - INFO - Loading cache from /Users/dg/Documents/GitHub/eveObserver/cache/blueprint_types.json...
+2025-09-24 05:34:00,106 - INFO - ✓ Cache loaded from /Users/dg/Documents/GitHub/eveObserver/cache/blueprint_types.json: 1019 entries in 0.00s
+2025-09-24 05:34:00,108 - INFO - Rate limiter adjusted: base=60.0, current=30.60, factor=0.5
+2025-09-24 05:34:02,010 - INFO - WordPress GET successful: /wp/v2/eve_contract?slug=contract-222642013 in 2.11s
+2025-09-24 05:34:02,011 - INFO - WordPress GET successful: /wp/v2/eve_contract?slug=contract-222641983 in 2.11s
+2025-09-24 05:34:02,012 - INFO - WordPress GET successful: /wp/v2/eve_contract?slug=contract-222642004 in 2.11s
+2025-09-24 05:34:02,012 - INFO - WordPress GET successful: /wp/v2/eve_contract?slug=contract-222641973 in 2.11s
+2025-09-24 05:34:02,013 - INFO - WordPress GET successful: /wp/v2/eve_contract?slug=contract-222641948 in 2.12s
+2025-09-24 05:34:02,013 - INFO - WordPress GET successful: /wp/v2/eve_contract?slug=contract-222641937 in 2.12s
+2025-09-24 05:34:02,014 - INFO - WordPress GET successful: /wp/v2/eve_contract?slug=contract-222641993 in 2.12s
+2025-09-24 05:34:02,014 - INFO - WordPress GET successful: /wp/v2/eve_contract?slug=contract-222641961 in 2.12s
+2025-09-24 05:34:02,015 - INFO - WordPress GET successful: /wp/v2/eve_contract?slug=contract-222641925 in 2.12s
+2025-09-24 05:34:02,015 - INFO - WordPress PUT successful: /wp/v2/eve_contract/3441 in 1.91s
+2025-09-24 05:34:02,015 - INFO - wp_request completed in 2.119s
+2025-09-24 05:34:02,016 - INFO - wp_request completed in 2.121s
+2025-09-24 05:34:02,016 - INFO - wp_request completed in 2.120s
+2025-09-24 05:34:02,016 - INFO - wp_request completed in 2.122s
+2025-09-24 05:34:02,016 - INFO - wp_request completed in 2.123s
+2025-09-24 05:34:02,016 - INFO - wp_request completed in 2.124s
+2025-09-24 05:34:02,016 - INFO - wp_request completed in 2.121s
+2025-09-24 05:34:02,016 - INFO - wp_request completed in 2.123s
+2025-09-24 05:34:02,019 - INFO - wp_request completed in 2.128s
+2025-09-24 05:34:02,019 - INFO - wp_request completed in 1.911s
+2025-09-24 05:34:02,019 - INFO - Updated contract: 222641914 - Capital Ladar Sensor Cluster - Contract 222641914
+2025-09-24 05:34:02,126 - INFO - ESI authenticated fetch successful: /characters/90045731/contracts/222642013/items/ in 0.11s
+2025-09-24 05:34:02,126 - INFO - _fetch_esi_with_retry completed in 0.111s
+2025-09-24 05:34:02,127 - INFO - Loading cache from /Users/dg/Documents/GitHub/eveObserver/cache/blueprint_types.json...
+2025-09-24 05:34:02,128 - INFO - ✓ Cache loaded from /Users/dg/Documents/GitHub/eveObserver/cache/blueprint_types.json: 1019 entries in 0.00s
+2025-09-24 05:34:02,129 - INFO - Rate limiter adjusted: base=60.0, current=30.60, factor=0.5
+2025-09-24 05:34:02,130 - INFO - ESI authenticated fetch successful: /characters/90045731/contracts/222641993/items/ in 0.11s
+2025-09-24 05:34:02,131 - INFO - _fetch_esi_with_retry completed in 0.114s
+2025-09-24 05:34:02,131 - INFO - Loading cache from /Users/dg/Documents/GitHub/eveObserver/cache/blueprint_types.json...
+2025-09-24 05:34:02,131 - INFO - ✓ Cache loaded from /Users/dg/Documents/GitHub/eveObserver/cache/blueprint_types.json: 1019 entries in 0.00s
+2025-09-24 05:34:02,132 - INFO - Rate limiter adjusted: base=60.0, current=30.60, factor=0.5
+2025-09-24 05:34:02,135 - INFO - ESI authenticated fetch successful: /characters/90045731/contracts/222641925/items/ in 0.12s
+2025-09-24 05:34:02,135 - INFO - _fetch_esi_with_retry completed in 0.116s
+2025-09-24 05:34:02,135 - INFO - Loading cache from /Users/dg/Documents/GitHub/eveObserver/cache/blueprint_types.json...
+2025-09-24 05:34:02,136 - INFO - ✓ Cache loaded from /Users/dg/Documents/GitHub/eveObserver/cache/blueprint_types.json: 1019 entries in 0.00s
+2025-09-24 05:34:02,136 - INFO - Rate limiter adjusted: base=60.0, current=30.60, factor=0.5
+2025-09-24 05:34:02,138 - INFO - ESI authenticated fetch successful: /characters/90045731/contracts/222641937/items/ in 0.12s
+2025-09-24 05:34:02,139 - INFO - _fetch_esi_with_retry completed in 0.122s
+2025-09-24 05:34:02,139 - INFO - Loading cache from /Users/dg/Documents/GitHub/eveObserver/cache/blueprint_types.json...
+2025-09-24 05:34:02,140 - INFO - ✓ Cache loaded from /Users/dg/Documents/GitHub/eveObserver/cache/blueprint_types.json: 1019 entries in 0.00s
+2025-09-24 05:34:02,140 - INFO - Rate limiter adjusted: base=60.0, current=30.60, factor=0.5
+2025-09-24 05:34:02,140 - INFO - ESI authenticated fetch successful: /characters/90045731/contracts/222642004/items/ in 0.12s
+2025-09-24 05:34:02,140 - INFO - _fetch_esi_with_retry completed in 0.124s
+2025-09-24 05:34:02,140 - INFO - Loading cache from /Users/dg/Documents/GitHub/eveObserver/cache/blueprint_types.json...
+2025-09-24 05:34:02,141 - INFO - ✓ Cache loaded from /Users/dg/Documents/GitHub/eveObserver/cache/blueprint_types.json: 1019 entries in 0.00s
+2025-09-24 05:34:02,142 - INFO - Rate limiter adjusted: base=60.0, current=30.60, factor=0.5
+2025-09-24 05:34:02,142 - INFO - ESI authenticated fetch successful: /characters/90045731/contracts/222641948/items/ in 0.12s
+2025-09-24 05:34:02,142 - INFO - ESI authenticated fetch successful: /characters/90045731/contracts/222641961/items/ in 0.12s
+2025-09-24 05:34:02,142 - INFO - _fetch_esi_with_retry completed in 0.126s
+2025-09-24 05:34:02,143 - INFO - Loading cache from /Users/dg/Documents/GitHub/eveObserver/cache/blueprint_types.json...
+2025-09-24 05:34:02,143 - INFO - ✓ Cache loaded from /Users/dg/Documents/GitHub/eveObserver/cache/blueprint_types.json: 1019 entries in 0.00s
+2025-09-24 05:34:02,143 - INFO - _fetch_esi_with_retry completed in 0.127s
+2025-09-24 05:34:02,144 - INFO - Loading cache from /Users/dg/Documents/GitHub/eveObserver/cache/blueprint_types.json...
+2025-09-24 05:34:02,144 - INFO - ✓ Cache loaded from /Users/dg/Documents/GitHub/eveObserver/cache/blueprint_types.json: 1019 entries in 0.00s
+2025-09-24 05:34:02,144 - INFO - Rate limiter adjusted: base=60.0, current=30.60, factor=0.5
+2025-09-24 05:34:02,144 - INFO - Rate limiter adjusted: base=60.0, current=30.60, factor=0.5
+2025-09-24 05:34:02,149 - INFO - ESI authenticated fetch successful: /characters/90045731/contracts/222641983/items/ in 0.13s
+2025-09-24 05:34:02,150 - INFO - _fetch_esi_with_retry completed in 0.134s
+2025-09-24 05:34:02,150 - INFO - Loading cache from /Users/dg/Documents/GitHub/eveObserver/cache/blueprint_types.json...
+2025-09-24 05:34:02,150 - INFO - ✓ Cache loaded from /Users/dg/Documents/GitHub/eveObserver/cache/blueprint_types.json: 1019 entries in 0.00s
+2025-09-24 05:34:02,151 - INFO - Rate limiter adjusted: base=60.0, current=30.60, factor=0.5
+2025-09-24 05:34:02,163 - INFO - ESI authenticated fetch successful: /characters/90045731/contracts/222641973/items/ in 0.15s
+2025-09-24 05:34:02,163 - INFO - _fetch_esi_with_retry completed in 0.147s
+2025-09-24 05:34:02,164 - INFO - Loading cache from /Users/dg/Documents/GitHub/eveObserver/cache/blueprint_types.json...
+2025-09-24 05:34:02,164 - INFO - ✓ Cache loaded from /Users/dg/Documents/GitHub/eveObserver/cache/blueprint_types.json: 1019 entries in 0.00s
+2025-09-24 05:34:02,165 - INFO - Rate limiter adjusted: base=60.0, current=30.60, factor=0.5
+2025-09-24 05:34:02,214 - INFO - WordPress PUT successful: /wp/v2/eve_contract/3451 in 0.09s
+2025-09-24 05:34:02,214 - INFO - wp_request completed in 0.086s
+2025-09-24 05:34:02,214 - INFO - Updated contract: 222642013 - Capital Particle Accelerator Unit - Contract 222642013
+2025-09-24 05:34:04,249 - INFO - WordPress PUT successful: /wp/v2/eve_contract/3443 in 2.11s
+2025-09-24 05:34:04,249 - INFO - wp_request completed in 2.110s
+2025-09-24 05:34:04,249 - INFO - Updated contract: 222641937 - Capital Linear Shield Emitter - Contract 222641937
+2025-09-24 05:34:04,251 - INFO - WordPress PUT successful: /wp/v2/eve_contract/3442 in 2.11s
+2025-09-24 05:34:04,251 - INFO - wp_request completed in 2.114s
+2025-09-24 05:34:04,251 - INFO - Updated contract: 222641925 - Capital Laser Focusing Crystals - Contract 222641925
+2025-09-24 05:34:04,256 - INFO - WordPress PUT successful: /wp/v2/eve_contract/3447 in 2.11s
+2025-09-24 05:34:04,257 - INFO - wp_request completed in 2.106s
+2025-09-24 05:34:04,257 - INFO - Updated contract: 222641983 - Capital Nanomechanical Microprocessor - Contract 222641983
+2025-09-24 05:34:04,261 - INFO - WordPress PUT successful: /wp/v2/eve_contract/3444 in 2.12s
+2025-09-24 05:34:04,261 - INFO - WordPress PUT successful: /wp/v2/eve_contract/3450 in 2.12s
+2025-09-24 05:34:04,262 - INFO - WordPress PUT successful: /wp/v2/eve_contract/3446 in 2.10s
+2025-09-24 05:34:04,262 - INFO - wp_request completed in 2.118s
+2025-09-24 05:34:04,262 - INFO - Updated contract: 222641948 - Capital Magnetometric Sensor Cluster - Contract 222641948
+2025-09-24 05:34:04,262 - INFO - wp_request completed in 2.121s
+2025-09-24 05:34:04,262 - INFO - Updated contract: 222642004 - Capital Oscillator Capacitor Unit - Contract 222642004
+2025-09-24 05:34:04,262 - INFO - wp_request completed in 2.098s
+2025-09-24 05:34:04,262 - INFO - Updated contract: 222641973 - Capital Nanoelectrical Microprocessor - Contract 222641973
+2025-09-24 05:34:04,269 - INFO - WordPress PUT successful: /wp/v2/eve_contract/3448 in 2.14s
+2025-09-24 05:34:04,269 - INFO - wp_request completed in 2.137s
+2025-09-24 05:34:04,269 - INFO - Updated contract: 222641993 - Capital Nuclear Pulse Generator - Contract 222641993
+2025-09-24 05:34:04,273 - INFO - WordPress PUT successful: /wp/v2/eve_contract/3445 in 2.13s
+2025-09-24 05:34:04,273 - INFO - wp_request completed in 2.128s
+2025-09-24 05:34:04,273 - INFO - Updated contract: 222641961 - Capital Magpulse Thruster - Contract 222641961
+2025-09-24 05:34:04,775 - INFO - Processing batch 3/5 (10 contracts)
+2025-09-24 05:34:04,776 - INFO - Loading cache from /Users/dg/Documents/GitHub/eveObserver/cache/blueprint_types.json...
+2025-09-24 05:34:04,778 - INFO - ✓ Cache loaded from /Users/dg/Documents/GitHub/eveObserver/cache/blueprint_types.json: 1019 entries in 0.00s
+2025-09-24 05:34:04,778 - INFO - Loading cache from /Users/dg/Documents/GitHub/eveObserver/cache/blueprint_types.json...
+2025-09-24 05:34:04,780 - INFO - ✓ Cache loaded from /Users/dg/Documents/GitHub/eveObserver/cache/blueprint_types.json: 1019 entries in 0.00s
+2025-09-24 05:34:04,781 - INFO - Loading cache from /Users/dg/Documents/GitHub/eveObserver/cache/blueprint_types.json...
+2025-09-24 05:34:04,782 - INFO - ✓ Cache loaded from /Users/dg/Documents/GitHub/eveObserver/cache/blueprint_types.json: 1019 entries in 0.00s
+2025-09-24 05:34:04,783 - INFO - Loading cache from /Users/dg/Documents/GitHub/eveObserver/cache/blueprint_types.json...
+2025-09-24 05:34:04,784 - INFO - ✓ Cache loaded from /Users/dg/Documents/GitHub/eveObserver/cache/blueprint_types.json: 1019 entries in 0.00s
+2025-09-24 05:34:04,784 - INFO - Loading cache from /Users/dg/Documents/GitHub/eveObserver/cache/blueprint_types.json...
+2025-09-24 05:34:04,784 - INFO - ✓ Cache loaded from /Users/dg/Documents/GitHub/eveObserver/cache/blueprint_types.json: 1019 entries in 0.00s
+2025-09-24 05:34:04,785 - INFO - Loading cache from /Users/dg/Documents/GitHub/eveObserver/cache/blueprint_types.json...
+2025-09-24 05:34:04,785 - INFO - ✓ Cache loaded from /Users/dg/Documents/GitHub/eveObserver/cache/blueprint_types.json: 1019 entries in 0.00s
+2025-09-24 05:34:04,785 - INFO - Loading cache from /Users/dg/Documents/GitHub/eveObserver/cache/blueprint_types.json...
+2025-09-24 05:34:04,786 - INFO - ✓ Cache loaded from /Users/dg/Documents/GitHub/eveObserver/cache/blueprint_types.json: 1019 entries in 0.00s
+2025-09-24 05:34:04,786 - INFO - Loading cache from /Users/dg/Documents/GitHub/eveObserver/cache/blueprint_types.json...
+2025-09-24 05:34:04,786 - INFO - ✓ Cache loaded from /Users/dg/Documents/GitHub/eveObserver/cache/blueprint_types.json: 1019 entries in 0.00s
+2025-09-24 05:34:04,787 - INFO - Loading cache from /Users/dg/Documents/GitHub/eveObserver/cache/blueprint_types.json...
+2025-09-24 05:34:04,787 - INFO - ✓ Cache loaded from /Users/dg/Documents/GitHub/eveObserver/cache/blueprint_types.json: 1019 entries in 0.00s
+2025-09-24 05:34:04,787 - INFO - Loading cache from /Users/dg/Documents/GitHub/eveObserver/cache/blueprint_types.json...
+2025-09-24 05:34:04,787 - INFO - ✓ Cache loaded from /Users/dg/Documents/GitHub/eveObserver/cache/blueprint_types.json: 1019 entries in 0.00s
+2025-09-24 05:34:04,788 - INFO - Rate limiter adjusted: base=60.0, current=30.60, factor=0.5
+2025-09-24 05:34:04,788 - INFO - Rate limiter adjusted: base=60.0, current=30.60, factor=0.5
+2025-09-24 05:34:04,789 - INFO - Rate limiter adjusted: base=60.0, current=30.60, factor=0.5
+2025-09-24 05:34:04,789 - INFO - Rate limiter adjusted: base=60.0, current=30.60, factor=0.5
+2025-09-24 05:34:04,789 - INFO - Rate limiter adjusted: base=60.0, current=30.60, factor=0.5
+2025-09-24 05:34:04,789 - INFO - Rate limiter adjusted: base=60.0, current=30.60, factor=0.5
+2025-09-24 05:34:04,789 - INFO - Rate limiter adjusted: base=60.0, current=30.60, factor=0.5
+2025-09-24 05:34:04,789 - INFO - Rate limiter adjusted: base=60.0, current=30.60, factor=0.5
+2025-09-24 05:34:04,789 - INFO - Rate limiter adjusted: base=60.0, current=30.60, factor=0.5
+2025-09-24 05:34:04,789 - INFO - Rate limiter adjusted: base=60.0, current=30.60, factor=0.5
+2025-09-24 05:34:04,884 - INFO - WordPress GET successful: /wp/v2/eve_contract?slug=contract-222642020 in 0.10s
+2025-09-24 05:34:04,885 - INFO - wp_request completed in 0.107s
+2025-09-24 05:34:04,981 - INFO - ESI authenticated fetch successful: /characters/90045731/contracts/222642020/items/ in 0.10s
+2025-09-24 05:34:04,982 - INFO - _fetch_esi_with_retry completed in 0.096s
+2025-09-24 05:34:04,982 - INFO - Loading cache from /Users/dg/Documents/GitHub/eveObserver/cache/blueprint_types.json...
+2025-09-24 05:34:04,983 - INFO - ✓ Cache loaded from /Users/dg/Documents/GitHub/eveObserver/cache/blueprint_types.json: 1019 entries in 0.00s
+2025-09-24 05:34:04,983 - INFO - Rate limiter adjusted: base=60.0, current=30.60, factor=0.5
+2025-09-24 05:34:06,823 - INFO - WordPress GET successful: /wp/v2/eve_contract?slug=contract-222642061 in 2.03s
+2025-09-24 05:34:06,824 - INFO - wp_request completed in 2.040s
+2025-09-24 05:34:06,824 - INFO - WordPress GET successful: /wp/v2/eve_contract?slug=contract-222642072 in 2.04s
+2025-09-24 05:34:06,824 - INFO - wp_request completed in 2.040s
+2025-09-24 05:34:06,835 - INFO - WordPress GET successful: /wp/v2/eve_contract?slug=contract-222642153 in 2.05s
+2025-09-24 05:34:06,835 - INFO - wp_request completed in 2.048s
+2025-09-24 05:34:06,846 - INFO - WordPress GET successful: /wp/v2/eve_contract?slug=contract-222642037 in 2.06s
+2025-09-24 05:34:06,847 - INFO - wp_request completed in 2.064s
+2025-09-24 05:34:06,849 - INFO - WordPress GET successful: /wp/v2/eve_contract?slug=contract-222642107 in 2.06s
+2025-09-24 05:34:06,849 - INFO - wp_request completed in 2.063s
+2025-09-24 05:34:06,852 - INFO - WordPress GET successful: /wp/v2/eve_contract?slug=contract-222642077 in 2.06s
+2025-09-24 05:34:06,853 - INFO - wp_request completed in 2.067s
+2025-09-24 05:34:06,859 - INFO - WordPress GET successful: /wp/v2/eve_contract?slug=contract-222642026 in 2.07s
+2025-09-24 05:34:06,859 - INFO - wp_request completed in 2.079s
+2025-09-24 05:34:06,870 - INFO - WordPress PUT successful: /wp/v2/eve_contract/3452 in 1.89s
+2025-09-24 05:34:06,870 - INFO - wp_request completed in 1.887s
+2025-09-24 05:34:06,870 - INFO - Updated contract: 222642020 - Capital Photon Microprocessor - Contract 222642020
+2025-09-24 05:34:06,871 - INFO - WordPress GET successful: /wp/v2/eve_contract?slug=contract-222642089 in 2.08s
+2025-09-24 05:34:06,871 - INFO - WordPress GET successful: /wp/v2/eve_contract?slug=contract-222642133 in 2.08s
+2025-09-24 05:34:06,871 - INFO - wp_request completed in 2.085s
+2025-09-24 05:34:06,872 - INFO - wp_request completed in 2.085s
+2025-09-24 05:34:06,946 - INFO - ESI authenticated fetch successful: /characters/90045731/contracts/222642077/items/ in 0.09s
+2025-09-24 05:34:06,947 - INFO - ESI authenticated fetch successful: /characters/90045731/contracts/222642072/items/ in 0.12s
+2025-09-24 05:34:06,947 - INFO - _fetch_esi_with_retry completed in 0.094s
+2025-09-24 05:34:06,947 - INFO - Loading cache from /Users/dg/Documents/GitHub/eveObserver/cache/blueprint_types.json...
+2025-09-24 05:34:06,948 - INFO - ✓ Cache loaded from /Users/dg/Documents/GitHub/eveObserver/cache/blueprint_types.json: 1019 entries in 0.00s
+2025-09-24 05:34:06,948 - INFO - _fetch_esi_with_retry completed in 0.123s
+2025-09-24 05:34:06,948 - INFO - Loading cache from /Users/dg/Documents/GitHub/eveObserver/cache/blueprint_types.json...
+2025-09-24 05:34:06,949 - INFO - ✓ Cache loaded from /Users/dg/Documents/GitHub/eveObserver/cache/blueprint_types.json: 1019 entries in 0.00s
+2025-09-24 05:34:06,949 - INFO - Rate limiter adjusted: base=60.0, current=30.60, factor=0.5
+2025-09-24 05:34:06,949 - INFO - Rate limiter adjusted: base=60.0, current=30.60, factor=0.5
+2025-09-24 05:34:06,970 - INFO - ESI authenticated fetch successful: /characters/90045731/contracts/222642037/items/ in 0.12s
+2025-09-24 05:34:06,970 - INFO - _fetch_esi_with_retry completed in 0.123s
+2025-09-24 05:34:06,970 - INFO - Loading cache from /Users/dg/Documents/GitHub/eveObserver/cache/blueprint_types.json...
+2025-09-24 05:34:06,971 - INFO - ✓ Cache loaded from /Users/dg/Documents/GitHub/eveObserver/cache/blueprint_types.json: 1019 entries in 0.00s
+2025-09-24 05:34:06,971 - INFO - Rate limiter adjusted: base=60.0, current=30.60, factor=0.5
+2025-09-24 05:34:06,971 - INFO - ESI authenticated fetch successful: /characters/90045731/contracts/222642107/items/ in 0.12s
+2025-09-24 05:34:06,971 - INFO - _fetch_esi_with_retry completed in 0.122s
+2025-09-24 05:34:06,972 - INFO - Loading cache from /Users/dg/Documents/GitHub/eveObserver/cache/blueprint_types.json...
+2025-09-24 05:34:06,972 - INFO - ✓ Cache loaded from /Users/dg/Documents/GitHub/eveObserver/cache/blueprint_types.json: 1019 entries in 0.00s
+2025-09-24 05:34:06,972 - INFO - Rate limiter adjusted: base=60.0, current=30.60, factor=0.5
+2025-09-24 05:34:06,973 - INFO - ESI authenticated fetch successful: /characters/90045731/contracts/222642026/items/ in 0.11s
+2025-09-24 05:34:06,973 - INFO - _fetch_esi_with_retry completed in 0.114s
+2025-09-24 05:34:06,973 - INFO - Loading cache from /Users/dg/Documents/GitHub/eveObserver/cache/blueprint_types.json...
+2025-09-24 05:34:06,974 - INFO - ✓ Cache loaded from /Users/dg/Documents/GitHub/eveObserver/cache/blueprint_types.json: 1019 entries in 0.00s
+2025-09-24 05:34:06,974 - INFO - Rate limiter adjusted: base=60.0, current=30.60, factor=0.5
+2025-09-24 05:34:06,997 - INFO - ESI authenticated fetch successful: /characters/90045731/contracts/222642089/items/ in 0.13s
+2025-09-24 05:34:06,997 - INFO - _fetch_esi_with_retry completed in 0.125s
+2025-09-24 05:34:06,997 - INFO - Loading cache from /Users/dg/Documents/GitHub/eveObserver/cache/blueprint_types.json...
+2025-09-24 05:34:06,998 - INFO - ✓ Cache loaded from /Users/dg/Documents/GitHub/eveObserver/cache/blueprint_types.json: 1019 entries in 0.00s
+2025-09-24 05:34:06,998 - INFO - Rate limiter adjusted: base=60.0, current=30.60, factor=0.5
+2025-09-24 05:34:07,002 - INFO - ESI authenticated fetch successful: /characters/90045731/contracts/222642133/items/ in 0.13s
+2025-09-24 05:34:07,002 - INFO - _fetch_esi_with_retry completed in 0.131s
+2025-09-24 05:34:07,003 - INFO - Loading cache from /Users/dg/Documents/GitHub/eveObserver/cache/blueprint_types.json...
+2025-09-24 05:34:07,004 - INFO - ✓ Cache loaded from /Users/dg/Documents/GitHub/eveObserver/cache/blueprint_types.json: 1019 entries in 0.00s
+2025-09-24 05:34:07,004 - INFO - Rate limiter adjusted: base=60.0, current=30.60, factor=0.5
+2025-09-24 05:34:07,052 - INFO - WordPress PUT successful: /wp/v2/eve_contract/3457 in 0.10s
+2025-09-24 05:34:07,052 - INFO - wp_request completed in 0.104s
+2025-09-24 05:34:07,052 - INFO - Updated contract: 222642077 - Capital Radar Sensor Cluster - Contract 222642077
+2025-09-24 05:34:07,119 - INFO - ESI authenticated fetch successful: /characters/90045731/contracts/222642153/items/ in 0.28s
+2025-09-24 05:34:07,120 - INFO - _fetch_esi_with_retry completed in 0.285s
+2025-09-24 05:34:07,121 - INFO - Loading cache from /Users/dg/Documents/GitHub/eveObserver/cache/blueprint_types.json...
+2025-09-24 05:34:07,123 - INFO - ✓ Cache loaded from /Users/dg/Documents/GitHub/eveObserver/cache/blueprint_types.json: 1019 entries in 0.00s
+2025-09-24 05:34:07,123 - INFO - Rate limiter adjusted: base=60.0, current=30.60, factor=0.5
+2025-09-24 05:34:07,127 - INFO - ESI authenticated fetch successful: /characters/90045731/contracts/222642061/items/ in 0.30s
+2025-09-24 05:34:07,127 - INFO - _fetch_esi_with_retry completed in 0.303s
+2025-09-24 05:34:07,128 - INFO - Loading cache from /Users/dg/Documents/GitHub/eveObserver/cache/blueprint_types.json...
+2025-09-24 05:34:07,128 - INFO - ✓ Cache loaded from /Users/dg/Documents/GitHub/eveObserver/cache/blueprint_types.json: 1019 entries in 0.00s
+2025-09-24 05:34:07,129 - INFO - Rate limiter adjusted: base=60.0, current=30.60, factor=0.5
+2025-09-24 05:34:09,004 - INFO - WordPress PUT successful: /wp/v2/eve_contract/3454 in 2.03s
+2025-09-24 05:34:09,004 - INFO - wp_request completed in 2.033s
+2025-09-24 05:34:09,004 - INFO - Updated contract: 222642037 - Capital Plasma Thruster - Contract 222642037
+2025-09-24 05:34:09,005 - INFO - WordPress PUT successful: /wp/v2/eve_contract/3459 in 2.03s
+2025-09-24 05:34:09,005 - INFO - WordPress PUT successful: /wp/v2/eve_contract/3458 in 2.01s
+2025-09-24 05:34:09,005 - INFO - wp_request completed in 2.033s
+2025-09-24 05:34:09,006 - INFO - Updated contract: 222642107 - Capital Superconductor Rails - Contract 222642107
+2025-09-24 05:34:09,006 - INFO - wp_request completed in 2.008s
+2025-09-24 05:34:09,006 - INFO - Updated contract: 222642089 - Capital Scalar Capacitor Unit - Contract 222642089
+2025-09-24 05:34:09,047 - INFO - WordPress PUT successful: /wp/v2/eve_contract/3461 in 1.92s
+2025-09-24 05:34:09,047 - INFO - wp_request completed in 1.924s
+2025-09-24 05:34:09,047 - INFO - Updated contract: 222642153 - Capital Tesseract Capacitor Unit - Contract 222642153
+2025-09-24 05:34:09,051 - INFO - WordPress PUT successful: /wp/v2/eve_contract/3456 in 2.10s
+2025-09-24 05:34:09,051 - INFO - wp_request completed in 2.102s
+2025-09-24 05:34:09,051 - INFO - Updated contract: 222642072 - Capital Quantum Microprocessor - Contract 222642072
+2025-09-24 05:34:09,060 - INFO - WordPress PUT successful: /wp/v2/eve_contract/3455 in 1.93s
+2025-09-24 05:34:09,060 - INFO - wp_request completed in 1.931s
+2025-09-24 05:34:09,060 - INFO - Updated contract: 222642061 - Capital Pulse Shield Emitter - Contract 222642061
+2025-09-24 05:34:09,065 - INFO - WordPress PUT successful: /wp/v2/eve_contract/3460 in 2.06s
+2025-09-24 05:34:09,066 - INFO - wp_request completed in 2.062s
+2025-09-24 05:34:09,066 - INFO - Updated contract: 222642133 - Capital Sustained Shield Emitter - Contract 222642133
+2025-09-24 05:34:09,076 - INFO - WordPress PUT successful: /wp/v2/eve_contract/3453 in 2.10s
+2025-09-24 05:34:09,076 - INFO - wp_request completed in 2.103s
+2025-09-24 05:34:09,076 - INFO - Updated contract: 222642026 - Capital Plasma Pulse Generator - Contract 222642026
+2025-09-24 05:34:09,578 - INFO - Processing batch 4/5 (10 contracts)
+2025-09-24 05:34:09,578 - INFO - Loading cache from /Users/dg/Documents/GitHub/eveObserver/cache/blueprint_types.json...
+2025-09-24 05:34:09,579 - INFO - ✓ Cache loaded from /Users/dg/Documents/GitHub/eveObserver/cache/blueprint_types.json: 1019 entries in 0.00s
+2025-09-24 05:34:09,579 - INFO - Loading cache from /Users/dg/Documents/GitHub/eveObserver/cache/blueprint_types.json...
+2025-09-24 05:34:09,580 - INFO - ✓ Cache loaded from /Users/dg/Documents/GitHub/eveObserver/cache/blueprint_types.json: 1019 entries in 0.00s
+2025-09-24 05:34:09,580 - INFO - Loading cache from /Users/dg/Documents/GitHub/eveObserver/cache/blueprint_types.json...
+2025-09-24 05:34:09,581 - INFO - ✓ Cache loaded from /Users/dg/Documents/GitHub/eveObserver/cache/blueprint_types.json: 1019 entries in 0.00s
+2025-09-24 05:34:09,581 - INFO - Loading cache from /Users/dg/Documents/GitHub/eveObserver/cache/blueprint_types.json...
+2025-09-24 05:34:09,581 - INFO - ✓ Cache loaded from /Users/dg/Documents/GitHub/eveObserver/cache/blueprint_types.json: 1019 entries in 0.00s
+2025-09-24 05:34:09,582 - INFO - Loading cache from /Users/dg/Documents/GitHub/eveObserver/cache/blueprint_types.json...
+2025-09-24 05:34:09,582 - INFO - ✓ Cache loaded from /Users/dg/Documents/GitHub/eveObserver/cache/blueprint_types.json: 1019 entries in 0.00s
+2025-09-24 05:34:09,583 - INFO - Loading cache from /Users/dg/Documents/GitHub/eveObserver/cache/blueprint_types.json...
+2025-09-24 05:34:09,583 - INFO - ✓ Cache loaded from /Users/dg/Documents/GitHub/eveObserver/cache/blueprint_types.json: 1019 entries in 0.00s
+2025-09-24 05:34:09,583 - INFO - Loading cache from /Users/dg/Documents/GitHub/eveObserver/cache/blueprint_types.json...
+2025-09-24 05:34:09,584 - INFO - ✓ Cache loaded from /Users/dg/Documents/GitHub/eveObserver/cache/blueprint_types.json: 1019 entries in 0.00s
+2025-09-24 05:34:09,584 - INFO - Loading cache from /Users/dg/Documents/GitHub/eveObserver/cache/blueprint_types.json...
+2025-09-24 05:34:09,585 - INFO - ✓ Cache loaded from /Users/dg/Documents/GitHub/eveObserver/cache/blueprint_types.json: 1019 entries in 0.00s
+2025-09-24 05:34:09,585 - INFO - Loading cache from /Users/dg/Documents/GitHub/eveObserver/cache/blueprint_types.json...
+2025-09-24 05:34:09,585 - INFO - ✓ Cache loaded from /Users/dg/Documents/GitHub/eveObserver/cache/blueprint_types.json: 1019 entries in 0.00s
+2025-09-24 05:34:09,585 - INFO - Loading cache from /Users/dg/Documents/GitHub/eveObserver/cache/blueprint_types.json...
+2025-09-24 05:34:09,586 - INFO - ✓ Cache loaded from /Users/dg/Documents/GitHub/eveObserver/cache/blueprint_types.json: 1019 entries in 0.00s
+2025-09-24 05:34:09,586 - INFO - Rate limiter adjusted: base=60.0, current=30.60, factor=0.5
+2025-09-24 05:34:09,587 - INFO - Rate limiter adjusted: base=60.0, current=30.60, factor=0.5
+2025-09-24 05:34:09,587 - INFO - Rate limiter adjusted: base=60.0, current=30.60, factor=0.5
+2025-09-24 05:34:09,587 - INFO - Rate limiter adjusted: base=60.0, current=30.60, factor=0.5
+2025-09-24 05:34:09,587 - INFO - Rate limiter adjusted: base=60.0, current=30.60, factor=0.5
+2025-09-24 05:34:09,587 - INFO - Rate limiter adjusted: base=60.0, current=30.60, factor=0.5
+2025-09-24 05:34:09,587 - INFO - Rate limiter adjusted: base=60.0, current=30.60, factor=0.5
+2025-09-24 05:34:09,587 - INFO - Rate limiter adjusted: base=60.0, current=30.60, factor=0.5
+2025-09-24 05:34:09,587 - INFO - Rate limiter adjusted: base=60.0, current=30.60, factor=0.5
+2025-09-24 05:34:09,587 - INFO - Rate limiter adjusted: base=60.0, current=30.60, factor=0.5
+2025-09-24 05:34:09,715 - INFO - WordPress GET successful: /wp/v2/eve_contract?slug=contract-222642169 in 0.13s
+2025-09-24 05:34:09,716 - INFO - wp_request completed in 0.137s
+2025-09-24 05:34:09,867 - INFO - ESI authenticated fetch successful: /characters/90045731/contracts/222642169/items/ in 0.15s
+2025-09-24 05:34:09,868 - INFO - _fetch_esi_with_retry completed in 0.151s
+2025-09-24 05:34:09,868 - INFO - Loading cache from /Users/dg/Documents/GitHub/eveObserver/cache/blueprint_types.json...
+2025-09-24 05:34:09,869 - INFO - ✓ Cache loaded from /Users/dg/Documents/GitHub/eveObserver/cache/blueprint_types.json: 1019 entries in 0.00s
+2025-09-24 05:34:09,869 - INFO - Rate limiter adjusted: base=60.0, current=30.60, factor=0.5
+2025-09-24 05:34:11,639 - INFO - WordPress GET successful: /wp/v2/eve_contract?slug=contract-222697423 in 2.05s
+2025-09-24 05:34:11,641 - INFO - wp_request completed in 2.056s
+2025-09-24 05:34:11,645 - INFO - WordPress GET successful: /wp/v2/eve_contract?slug=contract-222697477 in 2.06s
+2025-09-24 05:34:11,648 - INFO - WordPress GET successful: /wp/v2/eve_contract?slug=contract-222642299 in 2.06s
+2025-09-24 05:34:11,649 - INFO - WordPress GET successful: /wp/v2/eve_contract?slug=contract-222642381 in 2.06s
+2025-09-24 05:34:11,649 - INFO - wp_request completed in 2.063s
+2025-09-24 05:34:11,650 - INFO - wp_request completed in 2.069s
+2025-09-24 05:34:11,650 - INFO - wp_request completed in 2.068s
+2025-09-24 05:34:11,651 - INFO - WordPress GET successful: /wp/v2/eve_contract?slug=contract-222642285 in 2.06s
+2025-09-24 05:34:11,652 - INFO - wp_request completed in 2.071s
+2025-09-24 05:34:11,656 - INFO - WordPress GET successful: /wp/v2/eve_contract?slug=contract-222642413 in 2.07s
+2025-09-24 05:34:11,656 - INFO - wp_request completed in 2.072s
+2025-09-24 05:34:11,657 - INFO - WordPress GET successful: /wp/v2/eve_contract?slug=contract-222697456 in 2.07s
+2025-09-24 05:34:11,657 - INFO - wp_request completed in 2.072s
+2025-09-24 05:34:11,659 - INFO - WordPress GET successful: /wp/v2/eve_contract?slug=contract-222642390 in 2.07s
+2025-09-24 05:34:11,659 - INFO - wp_request completed in 2.076s
+2025-09-24 05:34:11,667 - INFO - WordPress GET successful: /wp/v2/eve_contract?slug=contract-222642246 in 2.08s
+2025-09-24 05:34:11,667 - INFO - wp_request completed in 2.088s
+2025-09-24 05:34:11,728 - INFO - WordPress PUT successful: /wp/v2/eve_contract/3462 in 1.86s
+2025-09-24 05:34:11,728 - INFO - wp_request completed in 1.859s
+2025-09-24 05:34:11,728 - INFO - Updated contract: 222642169 - Capital Thermonuclear Trigger Unit - Contract 222642169
+2025-09-24 05:34:11,766 - INFO - ESI authenticated fetch successful: /characters/90045731/contracts/222642299/items/ in 0.11s
+2025-09-24 05:34:11,766 - INFO - _fetch_esi_with_retry completed in 0.116s
+2025-09-24 05:34:11,766 - INFO - Loading cache from /Users/dg/Documents/GitHub/eveObserver/cache/blueprint_types.json...
+2025-09-24 05:34:11,766 - INFO - ✓ Cache loaded from /Users/dg/Documents/GitHub/eveObserver/cache/blueprint_types.json: 1019 entries in 0.00s
+2025-09-24 05:34:11,767 - INFO - Rate limiter adjusted: base=60.0, current=30.60, factor=0.5
+2025-09-24 05:34:11,774 - INFO - ESI authenticated fetch successful: /characters/90045731/contracts/222697477/items/ in 0.12s
+2025-09-24 05:34:11,774 - INFO - _fetch_esi_with_retry completed in 0.124s
+2025-09-24 05:34:11,774 - INFO - Loading cache from /Users/dg/Documents/GitHub/eveObserver/cache/blueprint_types.json...
+2025-09-24 05:34:11,774 - INFO - ✓ Cache loaded from /Users/dg/Documents/GitHub/eveObserver/cache/blueprint_types.json: 1019 entries in 0.00s
+2025-09-24 05:34:11,774 - INFO - Rate limiter adjusted: base=60.0, current=30.60, factor=0.5
+2025-09-24 05:34:11,775 - INFO - ESI authenticated fetch successful: /characters/90045731/contracts/222642285/items/ in 0.12s
+2025-09-24 05:34:11,775 - INFO - _fetch_esi_with_retry completed in 0.122s
+2025-09-24 05:34:11,775 - INFO - Loading cache from /Users/dg/Documents/GitHub/eveObserver/cache/blueprint_types.json...
+2025-09-24 05:34:11,775 - INFO - ✓ Cache loaded from /Users/dg/Documents/GitHub/eveObserver/cache/blueprint_types.json: 1019 entries in 0.00s
+2025-09-24 05:34:11,775 - INFO - Rate limiter adjusted: base=60.0, current=30.60, factor=0.5
+2025-09-24 05:34:11,776 - INFO - ESI authenticated fetch successful: /characters/90045731/contracts/222642246/items/ in 0.11s
+2025-09-24 05:34:11,776 - INFO - _fetch_esi_with_retry completed in 0.109s
+2025-09-24 05:34:11,776 - INFO - Loading cache from /Users/dg/Documents/GitHub/eveObserver/cache/blueprint_types.json...
+2025-09-24 05:34:11,777 - INFO - ✓ Cache loaded from /Users/dg/Documents/GitHub/eveObserver/cache/blueprint_types.json: 1019 entries in 0.00s
+2025-09-24 05:34:11,777 - INFO - Rate limiter adjusted: base=60.0, current=30.60, factor=0.5
+2025-09-24 05:34:11,781 - INFO - ESI authenticated fetch successful: /characters/90045731/contracts/222697456/items/ in 0.12s
+2025-09-24 05:34:11,781 - INFO - _fetch_esi_with_retry completed in 0.124s
+2025-09-24 05:34:11,781 - INFO - Loading cache from /Users/dg/Documents/GitHub/eveObserver/cache/blueprint_types.json...
+2025-09-24 05:34:11,782 - INFO - ✓ Cache loaded from /Users/dg/Documents/GitHub/eveObserver/cache/blueprint_types.json: 1019 entries in 0.00s
+2025-09-24 05:34:11,782 - INFO - Rate limiter adjusted: base=60.0, current=30.60, factor=0.5
+2025-09-24 05:34:11,787 - INFO - ESI authenticated fetch successful: /characters/90045731/contracts/222697423/items/ in 0.15s
+2025-09-24 05:34:11,787 - INFO - _fetch_esi_with_retry completed in 0.146s
+2025-09-24 05:34:11,787 - INFO - Loading cache from /Users/dg/Documents/GitHub/eveObserver/cache/blueprint_types.json...
+2025-09-24 05:34:11,788 - INFO - ✓ Cache loaded from /Users/dg/Documents/GitHub/eveObserver/cache/blueprint_types.json: 1019 entries in 0.00s
+2025-09-24 05:34:11,788 - INFO - Rate limiter adjusted: base=60.0, current=30.60, factor=0.5
+2025-09-24 05:34:11,790 - INFO - ESI authenticated fetch successful: /characters/90045731/contracts/222642413/items/ in 0.13s
+2025-09-24 05:34:11,790 - INFO - _fetch_esi_with_retry completed in 0.134s
+2025-09-24 05:34:11,790 - INFO - Loading cache from /Users/dg/Documents/GitHub/eveObserver/cache/blueprint_types.json...
+2025-09-24 05:34:11,790 - INFO - ✓ Cache loaded from /Users/dg/Documents/GitHub/eveObserver/cache/blueprint_types.json: 1019 entries in 0.00s
+2025-09-24 05:34:11,790 - INFO - Rate limiter adjusted: base=60.0, current=30.60, factor=0.5
+2025-09-24 05:34:11,793 - INFO - ESI authenticated fetch successful: /characters/90045731/contracts/222642381/items/ in 0.14s
+2025-09-24 05:34:11,794 - INFO - _fetch_esi_with_retry completed in 0.143s
+2025-09-24 05:34:11,794 - INFO - Loading cache from /Users/dg/Documents/GitHub/eveObserver/cache/blueprint_types.json...
+2025-09-24 05:34:11,794 - INFO - ✓ Cache loaded from /Users/dg/Documents/GitHub/eveObserver/cache/blueprint_types.json: 1019 entries in 0.00s
+2025-09-24 05:34:11,794 - INFO - Rate limiter adjusted: base=60.0, current=30.60, factor=0.5
+2025-09-24 05:34:11,801 - INFO - ESI authenticated fetch successful: /characters/90045731/contracts/222642390/items/ in 0.14s
+2025-09-24 05:34:11,801 - INFO - _fetch_esi_with_retry completed in 0.142s
+2025-09-24 05:34:11,801 - INFO - Loading cache from /Users/dg/Documents/GitHub/eveObserver/cache/blueprint_types.json...
+2025-09-24 05:34:11,802 - INFO - ✓ Cache loaded from /Users/dg/Documents/GitHub/eveObserver/cache/blueprint_types.json: 1019 entries in 0.00s
+2025-09-24 05:34:11,802 - INFO - Rate limiter adjusted: base=60.0, current=30.60, factor=0.5
+2025-09-24 05:34:11,975 - INFO - WordPress PUT successful: /wp/v2/eve_contract/3464 in 0.20s
+2025-09-24 05:34:11,975 - INFO - wp_request completed in 0.198s
+2025-09-24 05:34:11,975 - INFO - Updated contract: 222642246 - Fernite Carbide Composite Armor Plate - Contract 222642246
+2025-09-24 05:34:11,978 - INFO - WordPress PUT successful: /wp/v2/eve_contract/3465 in 0.20s
+2025-09-24 05:34:11,979 - INFO - WordPress PUT successful: /wp/v2/eve_contract/3470 in 0.19s
+2025-09-24 05:34:11,979 - INFO - wp_request completed in 0.204s
+2025-09-24 05:34:11,979 - INFO - Updated contract: 222642285 - Nanomechanical Microprocessor - Contract 222642285
+2025-09-24 05:34:11,980 - INFO - wp_request completed in 0.192s
+2025-09-24 05:34:11,980 - INFO - Updated contract: 222697423 - Capital Antimatter Reactor Unit - Contract 222697423
+2025-09-24 05:34:11,988 - INFO - WordPress PUT successful: /wp/v2/eve_contract/3473 in 0.21s
+2025-09-24 05:34:11,989 - INFO - WordPress PUT successful: /wp/v2/eve_contract/3467 in 0.19s
+2025-09-24 05:34:11,990 - INFO - WordPress PUT successful: /wp/v2/eve_contract/3466 in 0.22s
+2025-09-24 05:34:11,990 - INFO - WordPress PUT successful: /wp/v2/eve_contract/3468 in 0.19s
+2025-09-24 05:34:11,990 - INFO - wp_request completed in 0.216s
+2025-09-24 05:34:11,991 - INFO - Updated contract: 222697477 - Capital Electrolytic Capacitor Unit - Contract 222697477
+2025-09-24 05:34:11,991 - INFO - wp_request completed in 0.196s
+2025-09-24 05:34:11,991 - INFO - Updated contract: 222642381 - Caracal - Contract 222642381
+2025-09-24 05:34:11,991 - INFO - wp_request completed in 0.224s
+2025-09-24 05:34:11,991 - INFO - Updated contract: 222642299 - Plasma Pulse Generator - Contract 222642299
+2025-09-24 05:34:11,991 - INFO - wp_request completed in 0.189s
+2025-09-24 05:34:11,991 - INFO - Updated contract: 222642390 - Vexor - Contract 222642390
+2025-09-24 05:34:11,992 - INFO - WordPress PUT successful: /wp/v2/eve_contract/3469 in 0.20s
+2025-09-24 05:34:11,992 - INFO - wp_request completed in 0.202s
+2025-09-24 05:34:11,992 - INFO - Updated contract: 222642413 - Squall - Contract 222642413
+2025-09-24 05:34:11,993 - INFO - WordPress PUT successful: /wp/v2/eve_contract/3472 in 0.21s
+2025-09-24 05:34:11,993 - INFO - wp_request completed in 0.211s
+2025-09-24 05:34:11,993 - INFO - Updated contract: 222697456 - Capital Deflection Shield Emitter - Contract 222697456
+2025-09-24 05:34:12,495 - INFO - Processing batch 5/5 (6 contracts)
+2025-09-24 05:34:12,496 - INFO - Loading cache from /Users/dg/Documents/GitHub/eveObserver/cache/blueprint_types.json...
+2025-09-24 05:34:12,497 - INFO - ✓ Cache loaded from /Users/dg/Documents/GitHub/eveObserver/cache/blueprint_types.json: 1019 entries in 0.00s
+2025-09-24 05:34:12,497 - INFO - Loading cache from /Users/dg/Documents/GitHub/eveObserver/cache/blueprint_types.json...
+2025-09-24 05:34:12,498 - INFO - ✓ Cache loaded from /Users/dg/Documents/GitHub/eveObserver/cache/blueprint_types.json: 1019 entries in 0.00s
+2025-09-24 05:34:12,498 - INFO - Loading cache from /Users/dg/Documents/GitHub/eveObserver/cache/blueprint_types.json...
+2025-09-24 05:34:12,499 - INFO - ✓ Cache loaded from /Users/dg/Documents/GitHub/eveObserver/cache/blueprint_types.json: 1019 entries in 0.00s
+2025-09-24 05:34:12,499 - INFO - Loading cache from /Users/dg/Documents/GitHub/eveObserver/cache/blueprint_types.json...
+2025-09-24 05:34:12,499 - INFO - ✓ Cache loaded from /Users/dg/Documents/GitHub/eveObserver/cache/blueprint_types.json: 1019 entries in 0.00s
+2025-09-24 05:34:12,499 - INFO - Loading cache from /Users/dg/Documents/GitHub/eveObserver/cache/blueprint_types.json...
+2025-09-24 05:34:12,500 - INFO - ✓ Cache loaded from /Users/dg/Documents/GitHub/eveObserver/cache/blueprint_types.json: 1019 entries in 0.00s
+2025-09-24 05:34:12,500 - INFO - Loading cache from /Users/dg/Documents/GitHub/eveObserver/cache/blueprint_types.json...
+2025-09-24 05:34:12,501 - INFO - ✓ Cache loaded from /Users/dg/Documents/GitHub/eveObserver/cache/blueprint_types.json: 1019 entries in 0.00s
+2025-09-24 05:34:12,501 - INFO - Rate limiter adjusted: base=60.0, current=30.60, factor=0.5
+2025-09-24 05:34:12,501 - INFO - Rate limiter adjusted: base=60.0, current=30.60, factor=0.5
+2025-09-24 05:34:12,501 - INFO - Rate limiter adjusted: base=60.0, current=30.60, factor=0.5
+2025-09-24 05:34:12,502 - INFO - Rate limiter adjusted: base=60.0, current=30.60, factor=0.5
+2025-09-24 05:34:12,502 - INFO - Rate limiter adjusted: base=60.0, current=30.60, factor=0.5
+2025-09-24 05:34:12,502 - INFO - Rate limiter adjusted: base=60.0, current=30.60, factor=0.5
+2025-09-24 05:34:13,813 - INFO - WordPress GET successful: /wp/v2/eve_contract?slug=contract-222697508 in 1.31s
+2025-09-24 05:34:13,814 - INFO - wp_request completed in 1.317s
+2025-09-24 05:34:13,815 - INFO - WordPress GET successful: /wp/v2/eve_contract?slug=contract-222697519 in 1.31s
+2025-09-24 05:34:13,817 - INFO - wp_request completed in 1.319s
+2025-09-24 05:34:13,818 - INFO - WordPress GET successful: /wp/v2/eve_contract?slug=contract-222697571 in 1.32s
+2025-09-24 05:34:13,818 - INFO - wp_request completed in 1.318s
+2025-09-24 05:34:13,823 - INFO - WordPress GET successful: /wp/v2/eve_contract?slug=contract-222697575 in 1.32s
+2025-09-24 05:34:13,823 - INFO - wp_request completed in 1.322s
+2025-09-24 05:34:13,826 - INFO - WordPress GET successful: /wp/v2/eve_contract?slug=contract-222697552 in 1.32s
+2025-09-24 05:34:13,827 - INFO - wp_request completed in 1.327s
+2025-09-24 05:34:13,842 - INFO - WordPress GET successful: /wp/v2/eve_contract?slug=contract-222697538 in 1.34s
+2025-09-24 05:34:13,843 - INFO - wp_request completed in 1.344s
+2025-09-24 05:34:13,908 - INFO - ESI authenticated fetch successful: /characters/90045731/contracts/222697571/items/ in 0.09s
+2025-09-24 05:34:13,908 - INFO - _fetch_esi_with_retry completed in 0.090s
+2025-09-24 05:34:13,909 - INFO - Loading cache from /Users/dg/Documents/GitHub/eveObserver/cache/blueprint_types.json...
+2025-09-24 05:34:13,910 - INFO - ✓ Cache loaded from /Users/dg/Documents/GitHub/eveObserver/cache/blueprint_types.json: 1019 entries in 0.00s
+2025-09-24 05:34:13,910 - INFO - Rate limiter adjusted: base=60.0, current=30.60, factor=0.5
+2025-09-24 05:34:13,916 - INFO - ESI authenticated fetch successful: /characters/90045731/contracts/222697519/items/ in 0.10s
+2025-09-24 05:34:13,916 - INFO - _fetch_esi_with_retry completed in 0.099s
+2025-09-24 05:34:13,916 - INFO - Loading cache from /Users/dg/Documents/GitHub/eveObserver/cache/blueprint_types.json...
+2025-09-24 05:34:13,917 - INFO - ✓ Cache loaded from /Users/dg/Documents/GitHub/eveObserver/cache/blueprint_types.json: 1019 entries in 0.00s
+2025-09-24 05:34:13,917 - INFO - Rate limiter adjusted: base=60.0, current=30.60, factor=0.5
+2025-09-24 05:34:13,933 - INFO - ESI authenticated fetch successful: /characters/90045731/contracts/222697508/items/ in 0.12s
+2025-09-24 05:34:13,933 - INFO - _fetch_esi_with_retry completed in 0.119s
+2025-09-24 05:34:13,933 - INFO - Loading cache from /Users/dg/Documents/GitHub/eveObserver/cache/blueprint_types.json...
+2025-09-24 05:34:13,934 - INFO - ✓ Cache loaded from /Users/dg/Documents/GitHub/eveObserver/cache/blueprint_types.json: 1019 entries in 0.00s
+2025-09-24 05:34:13,935 - INFO - Rate limiter adjusted: base=60.0, current=30.60, factor=0.5
+2025-09-24 05:34:13,944 - INFO - ESI authenticated fetch successful: /characters/90045731/contracts/222697552/items/ in 0.12s
+2025-09-24 05:34:13,944 - INFO - _fetch_esi_with_retry completed in 0.117s
+2025-09-24 05:34:13,945 - INFO - Loading cache from /Users/dg/Documents/GitHub/eveObserver/cache/blueprint_types.json...
+2025-09-24 05:34:13,945 - INFO - ✓ Cache loaded from /Users/dg/Documents/GitHub/eveObserver/cache/blueprint_types.json: 1019 entries in 0.00s
+2025-09-24 05:34:13,946 - INFO - Rate limiter adjusted: base=60.0, current=30.60, factor=0.5
+2025-09-24 05:34:14,062 - INFO - ESI authenticated fetch successful: /characters/90045731/contracts/222697575/items/ in 0.24s
+2025-09-24 05:34:14,063 - INFO - ESI authenticated fetch successful: /characters/90045731/contracts/222697538/items/ in 0.22s
+2025-09-24 05:34:14,064 - INFO - _fetch_esi_with_retry completed in 0.241s
+2025-09-24 05:34:14,065 - INFO - Loading cache from /Users/dg/Documents/GitHub/eveObserver/cache/blueprint_types.json...
+2025-09-24 05:34:14,066 - INFO - ✓ Cache loaded from /Users/dg/Documents/GitHub/eveObserver/cache/blueprint_types.json: 1019 entries in 0.00s
+2025-09-24 05:34:14,067 - INFO - Rate limiter adjusted: base=60.0, current=30.60, factor=0.5
+2025-09-24 05:34:14,067 - INFO - _fetch_esi_with_retry completed in 0.225s
+2025-09-24 05:34:14,068 - INFO - Loading cache from /Users/dg/Documents/GitHub/eveObserver/cache/blueprint_types.json...
+2025-09-24 05:34:14,069 - INFO - ✓ Cache loaded from /Users/dg/Documents/GitHub/eveObserver/cache/blueprint_types.json: 1019 entries in 0.00s
+2025-09-24 05:34:14,070 - INFO - Rate limiter adjusted: base=60.0, current=30.60, factor=0.5
+2025-09-24 05:34:14,592 - INFO - WordPress PUT successful: /wp/v2/eve_contract/3476 in 0.52s
+2025-09-24 05:34:14,593 - INFO - WordPress PUT successful: /wp/v2/eve_contract/3477 in 0.65s
+2025-09-24 05:34:14,593 - INFO - WordPress PUT successful: /wp/v2/eve_contract/3474 in 0.66s
+2025-09-24 05:34:14,594 - INFO - WordPress PUT successful: /wp/v2/eve_contract/3479 in 0.53s
+2025-09-24 05:34:14,594 - INFO - WordPress PUT successful: /wp/v2/eve_contract/3475 in 0.68s
+2025-09-24 05:34:14,595 - INFO - WordPress PUT successful: /wp/v2/eve_contract/3478 in 0.68s
+2025-09-24 05:34:14,595 - INFO - wp_request completed in 0.525s
+2025-09-24 05:34:14,595 - INFO - Updated contract: 222697538 - Capital Fusion Thruster - Contract 222697538
+2025-09-24 05:34:14,595 - INFO - wp_request completed in 0.650s
+2025-09-24 05:34:14,595 - INFO - Updated contract: 222697552 - Capital Gravimetric Sensor Cluster - Contract 222697552
+2025-09-24 05:34:14,595 - INFO - wp_request completed in 0.661s
+2025-09-24 05:34:14,595 - INFO - Updated contract: 222697508 - Capital EM Pulse Generator - Contract 222697508
+2025-09-24 05:34:14,596 - INFO - wp_request completed in 0.529s
+2025-09-24 05:34:14,596 - INFO - Updated contract: 222697575 - Capital Ladar Sensor Cluster - Contract 222697575
+2025-09-24 05:34:14,596 - INFO - wp_request completed in 0.678s
+2025-09-24 05:34:14,596 - INFO - Updated contract: 222697519 - Capital Fernite Carbide Composite Armor Plate - Contract 222697519
+2025-09-24 05:34:14,596 - INFO - wp_request completed in 0.686s
+2025-09-24 05:34:14,596 - INFO - Updated contract: 222697571 - Capital Ion Thruster - Contract 222697571
+2025-09-24 05:34:14,596 - INFO - Completed batch update of 46 contracts
+2025-09-24 05:34:14,596 - INFO - Completed batched updates for 46 contracts
+2025-09-24 05:34:14,596 - INFO - Parallel character processing completed in 26.05s for 9 characters
+2025-09-24 05:34:14,596 - INFO - Data processing completed in 26.05s
+2025-09-24 05:34:14,596 - INFO - Total execution completed in 43.77s
+2025-09-24 05:34:14,598 - INFO - Flushed all pending cache saves
+2025-09-24 05:34:14,598 - INFO - Cache Performance - Hits: 36, Misses: 0, Hit Rate: 100.0%, Loads: 99, Saves: 0, Compressed Saves: 0, Batch Saves: 0, Expired Cleanups: 0

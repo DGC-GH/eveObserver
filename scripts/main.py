@@ -102,11 +102,13 @@ async def process_all_data(
 
         processed_corps.add(corp_id)
 
-    # Now process individual character data (skills, blueprints, etc.)
-    for char_id, token_data in tokens.items():
-        char_id = int(char_id)  # Ensure char_id is an integer
-        if args.all or args.characters or args.skills or args.blueprints or args.planets or args.contracts:
-            await process_character_data(
+    # Now process individual character data in parallel (skills, blueprints, etc.)
+    if args.all or args.characters or args.skills or args.blueprints or args.planets or args.contracts:
+        logger.info("Processing character data in parallel...")
+        character_tasks = []
+        for char_id, token_data in tokens.items():
+            char_id = int(char_id)  # Ensure char_id is an integer
+            task = process_character_data(
                 char_id,
                 token_data,
                 wp_post_id_cache,
@@ -116,6 +118,18 @@ async def process_all_data(
                 failed_structures,
                 args,
             )
+            character_tasks.append(task)
+
+        # Execute character processing in parallel with concurrency control
+        semaphore = asyncio.Semaphore(3)  # Limit to 3 concurrent character processes
+        async def process_with_semaphore(task):
+            async with semaphore:
+                return await task
+
+        character_start = time.time()
+        await asyncio.gather(*[process_with_semaphore(task) for task in character_tasks])
+        character_time = time.time() - character_start
+        logger.info(f"Parallel character processing completed in {character_time:.2f}s for {len(character_tasks)} characters")
 
 
 async def main() -> None:

@@ -1124,25 +1124,9 @@ async def process_character_contracts(
 
         # Run all WordPress updates concurrently
         if contracts_to_update:
-            logger.info(f"Running concurrent WordPress updates for {len(contracts_to_update)} contracts...")
-            update_tasks = []
-            for update_info in contracts_to_update:
-                task = update_contract_in_wp_with_competition_result(
-                    update_info['contract']["contract_id"],
-                    update_info['contract'],
-                    update_info['is_outbid'],
-                    update_info['competing_price'],
-                    update_info['for_corp'],
-                    update_info['entity_id'],
-                    update_info['access_token'],
-                    update_info['blueprint_cache'],
-                    update_info['all_expanded_contracts'],
-                )
-                update_tasks.append(task)
-            
-            # Execute all updates concurrently
-            await asyncio.gather(*update_tasks, return_exceptions=True)
-            logger.info(f"Completed concurrent updates for {len(update_tasks)} contracts")
+            logger.info(f"Running batched WordPress updates for {len(contracts_to_update)} contracts...")
+            await batch_update_contracts_in_wp(contracts_to_update, blueprint_cache, all_expanded_contracts)
+            logger.info(f"Completed batched updates for {len(contracts_to_update)} contracts")
 
 
 async def update_contract_cache_only() -> None:
@@ -1164,10 +1148,45 @@ async def update_contract_cache_only() -> None:
         raise
 
 
+async def build_blueprint_contracts_cache(all_expanded_contracts: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
+    """Build a cache containing only contracts with blueprints for competition analysis.
+
+    This reduces memory usage by ~95% since only ~5% of contracts contain blueprints.
+
+    Args:
+        all_expanded_contracts: Full list of expanded contracts
+
+    Returns:
+        List of contracts that contain blueprints
+    """
+    logger.info(f"Building blueprint-only contracts cache from {len(all_expanded_contracts)} total contracts...")
+
+    blueprint_contracts = []
+    blueprint_count = 0
+
+    for contract in all_expanded_contracts:
+        if contract.get("type") == "item_exchange" and contract.get("items"):
+            has_blueprint = False
+            for item in contract["items"]:
+                if item.get("blueprint_type") in ["BPO", "BPC"]:
+                    has_blueprint = True
+                    blueprint_count += 1
+                    break
+
+            if has_blueprint:
+                blueprint_contracts.append(contract)
+
+    logger.info(f"Blueprint contracts cache built: {len(blueprint_contracts)} contracts with {blueprint_count} blueprint items "
+               f"({len(blueprint_contracts)/len(all_expanded_contracts)*100:.1f}% of total contracts)")
+
+    return blueprint_contracts
+
+
 async def fetch_and_expand_all_forge_contracts() -> List[Dict[str, Any]]:
     """Fetch and expand all contracts from The Forge region with incremental caching.
 
     Only processes new contracts, removes expired ones, and ensures cache reflects real-world EVE Online state.
+    Returns blueprint-only contracts cache for competition analysis.
     """
     logger.info("Starting incremental contract processing for The Forge region...")
 
@@ -1226,9 +1245,10 @@ async def fetch_and_expand_all_forge_contracts() -> List[Dict[str, Any]]:
         logger.error(f"Failed to save cache: {e}")
         raise
 
-    # Return all expanded contracts
-    logger.info(f"Returning {len(existing_expanded)} expanded contracts")
-    return existing_expanded
+    # Build and return blueprint-only contracts cache for competition analysis
+    blueprint_contracts = await build_blueprint_contracts_cache(existing_expanded)
+    logger.info(f"Returning {len(blueprint_contracts)} blueprint contracts for competition analysis")
+    return blueprint_contracts
 
 
 async def get_user_contracts(char_id: int, access_token: str) -> List[Dict[str, Any]]:
@@ -2458,3 +2478,72 @@ async def update_contract_in_wp_with_competition_result(
         logger.info(f"Updated contract: {contract_id} - {title}")
     else:
         logger.error(f"Failed to update contract {contract_id}")
+
+
+
+@validate_input_params(list)
+async def batch_update_contracts_in_wp(
+    contract_updates: List[Dict[str, Any]],
+    blueprint_cache: Optional[Dict[str, Any]] = None,
+    all_expanded_contracts: Optional[List[Dict[str, Any]]] = None,
+) -> None:
+    """Batch update multiple contracts in WordPress to reduce API calls.
+
+    Args:
+        contract_updates: List of contract update dictionaries with keys:
+            - contract_id: EVE contract ID
+            - contract_data: Contract information dictionary from ESI
+            - is_outbid: Whether this contract has been outbid
+            - competing_price: The competing price if outbid, None otherwise
+            - for_corp: Whether this is a corporation contract
+            - entity_id: Character or corporation ID that has access to the contract
+            - access_token: Valid ESI access token for fetching contract items
+        blueprint_cache: Cached blueprint names (loaded automatically if not provided)
+        all_expanded_contracts: Optional list of pre-expanded contracts for competition analysis
+    """
+    if not contract_updates:
+        logger.info("No contract updates to process")
+        return
+
+    if blueprint_cache is None:
+        blueprint_cache = load_blueprint_cache()
+
+    blueprint_type_cache = load_blueprint_type_cache()
+
+    logger.info(f"Batch updating {len(contract_updates)} contracts in WordPress...")
+
+    # Process contracts in batches to avoid overwhelming WordPress
+    batch_size = 10  # Update 10 contracts at a time
+    total_processed = 0
+
+    for i in range(0, len(contract_updates), batch_size):
+        batch = contract_updates[i:i + batch_size]
+        logger.info(f"Processing batch {i//batch_size + 1}/{(len(contract_updates) + batch_size - 1)//batch_size} "
+                   f"({len(batch)} contracts)")
+
+        # Create tasks for concurrent processing within the batch
+        update_tasks = []
+        for update_info in batch:
+            task = update_contract_in_wp_with_competition_result(
+                update_info['contract']["contract_id"],
+                update_info['contract'],
+                update_info['is_outbid'],
+                update_info['competing_price'],
+                update_info['for_corp'],
+                update_info['entity_id'],
+                update_info['access_token'],
+                blueprint_cache,
+                all_expanded_contracts,
+            )
+            update_tasks.append(task)
+
+        # Execute batch concurrently
+        await asyncio.gather(*update_tasks, return_exceptions=True)
+        total_processed += len(batch)
+
+        # Small delay between batches to be respectful to WordPress
+        if i + batch_size < len(contract_updates):
+            await asyncio.sleep(0.5)
+
+    logger.info(f"Completed batch update of {total_processed} contracts")
+
