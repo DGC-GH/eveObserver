@@ -3,7 +3,7 @@
  * Plugin Name: EVE Observer
  * Plugin URI: https://github.com/DGC-GH/eveObserver
  * Description: A custom WordPress plugin for EVE Online dashboard with ESI API integration.
- * Version: 1.1.1
+ * Version: 1.2.0
  * Author: DGC-GH
  * License: GPL v2 or later
  * License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -30,8 +30,12 @@ class EVE_Observer {
         add_action('admin_menu', array($this, 'add_admin_menu'));
         add_action('admin_enqueue_scripts', array($this, 'enqueue_admin_scripts'));
         add_action('wp_ajax_eve_sync', array($this, 'handle_ajax_sync_request'));
+        add_action('wp_ajax_eve_stop_sync', array($this, 'handle_ajax_stop_sync_request'));
+        add_action('wp_ajax_eve_sync_status', array($this, 'handle_ajax_sync_status_request'));
 
         error_log("🔄 [PLUGIN INIT] AJAX action 'wp_ajax_eve_sync' registered");
+        error_log("🔄 [PLUGIN INIT] AJAX action 'wp_ajax_eve_stop_sync' registered");
+        error_log("🔄 [PLUGIN INIT] AJAX action 'wp_ajax_eve_sync_status' registered");
 
         register_activation_hook(__FILE__, array($this, 'activate'));
         register_deactivation_hook(__FILE__, array($this, 'deactivate'));
@@ -362,7 +366,80 @@ class EVE_Observer {
         }
     }
 
-    public function handle_ajax_sync_request() {
+    public function handle_ajax_sync_status_request() {
+        // Log the start of AJAX request processing
+        error_log("🔄 [AJAX SYNC STATUS START] ========================================");
+        error_log("🔄 [AJAX SYNC STATUS START] handle_ajax_sync_status_request called");
+        error_log("🔄 [AJAX SYNC STATUS START] Timestamp: " . current_time('mysql'));
+        error_log("🔄 [AJAX SYNC STATUS START] REQUEST_METHOD: " . ($_SERVER['REQUEST_METHOD'] ?? 'unknown'));
+        error_log("🔄 [AJAX SYNC STATUS START] POST data: " . print_r($_POST, true));
+        error_log("🔄 [AJAX SYNC STATUS START] GET data: " . print_r($_GET, true));
+        error_log("🔄 [AJAX SYNC STATUS START] Current user ID: " . get_current_user_id());
+        error_log("🔄 [AJAX SYNC STATUS START] Current user capabilities: " . print_r(wp_get_current_user()->allcaps, true));
+        error_log("🔄 [AJAX SYNC STATUS START] ========================================");
+
+        // Check permissions
+        if (!current_user_can('manage_options')) {
+            error_log("❌ [AJAX SYNC STATUS ERROR] User does not have manage_options capability");
+            wp_die(__('You do not have sufficient permissions to access this page.'));
+        }
+        error_log("✅ [AJAX SYNC STATUS STEP 1] User has manage_options capability");
+
+        // Verify nonce
+        if (!wp_verify_nonce($_POST['nonce'], 'eve_sync_nonce')) {
+            error_log("❌ [AJAX SYNC STATUS ERROR] Nonce verification failed");
+            error_log("🔄 [AJAX SYNC STATUS DEBUG] Received nonce: " . ($_POST['nonce'] ?? 'none'));
+            error_log("🔄 [AJAX SYNC STATUS DEBUG] Expected nonce action: eve_sync_nonce");
+            wp_send_json_error(array('message' => 'Security check failed'), 403);
+            return;
+        }
+        error_log("✅ [AJAX SYNC STATUS STEP 2] Nonce verification passed");
+
+        // Call the main sync status handler
+        $status = $this->handle_sync_status_request();
+
+        error_log("✅ [AJAX SYNC STATUS SUCCESS] Status retrieved: " . print_r($status, true));
+        wp_send_json_success($status);
+    }
+        // Log the start of AJAX request processing
+        error_log("🔄 [AJAX STOP SYNC START] ========================================");
+        error_log("🔄 [AJAX STOP SYNC START] handle_ajax_stop_sync_request called");
+        error_log("🔄 [AJAX STOP SYNC START] Timestamp: " . current_time('mysql'));
+        error_log("🔄 [AJAX STOP SYNC START] REQUEST_METHOD: " . ($_SERVER['REQUEST_METHOD'] ?? 'unknown'));
+        error_log("🔄 [AJAX STOP SYNC START] POST data: " . print_r($_POST, true));
+        error_log("🔄 [AJAX STOP SYNC START] GET data: " . print_r($_GET, true));
+        error_log("🔄 [AJAX STOP SYNC START] Current user ID: " . get_current_user_id());
+        error_log("🔄 [AJAX STOP SYNC START] Current user capabilities: " . print_r(wp_get_current_user()->allcaps, true));
+        error_log("🔄 [AJAX STOP SYNC START] ========================================");
+
+        // Check permissions
+        if (!current_user_can('manage_options')) {
+            error_log("❌ [AJAX STOP SYNC ERROR] User does not have manage_options capability");
+            wp_die(__('You do not have sufficient permissions to access this page.'));
+        }
+        error_log("✅ [AJAX STOP SYNC STEP 1] User has manage_options capability");
+
+        // Verify nonce
+        if (!wp_verify_nonce($_POST['nonce'], 'eve_sync_nonce')) {
+            error_log("❌ [AJAX STOP SYNC ERROR] Nonce verification failed");
+            error_log("🔄 [AJAX STOP SYNC DEBUG] Received nonce: " . ($_POST['nonce'] ?? 'none'));
+            error_log("🔄 [AJAX STOP SYNC DEBUG] Expected nonce action: eve_sync_nonce");
+            wp_send_json_error(array('message' => 'Security check failed'), 403);
+            return;
+        }
+        error_log("✅ [AJAX STOP SYNC STEP 2] Nonce verification passed");
+
+        // Call the main stop sync handler
+        $result = $this->handle_stop_sync_request();
+
+        if (is_wp_error($result)) {
+            error_log("❌ [AJAX STOP SYNC ERROR] Stop sync failed: " . $result->get_error_message());
+            wp_send_json_error(array('message' => $result->get_error_message()), $result->get_error_data()['status'] ?? 500);
+        } else {
+            error_log("✅ [AJAX STOP SYNC SUCCESS] Stop sync completed successfully");
+            wp_send_json_success($result);
+        }
+    }
         // Log the start of AJAX request processing
         error_log("🔄 [PHP AJAX START] ========================================");
         error_log("🔄 [PHP AJAX START] handle_ajax_sync_request called");

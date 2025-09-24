@@ -413,25 +413,46 @@ class EVEDashboard {
             console.log('⚠️ [INIT WARNING] Stop sync button not found');
         }
 
-        // Start status polling
-        this.startSyncStatusPolling();
-        console.log('✅ [INIT STEP 23] Sync status polling started');
+        // Start status polling with a delay to ensure AJAX actions are registered
+        setTimeout(() => {
+            this.startSyncStatusPolling();
+        }, 2000); // Wait 2 seconds before starting polling
+        console.log('✅ [INIT STEP 23] Sync status polling will start in 2 seconds');
     }
 
     // Sync status management methods
     async checkSyncStatus() {
-        try {
-            const response = await fetch('/wp-json/eve-observer/v1/sync-status');
-            if (!response.ok) {
-                throw new Error(`HTTP ${response.status}`);
+        return new Promise((resolve, reject) => {
+            console.log('🔄 [SYNC STATUS] Checking sync status via AJAX...');
+
+            if (typeof jQuery === 'undefined') {
+                console.error('❌ [SYNC STATUS] jQuery is not available!');
+                resolve({ running: false, progress: 0, message: 'jQuery not available' });
+                return;
             }
-            const status = await response.json();
-            console.log('🔄 [SYNC STATUS] Current sync status:', status);
-            return status;
-        } catch (error) {
-            console.error('❌ [SYNC STATUS] Error checking sync status:', error);
-            return { running: false, progress: 0, message: 'Unable to check status' };
-        }
+
+            jQuery.ajax({
+                url: eveObserverApi.ajaxUrl,
+                type: 'POST',
+                data: {
+                    action: 'eve_sync_status',
+                    nonce: eveObserverApi.nonce
+                },
+                timeout: 10000,
+                success: (response) => {
+                    console.log('✅ [SYNC STATUS] Status check successful:', response);
+                    if (response.success && response.data) {
+                        resolve(response.data);
+                    } else {
+                        resolve({ running: false, progress: 0, message: 'No sync running' });
+                    }
+                },
+                error: (xhr, status, error) => {
+                    console.error('❌ [SYNC STATUS] Status check failed:', xhr.status, error);
+                    resolve({ running: false, progress: 0, message: 'Unable to check status' });
+                }
+            });
+        });
     }
 
     updateSyncStatusDisplay(status) {
@@ -470,7 +491,7 @@ class EVEDashboard {
         this.syncStatusInterval = setInterval(async () => {
             const status = await this.checkSyncStatus();
             this.updateSyncStatusDisplay(status);
-        }, 5000); // Poll every 5 seconds
+        }, 10000); // Poll every 10 seconds (reduced from 5)
     }
 
     stopSyncStatusPolling() {
@@ -482,31 +503,40 @@ class EVEDashboard {
     }
 
     async stopSync() {
-        try {
-            console.log('🔄 [SYNC STOP] Attempting to stop sync...');
-            const response = await fetch('/wp-json/eve-observer/v1/stop-sync', {
-                method: 'POST'
+        return new Promise((resolve, reject) => {
+            console.log('🔄 [SYNC STOP] Attempting to stop sync via AJAX...');
+
+            if (typeof jQuery === 'undefined') {
+                console.error('❌ [SYNC STOP] jQuery is not available!');
+                reject(new Error('jQuery not available'));
+                return;
+            }
+
+            jQuery.ajax({
+                url: eveObserverApi.ajaxUrl,
+                type: 'POST',
+                data: {
+                    action: 'eve_stop_sync',
+                    nonce: eveObserverApi.nonce
+                },
+                timeout: 10000,
+                success: (response) => {
+                    console.log('✅ [SYNC STOP] Stop sync result:', response);
+                    if (response.success) {
+                        this.showNotification('Sync stopped successfully', 'success');
+                        resolve(response);
+                    } else {
+                        reject(new Error(response.data?.message || 'Failed to stop sync'));
+                    }
+                },
+                error: (xhr, status, error) => {
+                    console.error('❌ [SYNC STOP] Stop sync failed:', xhr.status, error);
+                    const errorMessage = xhr.responseJSON?.data?.message || error || 'Failed to stop sync';
+                    this.showNotification(`Failed to stop sync: ${errorMessage}`, 'error');
+                    reject(new Error(errorMessage));
+                }
             });
-
-            if (!response.ok) {
-                throw new Error(`HTTP ${response.status}`);
-            }
-
-            const result = await response.json();
-            console.log('✅ [SYNC STOP] Stop sync result:', result);
-
-            if (result.success) {
-                this.showNotification('Sync stopped successfully', 'success');
-                // Refresh status immediately
-                const status = await this.checkSyncStatus();
-                this.updateSyncStatusDisplay(status);
-            } else {
-                throw new Error(result.message || 'Failed to stop sync');
-            }
-        } catch (error) {
-            console.error('❌ [SYNC STOP] Error stopping sync:', error);
-            this.showNotification(`Failed to stop sync: ${error.message}`, 'error');
-        }
+        });
     }
 
     async syncSection(section, button) {
@@ -622,10 +652,20 @@ class EVEDashboard {
             if (error.message && error.message.includes('sync is already running')) {
                 console.log('🔄 [STEP 28] Sync already running - showing stop option...');
 
-                // Show the existing sync status
-                const statusResponse = await this.checkSyncStatus();
-                if (statusResponse.running) {
-                    this.updateSyncStatusDisplay(statusResponse);
+                // Try to extract current status from the error data
+                let currentStatus = null;
+                if (error.data && error.data.current_status) {
+                    currentStatus = error.data.current_status;
+                    console.log('🔄 [STEP 29] Extracted current status from error data:', currentStatus);
+                } else {
+                    // Fallback: try to check status via AJAX
+                    console.log('🔄 [STEP 30] Checking sync status via AJAX...');
+                    currentStatus = await this.checkSyncStatus();
+                }
+
+                if (currentStatus && currentStatus.running) {
+                    console.log('🔄 [STEP 31] Showing sync status display...');
+                    this.updateSyncStatusDisplay(currentStatus);
                     this.showNotification('A sync is already running. Use the stop button to cancel it first.', 'error');
                 } else {
                     this.showNotification(`Failed to start sync ${section}: ${error.message}`, 'error');
@@ -785,18 +825,25 @@ class EVEDashboard {
                     console.error('🔄 [AJAX STEP 19] Response headers:', xhr.getAllResponseHeaders());
 
                     let errorMessage = 'Unknown AJAX error';
-                    if (xhr.responseJSON && xhr.responseJSON.data && xhr.responseJSON.data.message) {
-                        errorMessage = xhr.responseJSON.data.message;
+                    let errorData = null;
+                    if (xhr.responseJSON && xhr.responseJSON.data) {
+                        errorData = xhr.responseJSON.data;
+                        errorMessage = xhr.responseJSON.data.message || errorMessage;
                         console.error('🔄 [AJAX STEP 20] Error from responseJSON.data.message:', errorMessage);
+                        console.error('🔄 [AJAX STEP 21] Full error data:', errorData);
                     } else if (xhr.responseText) {
                         errorMessage = xhr.responseText;
-                        console.error('🔄 [AJAX STEP 21] Error from responseText:', errorMessage);
+                        console.error('🔄 [AJAX STEP 22] Error from responseText:', errorMessage);
                     } else if (error) {
                         errorMessage = error;
-                        console.error('🔄 [AJAX STEP 22] Error from error parameter:', errorMessage);
+                        console.error('🔄 [AJAX STEP 23] Error from error parameter:', errorMessage);
                     }
 
-                    reject(new Error(errorMessage));
+                    // Create an error object that includes both message and full data
+                    const ajaxError = new Error(errorMessage);
+                    ajaxError.data = errorData;
+                    ajaxError.status = xhr.status;
+                    reject(ajaxError);
                 }
             });
         });
