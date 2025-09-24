@@ -262,30 +262,35 @@ class TestContractProcessorIntegration:
     """Integration tests for contract processing functions."""
 
     @pytest.mark.asyncio
-    @patch("contract_processor.load_blueprint_type_cache")
+    @patch("contract_wordpress.load_blueprint_type_cache")
+    @patch("cache_manager.load_blueprint_cache")
     @patch("cache_manager.load_cache")
     @patch("cache_manager.save_cache")
     @patch("cache_manager.get_cached_wp_post_id")
     @patch("cache_manager.set_cached_wp_post_id")
-    @patch("contract_processor.wp_request")
-    @patch("contract_processor.fetch_esi")
-    @patch("contract_processor.fetch_public_esi")
-    @patch("contract_processor.fetch_character_contract_items", new_callable=AsyncMock)
+    @patch("contract_wordpress.wp_request")
+    @patch("contract_wordpress.fetch_type_icon", new_callable=AsyncMock)
+    @patch("contract_fetching.fetch_esi")
+    @patch("api_client.fetch_public_esi")
+    @patch("contract_wordpress.fetch_character_contract_items", new_callable=AsyncMock)
     async def test_update_contract_in_wp_integration(
         self,
         mock_fetch_contract_items,
         mock_fetch_pub_esi,
         mock_fetch_esi,
+        mock_fetch_icon,
         mock_wp_request,
         mock_set_cache,
         mock_get_cache,
         mock_save_cache,
         mock_load_cache,
+        mock_load_blueprint,
         mock_load_blueprint_type,
     ):
         """Test contract update integration."""
         # Setup cache mocks
         mock_load_cache.return_value = {}
+        mock_load_blueprint.return_value = {"1001": "Test Blueprint"}
         mock_load_blueprint_type.return_value = {"1001": True}  # Mark type_id 1001 as blueprint
         mock_get_cache.return_value = None  # No existing post
 
@@ -299,6 +304,7 @@ class TestContractProcessorIntegration:
         }
         mock_fetch_pub_esi.return_value = {"name": "Test Item"}
         mock_fetch_contract_items.return_value = [{"type_id": 1001, "quantity": 1, "is_included": True}]
+        mock_fetch_icon.return_value = "https://example.com/icon.png"
 
         # Mock WordPress API calls
         mock_wp_request.side_effect = [
@@ -315,16 +321,18 @@ class TestContractProcessorIntegration:
         assert mock_wp_request.call_count == 2  # Check + create
 
     @pytest.mark.asyncio
-    @patch("contract_processor.update_contract_in_wp", new_callable=AsyncMock)
+    @patch("contract_processor_new.batch_update_contracts_in_wp", new_callable=AsyncMock)
+    @patch("contract_processor_new.fetch_and_expand_all_forge_contracts", new_callable=AsyncMock)
+    @patch("contract_processor_new.fetch_character_contracts", new_callable=AsyncMock)
     @patch("cache_manager.load_cache")
     @patch("cache_manager.save_cache")
     async def test_process_character_contracts_integration(
-        self, mock_save_cache, mock_load_cache, mock_update_contract
+        self, mock_save_cache, mock_load_cache, mock_fetch_contracts, mock_expand_contracts, mock_batch_update
     ):
         """Test character contract processing integration."""
         # Setup cache mocks
         mock_load_cache.return_value = {}
-        mock_update_contract.return_value = None
+        mock_batch_update.return_value = None
 
         contracts = [
             {"contract_id": 1, "issuer_id": 123, "status": "outstanding"},
@@ -332,18 +340,12 @@ class TestContractProcessorIntegration:
         ]
 
         # Mock fetch_character_contracts to return contracts
-        async def mock_fetch_contracts(*args, **kwargs):
-            return contracts
+        mock_fetch_contracts.return_value = contracts
 
         # Mock fetch_and_expand_all_forge_contracts to return empty list
-        async def mock_expand_contracts():
-            return []
+        mock_expand_contracts.return_value = []
 
-        with patch("contract_processor.fetch_character_contracts", side_effect=mock_fetch_contracts), \
-             patch("contract_processor.fetch_and_expand_all_forge_contracts", side_effect=mock_expand_contracts), \
-             patch("contract_processor.batch_update_contracts_in_wp", new_callable=AsyncMock) as mock_batch_update:
-            
-            await process_character_contracts(123, "token", "Test Char", {}, {}, {}, {}, {})
+        await process_character_contracts(123, "token", "Test Char", {}, {}, {}, {}, {})
 
         # Verify contracts were processed (batch_update_contracts_in_wp should be called)
         # Note: The function now uses batch processing, so we check for batch call instead of individual calls
