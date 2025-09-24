@@ -288,6 +288,61 @@ class EVE_Observer {
         $scripts_dir = $plugin_dir . 'scripts/';
         $script_path = $scripts_dir . $script_map[$section];
 
+        // TEMPORARY DEBUG: Comprehensive Python detection
+        error_log("🔍 [PYTHON DEBUG] Starting comprehensive Python detection...");
+        
+        // Check environment and PATH
+        $env_path = getenv('PATH');
+        error_log("🔍 [PYTHON DEBUG] Current PATH: " . ($env_path ?: 'not set'));
+        
+        // Check which commands are available
+        $which_python3 = shell_exec('which python3 2>/dev/null');
+        $which_python = shell_exec('which python 2>/dev/null');
+        error_log("🔍 [PYTHON DEBUG] which python3: " . ($which_python3 ?: 'not found'));
+        error_log("🔍 [PYTHON DEBUG] which python: " . ($which_python ?: 'not found'));
+        
+        // Check common Python paths
+        $python_paths_to_check = array(
+            '/usr/bin/python3',
+            '/usr/local/bin/python3',
+            '/usr/bin/python',
+            '/usr/local/bin/python',
+            '/opt/python3/bin/python3',
+            '/opt/python/bin/python'
+        );
+        
+        $available_pythons = array();
+        foreach ($python_paths_to_check as $path) {
+            $exists = file_exists($path);
+            $executable = is_executable($path);
+            $version = '';
+            
+            if ($exists && $executable) {
+                // Try to get version
+                $version_cmd = escapeshellarg($path) . ' --version 2>&1';
+                $version_output = shell_exec($version_cmd);
+                $version = trim($version_output);
+                
+                // Try a simple test
+                $test_cmd = escapeshellarg($path) . ' -c "print(\'Python test successful\')" 2>&1';
+                $test_output = shell_exec($test_cmd);
+                $test_success = strpos($test_output, 'Python test successful') !== false;
+                
+                $available_pythons[] = array(
+                    'path' => $path,
+                    'exists' => $exists,
+                    'executable' => $executable,
+                    'version' => $version,
+                    'test_success' => $test_success,
+                    'test_output' => trim($test_output)
+                );
+                
+                error_log("🔍 [PYTHON DEBUG] {$path}: EXISTS=" . ($exists ? 'YES' : 'NO') . ", EXECUTABLE=" . ($executable ? 'YES' : 'NO') . ", VERSION={$version}, TEST=" . ($test_success ? 'SUCCESS' : 'FAILED'));
+            } else {
+                error_log("🔍 [PYTHON DEBUG] {$path}: EXISTS=" . ($exists ? 'YES' : 'NO') . ", EXECUTABLE=" . ($executable ? 'YES' : 'NO'));
+            }
+        }
+        
         // Try multiple methods to find Python executable
         $python_cmd = '';
         $python_paths = array(
