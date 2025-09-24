@@ -21,10 +21,8 @@ import aiohttp
 import requests
 from dotenv import load_dotenv
 
-from cache_manager import load_contract_items_cache, save_contract_items_cache
 from config import (
     CACHE_DIR,
-    CONTRACT_ITEMS_CACHE_FILE,
     EMAIL_FROM,
     EMAIL_PASSWORD,
     EMAIL_SMTP_PORT,
@@ -966,67 +964,6 @@ async def fetch_public_contracts_async(
                     contracts = valid_contracts
 
                 return contracts
-        except (aiohttp.ClientError, asyncio.TimeoutError) as e:
-            if attempt < max_retries - 1:
-                wait_time = 2**attempt  # Exponential backoff
-                logger.warning(
-                    f"ESI request failed (attempt {attempt + 1}/{max_retries}): {e}. Retrying in {wait_time}s"
-                )
-                await asyncio.sleep(wait_time)
-            else:
-                logger.error(f"ESI request failed after {max_retries} attempts: {e}")
-                return None
-
-
-@validate_input_params(int, int)
-async def fetch_public_contract_items_async(
-    contract_id: int, max_retries: int = 3
-) -> Optional[List[Dict[str, Any]]]:
-    """Fetch items contained in a public contract asynchronously with retry logic and caching.
-
-    Retrieves the list of items and their quantities for a specific public contract.
-    Only works for contracts that are publicly visible (not private courier contracts).
-
-    Args:
-        contract_id: The EVE contract ID to fetch items for
-        max_retries: Maximum number of retry attempts on failure (default: 3)
-
-    Returns:
-        List of contract item dictionaries if successful, None if failed
-
-    Note:
-        Item quantities are negative for blueprint originals (BPOs) and positive for copies (BPCs).
-        Results are cached to avoid repeated API calls for the same contract.
-    """
-    # Check cache first
-    cache = load_contract_items_cache()
-    cache_key = str(contract_id)
-    if cache_key in cache:
-        logger.debug(f"Using cached contract items for contract {contract_id}")
-        return cache[cache_key]
-
-    endpoint = f"/contracts/public/items/{contract_id}/"
-    url = f"{ESI_BASE_URL}{endpoint}"
-    headers = {"Accept": "application/json"}
-
-    sess = await get_session()
-    for attempt in range(max_retries):
-        try:
-            async with sess.get(url, headers=headers, timeout=aiohttp.ClientTimeout(total=30)) as response:
-                response.raise_for_status()
-
-                # Check rate limiting
-                remaining = response.headers.get("X-ESI-Error-Limit-Remain", "100")
-                reset_time = response.headers.get("X-ESI-Error-Limit-Reset", "60")
-                if int(remaining) < 20:
-                    logger.warning(f"ESI rate limit low: {remaining} requests remaining, resets in {reset_time}s")
-
-                items = await response.json()
-                # Cache the result
-                cache[cache_key] = items
-                save_contract_items_cache(cache)
-                logger.debug(f"Cached contract items for contract {contract_id}")
-                return items
         except (aiohttp.ClientError, asyncio.TimeoutError) as e:
             if attempt < max_retries - 1:
                 wait_time = 2**attempt  # Exponential backoff

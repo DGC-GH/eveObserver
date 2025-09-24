@@ -107,6 +107,27 @@ class ContractCacheManager:
         except Exception as e:
             logger.error(f"Failed to save contract items cache: {e}")
 
+    async def load_corporation_cache(self) -> Dict[str, str]:
+        """Load cached corporation names."""
+        cache_path = self.get_corporation_cache_path()
+        try:
+            if os.path.exists(cache_path):
+                with open(cache_path, 'r') as f:
+                    return json.load(f)
+        except Exception as e:
+            logger.warning(f"Failed to load corporation cache: {e}")
+        return {}
+
+    async def save_corporation_cache(self, corporation_cache: Dict[str, str]) -> None:
+        """Save corporation names cache."""
+        cache_path = self.get_corporation_cache_path()
+        try:
+            with open(cache_path, 'w') as f:
+                json.dump(corporation_cache, f, indent=2)
+            logger.info(f"Saved {len(corporation_cache)} corporation names to cache")
+        except Exception as e:
+            logger.error(f"Failed to save corporation cache: {e}")
+
     async def get_missing_issuer_names(self, issuer_ids: List[int], existing_cache: Dict[str, str]) -> Dict[str, str]:
         """Get issuer names that are not in cache."""
         missing_ids = [str(issuer_id) for issuer_id in issuer_ids if str(issuer_id) not in existing_cache]
