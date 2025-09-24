@@ -666,3 +666,66 @@ def cleanup_blueprint_posts() -> None:
                 # These are from the direct blueprint endpoints - check if they're corporation blueprints
                 # For now, keep them as they come from authenticated sources
                 pass
+
+
+async def process_blueprints_parallel(
+    blueprints: List[Dict[str, Any]],
+    update_function,
+    wp_post_id_cache: Dict[str, Any],
+    char_id: int,
+    access_token: str,
+    blueprint_cache: Optional[Dict[str, Any]] = None,
+    location_cache: Optional[Dict[str, Any]] = None,
+    structure_cache: Optional[Dict[str, Any]] = None,
+    failed_structures: Optional[Dict[str, Any]] = None,
+) -> None:
+    """Process a list of blueprints in parallel using the provided update function.
+
+    Args:
+        blueprints: List of blueprint dictionaries to process
+        update_function: Async function to call for each blueprint
+        wp_post_id_cache: WordPress post ID cache
+        char_id: Character ID for authentication
+        access_token: ESI access token
+        blueprint_cache: Optional blueprint name cache
+        location_cache: Optional location name cache
+        structure_cache: Optional structure name cache
+        failed_structures: Optional failed structures cache
+    """
+    import asyncio
+
+    if not blueprints:
+        logger.info("No blueprints to process")
+        return
+
+    logger.info(f"Processing {len(blueprints)} blueprints in parallel...")
+
+    # Create tasks for concurrent processing
+    tasks = [
+        update_function(
+            blueprint,
+            wp_post_id_cache,
+            char_id,
+            access_token,
+            blueprint_cache,
+            location_cache,
+            structure_cache,
+            failed_structures,
+        )
+        for blueprint in blueprints
+    ]
+
+    # Execute all tasks concurrently
+    results = await asyncio.gather(*tasks, return_exceptions=True)
+
+    # Log any exceptions that occurred
+    success_count = 0
+    error_count = 0
+    for i, result in enumerate(results):
+        if isinstance(result, Exception):
+            logger.error(f"Error processing blueprint {i}: {result}")
+            error_count += 1
+        else:
+            success_count += 1
+
+    logger.info(f"Completed processing {len(blueprints)} blueprints: {success_count} successful, {error_count} errors")
