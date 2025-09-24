@@ -3,7 +3,7 @@
  * Plugin Name: EVE Observer
  * Plugin URI: https://github.com/DGC-GH/eveObserver
  * Description: A custom WordPress plugin for EVE Online dashboard with ESI API integration.
- * Version: 1.1.0
+ * Version: 1.1.1
  * Author: DGC-GH
  * License: GPL v2 or later
  * License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -304,9 +304,9 @@ class EVE_Observer {
     public function enqueue_admin_scripts($hook) {
         // Dashboard-specific scripts and styles
         if ($hook === 'toplevel_page_eve-observer') {
-            wp_enqueue_style('eve-observer-dashboard', plugin_dir_url(__FILE__) . 'css/dashboard.css', array(), '1.1.0');
+            wp_enqueue_style('eve-observer-dashboard', plugin_dir_url(__FILE__) . 'css/dashboard.css', array(), '1.1.1');
             wp_enqueue_script('chart-js', 'https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.js', array(), '4.4.1', true);
-            wp_enqueue_script('eve-observer-dashboard', plugin_dir_url(__FILE__) . 'js/dashboard.js', array('chart-js'), '1.1.0', false);
+            wp_enqueue_script('eve-observer-dashboard', plugin_dir_url(__FILE__) . 'js/dashboard.js', array('chart-js'), '1.1.1', false);
 
             // Localize script with nonce
             wp_localize_script('eve-observer-dashboard', 'eveObserverApi', array(
