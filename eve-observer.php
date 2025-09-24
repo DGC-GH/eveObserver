@@ -583,7 +583,7 @@ class EVE_Observer {
         error_log("🔄 [AJAX LOGS STEP 3] Parameters - lines: {$lines}, search: {$search}, levels: " . print_r($levels, true));
 
         // Get the log file path
-        $log_file = plugin_dir_path(__FILE__) . 'eve_observer.log';
+        $log_file = plugin_dir_path(__FILE__) . 'scripts/eve_observer.log';
         error_log("🔄 [AJAX LOGS STEP 4] Log file path: {$log_file}");
 
         if (!file_exists($log_file)) {
@@ -707,7 +707,7 @@ class EVE_Observer {
         error_log("✅ [AJAX CLEAR LOGS STEP 2] Nonce verification passed");
 
         // Get the log file path
-        $log_file = plugin_dir_path(__FILE__) . 'eve_observer.log';
+        $log_file = plugin_dir_path(__FILE__) . 'scripts/eve_observer.log';
         error_log("🔄 [AJAX CLEAR LOGS STEP 3] Log file path: {$log_file}");
 
         if (!file_exists($log_file)) {
@@ -912,7 +912,7 @@ class EVE_Observer {
         if ($hook === 'toplevel_page_eve-observer') {
             wp_enqueue_style('eve-observer-dashboard', plugin_dir_url(__FILE__) . 'css/dashboard.css', array(), '1.1.1');
             wp_enqueue_script('chart-js', 'https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.js', array(), '4.4.1', true);
-            wp_enqueue_script('eve-observer-dashboard', plugin_dir_url(__FILE__) . 'js/dashboard.js', array('chart-js'), '1.2.0', false);
+            wp_enqueue_script('eve-observer-dashboard', plugin_dir_url(__FILE__) . 'js/dashboard.js', array('chart-js'), '1.2.1', false);
 
             // Localize script with nonce and AJAX URL
             $localized_data = array(
