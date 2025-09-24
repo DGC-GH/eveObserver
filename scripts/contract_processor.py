@@ -8,6 +8,7 @@ import aiohttp
 
 from api_client import (
     fetch_esi,
+    fetch_public_contract_items,
     fetch_public_contracts_async,
     fetch_public_esi,
     fetch_type_icon,
@@ -415,7 +416,7 @@ async def get_region_from_location(location_id: Optional[int]) -> Optional[int]:
         return None
 
     # Load cache
-    cache_file = "cache/region_cache.json"
+    cache_file = os.path.join(CACHE_DIR, "region_cache.json")
     try:
         with open(cache_file, "r") as f:
             region_cache = json.load(f)
@@ -737,10 +738,20 @@ async def update_contract_in_wp(
     # Fetch contract items if we have access token
     contract_items = None
     if access_token:
-        if for_corp and entity_id:
-            contract_items = await fetch_corporation_contract_items(entity_id, contract_id, access_token)
-        elif not for_corp and entity_id:
-            contract_items = await fetch_character_contract_items(entity_id, contract_id, access_token)
+        # First try to get items from the expanded contracts cache
+        if all_expanded_contracts:
+            for expanded_contract in all_expanded_contracts:
+                if expanded_contract.get("contract_id") == contract_id:
+                    contract_items = expanded_contract.get("items", [])
+                    logger.debug(f"Using cached items for contract {contract_id}: {len(contract_items)} items")
+                    break
+        
+        # If not found in cache, fetch individually (fallback)
+        if contract_items is None:
+            if for_corp and entity_id:
+                contract_items = await fetch_corporation_contract_items(entity_id, contract_id, access_token)
+            elif not for_corp and entity_id:
+                contract_items = await fetch_character_contract_items(entity_id, contract_id, access_token)
 
     # Get region ID from start location
     region_id = None
@@ -1287,10 +1298,73 @@ async def expand_single_contract_with_caching(
             expanded["items"] = items_details
             expanded["item_count"] = len(items_details)
         else:
-            # No items data available (shouldn't happen with cached data)
-            logger.warning(f"No items data found for item_exchange contract {contract_id}")
-            expanded["items"] = []
-            expanded["item_count"] = 0
+            # No items data available - fetch from public API for public contracts
+            try:
+                contract_items = fetch_public_contract_items(contract_id)
+                if contract_items:
+                    # Process the fetched items
+                    items_details = []
+                    for item in contract_items:
+                        type_id = item.get("type_id")
+                        if type_id:
+                            type_id_str = str(type_id)
+
+                            # Get type data (fetch if missing)
+                            type_data = None
+                            if type_id_str in type_cache:
+                                type_data = type_cache[type_id_str]
+                            elif type_id_str in new_type_data:
+                                type_data = new_type_data[type_id_str]
+                            else:
+                                # Need to fetch type data
+                                try:
+                                    type_data = await fetch_public_esi(f"/universe/types/{type_id}/")
+                                    if type_data:
+                                        new_type_data[type_id_str] = type_data
+                                except Exception as e:
+                                    logger.warning(f"Failed to fetch type data for {type_id}: {e}")
+
+                            # Build item details
+                            item_name = type_data.get("name", f"Type {type_id}") if type_data else f"Type {type_id}"
+
+                            item_detail = {
+                                "type_id": type_id,
+                                "name": item_name,
+                                "quantity": item.get("quantity", 1),
+                                "is_blueprint_copy": item.get("is_blueprint_copy", False)
+                            }
+
+                            # Determine blueprint type
+                            if item_detail["is_blueprint_copy"]:
+                                item_detail["blueprint_type"] = "BPC"
+                                if "time_efficiency" in item:
+                                    item_detail["time_efficiency"] = item.get("time_efficiency", 0)
+                                if "material_efficiency" in item:
+                                    item_detail["material_efficiency"] = item.get("material_efficiency", 0)
+                                if "runs" in item:
+                                    item_detail["runs"] = item.get("runs", 1)
+                            else:
+                                group_id = type_data.get("group_id") if type_data else None
+                                if group_id == 2:  # Blueprint group
+                                    item_detail["blueprint_type"] = "BPO"
+                                    item_detail["time_efficiency"] = None
+                                    item_detail["material_efficiency"] = None
+                                else:
+                                    item_detail["blueprint_type"] = None
+
+                            items_details.append(item_detail)
+
+                    expanded["items"] = items_details
+                    expanded["item_count"] = len(items_details)
+                    logger.debug(f"Fetched {len(items_details)} items for contract {contract_id}")
+                else:
+                    # No items found
+                    expanded["items"] = []
+                    expanded["item_count"] = 0
+            except Exception as e:
+                logger.warning(f"Failed to fetch items for contract {contract_id}: {e}")
+                expanded["items"] = []
+                expanded["item_count"] = 0
     else:
         # Non-item_exchange contracts don't have items
         expanded["items"] = []
@@ -1310,7 +1384,7 @@ async def expand_all_contracts_async(contracts: List[Dict[str, Any]]) -> List[Di
     logger.info(f"expand_all_contracts_async called with {len(contracts)} contracts")
 
     # Initialize cache manager
-    cache_manager = ContractCacheManager("../cache")
+    cache_manager = ContractCacheManager(CACHE_DIR)
 
     # Load existing caches
     logger.info("Loading existing caches...")
@@ -1455,8 +1529,8 @@ async def fetch_all_contracts_in_region(region_id: int) -> List[Dict[str, Any]]:
         page += 1
 
         # Safety limit
-        if page > 10:  # Limit to 10 pages for now
-            logger.warning("Reached page limit of 10, stopping")
+        if page > 50:  # Limit to 50 pages for now
+            logger.warning("Reached page limit of 50, stopping")
             break
 
     logger.info(f"Total contracts found: {len(all_contracts)}")

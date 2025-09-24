@@ -14,6 +14,7 @@ from typing import Any, Dict, Optional
 import requests
 
 from config import (
+    CACHE_DIR,
     EMAIL_FROM,
     EMAIL_PASSWORD,
     EMAIL_SMTP_PORT,
@@ -82,7 +83,7 @@ def get_region_from_location(location_id: int) -> Optional[int]:
         return None
 
     # Load cache
-    cache_file = "cache/region_cache.json"
+    cache_file = os.path.join(CACHE_DIR, "region_cache.json")
     try:
         with open(cache_file, "r") as f:
             region_cache = json.load(f)

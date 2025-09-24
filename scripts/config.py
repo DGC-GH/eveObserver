@@ -22,7 +22,7 @@ WP_APP_PASSWORD = os.getenv("WP_APP_PASSWORD")
 WP_PER_PAGE = int(os.getenv("WP_PER_PAGE", 100))
 
 # Cache Configuration
-CACHE_DIR = os.getenv("CACHE_DIR", "cache")
+CACHE_DIR = os.path.join(os.path.dirname(os.path.dirname(__file__)), "cache")
 BLUEPRINT_CACHE_FILE = os.path.join(CACHE_DIR, "blueprint_names.json")
 BLUEPRINT_TYPE_CACHE_FILE = os.path.join(CACHE_DIR, "blueprint_types.json")
 LOCATION_CACHE_FILE = os.path.join(CACHE_DIR, "location_names.json")

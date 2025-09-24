@@ -894,6 +894,10 @@ def fetch_public_contract_items(contract_id: int, max_retries: int = 3) -> Optio
             if int(remaining) < 20:
                 logger.warning(f"ESI rate limit low: {remaining} requests remaining, resets in {reset_time}s")
 
+            # Handle empty response (valid for contracts with no items)
+            if not response.text.strip():
+                return []
+
             return response.json()
         except requests.exceptions.RequestException as e:
             if attempt < max_retries - 1:
