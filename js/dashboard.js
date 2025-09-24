@@ -97,10 +97,22 @@ class EVEDashboard {
             if (initialStatus.running) {
                 console.log('🔄 [INIT] Found existing sync running, updating display...');
                 this.updateSyncStatusDisplay(initialStatus);
+            } else {
+                console.log('🔄 [INIT] No sync running, showing ready state...');
+                this.updateSyncStatusDisplay({ running: false, progress: 0, message: 'Ready - Dashboard loaded successfully' });
             }
             console.log('✅ [INIT] Initial sync status check completed');
         } catch (error) {
             console.error('❌ [INIT ERROR] Initial sync status check failed:', error);
+            this.updateSyncStatusDisplay({ running: false, progress: 0, message: 'Ready - Dashboard loaded (status check failed)' });
+        }
+
+        try {
+            console.log('🔄 [INIT] Making progress bar and logs always visible...');
+            this.showProgressAndLogsAlways();
+            console.log('✅ [INIT] Progress bar and logs are now always visible');
+        } catch (error) {
+            console.error('❌ [INIT ERROR] Failed to show progress and logs:', error);
         }
 
         console.log('🎉 [INIT] Dashboard initialization completed (with error handling)');
@@ -321,6 +333,13 @@ class EVEDashboard {
 
         // Load logs on page load
         this.refreshLogs();
+
+        // Make sure logs are always visible
+        const logsContent = document.getElementById('logs-content');
+        if (logsContent) {
+            logsContent.style.display = 'block';
+            console.log('✅ [SETUP] Logs content is now always visible');
+        }
     }
 
     async refreshLogs() {
@@ -676,9 +695,29 @@ class EVEDashboard {
         });
     }
 
-    async checkSectionSyncStatus(section) {
-        // For now, just check if any sync is running - in the future this could be section-specific
-        return await this.checkSyncStatus();
+    showProgressAndLogsAlways() {
+        console.log('🔄 [ALWAYS VISIBLE] Making progress bar and logs always visible...');
+
+        // Show the main progress container
+        const progressContainer = document.getElementById('sync-progress-container');
+        if (progressContainer) {
+            progressContainer.style.display = 'block';
+            console.log('✅ [ALWAYS VISIBLE] Progress container is now visible');
+        }
+
+        // Show the logs content
+        const logsContent = document.getElementById('logs-content');
+        if (logsContent) {
+            logsContent.style.display = 'block';
+            console.log('✅ [ALWAYS VISIBLE] Logs content is now visible');
+        }
+
+        // Show the sync status display (always visible now)
+        const statusDiv = document.getElementById('sync-status-display');
+        if (statusDiv) {
+            statusDiv.style.display = 'block';
+            console.log('✅ [ALWAYS VISIBLE] Sync status display is now visible');
+        }
     }
 
     updateSyncStatusDisplay(status) {
@@ -689,15 +728,19 @@ class EVEDashboard {
         const stopButton = document.getElementById('stop-sync-button');
         const stageProgressDiv = document.getElementById('sync-stage-progress');
 
+        console.log('🔄 [SYNC STATUS] Updating display - statusDiv:', !!statusDiv, 'progressBar:', !!progressBar, 'progressFill:', !!progressFill, 'statusText:', !!statusText);
+
         if (!statusDiv || !progressBar || !progressFill || !statusText) {
             console.log('⚠️ [SYNC STATUS] Status display elements not found');
             return;
         }
 
+        // Always show the status display (progress bar is now always visible)
+        if (statusDiv) statusDiv.style.display = 'block';
+
         if (status.running) {
-            statusDiv.style.display = 'block';
-            progressFill.style.width = `${status.progress || 0}%`;
-            statusText.textContent = status.message || 'Sync in progress...';
+            if (progressFill) progressFill.style.width = `${status.progress || 0}%`;
+            if (statusText) statusText.textContent = status.message || 'Sync in progress...';
 
             // Show stop button if sync is running
             if (stopButton) {
@@ -712,10 +755,16 @@ class EVEDashboard {
                 stageProgressDiv.style.display = 'none';
             }
         } else {
-            statusDiv.style.display = 'none';
+            // Show ready state instead of hiding
+            if (progressFill) progressFill.style.width = '0%';
+            if (statusText) statusText.textContent = status.message || 'Ready - No sync running';
+
+            // Hide stop button when no sync is running
             if (stopButton) {
                 stopButton.style.display = 'none';
             }
+
+            // Hide stage progress when no sync is running
             if (stageProgressDiv) {
                 stageProgressDiv.style.display = 'none';
             }
@@ -846,6 +895,13 @@ class EVEDashboard {
         const progressFill = document.getElementById(`sync-progress-${section}-fill`);
         const progressText = document.getElementById(`sync-progress-${section}-text`);
         const progressContent = document.getElementById(`sync-progress-${section}-content`);
+
+        console.log(`🔄 [SYNC PROGRESS] Looking for elements for section: ${section}`);
+        console.log(`🔄 [SYNC PROGRESS] progressContainer found:`, !!progressContainer);
+        console.log(`🔄 [SYNC PROGRESS] progressItem found:`, !!progressItem);
+        console.log(`🔄 [SYNC PROGRESS] progressFill found:`, !!progressFill);
+        console.log(`🔄 [SYNC PROGRESS] progressText found:`, !!progressText);
+        console.log(`🔄 [SYNC PROGRESS] progressContent found:`, !!progressContent);
 
         if (progressContainer) progressContainer.style.display = 'block';
         if (progressItem) progressItem.style.display = 'block';
@@ -1144,8 +1200,8 @@ class EVEDashboard {
 
         const animate = () => {
             if (currentStep < steps.length) {
-                progressFill.style.width = `${steps[currentStep]}%`;
-                progressText.textContent = message;
+                if (progressFill) progressFill.style.width = `${steps[currentStep]}%`;
+                if (progressText) progressText.textContent = message;
                 currentStep++;
                 setTimeout(animate, 200);
             }

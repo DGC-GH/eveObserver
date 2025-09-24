@@ -1025,7 +1025,7 @@ class EVE_Observer {
             </div>
 
             <!-- Sync Progress Area -->
-            <div id="sync-progress-container" style="display: none; margin-top: 20px;">
+            <div id="sync-progress-container" style="margin-top: 20px;">
                 <h3><?php _e('Sync Progress', 'eve-observer'); ?></h3>
 
                 <!-- Individual Sync Progress Areas -->
@@ -1351,7 +1351,7 @@ class EVE_Observer {
                     <div class="eve-loading-spinner"></div>
                     <span>Loading logs...</span>
                 </div>
-                <div id="logs-content" style="display: none;">
+                <div id="logs-content">
                     <div class="eve-search-container">
                         <input type="text" class="eve-search-input" id="logs-search" placeholder="Search logs...">
                         <div style="margin-top: 10px;">
