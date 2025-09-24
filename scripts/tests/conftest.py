@@ -1,5 +1,6 @@
 """Pytest configuration and fixtures."""
 import warnings
+
 import pytest
 
 # Suppress urllib3 NotOpenSSLWarning

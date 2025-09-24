@@ -7,13 +7,10 @@ import asyncio
 import json
 import logging
 import os
-import sys
-from typing import Dict, List, Any, Optional
-
-# Add the scripts directory to the path so we can import our modules
-sys.path.insert(0, os.path.dirname(__file__))
+from typing import Any, Dict, List
 
 import aiohttp
+
 from api_client import fetch_public_esi, get_session
 from config import ESI_BASE_URL
 
@@ -49,7 +46,7 @@ class ContractCacheManager:
         cache_path = self.get_issuer_cache_path()
         try:
             if os.path.exists(cache_path):
-                with open(cache_path, 'r') as f:
+                with open(cache_path, "r") as f:
                     return json.load(f)
         except Exception as e:
             logger.warning(f"Failed to load issuer cache: {e}")
@@ -59,7 +56,7 @@ class ContractCacheManager:
         """Save issuer names cache."""
         cache_path = self.get_issuer_cache_path()
         try:
-            with open(cache_path, 'w') as f:
+            with open(cache_path, "w") as f:
                 json.dump(issuer_cache, f, indent=2)
             logger.info(f"Saved {len(issuer_cache)} issuer names to cache")
         except Exception as e:
@@ -70,7 +67,7 @@ class ContractCacheManager:
         cache_path = self.get_type_cache_path()
         try:
             if os.path.exists(cache_path):
-                with open(cache_path, 'r') as f:
+                with open(cache_path, "r") as f:
                     return json.load(f)
         except Exception as e:
             logger.warning(f"Failed to load type cache: {e}")
@@ -80,7 +77,7 @@ class ContractCacheManager:
         """Save type data cache."""
         cache_path = self.get_type_cache_path()
         try:
-            with open(cache_path, 'w') as f:
+            with open(cache_path, "w") as f:
                 json.dump(type_cache, f, indent=2)
             logger.info(f"Saved {len(type_cache)} type entries to cache")
         except Exception as e:
@@ -91,51 +88,66 @@ class ContractCacheManager:
         cache_path = self.get_contract_items_cache_path()
         try:
             if os.path.exists(cache_path):
-                with open(cache_path, 'r') as f:
+                with open(cache_path, "r") as f:
                     return json.load(f)
         except Exception as e:
-            logger.warning(f"Failed to load contract items cache: {e}")
+            msg = "Failed to load contract items cache: {}"
+            logger.warning(msg.format(e))
         return {}
 
-    async def save_contract_items_cache(self, items_cache: Dict[str, List[Dict[str, Any]]]) -> None:
+    async def save_contract_items_cache(
+        self, items_cache: Dict[str, List[Dict[str, Any]]]
+    ) -> None:
         """Save contract items cache."""
         cache_path = self.get_contract_items_cache_path()
         try:
-            with open(cache_path, 'w') as f:
+            with open(cache_path, "w") as f:
                 json.dump(items_cache, f, indent=2)
-            logger.info(f"Saved {len(items_cache)} contract items to cache")
+            count = len(items_cache)
+            logger.info("Saved {} contract items to cache".format(count))
         except Exception as e:
-            logger.error(f"Failed to save contract items cache: {e}")
+            msg = "Failed to save contract items cache: {}"
+            logger.error(msg.format(e))
 
     async def load_corporation_cache(self) -> Dict[str, str]:
         """Load cached corporation names."""
         cache_path = self.get_corporation_cache_path()
         try:
             if os.path.exists(cache_path):
-                with open(cache_path, 'r') as f:
+                with open(cache_path, "r") as f:
                     return json.load(f)
         except Exception as e:
-            logger.warning(f"Failed to load corporation cache: {e}")
+            msg = "Failed to load corporation cache: {}"
+            logger.warning(msg.format(e))
         return {}
 
     async def save_corporation_cache(self, corporation_cache: Dict[str, str]) -> None:
         """Save corporation names cache."""
         cache_path = self.get_corporation_cache_path()
         try:
-            with open(cache_path, 'w') as f:
+            with open(cache_path, "w") as f:
                 json.dump(corporation_cache, f, indent=2)
-            logger.info(f"Saved {len(corporation_cache)} corporation names to cache")
+            count = len(corporation_cache)
+            logger.info("Saved {} corporation names to cache".format(count))
         except Exception as e:
-            logger.error(f"Failed to save corporation cache: {e}")
+            msg = "Failed to save corporation cache: {}"
+            logger.error(msg.format(e))
 
-    async def get_missing_issuer_names(self, issuer_ids: List[int], existing_cache: Dict[str, str]) -> Dict[str, str]:
+    async def get_missing_issuer_names(
+        self, issuer_ids: List[int], existing_cache: Dict[str, str]
+    ) -> Dict[str, str]:
         """Get issuer names that are not in cache."""
-        missing_ids = [str(issuer_id) for issuer_id in issuer_ids if str(issuer_id) not in existing_cache]
+        missing_ids = [
+            str(issuer_id)
+            for issuer_id in issuer_ids
+            if str(issuer_id) not in existing_cache
+        ]
 
         if not missing_ids:
             return {}
 
-        logger.info(f"Fetching {len(missing_ids)} missing issuer names...")
+        count = len(missing_ids)
+        logger.info("Fetching {} missing issuer names...".format(count))
 
         # Batch fetch missing issuer names
         batch_size = 1000
@@ -143,58 +155,84 @@ class ContractCacheManager:
         total_processed = 0
 
         for i in range(0, len(missing_ids), batch_size):
-            batch_ids = missing_ids[i:i + batch_size]
+            batch_ids = missing_ids[i: i + batch_size]
             try:
                 # Use the universe/names endpoint for batch resolution
                 sess = await get_session()
                 async with sess.post(
                     f"{ESI_BASE_URL}/universe/names/",
                     json=[int(id) for id in batch_ids],
-                    headers={"Accept": "application/json", "Content-Type": "application/json"},
+                    headers={
+                        "Accept": "application/json",
+                        "Content-Type": "application/json",
+                    },
                     timeout=aiohttp.ClientTimeout(total=30),
                 ) as response:
-                        response.raise_for_status()
-                        names_data = await response.json()
+                    response.raise_for_status()
+                    names_data = await response.json()
 
-                        for name_info in names_data:
-                            entity_id = str(name_info.get("id"))
-                            name = name_info.get("name")
-                            if entity_id and name:
-                                new_names[entity_id] = name
+                    for name_info in names_data:
+                        entity_id = str(name_info.get("id"))
+                        name = name_info.get("name")
+                        if entity_id and name:
+                            new_names[entity_id] = name
 
             except Exception as e:
-                logger.warning(f"Failed to fetch batch of issuer names: {e}")
+                msg = "Failed to fetch batch of issuer names: {}"
+                logger.warning(msg.format(e))
 
             total_processed += len(batch_ids)
             progress_pct = (total_processed / len(missing_ids)) * 100
-            logger.info(f"Issuer names progress: {total_processed}/{len(missing_ids)} ({progress_pct:.1f}%) - {len(new_names)} names fetched")
+            progress_msg = (
+                "Issuer names progress: {}/{} " "({:.1f}%) - {} names fetched"
+            )
+            logger.info(
+                progress_msg.format(
+                    total_processed, len(missing_ids), progress_pct, len(new_names)
+                )
+            )
 
         return new_names
 
-    async def get_missing_type_data(self, type_ids: List[int], existing_cache: Dict[str, Dict[str, Any]]) -> Dict[str, Dict[str, Any]]:
+    async def get_missing_type_data(
+        self, type_ids: List[int], existing_cache: Dict[str, Dict[str, Any]]
+    ) -> Dict[str, Dict[str, Any]]:
         """Get type data that is not in cache."""
-        missing_ids = [str(type_id) for type_id in type_ids if str(type_id) not in existing_cache]
+        missing_ids = [
+            str(type_id) for type_id in type_ids if str(type_id) not in existing_cache
+        ]
 
         if not missing_ids:
             return {}
 
-        logger.info(f"Fetching {len(missing_ids)} missing type data entries...")
+        count = len(missing_ids)
+        logger.info("Fetching {} missing type data entries...".format(count))
 
         new_types = {}
         total_processed = 0
-        
+
         for type_id in missing_ids:
             try:
                 type_data = await fetch_public_esi(f"/universe/types/{type_id}/")
                 if type_data:
                     new_types[type_id] = type_data
             except Exception as e:
-                logger.warning(f"Failed to fetch type data for {type_id}: {e}")
+                msg = "Failed to fetch type data for {}: {}"
+                logger.warning(msg.format(type_id, e))
 
             total_processed += 1
-            if total_processed % 100 == 0 or total_processed == len(missing_ids):  # Log progress every 100 items or at the end
+            if total_processed % 100 == 0 or total_processed == len(
+                missing_ids
+            ):  # Log progress every 100 items or at the end
                 progress_pct = (total_processed / len(missing_ids)) * 100
-                logger.info(f"Type data progress: {total_processed}/{len(missing_ids)} ({progress_pct:.1f}%) - {len(new_types)} types fetched")
+                progress_msg = (
+                    "Type data progress: {}/{} " "({:.1f}%) - {} types fetched"
+                )
+                logger.info(
+                    progress_msg.format(
+                        total_processed, len(missing_ids), progress_pct, len(new_types)
+                    )
+                )
 
         return new_types
 
@@ -209,7 +247,6 @@ async def preload_caches_for_contracts(contracts: List[Dict[str, Any]]) -> None:
 
     # Collect all issuer IDs
     issuer_ids = set()
-    type_ids = set()
 
     for contract in contracts:
         if contract.get("issuer_id"):
@@ -222,13 +259,16 @@ async def preload_caches_for_contracts(contracts: List[Dict[str, Any]]) -> None:
     type_cache = await cache_manager.load_type_cache()
 
     # Get missing issuer names
-    missing_issuers = await cache_manager.get_missing_issuer_names(list(issuer_ids), issuer_cache)
+    missing_issuers = await cache_manager.get_missing_issuer_names(
+        list(issuer_ids), issuer_cache
+    )
     if missing_issuers:
         issuer_cache.update(missing_issuers)
         await cache_manager.save_issuer_cache(issuer_cache)
 
-    logger.info(f"Issuer cache: {len(issuer_cache)} total entries")
-    logger.info(f"Type cache: {len(type_cache)} total entries")
+    logger.info("Issuer cache: {} total entries".format(len(issuer_cache)))
+    count = len(type_cache)
+    logger.info("Type cache: {} total entries".format(count))
 
 
 if __name__ == "__main__":

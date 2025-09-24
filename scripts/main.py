@@ -15,23 +15,17 @@ from typing import Any, Dict, List, Tuple
 import psutil
 from dotenv import load_dotenv
 
-from api_client import get_session, refresh_token, cleanup_session, api_call_counter
+from api_client import api_call_counter, cleanup_session, get_session, refresh_token
 from cache_manager import load_wp_post_id_cache
-from config import (
-    CHARACTER_PROCESSING_CONCURRENCY,
-    LOG_FILE,
-    LOG_LEVEL,
-    TOKENS_FILE,
-    WORDPRESS_BATCH_SIZE,
-)
+from config import CHARACTER_PROCESSING_CONCURRENCY, LOG_FILE, LOG_LEVEL, TOKENS_FILE, WORDPRESS_BATCH_SIZE
 from corporation_processor import process_corporation_data
 from fetch_data import (
+    cleanup_old_posts,
     clear_log_file,
     collect_corporation_members,
     get_allowed_entities,
     initialize_caches,
     process_character_data,
-    cleanup_old_posts,
 )
 from utils import parse_arguments
 
@@ -56,11 +50,7 @@ def get_memory_usage() -> float:
 
 
 async def log_performance_metrics(
-    total_time: float,
-    api_calls: int,
-    contracts_processed: int,
-    characters_processed: int,
-    cache_stats: Dict[str, Any]
+    total_time: float, api_calls: int, contracts_processed: int, characters_processed: int, cache_stats: Dict[str, Any]
 ) -> None:
     """Log detailed performance metrics for monitoring."""
     memory_mb = get_memory_usage()
@@ -155,6 +145,7 @@ async def process_all_data(
 
         # Execute character processing in parallel with concurrency control
         semaphore = asyncio.Semaphore(CHARACTER_PROCESSING_CONCURRENCY)  # Configurable concurrency limit
+
         async def process_with_semaphore(task):
             async with semaphore:
                 return await task
@@ -162,7 +153,9 @@ async def process_all_data(
         character_start = time.time()
         await asyncio.gather(*[process_with_semaphore(task) for task in character_tasks])
         character_time = time.time() - character_start
-        logger.info(f"Parallel character processing completed in {character_time:.2f}s for {len(character_tasks)} characters")
+        logger.info(
+            f"Parallel character processing completed in {character_time:.2f}s for {len(character_tasks)} characters"
+        )
 
 
 async def main() -> None:
@@ -198,7 +191,7 @@ async def main() -> None:
 
         total_time = time.time() - start_time
         logger.info(f"Total execution completed in {total_time:.2f}s")
-        
+
         # Log performance metrics
         cache_stats = {}  # Will be populated by log_cache_performance
         await log_performance_metrics(
@@ -206,9 +199,9 @@ async def main() -> None:
             api_calls=api_call_counter.get(),  # Track API calls
             contracts_processed=0,  # TODO: Track contracts processed
             characters_processed=len(tokens),
-            cache_stats=cache_stats
+            cache_stats=cache_stats,
         )
-        
+
         # Cleanup session
         await cleanup_session()
     finally:

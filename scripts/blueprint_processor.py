@@ -465,7 +465,7 @@ async def update_blueprint_from_asset_in_wp(
 
     slug = f"blueprint-{item_id}"
 
-        # Try to get post ID from cache first
+    # Try to get post ID from cache first
     cached_post_id = get_cached_wp_post_id(wp_post_id_cache, "eve_blueprint", item_id)
 
     if cached_post_id:
@@ -624,7 +624,7 @@ def cleanup_blueprint_posts() -> None:
     logger.info("Cleaning up blueprint posts...")
 
     response = requests.get(
-        f"{WP_BASE_URL}/wp-json/wp/v2/eve_blueprint", auth=get_wp_auth(), params={"per_page": WP_PER_PAGE}
+        f"{WP_BASE_URL}/wp-json/wp/v2/eve_blueprint", auth=get_wp_auth(), params={"per_page": WP_PER_PAGE}, timeout=30
     )
     if response.status_code == 200:
         blueprints = response.json()
@@ -648,6 +648,7 @@ def cleanup_blueprint_posts() -> None:
                 corp_response = requests.get(
                     f"{WP_BASE_URL}/wp-json/wp/v2/eve_corporation?meta_key=_eve_corp_id&meta_value={owner_id}",
                     auth=get_wp_auth(),
+                    timeout=30,
                 )
                 if corp_response.status_code == 200:
                     corp_posts = corp_response.json()

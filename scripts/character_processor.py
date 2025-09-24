@@ -400,16 +400,34 @@ async def process_character_blueprints(
         failed_structures: Failed structure fetch cache.
     """
     await process_character_blueprints_from_endpoint(
-        char_id, access_token, char_name, wp_post_id_cache, blueprint_cache,
-        location_cache, structure_cache, failed_structures
+        char_id,
+        access_token,
+        char_name,
+        wp_post_id_cache,
+        blueprint_cache,
+        location_cache,
+        structure_cache,
+        failed_structures,
     )
     await process_character_blueprints_from_assets(
-        char_id, access_token, char_name, wp_post_id_cache, blueprint_cache,
-        location_cache, structure_cache, failed_structures
+        char_id,
+        access_token,
+        char_name,
+        wp_post_id_cache,
+        blueprint_cache,
+        location_cache,
+        structure_cache,
+        failed_structures,
     )
     await process_character_blueprints_from_industry_jobs(
-        char_id, access_token, char_name, wp_post_id_cache, blueprint_cache,
-        location_cache, structure_cache, failed_structures
+        char_id,
+        access_token,
+        char_name,
+        wp_post_id_cache,
+        blueprint_cache,
+        location_cache,
+        structure_cache,
+        failed_structures,
     )
 
 

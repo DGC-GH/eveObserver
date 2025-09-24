@@ -4,13 +4,14 @@ Quick script to look up item names for specific type_ids
 """
 
 import asyncio
-import sys
 import os
+import sys
 
 # Add the scripts directory to the path
 sys.path.insert(0, os.path.dirname(__file__))
 
-from api_client import fetch_public_esi, cleanup_session
+from api_client import cleanup_session, fetch_public_esi
+
 
 async def get_item_name(type_id: int) -> str:
     """Get item name from ESI for a given type_id"""
@@ -18,6 +19,7 @@ async def get_item_name(type_id: int) -> str:
     if item_data:
         return item_data.get("name", f"Unknown Item {type_id}")
     return f"Unknown Item {type_id}"
+
 
 async def main():
     # Check the item name for type_id 29050 (from the debug script)
@@ -32,6 +34,7 @@ async def main():
         print(f"Type ID {tid}: {name}")
 
     await cleanup_session()
+
 
 if __name__ == "__main__":
     asyncio.run(main())

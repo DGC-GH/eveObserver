@@ -47,7 +47,7 @@ def check_image_exists(filename):
     # Search for media by filename
     search_url = f"{WP_BASE_URL}/wp-json/wp/v2/media"
     params = {"search": filename, "per_page": 100}
-    response = requests.get(search_url, auth=get_wp_auth(), params=params)
+    response = requests.get(search_url, auth=get_wp_auth(), params=params, timeout=30)
     if response.status_code == 200:
         media_items = response.json()
         # Look for exact filename match
@@ -62,7 +62,7 @@ def remove_duplicate_images(base_filename):
     duplicates = []
     search_url = f"{WP_BASE_URL}/wp-json/wp/v2/media"
     params = {"search": base_filename, "per_page": 100}
-    response = requests.get(search_url, auth=get_wp_auth(), params=params)
+    response = requests.get(search_url, auth=get_wp_auth(), params=params, timeout=30)
     if response.status_code == 200:
         media_items = response.json()
         # Find items with suffixes like -1, -2, etc.
@@ -86,7 +86,7 @@ def remove_duplicate_images(base_filename):
         # Delete duplicates
         for item in duplicates:
             delete_url = f"{WP_BASE_URL}/wp-json/wp/v2/media/{item['id']}"
-            delete_response = requests.delete(delete_url, auth=get_wp_auth())
+            delete_response = requests.delete(delete_url, auth=get_wp_auth(), timeout=30)
             if delete_response.status_code in [200, 204]:
                 logger.info(f"Deleted duplicate image: {item.get('title', {}).get('rendered')}")
             else:
@@ -110,7 +110,7 @@ def upload_image_to_wordpress(image_url, filename, alt_text=""):
 
         # Upload to WordPress using source_url
         upload_url = f"{WP_BASE_URL}/wp-json/wp/v2/media"
-        upload_response = requests.post(upload_url, json=data, auth=get_wp_auth())
+        upload_response = requests.post(upload_url, json=data, auth=get_wp_auth(), timeout=30)
 
         if upload_response.status_code in [200, 201]:
             media_data = upload_response.json()
@@ -146,7 +146,7 @@ def update_character_portrait(post_id, char_id, char_name):
     post_data = {"meta": {"_thumbnail_external_url": image_url}}
 
     update_url = f"{WP_BASE_URL}/wp-json/wp/v2/eve_character/{post_id}"
-    response = requests.put(update_url, json=post_data, auth=get_wp_auth())
+    response = requests.put(update_url, json=post_data, auth=get_wp_auth(), timeout=30)
 
     logger.info(f"Update response for {char_name}: {response.status_code}")
     if response.status_code in [200, 201]:
@@ -169,7 +169,7 @@ def main():
     while True:
         posts_url = f"{WP_BASE_URL}/wp-json/wp/v2/eve_character"
         params = {"per_page": per_page, "page": page}
-        response = requests.get(posts_url, auth=get_wp_auth(), params=params)
+        response = requests.get(posts_url, auth=get_wp_auth(), params=params, timeout=30)
 
         if response.status_code != 200:
             logger.error(f"Failed to fetch character posts page {page}: {response.status_code}")

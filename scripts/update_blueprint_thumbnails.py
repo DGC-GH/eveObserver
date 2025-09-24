@@ -21,7 +21,9 @@ def update_blueprint_thumbnails():
     print("Fetching all blueprint posts...")
 
     # First, get the total count
-    response = requests.get(f"{WP_BASE_URL}/wp-json/wp/v2/eve_blueprint", auth=get_wp_auth(), params={"per_page": 1})
+    response = requests.get(
+        f"{WP_BASE_URL}/wp-json/wp/v2/eve_blueprint", auth=get_wp_auth(), params={"per_page": 1}, timeout=30
+    )
 
     if response.status_code != 200:
         print(f"Failed to get total count: {response.status_code} - {response.text}")
@@ -42,6 +44,7 @@ def update_blueprint_thumbnails():
             f"{WP_BASE_URL}/wp-json/wp/v2/eve_blueprint",
             auth=get_wp_auth(),
             params={"per_page": WP_PER_PAGE, "page": page},
+            timeout=30,
         )
 
         if response.status_code != 200:
@@ -80,7 +83,10 @@ def update_blueprint_thumbnails():
                 }
 
                 update_response = requests.post(
-                    f"{WP_BASE_URL}/wp-json/wp/v2/eve_blueprint/{post_id}", json=update_data, auth=get_wp_auth()
+                    f"{WP_BASE_URL}/wp-json/wp/v2/eve_blueprint/{post_id}",
+                    json=update_data,
+                    auth=get_wp_auth(),
+                    timeout=30,
                 )
 
                 if update_response.status_code in [200, 201]:

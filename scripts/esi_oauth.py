@@ -135,7 +135,7 @@ def authorize_character(character_name=None):
 
     # Get character info
     headers = {"Authorization": f'Bearer {token["access_token"]}'}
-    response = requests.get("https://login.eveonline.com/oauth/verify", headers=headers)
+    response = requests.get("https://login.eveonline.com/oauth/verify", headers=headers, timeout=30)
     logger.debug(f"Character info response: {response.status_code}")
     if response.status_code == 200:
         char_info = response.json()
@@ -170,7 +170,7 @@ def refresh_token(char_id):
 
     # Use Basic auth as per ESI docs
     data = {"grant_type": "refresh_token", "refresh_token": refresh_token_str}
-    response = requests.post(TOKEN_URL, data=data, auth=(CLIENT_ID, CLIENT_SECRET))
+    response = requests.post(TOKEN_URL, data=data, auth=(CLIENT_ID, CLIENT_SECRET), timeout=30)
     if response.status_code == 200:
         token_data = response.json()
         # Update stored token

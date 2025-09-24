@@ -31,7 +31,7 @@ async def load_contract_items_cache() -> Dict[str, List[Dict[str, Any]]]:
         return {}
 
     try:
-        with open(cache_file, 'r') as f:
+        with open(cache_file, "r") as f:
             data = json.load(f)
         logger.info(f"Loaded contract items cache with {len(data)} contracts")
         return data
@@ -50,7 +50,7 @@ async def expand_contracts_with_cached_items():
         logger.error(f"Contract cache file not found: {cache_file}")
         return
 
-    with open(cache_file, 'r') as f:
+    with open(cache_file, "r") as f:
         contracts = json.load(f)
 
     logger.info(f"Loaded {len(contracts)} contracts from cache")
@@ -85,6 +85,7 @@ async def expand_contracts_with_cached_items():
         for type_id in missing_type_ids:
             try:
                 from api_client import fetch_public_esi
+
                 type_data = await fetch_public_esi(f"/universe/types/{type_id}")
                 if type_data:
                     new_type_data[str(type_id)] = type_data
@@ -129,7 +130,7 @@ async def expand_contracts_with_cached_items():
                             "type_id": type_id,
                             "name": item_name,
                             "quantity": item.get("quantity", 1),
-                            "is_blueprint_copy": item.get("is_blueprint_copy", False)
+                            "is_blueprint_copy": item.get("is_blueprint_copy", False),
                         }
 
                         # Add blueprint-specific fields
@@ -172,7 +173,7 @@ async def expand_contracts_with_cached_items():
     logger.info(f"Expanded {contracts_with_items} contracts with item details")
 
     # Save the expanded contracts back to cache
-    with open(cache_file, 'w') as f:
+    with open(cache_file, "w") as f:
         json.dump(contracts, f, indent=2, default=str)
 
     logger.info(f"Saved expanded contracts to {cache_file}")

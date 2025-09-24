@@ -22,7 +22,7 @@ def update_planet_thumbnails():
 
     # Get all planet posts
     response = requests.get(
-        f"{WP_BASE_URL}/wp-json/wp/v2/eve_planet", auth=get_wp_auth(), params={"per_page": WP_PER_PAGE}
+        f"{WP_BASE_URL}/wp-json/wp/v2/eve_planet", auth=get_wp_auth(), params={"per_page": WP_PER_PAGE}, timeout=30
     )
 
     if response.status_code != 200:
@@ -77,7 +77,7 @@ def update_planet_thumbnails():
             }
 
             update_response = requests.post(
-                f"{WP_BASE_URL}/wp-json/wp/v2/eve_planet/{post_id}", json=update_data, auth=get_wp_auth()
+                f"{WP_BASE_URL}/wp-json/wp/v2/eve_planet/{post_id}", json=update_data, auth=get_wp_auth(), timeout=30
             )
 
             if update_response.status_code in [200, 201]:

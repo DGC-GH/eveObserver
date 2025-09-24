@@ -20,7 +20,7 @@ def update_contract_titles():
 
     # Get all contract posts
     response = requests.get(
-        f"{WP_BASE_URL}/wp-json/wp/v2/eve_contract", auth=get_wp_auth(), params={"per_page": WP_PER_PAGE}
+        f"{WP_BASE_URL}/wp-json/wp/v2/eve_contract", auth=get_wp_auth(), params={"per_page": WP_PER_PAGE}, timeout=30
     )
 
     if response.status_code != 200:
@@ -90,7 +90,7 @@ def update_contract_titles():
             update_data = {"title": new_title, "meta": {"_eve_last_updated": datetime.now(timezone.utc).isoformat()}}
 
             update_response = requests.post(
-                f"{WP_BASE_URL}/wp-json/wp/v2/eve_contract/{post_id}", json=update_data, auth=get_wp_auth()
+                f"{WP_BASE_URL}/wp-json/wp/v2/eve_contract/{post_id}", json=update_data, auth=get_wp_auth(), timeout=30
             )
 
             if update_response.status_code in [200, 201]:

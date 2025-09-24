@@ -9,23 +9,11 @@ import logging
 from datetime import datetime, timezone
 from typing import Any, Dict, List, Optional
 
-from api_client import (
-    fetch_type_icon,
-    validate_input_params,
-    wp_request,
-)
-from blueprint_processor import (
-    update_blueprint_from_asset_in_wp,
-)
-from cache_manager import (
-    load_blueprint_cache,
-    load_blueprint_type_cache,
-)
+from api_client import fetch_type_icon, validate_input_params, wp_request
+from blueprint_processor import update_blueprint_from_asset_in_wp
+from cache_manager import load_blueprint_cache, load_blueprint_type_cache
 from config import WORDPRESS_BATCH_SIZE
-from contract_fetching import (
-    fetch_character_contract_items,
-    fetch_corporation_contract_items,
-)
+from contract_fetching import fetch_character_contract_items, fetch_corporation_contract_items
 
 logger = logging.getLogger(__name__)
 
@@ -84,6 +72,7 @@ async def generate_contract_title(
                 item_name = load_blueprint_cache().get(str(type_id))
                 if item_name is None:
                     from api_client import fetch_public_esi
+
                     type_data = await fetch_public_esi(f"/universe/types/{type_id}")
                     if type_data:
                         item_name = type_data.get("name", f"Item {type_id}")
@@ -92,6 +81,7 @@ async def generate_contract_title(
                             cleaned_name = item_name.replace(" Blueprint", "").strip()
                             blueprint_cache[str(type_id)] = cleaned_name
                             from cache_manager import save_blueprint_cache
+
                             save_blueprint_cache(blueprint_cache)
                     else:
                         item_name = f"Item {type_id}"
@@ -101,6 +91,7 @@ async def generate_contract_title(
                 if not is_blueprint:
                     # Double-check with ESI
                     from api_client import fetch_public_esi
+
                     type_data = await fetch_public_esi(f"/universe/types/{type_id}")
                     is_blueprint = type_data and "Blueprint" in type_data.get("name", "")
 
@@ -117,7 +108,7 @@ async def generate_contract_title(
 
             for item in contract_items:
                 quantity = item.get("quantity", 1)
-                total_quantity += abs(quantity) # Use abs in case of BPOs
+                total_quantity += abs(quantity)  # Use abs in case of BPOs
 
                 # Check if it's a blueprint
                 type_id = item.get("type_id")
@@ -128,6 +119,7 @@ async def generate_contract_title(
                     else:
                         # Check with ESI
                         from api_client import fetch_public_esi
+
                         type_data = await fetch_public_esi(f"/universe/types/{type_id}")
                         if type_data and "Blueprint" in type_data.get("name", ""):
                             blueprint_count += 1
@@ -137,8 +129,10 @@ async def generate_contract_title(
                 title = f"{blueprint_count} Blueprints - Contract {contract_id}"
             elif blueprint_count > 0:
                 # Mix of blueprints and other items
-                title = (f"{blueprint_count} Blueprints + "
-                         f"{len(contract_items) - blueprint_count} Items - Contract {contract_id}")
+                title = (
+                    f"{blueprint_count} Blueprints + "
+                    f"{len(contract_items) - blueprint_count} Items - Contract {contract_id}"
+                )
             else:
                 # No blueprints, just regular items
                 title = f"{len(contract_items)} Items (x{total_quantity}) - Contract {contract_id}"
@@ -212,6 +206,7 @@ async def update_contract_in_wp(
 
     # Get region ID from start location
     from contract_fetching import get_region_from_location
+
     region_id = None
     start_location_id = contract_data.get("start_location_id")
     if start_location_id:
@@ -305,8 +300,11 @@ async def update_contract_in_wp(
 
         # Check for market competition on outstanding sell contracts
         from contract_competition import check_contract_competition
+
         if contract_data.get("status") == "outstanding" and contract_data.get("type") == "item_exchange":
-            is_outbid, competing_price = await check_contract_competition(contract_data, contract_items, all_expanded_contracts=all_expanded_contracts)
+            is_outbid, competing_price = await check_contract_competition(
+                contract_data, contract_items, all_expanded_contracts=all_expanded_contracts
+            )
             if is_outbid:
                 post_data["meta"]["_eve_contract_outbid"] = "1"
                 post_data["meta"]["_eve_contract_competing_price"] = str(competing_price)
@@ -331,7 +329,7 @@ async def update_contract_in_wp(
         # Send alert if this is newly outbid
         was_outbid = existing_meta.get("_eve_contract_outbid") == "1"
         if not was_outbid and post_data["meta"].get("_eve_contract_outbid") == "1":
-            price = post_data['meta'].get('_eve_contract_competing_price', 'unknown')
+            price = post_data["meta"].get("_eve_contract_competing_price", "unknown")
             logger.warning(f"Contract {contract_id} is newly outbid by contract price: {price}")
         # Check if title changed before updating
         existing_title = existing_post.get("title", {}).get("rendered", "")
@@ -369,7 +367,17 @@ async def update_contract_in_wp(
         logger.error(f"Failed to update contract {contract_id}")
 
 
-@validate_input_params(int, dict, bool, (float, type(None)), bool, (int, type(None)), (str, type(None)), (dict, type(None)), (list, type(None)))
+@validate_input_params(
+    int,
+    dict,
+    bool,
+    (float, type(None)),
+    bool,
+    (int, type(None)),
+    (str, type(None)),
+    (dict, type(None)),
+    (list, type(None)),
+)
 async def update_contract_in_wp_with_competition_result(
     contract_id: int,
     contract_data: Dict[str, Any],
@@ -430,6 +438,7 @@ async def update_contract_in_wp_with_competition_result(
 
     # Get region ID from start location
     from contract_fetching import get_region_from_location
+
     region_id = None
     start_location_id = contract_data.get("start_location_id")
     if start_location_id:
@@ -541,7 +550,7 @@ async def update_contract_in_wp_with_competition_result(
         # Send alert if this is newly outbid
         was_outbid = existing_meta.get("_eve_contract_outbid") == "1"
         if not was_outbid and post_data["meta"].get("_eve_contract_outbid") == "1":
-            price = post_data['meta'].get('_eve_contract_competing_price', 'unknown')
+            price = post_data["meta"].get("_eve_contract_competing_price", "unknown")
             logger.warning(f"Contract {contract_id} is newly outbid by contract price: {price}")
         # Check if title changed before updating
         existing_title = existing_post.get("title", {}).get("rendered", "")
@@ -613,21 +622,23 @@ async def batch_update_contracts_in_wp(
     total_processed = 0
 
     for i in range(0, len(contract_updates), batch_size):
-        batch = contract_updates[i:i + batch_size]
-        logger.info(f"Processing batch {i//batch_size + 1}/{(len(contract_updates) + batch_size - 1)//batch_size} "
-                   f"({len(batch)} contracts)")
+        batch = contract_updates[i : i + batch_size]
+        logger.info(
+            f"Processing batch {i//batch_size + 1}/{(len(contract_updates) + batch_size - 1)//batch_size} "
+            f"({len(batch)} contracts)"
+        )
 
         # Create tasks for concurrent processing within the batch
         update_tasks = []
         for update_info in batch:
             task = update_contract_in_wp_with_competition_result(
-                update_info['contract']["contract_id"],
-                update_info['contract'],
-                update_info['is_outbid'],
-                update_info['competing_price'],
-                update_info['for_corp'],
-                update_info['entity_id'],
-                update_info['access_token'],
+                update_info["contract"]["contract_id"],
+                update_info["contract"],
+                update_info["is_outbid"],
+                update_info["competing_price"],
+                update_info["for_corp"],
+                update_info["entity_id"],
+                update_info["access_token"],
                 blueprint_cache,
                 all_expanded_contracts,
             )

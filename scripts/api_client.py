@@ -4,9 +4,6 @@ EVE Observer API Client
 Handles ESI API and WordPress REST API interactions.
 """
 
-import warnings
-warnings.filterwarnings("ignore", message="urllib3 v2 only supports OpenSSL", category=Warning)
-
 import asyncio
 import functools
 import logging
@@ -14,6 +11,7 @@ import os
 import re
 import smtplib
 import time
+import warnings
 from dataclasses import dataclass
 from datetime import datetime, timedelta, timezone
 from email.mime.text import MIMEText
@@ -24,8 +22,20 @@ import aiohttp
 import requests
 from dotenv import load_dotenv
 
+try:
+    from prometheus_client import Counter, Histogram
+
+    ESI_REQUESTS_TOTAL = Counter("eve_esi_requests_total", "Total ESI API requests", ["endpoint_type", "status"])
+    ESI_REQUEST_DURATION = Histogram("eve_esi_request_duration_seconds", "ESI API request duration", ["endpoint_type"])
+    WP_REQUESTS_TOTAL = Counter("eve_wp_requests_total", "Total WordPress API requests", ["method", "status"])
+    WP_REQUEST_DURATION = Histogram("eve_wp_request_duration_seconds", "WordPress API request duration", ["method"])
+
+    API_METRICS_ENABLED = True
+except ImportError:
+    API_METRICS_ENABLED = False
+    ESI_REQUESTS_TOTAL = ESI_REQUEST_DURATION = WP_REQUESTS_TOTAL = WP_REQUEST_DURATION = None
+
 from config import (
-    CACHE_DIR,
     EMAIL_FROM,
     EMAIL_PASSWORD,
     EMAIL_SMTP_PORT,
@@ -35,16 +45,17 @@ from config import (
     ESI_BASE_URL,
     LOG_FILE,
     LOG_LEVEL,
-    TOKENS_FILE,
     WP_APP_PASSWORD,
     WP_BASE_URL,
     WP_USERNAME,
 )
 
+warnings.filterwarnings("ignore", message="urllib3 v2 only supports OpenSSL", category=Warning)
 
-# API Call Counter
+
 class APICallCounter:
     """Global counter for API calls."""
+
     def __init__(self):
         self.count = 0
 
@@ -353,8 +364,12 @@ class DynamicRateLimiter:
         # Clean up old data (keep last 5 minutes)
         cutoff_time = now - timedelta(minutes=5)
         self.calls = [call for call in self.calls if call > cutoff_time]
-        self.response_times = [item for item in self.response_times if isinstance(item, tuple) and len(item) == 2 and item[1] > cutoff_time]
-        self.errors = [item for item in self.errors if isinstance(item, tuple) and len(item) == 2 and item[1] > cutoff_time]
+        self.response_times = [
+            item for item in self.response_times if isinstance(item, tuple) and len(item) == 2 and item[1] > cutoff_time
+        ]
+        self.errors = [
+            item for item in self.errors if isinstance(item, tuple) and len(item) == 2 and item[1] > cutoff_time
+        ]
 
         # Adjust rate based on recent performance
         self._adjust_rate(now)
@@ -367,10 +382,7 @@ class DynamicRateLimiter:
             time_since_last_call = (now - self.calls[-1]).total_seconds()
             if time_since_last_call < min_interval:
                 wait_time = min_interval - time_since_last_call
-                logger.debug(
-                    ".2f"
-                    ".1f"
-                )
+                logger.debug(".2f" ".1f")
                 await asyncio.sleep(wait_time)
 
         self.calls.append(now)
@@ -424,10 +436,6 @@ class DynamicRateLimiter:
 
 
 # Global dynamic rate limiter for WordPress API
-wp_rate_limiter = DynamicRateLimiter(base_calls_per_minute=60, max_calls_per_minute=120)
-
-
-# Global rate limiter for WordPress API
 wp_rate_limiter = DynamicRateLimiter(base_calls_per_minute=60, max_calls_per_minute=120)
 
 # Custom exceptions for better error handling
@@ -544,7 +552,7 @@ async def _cleanup_session():
         try:
             await session.close()
             session = None
-        except Exception as e:
+        except Exception:
             # Avoid logging here as it might cause issues during shutdown
             pass
 
@@ -578,20 +586,6 @@ audit_logger.setLevel(logging.INFO)
 audit_handler = logging.FileHandler("audit.log")
 audit_handler.setFormatter(logging.Formatter("%(asctime)s - %(levelname)s - %(message)s"))
 audit_logger.addHandler(audit_handler)
-
-# Prometheus-style metrics for API monitoring
-try:
-    from prometheus_client import Counter, Histogram
-
-    ESI_REQUESTS_TOTAL = Counter("eve_esi_requests_total", "Total ESI API requests", ["endpoint_type", "status"])
-    ESI_REQUEST_DURATION = Histogram("eve_esi_request_duration_seconds", "ESI API request duration", ["endpoint_type"])
-    WP_REQUESTS_TOTAL = Counter("eve_wp_requests_total", "Total WordPress API requests", ["method", "status"])
-    WP_REQUEST_DURATION = Histogram("eve_wp_request_duration_seconds", "WordPress API request duration", ["method"])
-
-    API_METRICS_ENABLED = True
-except ImportError:
-    API_METRICS_ENABLED = False
-    ESI_REQUESTS_TOTAL = ESI_REQUEST_DURATION = WP_REQUESTS_TOTAL = WP_REQUEST_DURATION = None
 
 
 def log_audit_event(event: str, user: str, details: Dict[str, Any]) -> None:
@@ -837,7 +831,9 @@ def fetch_public_esi_sync(endpoint: str, max_retries: int = None) -> Optional[Di
 
 
 @validate_input_params(int, int)
-def fetch_public_contracts(region_id: int, page: int = 1, contract_type: str = None, max_retries: int = 3) -> Optional[List[Dict[str, Any]]]:
+def fetch_public_contracts(
+    region_id: int, page: int = 1, contract_type: str = None, max_retries: int = 3
+) -> Optional[List[Dict[str, Any]]]:
     """Fetch public contracts for a specific region with retry logic and rate limiting.
 
     This function retrieves public contracts from the EVE ESI API for a given region,
@@ -980,7 +976,8 @@ async def fetch_public_contracts_async(
                 if sort_by_price and contracts:
                     # Filter out contracts with invalid prices before sorting
                     valid_contracts = [
-                        contract for contract in contracts
+                        contract
+                        for contract in contracts
                         if contract.get("price", 0) > 0 and contract.get("volume", 1) > 0
                     ]
 
@@ -1075,9 +1072,7 @@ async def wp_request(method: str, endpoint: str, data: Optional[Dict] = None) ->
                             wp_rate_limiter.record_response_time(elapsed)  # Record as successful response time
                             return None  # Return None for missing endpoints
                         else:
-                            logger.error(
-                                f"WordPress API error: {response.status} - {error_text} (took {elapsed:.2f}s)"
-                            )
+                            logger.error(f"WordPress API error: {response.status} - {error_text} (took {elapsed:.2f}s)")
                             wp_rate_limiter.record_error()
                             raise WordPressRequestError(f"WordPress API error {response.status}: {endpoint}")
                     else:
@@ -1121,9 +1116,7 @@ async def wp_request(method: str, endpoint: str, data: Optional[Dict] = None) ->
                             wp_rate_limiter.record_response_time(elapsed)  # Record as successful response time
                             return None  # Return None for missing endpoints
                         else:
-                            logger.error(
-                                f"WordPress API error: {response.status} - {error_text} (took {elapsed:.2f}s)"
-                            )
+                            logger.error(f"WordPress API error: {response.status} - {error_text} (took {elapsed:.2f}s)")
                             wp_rate_limiter.record_error()
                             raise WordPressRequestError(f"WordPress API error {response.status}: {endpoint}")
                     else:
@@ -1167,9 +1160,7 @@ async def wp_request(method: str, endpoint: str, data: Optional[Dict] = None) ->
                             wp_rate_limiter.record_response_time(elapsed)  # Record as successful response time
                             return None  # Return None for missing endpoints
                         else:
-                            logger.error(
-                                f"WordPress API error: {response.status} - {error_text} (took {elapsed:.2f}s)"
-                            )
+                            logger.error(f"WordPress API error: {response.status} - {error_text} (took {elapsed:.2f}s)")
                             wp_rate_limiter.record_error()
                             raise WordPressRequestError(f"WordPress API error {response.status}: {endpoint}")
                     else:
@@ -1212,9 +1203,7 @@ async def wp_request(method: str, endpoint: str, data: Optional[Dict] = None) ->
                             wp_rate_limiter.record_response_time(elapsed)  # Record as successful response time
                             return None  # Return None for missing endpoints
                         else:
-                            logger.error(
-                                f"WordPress API error: {response.status} - {error_text} (took {elapsed:.2f}s)"
-                            )
+                            logger.error(f"WordPress API error: {response.status} - {error_text} (took {elapsed:.2f}s)")
                             wp_rate_limiter.record_error()
                             raise WordPressRequestError(f"WordPress API error {response.status}: {endpoint}")
                     else:
@@ -1292,7 +1281,9 @@ def refresh_token(refresh_token: str) -> Optional[Dict[str, Any]]:
     data = {"grant_type": "refresh_token", "refresh_token": refresh_token}
     client_id = os.getenv("ESI_CLIENT_ID")
     client_secret = os.getenv("ESI_CLIENT_SECRET")
-    response = requests.post("https://login.eveonline.com/v2/oauth/token", data=data, auth=(client_id, client_secret))
+    response = requests.post(
+        "https://login.eveonline.com/v2/oauth/token", data=data, auth=(client_id, client_secret), timeout=30
+    )
     if response.status_code == 200:
         token_data = response.json()
         expires_at = datetime.now(timezone.utc) + timedelta(seconds=token_data["expires_in"])

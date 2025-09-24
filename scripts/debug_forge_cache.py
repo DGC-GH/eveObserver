@@ -8,13 +8,13 @@ import json
 import logging
 import os
 import sys
-from typing import Dict, List, Any
+from typing import Any, Dict, List
 
 # Add the scripts directory to the path so we can import our modules
 sys.path.insert(0, os.path.dirname(__file__))
 
-from contract_processor import FORGE_REGION_ID
 from api_client import fetch_public_contracts_async
+from contract_processor import FORGE_REGION_ID
 
 # Configure logging
 logging.basicConfig(
@@ -52,27 +52,27 @@ async def fetch_all_contracts_from_forge() -> List[Dict[str, Any]]:
 
                 # Create standardized contract data
                 contract_data = {
-                    'contract_id': contract_id,
-                    'type': contract.get("type"),
-                    'price': contract.get("price", 0),
-                    'issuer_id': contract.get("issuer_id"),
-                    'issuer_corporation_id': contract.get("issuer_corporation_id"),
-                    'start_location_id': contract.get("start_location_id"),
-                    'end_location_id': contract.get("end_location_id"),
-                    'title': contract.get("title", ""),
-                    'date_issued': contract.get("date_issued"),
-                    'date_expired': contract.get("date_expired"),
-                    'date_accepted': contract.get("date_accepted"),
-                    'date_completed': contract.get("date_completed"),
-                    'volume': contract.get("volume", 1),
-                    'status': contract.get("status", "outstanding"),  # Public endpoint returns outstanding
-                    'collateral': contract.get("collateral", 0),
-                    'reward': contract.get("reward", 0),
-                    'buyout': contract.get("buyout", 0),
-                    'assignee_id': contract.get("assignee_id"),
-                    'acceptor_id': contract.get("acceptor_id"),
-                    'days_to_complete': contract.get("days_to_complete"),
-                    'for_corporation': contract.get("for_corporation", False),
+                    "contract_id": contract_id,
+                    "type": contract.get("type"),
+                    "price": contract.get("price", 0),
+                    "issuer_id": contract.get("issuer_id"),
+                    "issuer_corporation_id": contract.get("issuer_corporation_id"),
+                    "start_location_id": contract.get("start_location_id"),
+                    "end_location_id": contract.get("end_location_id"),
+                    "title": contract.get("title", ""),
+                    "date_issued": contract.get("date_issued"),
+                    "date_expired": contract.get("date_expired"),
+                    "date_accepted": contract.get("date_accepted"),
+                    "date_completed": contract.get("date_completed"),
+                    "volume": contract.get("volume", 1),
+                    "status": contract.get("status", "outstanding"),  # Public endpoint returns outstanding
+                    "collateral": contract.get("collateral", 0),
+                    "reward": contract.get("reward", 0),
+                    "buyout": contract.get("buyout", 0),
+                    "assignee_id": contract.get("assignee_id"),
+                    "acceptor_id": contract.get("acceptor_id"),
+                    "days_to_complete": contract.get("days_to_complete"),
+                    "for_corporation": contract.get("for_corporation", False),
                 }
 
                 all_contracts.append(contract_data)
@@ -97,7 +97,7 @@ async def save_contracts_to_cache(contracts: List[Dict[str, Any]], cache_file: s
         os.makedirs(os.path.dirname(cache_file), exist_ok=True)
 
         # Save to file
-        with open(cache_file, 'w') as f:
+        with open(cache_file, "w") as f:
             json.dump(contracts, f, indent=2, default=str)
 
         file_size = os.path.getsize(cache_file)
@@ -116,7 +116,7 @@ async def load_contracts_from_cache(cache_file: str) -> List[Dict[str, Any]]:
             logger.info(f"Cache file {cache_file} does not exist")
             return []
 
-        with open(cache_file, 'r') as f:
+        with open(cache_file, "r") as f:
             contracts = json.load(f)
 
         logger.info(f"Loaded {len(contracts)} contracts from cache")
@@ -144,19 +144,19 @@ async def analyze_contracts(contracts: List[Dict[str, Any]]):
 
     for contract in contracts:
         # Type distribution
-        ctype = contract.get('type', 'unknown')
+        ctype = contract.get("type", "unknown")
         type_counts[ctype] = type_counts.get(ctype, 0) + 1
 
         # Status distribution
-        status = contract.get('status', 'unknown')
+        status = contract.get("status", "unknown")
         status_counts[status] = status_counts.get(status, 0) + 1
 
         # Issuer analysis
-        issuer_id = contract.get('issuer_id')
+        issuer_id = contract.get("issuer_id")
         if issuer_id:
             issuer_counts[issuer_id] = issuer_counts.get(issuer_id, 0) + 1
 
-        corp_id = contract.get('issuer_corporation_id')
+        corp_id = contract.get("issuer_corporation_id")
         if corp_id:
             corp_counts[corp_id] = corp_counts.get(corp_id, 0) + 1
 
@@ -179,8 +179,8 @@ async def analyze_contracts(contracts: List[Dict[str, Any]]):
     # Price analysis for item_exchange contracts
     item_exchange_prices = []
     for contract in contracts:
-        if contract.get('type') == 'item_exchange':
-            price = contract.get('price', 0)
+        if contract.get("type") == "item_exchange":
+            price = contract.get("price", 0)
             if price > 0:
                 item_exchange_prices.append(price)
 

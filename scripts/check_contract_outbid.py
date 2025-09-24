@@ -8,22 +8,15 @@ Run this script periodically (e.g., every 15-30 minutes) to monitor contract pri
 import json
 import logging
 import os
+import time
 from datetime import datetime, timedelta, timezone
 
 import requests
 from requests.adapters import HTTPAdapter
 from urllib3.util.retry import Retry
 
-from api_client import (
-    fetch_esi_sync,
-    fetch_public_contract_items,
-    fetch_public_contracts,
-    fetch_public_esi_sync,
-)
-from config import TOKENS_FILE, WP_USERNAME, WP_APP_PASSWORD, WP_BASE_URL, ESI_BASE_URL
-    fetch_public_esi_sync,
-)
-from config import TOKENS_FILE, WP_USERNAME, WP_APP_PASSWORD, WP_BASE_URL
+from api_client import fetch_esi_sync, fetch_public_contract_items, fetch_public_contracts, fetch_public_esi_sync
+from config import ESI_BASE_URL, TOKENS_FILE, WP_APP_PASSWORD, WP_BASE_URL, WP_USERNAME
 
 # Additional configuration
 ESI_VERSION = "latest"
@@ -81,7 +74,9 @@ def refresh_token(refresh_token):
     data = {"grant_type": "refresh_token", "refresh_token": refresh_token}
     client_id = os.getenv("ESI_CLIENT_ID")
     client_secret = os.getenv("ESI_CLIENT_SECRET")
-    response = requests.post("https://login.eveonline.com/v2/oauth/token", data=data, auth=(client_id, client_secret))
+    response = requests.post(
+        "https://login.eveonline.com/v2/oauth/token", data=data, auth=(client_id, client_secret), timeout=30
+    )
     if response.status_code == 200:
         token_data = response.json()
         expires_at = datetime.now(timezone.utc) + timedelta(seconds=token_data["expires_in"])
@@ -158,7 +153,9 @@ def check_contract_competition(contract_data, contract_items):
     if not region_id:
         return False, None
 
-    logger.info(f"Checking competition for contract {contract_id} (type_id: {type_id}, price_per_item: {price_per_item:.2f}) in region {region_id}")
+    logger.info(
+        f"Checking competition for contract {contract_id} (type_id: {type_id}, price_per_item: {price_per_item:.2f}) in region {region_id}"
+    )
 
     # OPTIMIZATION: Only fetch item_exchange contracts and limit to first few pages
     # Define price range to check (50% to 200% of our contract price to avoid irrelevant contracts)
@@ -241,7 +238,7 @@ def update_contract_outbid_status(contract_id, is_outbid, competing_price=None):
     slug = f"contract-{contract_id}"
 
     # Check if post exists by slug
-    response = requests.get(f"{WP_BASE_URL}/wp-json/wp/v2/eve_contract?slug={slug}", auth=get_wp_auth())
+    response = requests.get(f"{WP_BASE_URL}/wp-json/wp/v2/eve_contract?slug={slug}", auth=get_wp_auth(), timeout=30)
     existing_posts = response.json() if response.status_code == 200 else []
     existing_post = existing_posts[0] if existing_posts else None
 

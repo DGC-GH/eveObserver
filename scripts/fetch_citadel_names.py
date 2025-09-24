@@ -240,7 +240,9 @@ def refresh_token(refresh_token):
     data = {"grant_type": "refresh_token", "refresh_token": refresh_token}
     client_id = os.getenv("ESI_CLIENT_ID")
     client_secret = os.getenv("ESI_CLIENT_SECRET")
-    response = requests.post("https://login.eveonline.com/v2/oauth/token", data=data, auth=(client_id, client_secret))
+    response = requests.post(
+        "https://login.eveonline.com/v2/oauth/token", data=data, auth=(client_id, client_secret), timeout=30
+    )
     if response.status_code == 200:
         token_data = response.json()
         expires_at = datetime.now(timezone.utc) + timedelta(seconds=token_data["expires_in"])

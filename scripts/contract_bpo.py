@@ -9,8 +9,8 @@ import os
 from typing import Any, Dict, List, Optional
 
 from api_client import fetch_public_esi
-from contract_fetching import fetch_corporation_contracts
 from config import CACHE_DIR
+from contract_fetching import fetch_corporation_contracts
 
 logger = logging.getLogger(__name__)
 
@@ -49,11 +49,7 @@ async def filter_single_bpo_contracts(contracts: List[Dict[str, Any]]) -> List[D
             item_name = item.get("name", f"Type {type_id}")
 
             bpo_contract = contract.copy()
-            bpo_contract.update({
-                'type_id': type_id,
-                'item_name': item_name,
-                'contract_items': contract_items
-            })
+            bpo_contract.update({"type_id": type_id, "item_name": item_name, "contract_items": contract_items})
 
             single_bpo_contracts.append(bpo_contract)
             logger.debug(f"Found single BPO contract {contract_id}: {item_name}")
@@ -64,8 +60,9 @@ async def filter_single_bpo_contracts(contracts: List[Dict[str, Any]]) -> List[D
 
 async def get_user_single_bpo_contracts() -> List[Dict[str, Any]]:
     """Get user's outstanding single BPO contracts."""
-    from esi_oauth import load_tokens, save_tokens
     from datetime import datetime, timezone
+
+    from esi_oauth import load_tokens, save_tokens
 
     tokens = load_tokens()
     if not tokens:
@@ -96,6 +93,7 @@ async def get_user_single_bpo_contracts() -> List[Dict[str, Any]]:
     if expired:
         logger.info("Dr FiLiN's token expired, refreshing...")
         from api_client import refresh_token
+
         new_token = refresh_token(dr_filin_token["refresh_token"])
         if new_token:
             dr_filin_token.update(new_token)
@@ -111,11 +109,11 @@ async def get_user_single_bpo_contracts() -> List[Dict[str, Any]]:
     try:
         # Get corporation ID
         char_data = await fetch_public_esi(f"/characters/{dr_filin_char_id}/")
-        if not char_data or 'corporation_id' not in char_data:
+        if not char_data or "corporation_id" not in char_data:
             logger.warning("Could not get corporation ID")
             return []
 
-        corp_id = char_data['corporation_id']
+        corp_id = char_data["corporation_id"]
         logger.info(f"Fetching corporation contracts for corp ID: {corp_id}")
 
         corp_contracts = await fetch_corporation_contracts(corp_id, access_token)
@@ -125,8 +123,7 @@ async def get_user_single_bpo_contracts() -> List[Dict[str, Any]]:
 
         # Filter for outstanding item_exchange contracts
         outstanding_item_exchange = [
-            c for c in corp_contracts
-            if c.get("status") == "outstanding" and c.get("type") == "item_exchange"
+            c for c in corp_contracts if c.get("status") == "outstanding" and c.get("type") == "item_exchange"
         ]
 
         user_bpo_contracts = []
@@ -136,6 +133,7 @@ async def get_user_single_bpo_contracts() -> List[Dict[str, Any]]:
 
             # Get contract items
             from contract_fetching import fetch_corporation_contract_items
+
             contract_items = await fetch_corporation_contract_items(corp_id, contract_id, access_token)
 
             if not contract_items or len(contract_items) != 1:
@@ -151,12 +149,12 @@ async def get_user_single_bpo_contracts() -> List[Dict[str, Any]]:
                 type_data = await fetch_public_esi(f"/universe/types/{type_id}/")
                 item_name = type_data.get("name", f"Type {type_id}") if type_data else f"Type {type_id}"
                 user_contract = {
-                    'contract_id': contract_id,
-                    'type_id': type_id,
-                    'item_name': item_name,
-                    'price': contract.get("price", 0),
-                    'contract_data': contract,
-                    'contract_items': contract_items
+                    "contract_id": contract_id,
+                    "type_id": type_id,
+                    "item_name": item_name,
+                    "price": contract.get("price", 0),
+                    "contract_data": contract,
+                    "contract_items": contract_items,
                 }
 
                 user_bpo_contracts.append(user_contract)
@@ -174,15 +172,14 @@ def compare_contracts(user_contracts: List[Dict[str, Any]], market_contracts: Li
     logger.info("Comparing user contracts to market contracts...")
 
     for user_contract in user_contracts:
-        user_type_id = user_contract['type_id']
-        user_price = user_contract['price']
-        user_contract_id = user_contract['contract_id']
-        item_name = user_contract['item_name']
+        user_type_id = user_contract["type_id"]
+        user_price = user_contract["price"]
+        user_contract_id = user_contract["contract_id"]
+        item_name = user_contract["item_name"]
 
         # Find market contracts for the same BPO
         matching_market = [
-            c for c in market_contracts
-            if c['type_id'] == user_type_id and c['contract_id'] != user_contract_id
+            c for c in market_contracts if c["type_id"] == user_type_id and c["contract_id"] != user_contract_id
         ]
 
         if not matching_market:
@@ -190,10 +187,10 @@ def compare_contracts(user_contracts: List[Dict[str, Any]], market_contracts: Li
             continue
 
         # Sort by price ascending
-        matching_market.sort(key=lambda x: x['price'])
+        matching_market.sort(key=lambda x: x["price"])
 
         cheapest_market = matching_market[0]
-        cheapest_price = cheapest_market['price']
+        cheapest_price = cheapest_market["price"]
 
         if cheapest_price < user_price:
             price_diff = user_price - cheapest_price

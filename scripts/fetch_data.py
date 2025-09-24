@@ -11,12 +11,7 @@ import os
 from datetime import datetime, timezone
 from typing import Any, Dict, List, Tuple
 
-from api_client import (
-    fetch_esi,
-    refresh_token,
-    send_email,
-    cleanup_session,
-)
+from api_client import cleanup_session, fetch_esi, refresh_token, send_email
 from blueprint_processor import (
     cleanup_blueprint_posts,
     extract_blueprints_from_assets,
@@ -32,11 +27,8 @@ from cache_manager import (
     load_wp_post_id_cache,
 )
 from character_processor import fetch_character_skills, process_character_planets, update_character_skills_in_wp
-from config import CACHE_DIR, LOG_FILE, LOG_LEVEL, ALLOWED_CORP_IDS
-from contract_processor import (
-    cleanup_contract_posts,
-    process_character_contracts,
-)
+from config import ALLOWED_CORP_IDS, CACHE_DIR, LOG_FILE, LOG_LEVEL
+from contract_processor import cleanup_contract_posts, process_character_contracts
 from data_processors import fetch_character_data, update_character_in_wp
 from esi_oauth import load_tokens, save_tokens
 from utils import parse_arguments

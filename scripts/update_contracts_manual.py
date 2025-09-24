@@ -365,7 +365,7 @@ def update_existing_contract(contract_post, tokens):
     # Update the post
     post_id = contract_post["id"]
     url = f"{WP_BASE_URL}/wp-json/wp/v2/eve_contract/{post_id}"
-    response = requests.put(url, json=update_data, auth=get_wp_auth())
+    response = requests.put(url, json=update_data, auth=get_wp_auth(), timeout=30)
 
     if response.status_code in [200, 201]:
         logger.info(f"Updated contract {contract_id}: '{new_title}'")
@@ -389,7 +389,10 @@ def main():
 
     while True:
         response = requests.get(
-            f"{WP_BASE_URL}/wp-json/wp/v2/eve_contract", auth=get_wp_auth(), params={"per_page": per_page, "page": page}
+            f"{WP_BASE_URL}/wp-json/wp/v2/eve_contract",
+            auth=get_wp_auth(),
+            params={"per_page": per_page, "page": page},
+            timeout=30,
         )
 
         if response.status_code != 200:

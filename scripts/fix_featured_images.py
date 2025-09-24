@@ -48,7 +48,7 @@ def upload_image_to_wordpress(image_url, filename, alt_text=""):
 
         # Upload to WordPress
         upload_url = f"{WP_BASE_URL}/wp-json/wp/v2/media"
-        upload_response = requests.post(upload_url, files=files, data=data, auth=get_wp_auth())
+        upload_response = requests.post(upload_url, files=files, data=data, auth=get_wp_auth(), timeout=30)
 
         if upload_response.status_code in [200, 201]:
             media_data = upload_response.json()
@@ -69,7 +69,9 @@ def fix_featured_images_for_post_type(post_type, post_type_name):
     logger.info(f"Fixing featured images for {post_type_name} posts...")
 
     # Get all posts of this type
-    response = requests.get(f"{WP_BASE_URL}/wp-json/wp/v2/{post_type}", auth=get_wp_auth(), params={"per_page": 100})
+    response = requests.get(
+        f"{WP_BASE_URL}/wp-json/wp/v2/{post_type}", auth=get_wp_auth(), params={"per_page": 100}, timeout=30
+    )
     if response.status_code != 200:
         logger.error(f"Failed to fetch {post_type_name} posts: {response.status_code}")
         return
@@ -103,7 +105,7 @@ def fix_featured_images_for_post_type(post_type, post_type_name):
                 }
 
                 update_url = f"{WP_BASE_URL}/wp-json/wp/v2/{post_type}/{post_id}"
-                update_response = requests.put(update_url, json=update_data, auth=get_wp_auth())
+                update_response = requests.put(update_url, json=update_data, auth=get_wp_auth(), timeout=30)
 
                 if update_response.status_code in [200, 201]:
                     logger.info(f"Successfully set featured image for {post_type_name} post {post_id}")
@@ -120,7 +122,7 @@ def fix_featured_images_for_post_type(post_type, post_type_name):
             update_data = {"meta": {k: v for k, v in meta.items() if k != "_thumbnail_external_url"}}
 
             update_url = f"{WP_BASE_URL}/wp-json/wp/v2/{post_type}/{post_id}"
-            update_response = requests.put(update_url, json=update_data, auth=get_wp_auth())
+            update_response = requests.put(update_url, json=update_data, auth=get_wp_auth(), timeout=30)
 
             if update_response.status_code in [200, 201]:
                 logger.info(f"Removed custom field from {post_type_name} post {post_id}")

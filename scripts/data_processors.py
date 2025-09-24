@@ -564,7 +564,7 @@ async def _prepare_blueprint_data(
     details = await fetch_blueprint_details(
         blueprint_data, char_id, access_token, blueprint_cache, location_cache, structure_cache, failed_structures
     )
-    
+
     if details is None:
         return None
 
@@ -633,7 +633,7 @@ async def update_blueprint_in_wp(
     details = await _prepare_blueprint_data(
         blueprint_data, char_id, access_token, blueprint_cache, location_cache, structure_cache, failed_structures
     )
-    
+
     if details is None:
         # Blueprint type no longer exists - check if we need to delete existing post
         existing_post = await _find_existing_blueprint_post(item_id, wp_post_id_cache)
@@ -711,7 +711,9 @@ async def fetch_blueprint_details(
     return type_name, location_name, bp_type
 
 
-async def get_blueprint_type_name(type_id: Optional[int], item_id: int, blueprint_cache: Dict[str, Any]) -> Optional[str]:
+async def get_blueprint_type_name(
+    type_id: Optional[int], item_id: int, blueprint_cache: Dict[str, Any]
+) -> Optional[str]:
     """
     Get blueprint type name from cache or API.
 

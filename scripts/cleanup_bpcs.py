@@ -11,7 +11,7 @@ import os
 import requests
 from dotenv import load_dotenv
 
-from config import LOG_LEVEL, LOG_FILE, WP_BASE_URL
+from config import LOG_FILE, LOG_LEVEL, WP_BASE_URL
 
 load_dotenv()
 
@@ -45,7 +45,7 @@ def get_all_blueprint_posts():
 
     while True:
         response = requests.get(
-            f"{WP_BASE_URL}/wp-json/wp/v2/eve_blueprint", auth=auth, params={"per_page": 100, "page": page}
+            f"{WP_BASE_URL}/wp-json/wp/v2/eve_blueprint", auth=auth, params={"per_page": 100, "page": page}, timeout=30
         )
 
         if response.status_code != 200:
@@ -76,7 +76,7 @@ def delete_bpc_posts(posts):
 
         # Get the quantity meta field
         meta_url = f"{WP_BASE_URL}/wp-json/wp/v2/eve_blueprint/{post_id}"
-        meta_response = requests.get(meta_url, auth=auth)
+        meta_response = requests.get(meta_url, auth=auth, timeout=30)
 
         if meta_response.status_code != 200:
             logger.error(f"Failed to get meta for post {post_id}: {meta_response.status_code}")
@@ -94,7 +94,7 @@ def delete_bpc_posts(posts):
         if quantity != -1:
             # This is a BPC, delete it
             delete_url = f"{WP_BASE_URL}/wp-json/wp/v2/eve_blueprint/{post_id}"
-            delete_response = requests.delete(delete_url, auth=auth, params={"force": True})
+            delete_response = requests.delete(delete_url, auth=auth, params={"force": True}, timeout=30)
 
             if delete_response.status_code == 200:
                 logger.info(f"Deleted BPC post: {title} (ID: {post_id}, quantity: {quantity})")

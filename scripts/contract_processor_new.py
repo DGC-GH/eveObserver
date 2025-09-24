@@ -13,11 +13,7 @@ from blueprint_processor import (
     process_blueprints_parallel,
     update_blueprint_from_asset_in_wp,
 )
-from cache_manager import (
-    load_blueprint_cache,
-    load_location_cache,
-    load_structure_cache,
-)
+from cache_manager import load_blueprint_cache, load_location_cache, load_structure_cache
 from cache_manager_contracts import ContractCacheManager
 from config import CACHE_DIR
 from contract_bpo import get_user_single_bpo_contracts
@@ -67,6 +63,7 @@ async def process_character_contracts(
 
         # Process blueprints from contracts
         from blueprint_processor import extract_blueprints_from_contracts
+
         contract_blueprints = await extract_blueprints_from_contracts(char_contracts, "char", char_id)
         if contract_blueprints:
             logger.info(f"Character contract blueprints: {len(contract_blueprints)} items")
@@ -104,9 +101,7 @@ async def process_character_contracts(
                 logger.info(f"EXPIRED CHARACTER CONTRACT TO DELETE MANUALLY: {contract['contract_id']}")
 
             # Check if this contract needs competition checking
-            if (contract.get("status") == "outstanding" and
-                contract.get("type") == "item_exchange"):
-
+            if contract.get("status") == "outstanding" and contract.get("type") == "item_exchange":
                 # Fetch contract items for competition checking
                 contract_items = None
                 if all_expanded_contracts:
@@ -120,28 +115,32 @@ async def process_character_contracts(
                     contract_items_to_check.append(contract_items)
                 else:
                     # No items available, still update the contract but without competition check
-                    contracts_to_update.append({
-                        'contract': contract,
-                        'is_outbid': False,
-                        'competing_price': None,
-                        'for_corp': False,
-                        'entity_id': char_id,
-                        'access_token': access_token,
-                        'blueprint_cache': blueprint_cache,
-                        'all_expanded_contracts': all_expanded_contracts,
-                    })
+                    contracts_to_update.append(
+                        {
+                            "contract": contract,
+                            "is_outbid": False,
+                            "competing_price": None,
+                            "for_corp": False,
+                            "entity_id": char_id,
+                            "access_token": access_token,
+                            "blueprint_cache": blueprint_cache,
+                            "all_expanded_contracts": all_expanded_contracts,
+                        }
+                    )
             else:
                 # Not an outstanding sell contract, just update normally
-                contracts_to_update.append({
-                    'contract': contract,
-                    'is_outbid': False,
-                    'competing_price': None,
-                    'for_corp': False,
-                    'entity_id': char_id,
-                    'access_token': access_token,
-                    'blueprint_cache': blueprint_cache,
-                    'all_expanded_contracts': all_expanded_contracts,
-                })
+                contracts_to_update.append(
+                    {
+                        "contract": contract,
+                        "is_outbid": False,
+                        "competing_price": None,
+                        "for_corp": False,
+                        "entity_id": char_id,
+                        "access_token": access_token,
+                        "blueprint_cache": blueprint_cache,
+                        "all_expanded_contracts": all_expanded_contracts,
+                    }
+                )
 
         # Run competition checks concurrently for contracts that need them
         if contracts_to_check:
@@ -152,16 +151,18 @@ async def process_character_contracts(
 
             # Add competition results to update list
             for contract, (is_outbid, competing_price) in zip(contracts_to_check, competition_results):
-                contracts_to_update.append({
-                    'contract': contract,
-                    'is_outbid': is_outbid,
-                    'competing_price': competing_price,
-                    'for_corp': False,
-                    'entity_id': char_id,
-                    'access_token': access_token,
-                    'blueprint_cache': blueprint_cache,
-                    'all_expanded_contracts': all_expanded_contracts,
-                })
+                contracts_to_update.append(
+                    {
+                        "contract": contract,
+                        "is_outbid": is_outbid,
+                        "competing_price": competing_price,
+                        "for_corp": False,
+                        "entity_id": char_id,
+                        "access_token": access_token,
+                        "blueprint_cache": blueprint_cache,
+                        "all_expanded_contracts": all_expanded_contracts,
+                    }
+                )
 
         # Run all WordPress updates concurrently
         if contracts_to_update:
@@ -192,22 +193,25 @@ async def update_contract_cache_only() -> None:
 
 
 async def get_user_contracts(char_id: int, access_token: str) -> List[Dict[str, Any]]:
-    from esi_oauth import load_tokens, save_tokens
     from datetime import datetime, timezone
+
+    from esi_oauth import load_tokens, save_tokens
 
     # Get corporation contracts for the character
     try:
         # Get corporation ID
         from api_client import fetch_public_esi
+
         char_data = await fetch_public_esi(f"/characters/{char_id}/")
-        if not char_data or 'corporation_id' not in char_data:
+        if not char_data or "corporation_id" not in char_data:
             logger.warning("Could not get corporation ID")
             return []
 
-        corp_id = char_data['corporation_id']
+        corp_id = char_data["corporation_id"]
         logger.info(f"Fetching corporation contracts for corp ID: {corp_id}")
 
         from contract_fetching import fetch_corporation_contracts
+
         corp_contracts = await fetch_corporation_contracts(corp_id, access_token)
         if not corp_contracts:
             logger.warning("No corporation contracts found")
@@ -215,8 +219,7 @@ async def get_user_contracts(char_id: int, access_token: str) -> List[Dict[str, 
 
         # Filter for outstanding item_exchange contracts
         outstanding_item_exchange = [
-            c for c in corp_contracts
-            if c.get("status") == "outstanding" and c.get("type") == "item_exchange"
+            c for c in corp_contracts if c.get("status") == "outstanding" and c.get("type") == "item_exchange"
         ]
 
         user_contracts = []
@@ -226,6 +229,7 @@ async def get_user_contracts(char_id: int, access_token: str) -> List[Dict[str, 
 
             # Get contract items
             from contract_fetching import fetch_corporation_contract_items
+
             contract_items = await fetch_corporation_contract_items(corp_id, contract_id, access_token)
 
             if not contract_items:
@@ -238,20 +242,22 @@ async def get_user_contracts(char_id: int, access_token: str) -> List[Dict[str, 
                 if type_id:
                     type_data = await fetch_public_esi(f"/universe/types/{type_id}/")
                     item_name = type_data.get("name", f"Type {type_id}") if type_data else f"Type {type_id}"
-                    items_details.append({
-                        "type_id": type_id,
-                        "name": item_name,
-                        "quantity": item.get("quantity", 1),
-                        "is_blueprint_copy": item.get("is_blueprint_copy", False)
-                    })
+                    items_details.append(
+                        {
+                            "type_id": type_id,
+                            "name": item_name,
+                            "quantity": item.get("quantity", 1),
+                            "is_blueprint_copy": item.get("is_blueprint_copy", False),
+                        }
+                    )
 
             user_contract = {
-                'contract_id': contract_id,
-                'type': contract.get("type"),
-                'price': contract.get("price", 0),
-                'title': contract.get("title", ""),
-                'items': items_details,
-                'item_count': len(contract_items)
+                "contract_id": contract_id,
+                "type": contract.get("type"),
+                "price": contract.get("price", 0),
+                "title": contract.get("title", ""),
+                "items": items_details,
+                "item_count": len(contract_items),
             }
 
             user_contracts.append(user_contract)
@@ -289,6 +295,7 @@ async def main():
 
     # Get tokens and process characters
     from esi_oauth import load_tokens
+
     tokens = load_tokens()
 
     if not tokens:

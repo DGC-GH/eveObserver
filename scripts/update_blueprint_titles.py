@@ -66,7 +66,7 @@ def update_blueprint_title(post_id, new_title, location_name):
     }
 
     url = f"{WP_BASE_URL}/wp-json/wp/v2/eve_blueprint/{post_id}"
-    response = requests.put(url, json=post_data, auth=get_wp_auth())
+    response = requests.put(url, json=post_data, auth=get_wp_auth(), timeout=30)
 
     if response.status_code in [200, 201]:
         print(f"Updated blueprint post {post_id}: {new_title}")
@@ -107,6 +107,7 @@ def main():
             f"{WP_BASE_URL}/wp-json/wp/v2/eve_blueprint",
             auth=get_wp_auth(),
             params={"per_page": per_page, "page": page},
+            timeout=30,
         )
 
         if response.status_code != 200:

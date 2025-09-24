@@ -3,22 +3,23 @@ EVE Observer Contract Fetching
 Handles fetching contract data from ESI API.
 """
 
-import os
+import asyncio
 import json
 import logging
-import asyncio
+import os
 from typing import Any, Dict, List, Optional
+
 import aiohttp
 
 from api_client import (
     fetch_esi,
     fetch_public_contracts_async,
     fetch_public_esi,
+    get_session,
     validate_api_response,
     validate_input_params,
-    get_session,
 )
-from config import ESI_BASE_URL, CACHE_DIR
+from config import CACHE_DIR, ESI_BASE_URL
 
 logger = logging.getLogger(__name__)
 
@@ -143,7 +144,7 @@ async def get_issuer_names(issuer_ids: List[int]) -> Dict[int, str]:
     # Process in batches of 1000 (ESI limit)
     batch_size = 1000
     for i in range(0, len(unique_ids), batch_size):
-        batch_ids = unique_ids[i:i + batch_size]
+        batch_ids = unique_ids[i : i + batch_size]
 
         try:
             async with sess.post(
@@ -284,17 +285,17 @@ async def fetch_all_contracts_in_region(region_id: int) -> List[Dict[str, Any]]:
             contract_type = contract.get("type")
 
             contract_data = {
-                'contract_id': contract_id,
-                'type': contract_type,
-                'price': contract.get("price", 0),
-                'issuer_id': contract.get("issuer_id"),
-                'issuer_corporation_id': contract.get("issuer_corporation_id"),
-                'start_location_id': contract.get("start_location_id"),
-                'title': contract.get("title", ""),
-                'date_issued': contract.get("date_issued"),
-                'date_expired': contract.get("date_expired"),
-                'volume': contract.get("volume", 1),
-                'status': 'outstanding',  # Public endpoint only returns active contracts
+                "contract_id": contract_id,
+                "type": contract_type,
+                "price": contract.get("price", 0),
+                "issuer_id": contract.get("issuer_id"),
+                "issuer_corporation_id": contract.get("issuer_corporation_id"),
+                "start_location_id": contract.get("start_location_id"),
+                "title": contract.get("title", ""),
+                "date_issued": contract.get("date_issued"),
+                "date_expired": contract.get("date_expired"),
+                "volume": contract.get("volume", 1),
+                "status": "outstanding",  # Public endpoint only returns active contracts
             }
 
             all_contracts.append(contract_data)

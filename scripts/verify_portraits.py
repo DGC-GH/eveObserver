@@ -43,7 +43,7 @@ def verify_character_featured_images():
             "page": page,
             "_embed": "wp:featuredmedia",  # Include featured media in response
         }
-        response = requests.get(posts_url, auth=get_wp_auth(), params=params)
+        response = requests.get(posts_url, auth=get_wp_auth(), params=params, timeout=30)
 
         if response.status_code != 200:
             logger.error(f"Failed to fetch character posts page {page}: {response.status_code}")

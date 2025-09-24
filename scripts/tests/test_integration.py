@@ -387,7 +387,10 @@ class TestCorporationProcessorIntegration:
         corp_data = {"name": "Test Corporation", "ticker": "TEST", "member_count": 100}
 
         # Mock WordPress API calls - use AsyncMock for proper async handling
-        mock_wp_request.side_effect = [AsyncMock(return_value=[]), AsyncMock(return_value={"id": 126, "title": {"rendered": "Test Corporation"}})]
+        mock_wp_request.side_effect = [
+            AsyncMock(return_value=[]),
+            AsyncMock(return_value={"id": 126, "title": {"rendered": "Test Corporation"}}),
+        ]
 
         await update_corporation_in_wp(1001, corp_data)
 

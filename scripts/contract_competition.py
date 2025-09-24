@@ -3,18 +3,22 @@ EVE Observer Contract Competition Analysis
 Handles checking contract competition and outbid detection.
 """
 
+import asyncio
 import logging
 from typing import Any, Dict, List, Optional, Tuple
-import asyncio
 
 from api_client import fetch_public_contracts_async
-from contract_fetching import get_region_from_location, get_issuer_names
+from contract_fetching import get_issuer_names, get_region_from_location
 
 logger = logging.getLogger(__name__)
 
 
 async def check_contract_competition(
-    contract_data: Dict[str, Any], contract_items: List[Dict[str, Any]], limit_to_issuer_ids: Optional[List[int]] = None, issuer_name_filter: Optional[str] = None, all_expanded_contracts: Optional[List[Dict[str, Any]]] = None
+    contract_data: Dict[str, Any],
+    contract_items: List[Dict[str, Any]],
+    limit_to_issuer_ids: Optional[List[int]] = None,
+    issuer_name_filter: Optional[str] = None,
+    all_expanded_contracts: Optional[List[Dict[str, Any]]] = None,
 ) -> Tuple[bool, Optional[float]]:
     """Check if a sell contract has been outbid by cheaper competing contracts in the same region.
 
@@ -81,6 +85,7 @@ async def check_contract_competition(
         # Load expanded contracts from cache or fetch if needed
         logger.info("No expanded contracts provided, loading from cache...")
         from contract_expansion import fetch_and_expand_all_forge_contracts
+
         all_expanded_contracts = await fetch_and_expand_all_forge_contracts()
 
     if all_expanded_contracts and len(all_expanded_contracts) > 0:
@@ -107,7 +112,9 @@ async def check_contract_competition(
             comp_items = comp_contract.get("items", [])
 
             # Debug: Log all contracts we're considering
-            logger.debug(f"Evaluating contract {comp_contract_id}: type={comp_contract.get('type')}, status={comp_contract.get('status')}, price={comp_price}, issuer={comp_issuer_id}")
+            logger.debug(
+                f"Evaluating contract {comp_contract_id}: type={comp_contract.get('type')}, status={comp_contract.get('status')}, price={comp_price}, issuer={comp_issuer_id}"
+            )
 
             # Quick filters that don't require API calls
             if comp_contract.get("type") != "item_exchange":
@@ -125,7 +132,9 @@ async def check_contract_competition(
 
             # If limiting to specific issuers, check that here
             if limit_to_issuer_ids and comp_issuer_id not in limit_to_issuer_ids:
-                logger.debug(f"Skipping contract {comp_contract_id}: issuer {comp_issuer_id} not in allowed list {limit_to_issuer_ids}")
+                logger.debug(
+                    f"Skipping contract {comp_contract_id}: issuer {comp_issuer_id} not in allowed list {limit_to_issuer_ids}"
+                )
                 continue
 
             # If filtering by issuer name, check names here
@@ -135,16 +144,20 @@ async def check_contract_competition(
 
                 # Check if any of the names contain the filter text (case insensitive)
                 name_matches = (
-                    issuer_name_filter.lower() in issuer_name.lower() or
-                    issuer_name_filter.lower() in corp_name.lower() or
-                    issuer_name_filter.lower() in comp_title.lower()
+                    issuer_name_filter.lower() in issuer_name.lower()
+                    or issuer_name_filter.lower() in corp_name.lower()
+                    or issuer_name_filter.lower() in comp_title.lower()
                 )
 
                 if not name_matches:
-                    logger.debug(f"Skipping contract {comp_contract_id}: name filter '{issuer_name_filter}' not found in '{issuer_name}'/'{corp_name}'/'{comp_title}'")
+                    logger.debug(
+                        f"Skipping contract {comp_contract_id}: name filter '{issuer_name_filter}' not found in '{issuer_name}'/'{corp_name}'/'{comp_title}'"
+                    )
                     continue
 
-                logger.debug(f"Contract {comp_contract_id} matches name filter: issuer='{issuer_name}', corp='{corp_name}', title='{comp_title}'")
+                logger.debug(
+                    f"Contract {comp_contract_id} matches name filter: issuer='{issuer_name}', corp='{corp_name}', title='{comp_title}'"
+                )
 
             if comp_price <= 0:
                 logger.debug(f"Skipping contract {comp_contract_id}: invalid price")
@@ -160,15 +173,18 @@ async def check_contract_competition(
             comp_is_blueprint_copy = comp_item.get("is_blueprint_copy", False)
             comp_quantity = comp_item.get("quantity", 1)
 
-            logger.debug(f"Contract {comp_contract_id} item: type_id={comp_type_id}, is_blueprint_copy={comp_is_blueprint_copy}, quantity={comp_quantity}")
+            logger.debug(
+                f"Contract {comp_contract_id} item: type_id={comp_type_id}, is_blueprint_copy={comp_is_blueprint_copy}, quantity={comp_quantity}"
+            )
 
-            if (comp_type_id == type_id and
-                comp_is_blueprint_copy == is_blueprint_copy):
+            if comp_type_id == type_id and comp_is_blueprint_copy == is_blueprint_copy:
                 if comp_quantity > 0:
                     final_comp_price_per_item = comp_price / comp_quantity
                     total_competing_found += 1
 
-                    logger.info(f"Found competing contract {comp_contract_id}: price_per_item={final_comp_price_per_item:.2f}, our_price={price_per_item:.2f}")
+                    logger.info(
+                        f"Found competing contract {comp_contract_id}: price_per_item={final_comp_price_per_item:.2f}, our_price={price_per_item:.2f}"
+                    )
 
                     if final_comp_price_per_item < price_per_item:
                         logger.info(
@@ -181,7 +197,9 @@ async def check_contract_competition(
                 else:
                     logger.debug(f"Skipping contract {comp_contract_id}: invalid quantity")
             else:
-                logger.debug(f"Skipping contract {comp_contract_id}: type_id mismatch ({comp_type_id} != {type_id}) or blueprint_copy mismatch ({comp_is_blueprint_copy} != {is_blueprint_copy})")
+                logger.debug(
+                    f"Skipping contract {comp_contract_id}: type_id mismatch ({comp_type_id} != {type_id}) or blueprint_copy mismatch ({comp_is_blueprint_copy} != {is_blueprint_copy})"
+                )
 
     else:
         # Fallback to original page-by-page approach
@@ -214,7 +232,9 @@ async def check_contract_competition(
                     comp_title = contract.get("title", "")
 
                     # Debug: Log all contracts we're considering
-                    logger.debug(f"Evaluating contract {comp_contract_id}: type={contract.get('type')}, status={contract.get('status')}, price={comp_price}, issuer={comp_issuer_id}")
+                    logger.debug(
+                        f"Evaluating contract {comp_contract_id}: type={contract.get('type')}, status={contract.get('status')}, price={comp_price}, issuer={comp_issuer_id}"
+                    )
 
                     # Quick filters that don't require API calls
                     if contract.get("type") != "item_exchange":
@@ -232,27 +252,35 @@ async def check_contract_competition(
 
                     # If limiting to specific issuers, check that here
                     if limit_to_issuer_ids and comp_issuer_id not in limit_to_issuer_ids:
-                        logger.debug(f"Skipping contract {comp_contract_id}: issuer {comp_issuer_id} not in allowed list {limit_to_issuer_ids}")
+                        logger.debug(
+                            f"Skipping contract {comp_contract_id}: issuer {comp_issuer_id} not in allowed list {limit_to_issuer_ids}"
+                        )
                         continue
 
                     # If filtering by issuer name, check names here
                     if issuer_name_filter:
-                        issuer_names = await get_issuer_names([comp_issuer_id, comp_issuer_corp_id] if comp_issuer_corp_id else [comp_issuer_id])
+                        issuer_names = await get_issuer_names(
+                            [comp_issuer_id, comp_issuer_corp_id] if comp_issuer_corp_id else [comp_issuer_id]
+                        )
                         issuer_name = issuer_names.get(comp_issuer_id, "")
                         corp_name = issuer_names.get(comp_issuer_corp_id, "") if comp_issuer_corp_id else ""
 
                         # Check if any of the names contain the filter text (case insensitive)
                         name_matches = (
-                            issuer_name_filter.lower() in issuer_name.lower() or
-                            issuer_name_filter.lower() in corp_name.lower() or
-                            issuer_name_filter.lower() in comp_title.lower()
+                            issuer_name_filter.lower() in issuer_name.lower()
+                            or issuer_name_filter.lower() in corp_name.lower()
+                            or issuer_name_filter.lower() in comp_title.lower()
                         )
 
                         if not name_matches:
-                            logger.debug(f"Skipping contract {comp_contract_id}: name filter '{issuer_name_filter}' not found in '{issuer_name}'/'{corp_name}'/'{comp_title}'")
+                            logger.debug(
+                                f"Skipping contract {comp_contract_id}: name filter '{issuer_name_filter}' not found in '{issuer_name}'/'{corp_name}'/'{comp_title}'"
+                            )
                             continue
 
-                        logger.debug(f"Contract {comp_contract_id} matches name filter: issuer='{issuer_name}', corp='{corp_name}', title='{comp_title}'")
+                        logger.debug(
+                            f"Contract {comp_contract_id} matches name filter: issuer='{issuer_name}', corp='{corp_name}', title='{comp_title}'"
+                        )
 
                     if comp_price <= 0:
                         logger.debug(f"Skipping contract {comp_contract_id}: invalid price")
@@ -266,7 +294,9 @@ async def check_contract_competition(
 
                     # Skip if obviously not competitive
                     if estimated_price_per_item < min_price or estimated_price_per_item > max_price:
-                        logger.debug(f"Skipping contract {comp_contract_id}: price_per_item {estimated_price_per_item:.2f} outside range [{min_price:.2f}, {max_price:.2f}]")
+                        logger.debug(
+                            f"Skipping contract {comp_contract_id}: price_per_item {estimated_price_per_item:.2f} outside range [{min_price:.2f}, {max_price:.2f}]"
+                        )
                         continue
 
                     logger.debug(f"Contract {comp_contract_id} passed initial filters, fetching items...")
@@ -293,15 +323,18 @@ async def check_contract_competition(
                     comp_is_blueprint_copy = comp_item.get("is_blueprint_copy", False)
                     comp_quantity = comp_item.get("quantity", 1)
 
-                    logger.debug(f"Contract {comp_contract_id} item: type_id={comp_type_id}, is_blueprint_copy={comp_is_blueprint_copy}, quantity={comp_quantity}")
+                    logger.debug(
+                        f"Contract {comp_contract_id} item: type_id={comp_type_id}, is_blueprint_copy={comp_is_blueprint_copy}, quantity={comp_quantity}"
+                    )
 
-                    if (comp_type_id == type_id and
-                        comp_is_blueprint_copy == is_blueprint_copy):
+                    if comp_type_id == type_id and comp_is_blueprint_copy == is_blueprint_copy:
                         if comp_quantity > 0:
                             final_comp_price_per_item = comp_price / comp_quantity
                             total_competing_found += 1
 
-                            logger.info(f"Found competing contract {comp_contract_id}: price_per_item={final_comp_price_per_item:.2f}, our_price={price_per_item:.2f}")
+                            logger.info(
+                                f"Found competing contract {comp_contract_id}: price_per_item={final_comp_price_per_item:.2f}, our_price={price_per_item:.2f}"
+                            )
 
                             if final_comp_price_per_item < price_per_item:
                                 logger.info(
@@ -314,7 +347,9 @@ async def check_contract_competition(
                         else:
                             logger.debug(f"Skipping contract {comp_contract_id}: invalid quantity")
                     else:
-                        logger.debug(f"Skipping contract {comp_contract_id}: type_id mismatch ({comp_type_id} != {type_id}) or blueprint_copy mismatch ({comp_is_blueprint_copy} != {is_blueprint_copy})")
+                        logger.debug(
+                            f"Skipping contract {comp_contract_id}: type_id mismatch ({comp_type_id} != {type_id}) or blueprint_copy mismatch ({comp_is_blueprint_copy} != {is_blueprint_copy})"
+                        )
 
                 if found_cheaper:
                     break  # Found cheaper contract, stop checking more pages
@@ -330,12 +365,18 @@ async def check_contract_competition(
     if found_cheaper:
         return True, competing_price
 
-    logger.info(f"No competing contracts found for contract {contract_id} (checked {total_competing_found} potential competitors)")
+    logger.info(
+        f"No competing contracts found for contract {contract_id} (checked {total_competing_found} potential competitors)"
+    )
     return False, None
 
 
 async def check_contract_competition_hybrid(
-    contract_data: Dict[str, Any], contract_items: List[Dict[str, Any]], limit_to_issuer_ids: Optional[List[int]] = None, issuer_name_filter: Optional[str] = None, all_expanded_contracts: Optional[List[Dict[str, Any]]] = None
+    contract_data: Dict[str, Any],
+    contract_items: List[Dict[str, Any]],
+    limit_to_issuer_ids: Optional[List[int]] = None,
+    issuer_name_filter: Optional[str] = None,
+    all_expanded_contracts: Optional[List[Dict[str, Any]]] = None,
 ) -> Tuple[bool, Optional[float], Optional[Dict[str, float]]]:
     """Check if a sell contract has been outbid by cheaper competing contracts in the same region.
 
@@ -359,14 +400,16 @@ async def check_contract_competition_hybrid(
         Only checks single-item sell contracts (item_exchange type) with positive quantities.
     """
     # Only perform contract-to-contract comparison
-    is_outbid, competing_price = await check_contract_competition(contract_data, contract_items, limit_to_issuer_ids, issuer_name_filter, all_expanded_contracts)
+    is_outbid, competing_price = await check_contract_competition(
+        contract_data, contract_items, limit_to_issuer_ids, issuer_name_filter, all_expanded_contracts
+    )
     return is_outbid, competing_price, None
 
 
 async def check_contracts_competition_concurrent(
     contract_data_list: List[Dict[str, Any]],
     contract_items_list: List[List[Dict[str, Any]]],
-    all_expanded_contracts: Optional[List[Dict[str, Any]]] = None
+    all_expanded_contracts: Optional[List[Dict[str, Any]]] = None,
 ) -> List[Tuple[bool, Optional[float]]]:
     """Check competition for multiple contracts concurrently.
 
@@ -394,7 +437,9 @@ async def check_contracts_competition_concurrent(
     processed_results: List[Tuple[bool, Optional[float]]] = []
     for i, result in enumerate(results):
         if isinstance(result, Exception):
-            logger.error(f"Error checking competition for contract {contract_data_list[i].get('contract_id')}: {result}")
+            logger.error(
+                f"Error checking competition for contract {contract_data_list[i].get('contract_id')}: {result}"
+            )
             processed_results.append((False, None))  # Default to not outbid on error
         else:
             # Type narrowing: result is Tuple[bool, Optional[float]] when not an exception

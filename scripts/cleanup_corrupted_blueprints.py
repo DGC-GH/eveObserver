@@ -13,7 +13,7 @@ import re
 import requests
 from dotenv import load_dotenv
 
-from config import LOG_LEVEL, LOG_FILE, WP_BASE_URL
+from config import LOG_FILE, LOG_LEVEL, WP_BASE_URL
 
 load_dotenv()
 
@@ -47,7 +47,7 @@ def get_all_blueprint_posts():
 
     while True:
         response = requests.get(
-            f"{WP_BASE_URL}/wp-json/wp/v2/eve_blueprint", auth=auth, params={"per_page": 100, "page": page}
+            f"{WP_BASE_URL}/wp-json/wp/v2/eve_blueprint", auth=auth, params={"per_page": 100, "page": page}, timeout=30
         )
 
         if response.status_code != 200:
@@ -97,7 +97,7 @@ def delete_corrupted_blueprint_posts(posts):
         if is_corrupted_slug(slug):
             # This is a corrupted slug, delete it
             delete_url = f"{WP_BASE_URL}/wp-json/wp/v2/eve_blueprint/{post_id}"
-            delete_response = requests.delete(delete_url, auth=auth, params={"force": True})
+            delete_response = requests.delete(delete_url, auth=auth, params={"force": True}, timeout=30)
 
             if delete_response.status_code == 200:
                 logger.info(f"Deleted corrupted blueprint post: {title} (ID: {post_id}, slug: {slug})")

@@ -4,8 +4,8 @@ Script to extract contract items from all_contracts_forge.json and save to contr
 """
 
 import json
-import os
 import logging
+import os
 
 from config import CACHE_DIR, LOG_FILE, LOG_LEVEL
 
@@ -28,7 +28,7 @@ def extract_items_to_cache():
         logger.error(f"Contracts file not found: {contracts_file}")
         return
 
-    with open(contracts_file, 'r') as f:
+    with open(contracts_file, "r") as f:
         contracts = json.load(f)
 
     logger.info(f"Loaded {len(contracts)} contracts from {contracts_file}")
@@ -52,7 +52,7 @@ def extract_items_to_cache():
             raw_item = {
                 "type_id": item.get("type_id"),
                 "quantity": item.get("quantity", 1),
-                "is_blueprint_copy": item.get("is_blueprint_copy", False)
+                "is_blueprint_copy": item.get("is_blueprint_copy", False),
             }
 
             # Add blueprint-specific fields if present
@@ -76,7 +76,7 @@ def extract_items_to_cache():
 
     # Save to contract_items_cache.json
     cache_file = os.path.join(CACHE_DIR, "contract_items_cache.json")
-    with open(cache_file, 'w') as f:
+    with open(cache_file, "w") as f:
         json.dump(contract_items_cache, f, indent=2)
 
     logger.info(f"Saved contract items cache to {cache_file}")
