@@ -235,7 +235,20 @@ class EVE_Observer {
 
         // Change to scripts directory and run the command synchronously
         error_log("🔄 [PHP STEP 12] Preparing shell command...");
-        $command = 'cd ' . escapeshellarg($scripts_dir) . ' && /usr/bin/python3 ' . escapeshellarg($script_map[$section]) . ' 2>&1';
+        
+        // Try to find Python executable
+        $python_cmd = 'python3';
+        if (!shell_exec("which python3 2>/dev/null")) {
+            // Fallback to python if python3 not found
+            $python_cmd = 'python';
+            if (!shell_exec("which python 2>/dev/null")) {
+                error_log("❌ [PHP ERROR] Neither python3 nor python found in PATH");
+                return new WP_Error('python_not_found', 'Python executable not found in system PATH', array('status' => 500));
+            }
+        }
+        error_log("✅ [PHP STEP 12.5] Using Python command: {$python_cmd}");
+        
+        $command = 'cd ' . escapeshellarg($scripts_dir) . ' && ' . escapeshellarg($python_cmd) . ' ' . escapeshellarg($script_map[$section]) . ' 2>&1';
         error_log("🔄 [PHP STEP 13] Full command: {$command}");
 
         // Set execution time limit for long-running syncs

@@ -374,16 +374,16 @@ th:hover .sort-indicator {
 
 /* Sync Progress Area */
 #sync-progress-content {
-    color: var(--text-color) !important;
+    color: #1d1d1f !important;
     background-color: transparent !important;
-    font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
-    font-size: 12px;
-    line-height: 1.4;
-    white-space: pre-wrap;
-    word-wrap: break-word;
-    margin: 0;
-    padding: 0;
-    border: none;
+    font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace !important;
+    font-size: 12px !important;
+    line-height: 1.4 !important;
+    white-space: pre-wrap !important;
+    word-wrap: break-word !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    border: none !important;
 }
 
 .eve-dashboard-actions {
