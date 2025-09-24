@@ -25,6 +25,7 @@ class EVEDashboard {
             corporations: 'eve_corporation',
             contracts: 'eve_contract'
         };
+        this.syncStatusInterval = null;
 
         this.init();
     }
@@ -315,10 +316,18 @@ class EVEDashboard {
 
         console.log('🔄 [INIT STEP 14] Setting up individual sync button event listeners...');
         syncButtons.forEach(button => {
-            button.addEventListener('click', (e) => {
+            button.addEventListener('click', async (e) => {
                 e.stopPropagation();
                 const section = button.getAttribute('data-section');
                 console.log('🔄 [INDIVIDUAL SYNC] Sync button clicked for section:', section);
+
+                // Check if sync is already running
+                const status = await this.checkSyncStatus();
+                if (status.running) {
+                    this.showNotification('A sync is already running. Please wait for it to complete or stop it first.', 'error');
+                    return;
+                }
+
                 this.syncSection(section, button);
             });
         });
@@ -326,7 +335,7 @@ class EVEDashboard {
 
         console.log('🔄 [INIT STEP 16] Setting up sync all button event listener...');
         if (syncAllButton) {
-            syncAllButton.addEventListener('click', (e) => {
+            syncAllButton.addEventListener('click', async (e) => {
                 console.log('🔄 [STEP 1] Sync All button clicked - event detected!');
                 console.log('🔄 [STEP 2] Event object:', e);
                 console.log('🔄 [STEP 3] Button element:', syncAllButton);
@@ -336,6 +345,14 @@ class EVEDashboard {
                     console.log('🔄 [STEP 6] eveObserverApi.nonce exists:', !!eveObserverApi.nonce);
                     console.log('🔄 [STEP 7] eveObserverApi.ajaxUrl exists:', !!eveObserverApi.ajaxUrl);
                 }
+
+                // Check if sync is already running
+                const status = await this.checkSyncStatus();
+                if (status.running) {
+                    this.showNotification('A sync is already running. Please wait for it to complete or stop it first.', 'error');
+                    return;
+                }
+
                 this.syncSection('all', syncAllButton);
             });
             console.log('✅ [INIT STEP 17] Sync all button event listener set up');
@@ -386,6 +403,113 @@ class EVEDashboard {
             console.log('✅ [INIT STEP 21] Test API button event listener set up');
         } else {
             console.log('⚠️ [INIT WARNING] Test API button not found (this is optional)');
+        }
+
+        // Set up stop sync button
+        const stopSyncButton = document.getElementById('stop-sync-button');
+        if (stopSyncButton) {
+            stopSyncButton.addEventListener('click', () => {
+                console.log('🔄 [STOP SYNC] Stop sync button clicked');
+                this.stopSync();
+            });
+            console.log('✅ [INIT STEP 22] Stop sync button event listener set up');
+        } else {
+            console.log('⚠️ [INIT WARNING] Stop sync button not found');
+        }
+
+        // Start status polling
+        this.startSyncStatusPolling();
+        console.log('✅ [INIT STEP 23] Sync status polling started');
+    }
+
+    // Sync status management methods
+    async checkSyncStatus() {
+        try {
+            const response = await fetch('/wp-json/eve-observer/v1/sync-status');
+            if (!response.ok) {
+                throw new Error(`HTTP ${response.status}`);
+            }
+            const status = await response.json();
+            console.log('🔄 [SYNC STATUS] Current sync status:', status);
+            return status;
+        } catch (error) {
+            console.error('❌ [SYNC STATUS] Error checking sync status:', error);
+            return { running: false, progress: 0, message: 'Unable to check status' };
+        }
+    }
+
+    updateSyncStatusDisplay(status) {
+        const statusDiv = document.getElementById('sync-status-display');
+        const progressBar = document.getElementById('sync-status-progress');
+        const progressFill = document.querySelector('#sync-status-progress .eve-progress-fill');
+        const statusText = document.getElementById('sync-status-text');
+        const stopButton = document.getElementById('stop-sync-button');
+
+        if (!statusDiv || !progressBar || !progressFill || !statusText) {
+            console.log('⚠️ [SYNC STATUS] Status display elements not found');
+            return;
+        }
+
+        if (status.running) {
+            statusDiv.style.display = 'block';
+            progressFill.style.width = `${status.progress || 0}%`;
+            statusText.textContent = status.message || 'Sync in progress...';
+
+            // Show stop button if sync is running
+            if (stopButton) {
+                stopButton.style.display = 'inline-block';
+            }
+        } else {
+            statusDiv.style.display = 'none';
+            if (stopButton) {
+                stopButton.style.display = 'none';
+            }
+        }
+    }
+
+    startSyncStatusPolling() {
+        console.log('🔄 [SYNC STATUS] Starting status polling...');
+        this.stopSyncStatusPolling(); // Clear any existing polling
+
+        this.syncStatusInterval = setInterval(async () => {
+            const status = await this.checkSyncStatus();
+            this.updateSyncStatusDisplay(status);
+        }, 5000); // Poll every 5 seconds
+    }
+
+    stopSyncStatusPolling() {
+        if (this.syncStatusInterval) {
+            console.log('🔄 [SYNC STATUS] Stopping status polling...');
+            clearInterval(this.syncStatusInterval);
+            this.syncStatusInterval = null;
+        }
+    }
+
+    async stopSync() {
+        try {
+            console.log('🔄 [SYNC STOP] Attempting to stop sync...');
+            const response = await fetch('/wp-json/eve-observer/v1/stop-sync', {
+                method: 'POST'
+            });
+
+            if (!response.ok) {
+                throw new Error(`HTTP ${response.status}`);
+            }
+
+            const result = await response.json();
+            console.log('✅ [SYNC STOP] Stop sync result:', result);
+
+            if (result.success) {
+                this.showNotification('Sync stopped successfully', 'success');
+                // Refresh status immediately
+                const status = await this.checkSyncStatus();
+                this.updateSyncStatusDisplay(status);
+            } else {
+                throw new Error(result.message || 'Failed to stop sync');
+            }
+        } catch (error) {
+            console.error('❌ [SYNC STOP] Error stopping sync:', error);
+            this.showNotification(`Failed to stop sync: ${error.message}`, 'error');
         }
     }
 

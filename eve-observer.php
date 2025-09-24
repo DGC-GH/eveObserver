@@ -202,6 +202,20 @@ class EVE_Observer {
             'permission_callback' => array($this, 'check_sync_permissions')
         ));
 
+        // Add sync status endpoint
+        register_rest_route('eve-observer/v1', '/sync-status', array(
+            'methods' => 'GET',
+            'callback' => array($this, 'handle_sync_status_request'),
+            'permission_callback' => array($this, 'check_sync_permissions')
+        ));
+
+        // Add stop sync endpoint
+        register_rest_route('eve-observer/v1', '/stop-sync', array(
+            'methods' => 'POST',
+            'callback' => array($this, 'handle_stop_sync_request'),
+            'permission_callback' => array($this, 'check_sync_permissions')
+        ));
+
         error_log("🔄 [PLUGIN INIT] REST API routes registered");
     }
 
@@ -233,6 +247,119 @@ class EVE_Observer {
         error_log("🔄 [TEST ENDPOINT] Test response: " . print_r($response, true));
 
         return $response;
+    }
+
+    public function handle_sync_status_request() {
+        error_log("🔄 [SYNC STATUS] Sync status request received");
+
+        $scripts_dir = plugin_dir_path(__FILE__) . 'scripts/';
+        $status_file = $scripts_dir . 'sync_status.json';
+
+        if (!file_exists($status_file)) {
+            error_log("🔄 [SYNC STATUS] No status file found");
+            return array(
+                'running' => false,
+                'message' => 'No sync in progress'
+            );
+        }
+
+        $status_data = json_decode(file_get_contents($status_file), true);
+        if (!$status_data) {
+            error_log("🔄 [SYNC STATUS] Invalid status file");
+            return array(
+                'running' => false,
+                'message' => 'Invalid status data'
+            );
+        }
+
+        // Check if the process is still running
+        $pid = $status_data['pid'] ?? null;
+        if ($pid && function_exists('posix_kill')) {
+            // On Unix systems, check if process exists
+            $running = posix_kill($pid, 0);
+        } elseif ($pid && function_exists('shell_exec')) {
+            // Fallback: check process list
+            $process_check = shell_exec("ps -p $pid 2>/dev/null | grep $pid");
+            $running = !empty($process_check);
+        } else {
+            // Fallback: assume running if file exists and is recent
+            $timestamp = strtotime($status_data['timestamp'] ?? 'now');
+            $age_seconds = time() - $timestamp;
+            $running = $age_seconds < 3600; // Consider running if less than 1 hour old
+        }
+
+        if (!$running) {
+            // Clean up stale status file
+            @unlink($status_file);
+            error_log("🔄 [SYNC STATUS] Process not running, cleaned up status file");
+            return array(
+                'running' => false,
+                'message' => 'No sync in progress'
+            );
+        }
+
+        error_log("🔄 [SYNC STATUS] Sync is running: " . print_r($status_data, true));
+
+        return array(
+            'running' => true,
+            'status' => $status_data['status'] ?? 'unknown',
+            'progress' => $status_data['progress'] ?? 0.0,
+            'message' => $status_data['message'] ?? '',
+            'section' => $status_data['section'] ?? '',
+            'timestamp' => $status_data['timestamp'] ?? '',
+            'start_time' => $status_data['start_time'] ?? '',
+            'pid' => $pid
+        );
+    }
+
+    public function handle_stop_sync_request() {
+        error_log("🔄 [STOP SYNC] Stop sync request received");
+
+        $scripts_dir = plugin_dir_path(__FILE__) . 'scripts/';
+        $status_file = $scripts_dir . 'sync_status.json';
+        $pid_file = $scripts_dir . 'main.pid';
+
+        if (!file_exists($status_file)) {
+            error_log("🔄 [STOP SYNC] No status file found");
+            return new WP_Error('no_sync_running', 'No sync is currently running', array('status' => 400));
+        }
+
+        $status_data = json_decode(file_get_contents($status_file), true);
+        $pid = $status_data['pid'] ?? null;
+
+        if (!$pid) {
+            error_log("🔄 [STOP SYNC] No PID in status file");
+            @unlink($status_file);
+            return new WP_Error('no_pid', 'No process ID found', array('status' => 400));
+        }
+
+        // Try to kill the process
+        $killed = false;
+        if (function_exists('posix_kill')) {
+            $killed = posix_kill($pid, SIGTERM);
+            error_log("🔄 [STOP SYNC] Sent SIGTERM to PID $pid: " . ($killed ? 'success' : 'failed'));
+        } elseif (function_exists('shell_exec')) {
+            // Fallback: use kill command
+            $kill_output = shell_exec("kill $pid 2>/dev/null");
+            $killed = true; // Assume success
+            error_log("🔄 [STOP SYNC] Used kill command on PID $pid");
+        }
+
+        if ($killed) {
+            // Clean up files
+            @unlink($status_file);
+            @unlink($pid_file);
+            error_log("🔄 [STOP SYNC] Successfully stopped sync process $pid");
+
+            return array(
+                'success' => true,
+                'message' => 'Sync process stopped successfully',
+                'pid' => $pid
+            );
+        } else {
+            error_log("🔄 [STOP SYNC] Failed to stop sync process $pid");
+            return new WP_Error('stop_failed', 'Failed to stop sync process', array('status' => 500));
+        }
     }
 
     public function handle_ajax_sync_request() {
@@ -267,6 +394,18 @@ class EVE_Observer {
         // Get the section parameter
         $section = isset($_POST['section']) ? sanitize_text_field($_POST['section']) : 'all';
         error_log("🔄 [PHP AJAX STEP 3] Section parameter: {$section}");
+
+        // Check if a sync is already running
+        $sync_status = $this->handle_sync_status_request();
+        if ($sync_status['running']) {
+            error_log("🔄 [PHP AJAX INFO] Sync already running, offering to stop it");
+            wp_send_json_error(array(
+                'message' => 'A sync is already running. Would you like to stop it first?',
+                'sync_running' => true,
+                'current_status' => $sync_status
+            ), 409); // 409 Conflict
+            return;
+        }
 
         // Log the sync request
         error_log("🔄 [AJAX PHP STEP 1] EVE Observer: AJAX sync request started for section: {$section}");

@@ -40,6 +40,7 @@ logging.basicConfig(
 logger = logging.getLogger(__name__)
 
 PID_FILE = os.path.join(os.path.dirname(__file__), "main.pid")
+STATUS_FILE = os.path.join(os.path.dirname(__file__), "sync_status.json")
 
 
 def check_single_instance() -> bool:
@@ -80,6 +81,72 @@ def cleanup_pid_file():
             logger.info("Removed PID file")
     except Exception as e:
         logger.warning(f"Failed to remove PID file: {e}")
+
+
+def update_sync_status(status: str, progress: float = 0.0, message: str = "", section: str = ""):
+    """Update the sync status file with current progress."""
+    try:
+        status_data = {
+            "pid": os.getpid(),
+            "status": status,
+            "progress": progress,
+            "message": message,
+            "section": section,
+            "timestamp": datetime.now(timezone.utc).isoformat(),
+            "start_time": getattr(update_sync_status, 'start_time', datetime.now(timezone.utc).isoformat())
+        }
+        
+        # Store start time for the first call
+        if not hasattr(update_sync_status, 'start_time'):
+            update_sync_status.start_time = status_data["start_time"]
+        
+        with open(STATUS_FILE, 'w') as f:
+            json.dump(status_data, f, indent=2)
+        
+        logger.info(f"Sync status updated: {status} - {progress:.1f}% - {message}")
+    except Exception as e:
+        logger.error(f"Failed to update sync status: {e}")
+
+
+def cleanup_status_file():
+    """Remove the status file on exit."""
+    try:
+        if os.path.exists(STATUS_FILE):
+            os.remove(STATUS_FILE)
+            logger.info("Removed status file")
+    except Exception as e:
+        logger.warning(f"Failed to remove status file: {e}")
+
+
+def check_sync_running() -> Dict[str, Any]:
+    """Check if a sync is currently running and return status."""
+    if not os.path.exists(STATUS_FILE):
+        return {"running": False}
+    
+    try:
+        with open(STATUS_FILE, 'r') as f:
+            status_data = json.load(f)
+        
+        # Check if the process is still running
+        pid = status_data.get("pid")
+        if pid and psutil.pid_exists(pid):
+            return {
+                "running": True,
+                "status": status_data.get("status", "unknown"),
+                "progress": status_data.get("progress", 0.0),
+                "message": status_data.get("message", ""),
+                "section": status_data.get("section", ""),
+                "timestamp": status_data.get("timestamp", ""),
+                "start_time": status_data.get("start_time", ""),
+                "pid": pid
+            }
+        else:
+            # Process is dead, clean up
+            cleanup_status_file()
+            return {"running": False}
+    except Exception as e:
+        logger.error(f"Error checking sync status: {e}")
+        return {"running": False}
 
 
 def get_memory_usage() -> float:
@@ -218,38 +285,52 @@ async def main() -> None:
     if not check_single_instance():
         return
     
+    # Initialize sync status
+    update_sync_status("starting", 0.0, "Initializing sync process...")
+    
     start_time = time.time()
     args = parse_arguments()
     clear_log_file()
+    
+    update_sync_status("initializing", 5.0, "Loading caches and tokens...")
     caches = initialize_caches()
     tokens = load_tokens()
     if not tokens:
         logger.error("No authorized characters found. Run 'python esi_oauth.py authorize' first.")
+        update_sync_status("error", 0.0, "No authorized characters found")
         cleanup_pid_file()
+        cleanup_status_file()
         return
 
     try:
+        update_sync_status("collecting", 10.0, "Collecting corporation members...")
         # Collect all corporations and their member characters
         collect_start = time.time()
         corp_members = await collect_corporation_members(tokens)
         allowed_corp_ids, allowed_issuer_ids = get_allowed_entities(corp_members)
         collect_time = time.time() - collect_start
         logger.info(f"Corporation collection completed in {collect_time:.2f}s")
+        update_sync_status("collecting", 20.0, f"Found {len(corp_members)} corporations with {sum(len(members) for members in corp_members.values())} total members")
 
         # Clean up old posts with filtering (only if doing full fetch or contracts)
         if args.all or args.contracts:
+            update_sync_status("cleaning", 25.0, "Cleaning up old posts...")
             cleanup_start = time.time()
             await cleanup_old_posts(allowed_corp_ids, allowed_issuer_ids)
             cleanup_time = time.time() - cleanup_start
             logger.info(f"Post cleanup completed in {cleanup_time:.2f}s")
+            update_sync_status("cleaning", 30.0, f"Post cleanup completed in {cleanup_time:.2f}s")
 
+        update_sync_status("processing", 35.0, "Processing corporation and character data...")
         process_start = time.time()
         await process_all_data(corp_members, caches, args, tokens)
         process_time = time.time() - process_start
         logger.info(f"Data processing completed in {process_time:.2f}s")
+        update_sync_status("processing", 90.0, f"Data processing completed in {process_time:.2f}s")
 
         total_time = time.time() - start_time
         logger.info(f"Total execution completed in {total_time:.2f}s")
+        update_sync_status("finalizing", 95.0, "Finalizing and logging performance metrics...")
 
         # Log performance metrics
         cache_stats = {}  # Will be populated by log_cache_performance
@@ -263,6 +344,15 @@ async def main() -> None:
 
         # Cleanup session
         await cleanup_session()
+        
+        update_sync_status("completed", 100.0, f"Sync completed successfully in {total_time:.2f}s")
+        logger.info("Sync completed successfully")
+        
+    except Exception as e:
+        error_msg = f"Sync failed: {str(e)}"
+        logger.error(error_msg)
+        update_sync_status("error", 0.0, error_msg)
+        raise
     finally:
         # Flush any pending cache saves and log performance
         from cache_manager import flush_pending_saves, log_cache_performance
@@ -270,6 +360,7 @@ async def main() -> None:
         flush_pending_saves()
         log_cache_performance()
         cleanup_pid_file()
+        # Don't cleanup status file immediately - let it persist for a bit so dashboard can show final status
 
 
 if __name__ == "__main__":
