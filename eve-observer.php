@@ -401,6 +401,8 @@ class EVE_Observer {
         error_log("✅ [AJAX SYNC STATUS SUCCESS] Status retrieved: " . print_r($status, true));
         wp_send_json_success($status);
     }
+
+    public function handle_ajax_stop_sync_request() {
         // Log the start of AJAX request processing
         error_log("🔄 [AJAX STOP SYNC START] ========================================");
         error_log("🔄 [AJAX STOP SYNC START] handle_ajax_stop_sync_request called");
@@ -440,8 +442,8 @@ class EVE_Observer {
             wp_send_json_success($result);
         }
     }
-        // Log the start of AJAX request processing
-        error_log("🔄 [PHP AJAX START] ========================================");
+
+    public function handle_ajax_sync_request() {
         error_log("🔄 [PHP AJAX START] handle_ajax_sync_request called");
         error_log("🔄 [PHP AJAX START] Timestamp: " . current_time('mysql'));
         error_log("🔄 [PHP AJAX START] REQUEST_METHOD: " . ($_SERVER['REQUEST_METHOD'] ?? 'unknown'));
