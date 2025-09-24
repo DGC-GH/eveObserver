@@ -328,7 +328,11 @@ class EVE_Observer {
             '/usr/bin/python3.9',
             '/usr/bin/python3.10',
             '/usr/bin/python3.11',
-            '/usr/bin/python3.12'
+            '/usr/bin/python3.12',
+            // Hostinger alt Python installations (found via debug)
+            '/opt/alt/python311/bin/python3.11',
+            '/opt/alt/python37/bin/python3.7',
+            '/opt/alt/python27/bin/python2.7'
         );
         
         // Also check for any python executables in common directories
@@ -402,7 +406,13 @@ class EVE_Observer {
         // If no Python found through PATH, try direct path access (Hostinger specific)
         if (empty($python_cmd)) {
             error_log("🔄 [AJAX PHP STEP 3.1] PATH-based detection failed, trying direct path access...");
-            $direct_paths = array('/usr/bin/python3', '/usr/local/bin/python3');
+            $direct_paths = array(
+                '/usr/bin/python3', 
+                '/usr/local/bin/python3',
+                // Hostinger alt Python paths (prioritize Python 3.11)
+                '/opt/alt/python311/bin/python3.11',
+                '/opt/alt/python37/bin/python3.7'
+            );
             foreach ($direct_paths as $path) {
                 if (file_exists($path) && is_executable($path)) {
                     $python_cmd = $path;
@@ -416,8 +426,8 @@ class EVE_Observer {
         if (empty($python_cmd)) {
             error_log("🔄 [AJAX PHP STEP 3.3] Direct path access failed, trying system-wide search...");
             
-            // Try find command to locate any python executables
-            $find_python = shell_exec('find /usr -name "python3" -type f -executable 2>/dev/null | head -5');
+            // Try find command to locate any python executables, focusing on /opt/alt/
+            $find_python = shell_exec('find /opt/alt -name "python3*" -type f -executable 2>/dev/null | head -5');
             if (!empty($find_python)) {
                 $found_paths = array_filter(explode("\n", trim($find_python)));
                 foreach ($found_paths as $path) {
@@ -426,6 +436,22 @@ class EVE_Observer {
                         $python_cmd = $path;
                         error_log("✅ [AJAX PHP STEP 3.4] Found Python via find command at: {$path}");
                         break;
+                    }
+                }
+            }
+            
+            // Also try the broader /usr search
+            if (empty($python_cmd)) {
+                $find_python_usr = shell_exec('find /usr -name "python3" -type f -executable 2>/dev/null | head -5');
+                if (!empty($find_python_usr)) {
+                    $found_paths = array_filter(explode("\n", trim($find_python_usr)));
+                    foreach ($found_paths as $path) {
+                        $path = trim($path);
+                        if (!empty($path) && file_exists($path) && is_executable($path)) {
+                            $python_cmd = $path;
+                            error_log("✅ [AJAX PHP STEP 3.4] Found Python via find command at: {$path}");
+                            break;
+                        }
                     }
                 }
             }
