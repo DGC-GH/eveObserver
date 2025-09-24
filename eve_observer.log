@@ -448,3 +448,7 @@
 2025-09-24 03:55:51,477 - INFO - Processing batch 29: contracts 28000 to 28999
 2025-09-24 03:55:51,477 - INFO - Processing batch 30: contracts 29000 to 29999
 2025-09-24 03:55:51,477 - INFO - Processing batch 31: contracts 30000 to 30074
+2025-09-24 04:33:42,261 - INFO - Starting extraction of contract items to cache...
+2025-09-24 04:33:42,406 - INFO - Loaded 30075 contracts from /Users/dg/Documents/GitHub/eveObserver/cache/all_contracts_forge.json
+2025-09-24 04:33:42,464 - INFO - Extracted items for 29582 contracts with 120103 total items
+2025-09-24 04:33:42,912 - INFO - Saved contract items cache to /Users/dg/Documents/GitHub/eveObserver/cache/contract_items_cache.json

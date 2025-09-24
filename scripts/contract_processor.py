@@ -1069,7 +1069,10 @@ async def fetch_and_expand_all_forge_contracts() -> List[Dict[str, Any]]:
 
     This function implements a streamlined approach:
     1. Check if cache file exists and load it if available
-    2. Otherwise fetch all basic contract data and expand with on-demand data fetching and caching
+    2. Otherwise fetch all basic contract data and save raw contracts first
+    3. Expand contracts asynchronously, collecting all expanded data
+    4. Save expanded data to respective caches
+    5. Apply expanded data from caches to all_contracts_forge.json
     """
     logger.info("Starting streamlined fetch and expand of all Forge contracts...")
 
@@ -1086,22 +1089,43 @@ async def fetch_and_expand_all_forge_contracts() -> List[Dict[str, Any]]:
         except (json.JSONDecodeError, IOError) as e:
             logger.warning(f"Failed to load cache file {cache_file}: {e}. Will fetch fresh data.")
 
-    # Phase 1: Fetch all basic contract data
+    # Phase 1: Fetch all basic contract data and save raw contracts first
     logger.info("Phase 1: Fetching all basic contract data from The Forge region...")
     basic_contracts = await fetch_all_contracts_in_region(FORGE_REGION_ID)
     logger.info(f"✓ Fetched {len(basic_contracts)} basic contracts")
 
-    # Phase 2: Expand contracts asynchronously with on-demand fetching
-    logger.info("Phase 2: Starting asynchronous expansion with on-demand data fetching...")
-    expanded_contracts = await expand_all_contracts_async(basic_contracts)
+    # Save raw contracts to cache file first
+    with open(cache_file, 'w') as f:
+        json.dump(basic_contracts, f, indent=2, default=str)
+    logger.info(f"✓ Saved {len(basic_contracts)} raw contracts to {cache_file}")
+
+    # Phase 2: Expand contracts asynchronously and collect all expanded data
+    logger.info("Phase 2: Starting asynchronous expansion with data collection...")
+    expanded_contracts, collected_items_cache = await expand_all_contracts_async(basic_contracts)
     logger.info(f"✓ Expanded {len(expanded_contracts)} contracts with full details")
 
-    # Save to cache file (always overwrite with fresh data)
-    with open(cache_file, 'w') as f:
-        json.dump(expanded_contracts, f, indent=2, default=str)
-    logger.info(f"✓ Saved {len(expanded_contracts)} fresh expanded contracts to {cache_file}")
+    # Phase 3: Save collected expanded data to caches
+    logger.info("Phase 3: Saving expanded data to caches...")
+    cache_manager = ContractCacheManager(CACHE_DIR)
 
-    return expanded_contracts
+    # Save contract items cache
+    if collected_items_cache:
+        existing_items_cache = await cache_manager.load_contract_items_cache()
+        existing_items_cache.update(collected_items_cache)
+        await cache_manager.save_contract_items_cache(existing_items_cache)
+        logger.info(f"✓ Saved {len(collected_items_cache)} contract items to cache")
+
+    # Phase 4: Apply expanded data from caches to all_contracts_forge.json
+    logger.info("Phase 4: Applying expanded data from caches to contracts file...")
+    final_expanded_contracts = await apply_cached_data_to_contracts(basic_contracts)
+    logger.info(f"✓ Applied cached data to {len(final_expanded_contracts)} contracts")
+
+    # Save final expanded contracts
+    with open(cache_file, 'w') as f:
+        json.dump(final_expanded_contracts, f, indent=2, default=str)
+    logger.info(f"✓ Saved {len(final_expanded_contracts)} final expanded contracts to {cache_file}")
+
+    return final_expanded_contracts
 
 
 async def get_user_contracts(char_id: int, access_token: str) -> List[Dict[str, Any]]:
@@ -1191,10 +1215,12 @@ async def expand_single_contract_with_caching(
     corporation_cache: Dict[str, str],
     new_issuer_names: Dict[str, str],
     new_type_data: Dict[str, Dict[str, Any]],
-    new_corporation_names: Dict[str, str]
+    new_corporation_names: Dict[str, str],
+    contract_items_cache: Dict[str, List[Dict[str, Any]]]
 ) -> Dict[str, Any]:
     """Expand a single contract, fetching missing data as needed."""
     contract_id = contract["contract_id"]
+    contract_id_str = str(contract_id)
     logger.info(f"Expanding contract {contract_id}")
     issuer_id = contract.get("issuer_id")
     issuer_corp_id = contract.get("issuer_corporation_id")
@@ -1306,6 +1332,9 @@ async def expand_single_contract_with_caching(
                 contract_items = await asyncio.to_thread(fetch_public_contract_items, contract_id)
                 logger.info(f"Fetched {len(contract_items) if contract_items else 0} items for contract {contract_id}")
                 if contract_items:
+                    # Store raw items in cache
+                    contract_items_cache[contract_id_str] = contract_items
+                    
                     # Process the fetched items
                     items_details = []
                     for item in contract_items:
@@ -1377,7 +1406,7 @@ async def expand_single_contract_with_caching(
     return expanded
 
 
-async def expand_all_contracts_async(contracts: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
+async def expand_all_contracts_async(contracts: List[Dict[str, Any]]) -> tuple[List[Dict[str, Any]], Dict[str, List[Dict[str, Any]]]]:
     """Expand all contracts asynchronously using on-demand data fetching and caching.
 
     This function implements an on-demand approach that:
@@ -1407,18 +1436,19 @@ async def expand_all_contracts_async(contracts: List[Dict[str, Any]]) -> List[Di
     expanded_contracts = []
     semaphore = asyncio.Semaphore(100)  # Limit concurrent processing
 
-    async def expand_contract_batch(batch_contracts: List[Dict[str, Any]], batch_num: int) -> tuple[List[Dict[str, Any]], Dict[str, str], Dict[str, Dict[str, Any]], Dict[str, str]]:
+    async def expand_contract_batch(batch_contracts: List[Dict[str, Any]], batch_num: int) -> tuple[List[Dict[str, Any]], Dict[str, str], Dict[str, Dict[str, Any]], Dict[str, str], Dict[str, List[Dict[str, Any]]]]:
         """Expand a batch of contracts, fetching missing data as needed."""
         batch_expanded = []
         new_issuer_names = {}
         new_type_data = {}
         new_corporation_names = {}
+        new_contract_items = {}
 
         async def expand_single_contract(contract: Dict[str, Any]) -> Dict[str, Any]:
             async with semaphore:
                 return await expand_single_contract_with_caching(
                     contract, issuer_cache, type_cache, corporation_cache,
-                    new_issuer_names, new_type_data, new_corporation_names
+                    new_issuer_names, new_type_data, new_corporation_names, new_contract_items
                 )
 
         # Process contracts in this batch concurrently
@@ -1433,7 +1463,7 @@ async def expand_all_contracts_async(contracts: List[Dict[str, Any]]) -> List[Di
                 batch_expanded.append(result)
 
         logger.info(f"Completed batch {batch_num}: {len(batch_expanded)} contracts expanded")
-        return batch_expanded, new_issuer_names, new_type_data, new_corporation_names
+        return batch_expanded, new_issuer_names, new_type_data, new_corporation_names, new_contract_items
 
     # Create tasks for parallel batch processing
     batch_tasks = []
@@ -1451,12 +1481,14 @@ async def expand_all_contracts_async(contracts: List[Dict[str, Any]]) -> List[Di
     all_new_issuer_names = {}
     all_new_type_data = {}
     all_new_corporation_names = {}
+    all_new_contract_items = {}
 
-    for batch_expanded, new_issuers, new_types, new_corps in batch_results:
+    for batch_expanded, new_issuers, new_types, new_corps, new_items in batch_results:
         expanded_contracts.extend(batch_expanded)
         all_new_issuer_names.update(new_issuers)
         all_new_type_data.update(new_types)
         all_new_corporation_names.update(new_corps)
+        all_new_contract_items.update(new_items)
 
     logger.info(f"Expansion completed: {len(expanded_contracts)} contracts processed")
 
@@ -1477,15 +1509,104 @@ async def expand_all_contracts_async(contracts: List[Dict[str, Any]]) -> List[Di
         logger.info(f"Added {len(all_new_corporation_names)} new corporation names to cache")
 
     logger.info(f"Asynchronously expanded {len(expanded_contracts)} contracts total")
+    return expanded_contracts, all_new_contract_items
+
+
+async def apply_cached_data_to_contracts(contracts: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
+    """Apply cached expanded data to basic contracts to create fully expanded contracts.
+
+    Loads all cached data (issuer names, corporation names, type data, contract items)
+    and applies it to the basic contract data to create fully expanded contracts.
+    """
+    logger.info(f"Applying cached data to {len(contracts)} contracts...")
+
+    # Initialize cache manager
+    cache_manager = ContractCacheManager(CACHE_DIR)
+
+    # Load all caches
+    issuer_cache = await cache_manager.load_issuer_cache()
+    corporation_cache = await cache_manager.load_corporation_cache()
+    type_cache = await cache_manager.load_type_cache()
+    contract_items_cache = await cache_manager.load_contract_items_cache()
+
+    logger.info(f"Caches loaded - Issuer: {len(issuer_cache)}, Corporation: {len(corporation_cache)}, Type: {len(type_cache)}, Items: {len(contract_items_cache)}")
+
+    expanded_contracts = []
+
+    for contract in contracts:
+        contract_id = contract["contract_id"]
+        contract_id_str = str(contract_id)
+
+        # Start with basic contract data
+        expanded = contract.copy()
+
+        # Apply issuer name from cache
+        issuer_id = contract.get("issuer_id")
+        if issuer_id:
+            issuer_id_str = str(issuer_id)
+            issuer_name = issuer_cache.get(issuer_id_str, "Unknown")
+            expanded["issuer_name"] = issuer_name
+
+        # Apply corporation name from cache
+        issuer_corp_id = contract.get("issuer_corporation_id")
+        if issuer_corp_id:
+            corp_id_str = str(issuer_corp_id)
+            corp_name = corporation_cache.get(corp_id_str, "Unknown")
+            expanded["issuer_corporation_name"] = corp_name
+
+        # Apply contract items from cache for item_exchange contracts
+        if contract.get("type") == "item_exchange":
+            cached_items = contract_items_cache.get(contract_id_str, [])
+            if cached_items:
+                items_details = []
+                for item in cached_items:
+                    type_id = item.get("type_id")
+                    if type_id:
+                        type_id_str = str(type_id)
+                        type_data = type_cache.get(type_id_str, {})
+
+                        # Build item details using cached type data
+                        item_name = type_data.get("name", f"Type {type_id}") if type_data else f"Type {type_id}"
+
+                        item_detail = {
+                            "type_id": type_id,
+                            "name": item_name,
+                            "quantity": item.get("quantity", 1),
+                            "is_blueprint_copy": item.get("is_blueprint_copy", False)
+                        }
+
+                        # Determine blueprint type
+                        if item_detail["is_blueprint_copy"]:
+                            item_detail["blueprint_type"] = "BPC"
+                            item_detail["time_efficiency"] = item.get("time_efficiency", 0)
+                            item_detail["material_efficiency"] = item.get("material_efficiency", 0)
+                            item_detail["runs"] = item.get("runs", 1)
+                        else:
+                            group_id = type_data.get("group_id") if type_data else None
+                            if group_id == 2:  # Blueprint group
+                                item_detail["blueprint_type"] = "BPO"
+                                item_detail["time_efficiency"] = None
+                                item_detail["material_efficiency"] = None
+                            else:
+                                item_detail["blueprint_type"] = None
+
+                        items_details.append(item_detail)
+
+                expanded["items"] = items_details
+                expanded["item_count"] = len(items_details)
+            else:
+                # No cached items available
+                expanded["items"] = []
+                expanded["item_count"] = 0
+        else:
+            # Non-item_exchange contracts don't have items
+            expanded["items"] = []
+            expanded["item_count"] = 0
+
+        expanded_contracts.append(expanded)
+
+    logger.info(f"Applied cached data to {len(expanded_contracts)} contracts")
     return expanded_contracts
-
-
-def load_tokens():
-    """Load stored tokens."""
-    if os.path.exists(TOKENS_FILE):
-        with open(TOKENS_FILE, "r") as f:
-            return json.load(f)
-    return {}
 
 
 async def fetch_all_contracts_in_region(region_id: int) -> List[Dict[str, Any]]:
