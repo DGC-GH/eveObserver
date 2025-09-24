@@ -316,18 +316,10 @@ class EVEDashboard {
 
         console.log('🔄 [INIT STEP 14] Setting up individual sync button event listeners...');
         syncButtons.forEach(button => {
-            button.addEventListener('click', async (e) => {
+            button.addEventListener('click', (e) => {
                 e.stopPropagation();
                 const section = button.getAttribute('data-section');
                 console.log('🔄 [INDIVIDUAL SYNC] Sync button clicked for section:', section);
-
-                // Check if sync is already running
-                const status = await this.checkSyncStatus();
-                if (status.running) {
-                    this.showNotification('A sync is already running. Please wait for it to complete or stop it first.', 'error');
-                    return;
-                }
-
                 this.syncSection(section, button);
             });
         });
@@ -335,7 +327,7 @@ class EVEDashboard {
 
         console.log('🔄 [INIT STEP 16] Setting up sync all button event listener...');
         if (syncAllButton) {
-            syncAllButton.addEventListener('click', async (e) => {
+            syncAllButton.addEventListener('click', (e) => {
                 console.log('🔄 [STEP 1] Sync All button clicked - event detected!');
                 console.log('🔄 [STEP 2] Event object:', e);
                 console.log('🔄 [STEP 3] Button element:', syncAllButton);
@@ -345,14 +337,6 @@ class EVEDashboard {
                     console.log('🔄 [STEP 6] eveObserverApi.nonce exists:', !!eveObserverApi.nonce);
                     console.log('🔄 [STEP 7] eveObserverApi.ajaxUrl exists:', !!eveObserverApi.ajaxUrl);
                 }
-
-                // Check if sync is already running
-                const status = await this.checkSyncStatus();
-                if (status.running) {
-                    this.showNotification('A sync is already running. Please wait for it to complete or stop it first.', 'error');
-                    return;
-                }
-
                 this.syncSection('all', syncAllButton);
             });
             console.log('✅ [INIT STEP 17] Sync all button event listener set up');
@@ -525,6 +509,13 @@ class EVEDashboard {
         console.log(`🔄 [STEP 6] Button element:`, button);
         console.log(`🔄 [STEP 7] Button original text:`, button.innerHTML);
 
+        // Check if sync is already running
+        const status = await this.checkSyncStatus();
+        if (status.running) {
+            this.showNotification('A sync is already running. Please wait for it to complete or stop it first.', 'error');
+            return;
+        }
+
         // Show progress area
         const progressDiv = document.getElementById('sync-progress');
         const progressContent = document.getElementById('sync-progress-content');
@@ -561,14 +552,14 @@ class EVEDashboard {
         console.log('🔄 [STEP 13] Disabling button and setting loading state...');
         const originalText = button.innerHTML;
         button.disabled = true;
-        button.innerHTML = '<span class="dashicons dashicons-update dashicons-spin"></span> Syncing...';
+        button.innerHTML = '<span class="dashicons dashicons-update dashicons-spin"></span> Starting...';
         console.log('✅ [STEP 14] Button disabled and loading state set');
 
         // Start progress animation
         this.animateProgress(progressFill, progressText, 'Preparing request...');
 
         try {
-            console.log(`🔄 [STEP 15] Preparing AJAX request to sync ${section}`);
+            console.log(`🔄 [STEP 15] Preparing AJAX request to start sync ${section}`);
             console.log('🔄 [STEP 16] AJAX action: eve_sync');
             console.log('🔄 [STEP 17] Nonce:', eveObserverApi.nonce);
 
@@ -579,75 +570,132 @@ class EVEDashboard {
             };
             console.log('🔄 [STEP 18] AJAX data:', ajaxData);
 
-            console.log(`🔄 [STEP 19] Making AJAX request to sync ${section}`);
+            console.log(`🔄 [STEP 19] Making AJAX request to start sync ${section}`);
             const response = await this.makeAjaxRequest(ajaxData);
             console.log('✅ [STEP 20] AJAX request completed');
             console.log('🔄 [STEP 21] Response success:', response.success);
 
-            // Update progress for request completion
-            this.animateProgress(progressFill, progressText, 'Processing response...');
-
             if (response.success) {
-                console.log('✅ [STEP 22] Sync was successful');
-                const message = response.data.execution_time
-                    ? `Successfully synced ${section} in ${response.data.execution_time}s`
-                    : `Successfully synced ${section}`;
+                console.log('✅ [STEP 22] Sync started successfully');
+                const message = `Sync started successfully for ${section}`;
                 console.log('🔄 [STEP 23] Success message:', message);
                 console.log('🔄 [STEP 24] Showing success notification...');
                 this.showNotification(message, 'success');
 
                 // Show sync output in progress area
-                if (response.data.output) {
-                    progressContent.textContent += `✅ Sync completed successfully!\n\nOutput:\n${response.data.output}\n`;
-                } else {
-                    progressContent.textContent += '✅ Sync completed successfully!\n';
-                }
+                progressContent.textContent += `✅ Sync started successfully!\n\nThe sync is now running in the background. Progress will be updated automatically.\n`;
 
-                // Complete progress bar
-                progressFill.style.width = '100%';
+                // Update progress to show it's started
+                progressFill.style.width = '10%';
                 progressFill.style.backgroundColor = '#28a745';
-                progressText.textContent = 'Complete!';
+                progressText.textContent = 'Sync started - monitoring progress...';
 
-                // Reload data after successful sync
-                console.log(`🔄 [STEP 25] Reloading data after successful sync of ${section}`);
-                console.log('🔄 [STEP 26] Calling loadAllData()...');
-                await this.loadAllData();
-                console.log('✅ [STEP 27] Data reloaded successfully');
-                console.log('🔄 [STEP 28] Calling renderAllTables()...');
-                this.renderAllTables();
-                console.log('✅ [STEP 29] Tables rendered');
-                console.log('🔄 [STEP 30] Calling renderChart()...');
-                this.renderChart();
-                console.log('✅ [STEP 31] Chart rendered');
+                // Start monitoring progress immediately
+                console.log('🔄 [STEP 25] Starting progress monitoring...');
+                this.startProgressMonitoring(section, progressFill, progressText, progressContent, button, originalText);
+
             } else {
-                console.log('❌ [STEP 32] Sync reported failure in response');
-                progressContent.textContent += `❌ Sync failed: ${response.data.message}\n`;
+                console.log('❌ [STEP 26] Sync start failed');
+                progressContent.textContent += `❌ Sync start failed: ${response.data.message}\n`;
                 progressFill.style.width = '100%';
                 progressFill.style.backgroundColor = '#dc3545';
-                progressText.textContent = 'Failed';
-                throw new Error(response.data.message || 'Sync failed');
+                progressText.textContent = 'Failed to start';
+                throw new Error(response.data.message || 'Failed to start sync');
             }
         } catch (error) {
-            console.error(`❌ [ERROR] EVE Observer: Sync error for ${section}:`, error);
-            console.log('🔄 [STEP 33] Showing error notification...');
-            this.showNotification(`Failed to sync ${section}: ${error.message}`, 'error');
+            console.error(`❌ [ERROR] EVE Observer: Sync start error for ${section}:`, error);
+            console.log('🔄 [STEP 27] Showing error notification...');
+            this.showNotification(`Failed to start sync ${section}: ${error.message}`, 'error');
             progressContent.textContent += `❌ Error: ${error.message}\n`;
             progressFill.style.width = '100%';
             progressFill.style.backgroundColor = '#dc3545';
             progressText.textContent = 'Error occurred';
-        } finally {
-            // Restore button state
-            console.log('🔄 [STEP 34] Restoring button state...');
+
+            // Restore button state on error
             button.disabled = false;
             button.innerHTML = originalText;
-            console.log('✅ [STEP 35] Button state restored');
-            console.log(`🔄 [STEP 36] EVE Observer: Sync operation completed for ${section}`);
-
-            // Hide progress after 10 seconds
-            setTimeout(() => {
-                progressDiv.style.display = 'none';
-            }, 10000);
         }
+    }
+
+    startProgressMonitoring(section, progressFill, progressText, progressContent, button, originalText) {
+        console.log('🔄 [MONITOR] Starting progress monitoring...');
+
+        let monitoringInterval = setInterval(async () => {
+            try {
+                const status = await this.checkSyncStatus();
+                console.log('🔄 [MONITOR] Current status:', status);
+
+                if (status.running) {
+                    // Update progress display
+                    const progressPercent = Math.max(10, Math.min(90, status.progress || 10));
+                    progressFill.style.width = `${progressPercent}%`;
+                    progressText.textContent = status.message || 'Processing...';
+                    progressContent.textContent = `Sync running: ${status.message || 'Processing...'}\nSection: ${status.section || section}\nProgress: ${progressPercent.toFixed(1)}%\n`;
+                } else {
+                    // Sync completed or stopped
+                    clearInterval(monitoringInterval);
+                    console.log('🔄 [MONITOR] Sync completed or stopped');
+
+                    if (status.progress >= 100) {
+                        // Success
+                        progressFill.style.width = '100%';
+                        progressFill.style.backgroundColor = '#28a745';
+                        progressText.textContent = 'Completed!';
+                        progressContent.textContent += `\n✅ Sync completed successfully!\n`;
+
+                        // Reload data after successful sync
+                        console.log(`🔄 [MONITOR] Reloading data after successful sync of ${section}`);
+                        await this.loadAllData();
+                        this.renderAllTables();
+                        this.renderChart();
+
+                        this.showNotification(`Successfully synced ${section}`, 'success');
+                    } else {
+                        // Error or stopped
+                        progressFill.style.width = '100%';
+                        progressFill.style.backgroundColor = '#dc3545';
+                        progressText.textContent = 'Failed or stopped';
+                        progressContent.textContent += `\n❌ Sync ended unexpectedly\n`;
+
+                        this.showNotification(`Sync ${section} ended unexpectedly`, 'error');
+                    }
+
+                    // Restore button state
+                    button.disabled = false;
+                    button.innerHTML = originalText;
+
+                    // Hide progress after delay
+                    setTimeout(() => {
+                        document.getElementById('sync-progress').style.display = 'none';
+                    }, 5000);
+                }
+            } catch (error) {
+                console.error('❌ [MONITOR] Error checking status:', error);
+                clearInterval(monitoringInterval);
+
+                progressFill.style.width = '100%';
+                progressFill.style.backgroundColor = '#dc3545';
+                progressText.textContent = 'Monitoring failed';
+                progressContent.textContent += `\n❌ Error monitoring progress: ${error.message}\n`;
+
+                button.disabled = false;
+                button.innerHTML = originalText;
+            }
+        }, 2000); // Check every 2 seconds
+
+        // Stop monitoring after 30 minutes (safety timeout)
+        setTimeout(() => {
+            clearInterval(monitoringInterval);
+            console.log('🔄 [MONITOR] Monitoring timeout reached');
+
+            progressFill.style.width = '100%';
+            progressFill.style.backgroundColor = '#dc3545';
+            progressText.textContent = 'Timeout reached';
+            progressContent.textContent += `\n⏰ Monitoring timeout reached (30 minutes)\n`;
+
+            button.disabled = false;
+            button.innerHTML = originalText;
+        }, 30 * 60 * 1000); // 30 minutes
     }
 
     animateProgress(progressFill, progressText, message) {

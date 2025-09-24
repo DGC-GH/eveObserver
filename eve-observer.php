@@ -666,40 +666,48 @@ class EVE_Observer {
         set_time_limit(300); // 5 minutes
         error_log("🔄 [AJAX PHP STEP 9] Time limit set");
 
-        // Execute the command and capture output
-        error_log("🔄 [AJAX PHP STEP 10] Starting command execution...");
-        $start_time = microtime(true);
-        $output = shell_exec($command);
-        $execution_time = microtime(true) - $start_time;
-        error_log("✅ [AJAX PHP STEP 11] Command execution completed in " . round($execution_time, 2) . " seconds");
-
-        // Check if command was successful
-        $exit_code = 0;
-        if (function_exists('exec')) {
-            exec($command, $output_lines, $exit_code);
-            error_log("🔄 [AJAX PHP STEP 12] Exit code from exec(): {$exit_code}");
-        }
-
-        if ($exit_code !== 0) {
-            error_log("❌ [AJAX PHP ERROR] Sync failed for section {$section}. Exit code: {$exit_code}. Output: " . substr($output, 0, 1000));
-            wp_send_json_error(array(
-                'message' => 'Sync failed with exit code: ' . $exit_code,
-                'output' => $output,
-                'execution_time' => round($execution_time, 2)
-            ), 500);
+        // Execute the command asynchronously (don't wait for completion)
+        error_log("🔄 [AJAX PHP STEP 10] Starting command execution in background...");
+        
+        // Use exec() to run in background and get PID
+        $command_bg = $command . ' > /dev/null 2>&1 & echo $!';
+        $pid = exec($command_bg);
+        
+        if (!$pid) {
+            error_log("❌ [AJAX PHP ERROR] Failed to start background process");
+            wp_send_json_error(array('message' => 'Failed to start sync process'), 500);
             return;
         }
-
-        // Log successful completion
-        error_log("✅ [AJAX PHP STEP 13] Sync completed successfully for section {$section} in " . round($execution_time, 2) . " seconds");
-
-        // Send success response
+        
+        error_log("✅ [AJAX PHP STEP 11] Background process started with PID: {$pid}");
+        
+        // Wait a moment for the status file to be created
+        sleep(2);
+        
+        // Check if the process is running and status file exists
+        $status_file = plugin_dir_path(__FILE__) . 'scripts/sync_status.json';
+        $max_wait = 10; // Wait up to 10 seconds for status file
+        $wait_count = 0;
+        
+        while (!file_exists($status_file) && $wait_count < $max_wait) {
+            sleep(1);
+            $wait_count++;
+            error_log("🔄 [AJAX PHP STEP 12] Waiting for status file... ({$wait_count}/{$max_wait})");
+        }
+        
+        if (!file_exists($status_file)) {
+            error_log("❌ [AJAX PHP ERROR] Status file was not created within {$max_wait} seconds");
+            wp_send_json_error(array('message' => 'Sync process failed to start properly'), 500);
+            return;
+        }
+        
+        error_log("✅ [AJAX PHP STEP 13] Status file created, sync process is running");
+        
+        // Send success response immediately
         wp_send_json_success(array(
-            'section' => $section,
-            'message' => 'Sync completed successfully',
-            'execution_time' => round($execution_time, 2),
-            'timestamp' => current_time('mysql'),
-            'output' => $output
+            'message' => 'Sync started successfully in background',
+            'pid' => $pid,
+            'status' => 'running'
         ));
     }
 
