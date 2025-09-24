@@ -484,7 +484,21 @@ body {
     color: var(--text-secondary);
 }
 
-/* Responsive Design */
+/* Sync Progress */
+#sync-progress-content {
+    color: var(--text-color) !important;
+    background-color: var(--card-background) !important;
+    padding: 10px !important;
+    border-radius: 4px !important;
+    border: 1px solid var(--border-color) !important;
+    font-family: monospace;
+    font-size: 12px;
+    white-space: pre-wrap;
+    margin: 0;
+    margin-top: 20px;
+    max-height: 400px;
+    overflow-y: auto;
+}
 @media (max-width: 768px) {
     .eve-dashboard {
         padding: 16px;
