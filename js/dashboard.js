@@ -677,6 +677,7 @@ class EVEDashboard {
         const progressFill = document.querySelector('#sync-status-progress .eve-progress-fill');
         const statusText = document.getElementById('sync-status-text');
         const stopButton = document.getElementById('stop-sync-button');
+        const stageProgressDiv = document.getElementById('sync-stage-progress');
 
         if (!statusDiv || !progressBar || !progressFill || !statusText) {
             console.log('⚠️ [SYNC STATUS] Status display elements not found');
@@ -692,12 +693,67 @@ class EVEDashboard {
             if (stopButton) {
                 stopButton.style.display = 'inline-block';
             }
+
+            // Update stage progress bars if stages data is available
+            if (status.stages && stageProgressDiv) {
+                stageProgressDiv.style.display = 'block';
+                this.updateStageProgressBars(status.stages);
+            } else if (stageProgressDiv) {
+                stageProgressDiv.style.display = 'none';
+            }
         } else {
             statusDiv.style.display = 'none';
             if (stopButton) {
                 stopButton.style.display = 'none';
             }
+            if (stageProgressDiv) {
+                stageProgressDiv.style.display = 'none';
+            }
         }
+    }
+
+    updateStageProgressBars(stages) {
+        console.log('🔄 [STAGE PROGRESS] Updating stage progress bars:', stages);
+
+        // Clear existing stage containers
+        const stageProgressDiv = document.getElementById('sync-stage-progress');
+        if (!stageProgressDiv) return;
+
+        // Remove existing stage containers (keep the header)
+        const existingStages = stageProgressDiv.querySelectorAll('.sync-stage');
+        existingStages.forEach(stage => stage.remove());
+
+        // Create stage containers for each stage
+        Object.entries(stages).forEach(([stageName, stageData]) => {
+            const stageDiv = document.createElement('div');
+            stageDiv.className = 'sync-stage';
+            stageDiv.innerHTML = `
+                <div class="sync-stage-header">
+                    <span class="sync-stage-name">${this.formatStageName(stageName)}</span>
+                    <span class="sync-stage-status" data-status="${stageData.status || 'pending'}">${this.formatStageStatus(stageData.status || 'pending')}</span>
+                </div>
+                <div class="eve-progress-bar">
+                    <div class="eve-progress-fill" style="width: ${stageData.progress || 0}%"></div>
+                </div>
+                <div class="sync-stage-message">${stageData.message || ''}</div>
+            `;
+
+            stageProgressDiv.appendChild(stageDiv);
+        });
+    }
+
+    formatStageName(stageName) {
+        return stageName.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
+    }
+
+    formatStageStatus(status) {
+        const statusMap = {
+            pending: 'Pending',
+            running: 'Running',
+            completed: 'Completed',
+            error: 'Error'
+        };
+        return statusMap[status] || status;
     }
 
     startSyncStatusPolling() {
@@ -914,7 +970,23 @@ class EVEDashboard {
                     const progressPercent = Math.max(10, Math.min(90, status.progress || 10));
                     progressFill.style.width = `${progressPercent}%`;
                     progressText.textContent = status.message || 'Processing...';
-                    progressContent.textContent = `Sync running: ${status.message || 'Processing...'}\nSection: ${status.section || section}\nProgress: ${progressPercent.toFixed(1)}%\n`;
+
+                    // Fetch and display recent log entries
+                    try {
+                        const recentLogs = await this.getLogs('', [], 30); // Get last 30 log entries
+                        if (recentLogs && recentLogs.length > 0) {
+                            const logText = recentLogs.map(log => {
+                                const timestamp = new Date(log.timestamp).toLocaleString();
+                                return `${timestamp} - ${log.level} - ${log.message}`;
+                            }).join('\n');
+                            progressContent.textContent = `Sync running: ${status.message || 'Processing...'}\nSection: ${status.section || section}\nProgress: ${progressPercent.toFixed(1)}%\n\nRecent Log Entries:\n${logText}`;
+                        } else {
+                            progressContent.textContent = `Sync running: ${status.message || 'Processing...'}\nSection: ${status.section || section}\nProgress: ${progressPercent.toFixed(1)}%\n\nNo recent log entries found.`;
+                        }
+                    } catch (logError) {
+                        console.error('❌ [MONITOR] Error fetching logs:', logError);
+                        progressContent.textContent = `Sync running: ${status.message || 'Processing...'}\nSection: ${status.section || section}\nProgress: ${progressPercent.toFixed(1)}%\n\nError loading logs: ${logError.message}`;
+                    }
                 } else {
                     // Sync completed or stopped
                     clearInterval(monitoringInterval);
@@ -925,7 +997,23 @@ class EVEDashboard {
                         progressFill.style.width = '100%';
                         progressFill.style.backgroundColor = '#28a745';
                         progressText.textContent = 'Completed!';
-                        progressContent.textContent += `\n✅ Sync completed successfully!\n`;
+
+                        // Show final log entries
+                        try {
+                            const finalLogs = await this.getLogs('', [], 50); // Get last 50 log entries for completion
+                            if (finalLogs && finalLogs.length > 0) {
+                                const logText = finalLogs.map(log => {
+                                    const timestamp = new Date(log.timestamp).toLocaleString();
+                                    return `${timestamp} - ${log.level} - ${log.message}`;
+                                }).join('\n');
+                                progressContent.textContent = `✅ Sync completed successfully!\n\nFinal Log Entries:\n${logText}`;
+                            } else {
+                                progressContent.textContent = `✅ Sync completed successfully!\n\nNo log entries found.`;
+                            }
+                        } catch (logError) {
+                            console.error('❌ [MONITOR] Error fetching final logs:', logError);
+                            progressContent.textContent = `✅ Sync completed successfully!\n\nError loading final logs: ${logError.message}`;
+                        }
 
                         // Reload data after successful sync
                         console.log(`🔄 [MONITOR] Reloading data after successful sync of ${section}`);
@@ -939,7 +1027,23 @@ class EVEDashboard {
                         progressFill.style.width = '100%';
                         progressFill.style.backgroundColor = '#dc3545';
                         progressText.textContent = 'Failed or stopped';
-                        progressContent.textContent += `\n❌ Sync ended unexpectedly\n`;
+
+                        // Show error logs
+                        try {
+                            const errorLogs = await this.getLogs('', ['ERROR', 'WARNING'], 30); // Get recent error/warning logs
+                            if (errorLogs && errorLogs.length > 0) {
+                                const logText = errorLogs.map(log => {
+                                    const timestamp = new Date(log.timestamp).toLocaleString();
+                                    return `${timestamp} - ${log.level} - ${log.message}`;
+                                }).join('\n');
+                                progressContent.textContent = `❌ Sync ended unexpectedly\n\nRecent Error/Warning Logs:\n${logText}`;
+                            } else {
+                                progressContent.textContent = `❌ Sync ended unexpectedly\n\nNo error logs found.`;
+                            }
+                        } catch (logError) {
+                            console.error('❌ [MONITOR] Error fetching error logs:', logError);
+                            progressContent.textContent = `❌ Sync ended unexpectedly\n\nError loading logs: ${logError.message}`;
+                        }
 
                         this.showNotification(`Sync ${section} ended unexpectedly`, 'error');
                     }
@@ -960,7 +1064,23 @@ class EVEDashboard {
                 progressFill.style.width = '100%';
                 progressFill.style.backgroundColor = '#dc3545';
                 progressText.textContent = 'Monitoring failed';
-                progressContent.textContent += `\n❌ Error monitoring progress: ${error.message}\n`;
+
+                // Show error logs on monitoring failure
+                try {
+                    const errorLogs = await this.getLogs('', ['ERROR'], 20);
+                    if (errorLogs && errorLogs.length > 0) {
+                        const logText = errorLogs.map(log => {
+                            const timestamp = new Date(log.timestamp).toLocaleString();
+                            return `${timestamp} - ${log.level} - ${log.message}`;
+                        }).join('\n');
+                        progressContent.textContent = `❌ Error monitoring progress: ${error.message}\n\nRecent Error Logs:\n${logText}`;
+                    } else {
+                        progressContent.textContent = `❌ Error monitoring progress: ${error.message}\n\nNo recent error logs found.`;
+                    }
+                } catch (logError) {
+                    console.error('❌ [MONITOR] Error fetching error logs on monitoring failure:', logError);
+                    progressContent.textContent = `❌ Error monitoring progress: ${error.message}\n\nError loading error logs: ${logError.message}`;
+                }
 
                 button.disabled = false;
                 button.innerHTML = originalText;
@@ -968,14 +1088,30 @@ class EVEDashboard {
         }, 2000); // Check every 2 seconds
 
         // Stop monitoring after 30 minutes (safety timeout)
-        setTimeout(() => {
+        setTimeout(async () => {
             clearInterval(monitoringInterval);
             console.log('🔄 [MONITOR] Monitoring timeout reached');
 
             progressFill.style.width = '100%';
             progressFill.style.backgroundColor = '#dc3545';
             progressText.textContent = 'Timeout reached';
-            progressContent.textContent += `\n⏰ Monitoring timeout reached (30 minutes)\n`;
+
+            // Show timeout logs
+            try {
+                const timeoutLogs = await this.getLogs('', [], 20);
+                if (timeoutLogs && timeoutLogs.length > 0) {
+                    const logText = timeoutLogs.map(log => {
+                        const timestamp = new Date(log.timestamp).toLocaleString();
+                        return `${timestamp} - ${log.level} - ${log.message}`;
+                    }).join('\n');
+                    progressContent.textContent = `⏰ Monitoring timeout reached (30 minutes)\n\nLast Log Entries:\n${logText}`;
+                } else {
+                    progressContent.textContent = `⏰ Monitoring timeout reached (30 minutes)\n\nNo recent log entries found.`;
+                }
+            } catch (logError) {
+                console.error('❌ [MONITOR] Error fetching timeout logs:', logError);
+                progressContent.textContent = `⏰ Monitoring timeout reached (30 minutes)\n\nError loading logs: ${logError.message}`;
+            }
 
             button.disabled = false;
             button.innerHTML = originalText;

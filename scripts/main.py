@@ -83,7 +83,7 @@ def cleanup_pid_file():
         logger.warning(f"Failed to remove PID file: {e}")
 
 
-def update_sync_status(status: str, progress: float = 0.0, message: str = "", section: str = ""):
+def update_sync_status(status: str, progress: float = 0.0, message: str = "", section: str = "", stages: Dict[str, Dict[str, Any]] = None):
     """Update the sync status file with current progress."""
     try:
         status_data = {
@@ -92,6 +92,7 @@ def update_sync_status(status: str, progress: float = 0.0, message: str = "", se
             "progress": progress,
             "message": message,
             "section": section,
+            "stages": stages or {},
             "timestamp": datetime.now(timezone.utc).isoformat(),
             "start_time": getattr(update_sync_status, 'start_time', datetime.now(timezone.utc).isoformat())
         }
@@ -136,6 +137,7 @@ def check_sync_running() -> Dict[str, Any]:
                 "progress": status_data.get("progress", 0.0),
                 "message": status_data.get("message", ""),
                 "section": status_data.get("section", ""),
+                "stages": status_data.get("stages", {}),
                 "timestamp": status_data.get("timestamp", ""),
                 "start_time": status_data.get("start_time", ""),
                 "pid": pid
@@ -275,62 +277,107 @@ async def process_all_data(
         character_start = time.time()
         await asyncio.gather(*[process_with_semaphore(task) for task in character_tasks])
         character_time = time.time() - character_start
-        logger.info(
-            f"Parallel character processing completed in {character_time:.2f}s for {len(character_tasks)} characters"
-        )
-
-
 async def main() -> None:
     """Main data fetching routine."""
     if not check_single_instance():
         return
-    
-    # Initialize sync status
-    update_sync_status("starting", 0.0, "Initializing sync process...")
-    
-    start_time = time.time()
-    args = parse_arguments()
-    clear_log_file()
-    
-    update_sync_status("initializing", 5.0, "Loading caches and tokens...")
-    caches = initialize_caches()
-    tokens = load_tokens()
-    if not tokens:
-        logger.error("No authorized characters found. Run 'python esi_oauth.py authorize' first.")
-        update_sync_status("error", 0.0, "No authorized characters found")
-        cleanup_pid_file()
-        cleanup_status_file()
-        return
 
     try:
-        update_sync_status("collecting", 10.0, "Collecting corporation members...")
-        # Collect all corporations and their member characters
+        # Initialize sync status with stages
+        stages = {
+            "initialization": {"progress": 0, "status": "pending", "message": "Preparing..."},
+            "collection": {"progress": 0, "status": "pending", "message": "Preparing..."},
+            "processing": {"progress": 0, "status": "pending", "message": "Preparing..."},
+            "finalization": {"progress": 0, "status": "pending", "message": "Preparing..."}
+        }
+        update_sync_status("starting", 0.0, "Initializing sync process...", "", stages)
+        
+        start_time = time.time()
+        args = parse_arguments()
+        clear_log_file()
+        
+        # Update initialization stage
+        stages["initialization"]["status"] = "running"
+        stages["initialization"]["progress"] = 25
+        stages["initialization"]["message"] = "Loading caches and tokens..."
+        update_sync_status("initializing", 5.0, "Loading caches and tokens...", "", stages)
+        
+        caches = initialize_caches()
+        tokens = load_tokens()
+        if not tokens:
+            logger.error("No authorized characters found. Run 'python esi_oauth.py authorize' first.")
+            stages["initialization"]["status"] = "error"
+            stages["initialization"]["message"] = "No authorized characters found"
+            update_sync_status("error", 0.0, "No authorized characters found", "", stages)
+            cleanup_pid_file()
+            cleanup_status_file()
+            return
+
+        # Complete initialization stage
+        stages["initialization"]["status"] = "completed"
+        stages["initialization"]["progress"] = 100
+        stages["initialization"]["message"] = "Initialization completed"
+        
+        # Start collection stage
+        stages["collection"]["status"] = "running"
+        stages["collection"]["progress"] = 10
+        stages["collection"]["message"] = "Collecting corporation members..."
+        update_sync_status("collecting", 10.0, "Collecting corporation members...", "", stages)
+        
         collect_start = time.time()
         corp_members = await collect_corporation_members(tokens)
         allowed_corp_ids, allowed_issuer_ids = get_allowed_entities(corp_members)
         collect_time = time.time() - collect_start
         logger.info(f"Corporation collection completed in {collect_time:.2f}s")
-        update_sync_status("collecting", 20.0, f"Found {len(corp_members)} corporations with {sum(len(members) for members in corp_members.values())} total members")
+        
+        stages["collection"]["progress"] = 50
+        stages["collection"]["message"] = f"Found {len(corp_members)} corporations with {sum(len(members) for members in corp_members.values())} total members"
+        update_sync_status("collecting", 20.0, f"Found {len(corp_members)} corporations with {sum(len(members) for members in corp_members.values())} total members", "", stages)
 
         # Clean up old posts with filtering (only if doing full fetch or contracts)
         if args.all or args.contracts:
-            update_sync_status("cleaning", 25.0, "Cleaning up old posts...")
+            stages["collection"]["progress"] = 75
+            stages["collection"]["message"] = "Cleaning up old posts..."
+            update_sync_status("cleaning", 25.0, "Cleaning up old posts...", "", stages)
+            
             cleanup_start = time.time()
             await cleanup_old_posts(allowed_corp_ids, allowed_issuer_ids)
             cleanup_time = time.time() - cleanup_start
             logger.info(f"Post cleanup completed in {cleanup_time:.2f}s")
-            update_sync_status("cleaning", 30.0, f"Post cleanup completed in {cleanup_time:.2f}s")
+            
+            stages["collection"]["progress"] = 100
+            stages["collection"]["message"] = f"Post cleanup completed in {cleanup_time:.2f}s"
+            update_sync_status("cleaning", 30.0, f"Post cleanup completed in {cleanup_time:.2f}s", "", stages)
 
-        update_sync_status("processing", 35.0, "Processing corporation and character data...")
+        # Complete collection stage
+        stages["collection"]["status"] = "completed"
+        
+        # Start processing stage
+        stages["processing"]["status"] = "running"
+        stages["processing"]["progress"] = 10
+        stages["processing"]["message"] = "Processing corporation and character data..."
+        update_sync_status("processing", 35.0, "Processing corporation and character data...", "", stages)
+        
         process_start = time.time()
         await process_all_data(corp_members, caches, args, tokens)
         process_time = time.time() - process_start
         logger.info(f"Data processing completed in {process_time:.2f}s")
-        update_sync_status("processing", 90.0, f"Data processing completed in {process_time:.2f}s")
+        
+        stages["processing"]["progress"] = 90
+        stages["processing"]["message"] = f"Data processing completed in {process_time:.2f}s"
+        update_sync_status("processing", 90.0, f"Data processing completed in {process_time:.2f}s", "", stages)
 
         total_time = time.time() - start_time
-        logger.info(f"Total execution completed in {total_time:.2f}s")
-        update_sync_status("finalizing", 95.0, "Finalizing and logging performance metrics...")
+        
+        # Complete processing stage
+        stages["processing"]["status"] = "completed"
+        stages["processing"]["progress"] = 100
+        
+        # Start finalization stage
+        stages["finalization"]["status"] = "running"
+        stages["finalization"]["progress"] = 25
+        stages["finalization"]["message"] = "Finalizing and logging performance metrics..."
+        update_sync_status("finalizing", 95.0, "Finalizing and logging performance metrics...", "", stages)
 
         # Log performance metrics
         cache_stats = {}  # Will be populated by log_cache_performance
@@ -345,13 +392,25 @@ async def main() -> None:
         # Cleanup session
         await cleanup_session()
         
-        update_sync_status("completed", 100.0, f"Sync completed successfully in {total_time:.2f}s")
+        stages["finalization"]["progress"] = 100
+        stages["finalization"]["message"] = f"Sync completed successfully in {total_time:.2f}s"
+        stages["finalization"]["status"] = "completed"
+        
+        update_sync_status("completed", 100.0, f"Sync completed successfully in {total_time:.2f}s", "", stages)
         logger.info("Sync completed successfully")
         
     except Exception as e:
         error_msg = f"Sync failed: {str(e)}"
         logger.error(error_msg)
-        update_sync_status("error", 0.0, error_msg)
+        
+        # Mark current stage as failed
+        for stage_name, stage_data in stages.items():
+            if stage_data["status"] == "running":
+                stage_data["status"] = "error"
+                stage_data["message"] = str(e)
+                break
+        
+        update_sync_status("error", 0.0, error_msg, "", stages)
         raise
     finally:
         # Flush any pending cache saves and log performance

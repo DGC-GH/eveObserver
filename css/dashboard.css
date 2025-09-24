@@ -563,18 +563,71 @@ th:hover .sort-indicator {
     opacity: 1;
 }
 
-/* Sync Progress Area */
-#sync-progress-content {
-    color: #1d1d1f !important;
-    background-color: transparent !important;
-    font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace !important;
-    font-size: 12px !important;
-    line-height: 1.4 !important;
-    white-space: pre-wrap !important;
-    word-wrap: break-word !important;
-    margin: 0 !important;
-    padding: 0 !important;
-    border: none !important;
+/* Sync Stage Progress */
+.sync-stage {
+    margin-bottom: 20px;
+    padding: 16px;
+    background: var(--card-background);
+    border-radius: 8px;
+    border: 1px solid var(--border-color);
+}
+
+.sync-stage-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 8px;
+}
+
+.sync-stage-name {
+    font-weight: 600;
+    color: var(--text-color);
+    font-size: 1rem;
+}
+
+.sync-stage-status {
+    font-size: 0.75rem;
+    font-weight: 500;
+    padding: 4px 8px;
+    border-radius: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.sync-stage-status[data-status="pending"] {
+    background: rgba(142, 142, 147, 0.1);
+    color: var(--text-secondary);
+}
+
+.sync-stage-status[data-status="running"] {
+    background: rgba(0, 122, 255, 0.1);
+    color: var(--primary-color);
+}
+
+.sync-stage-status[data-status="completed"] {
+    background: rgba(52, 199, 89, 0.1);
+    color: var(--success-color);
+}
+
+.sync-stage-status[data-status="error"] {
+    background: rgba(255, 59, 48, 0.1);
+    color: var(--danger-color);
+}
+
+.sync-stage .eve-progress-bar {
+    height: 16px;
+    margin-bottom: 8px;
+}
+
+.sync-stage .eve-progress-fill {
+    height: 100%;
+    border-radius: 8px;
+}
+
+.sync-stage-message {
+    font-size: 0.875rem;
+    color: var(--text-secondary);
+    font-style: italic;
 }
 
 .eve-dashboard-actions {
